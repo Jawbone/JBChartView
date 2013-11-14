@@ -155,7 +155,7 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
     [self.informationView setHidden:NO animated:YES];
 }
 
-- (void)didUnselectBarChartView:(JBBarChartView *)barChartView
+- (void)barChartView:(JBBarChartView *)barChartView didUnselectBarAtIndex:(NSInteger)index
 {
     [self.informationView setHidden:YES animated:YES];
 }

@@ -355,14 +355,6 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     {
         self.selectionView.alpha = _selectionViewVisible ? 1.0 : 0.0;
     }
-    
-    if (selectionViewVisible == NO)
-    {
-        if ([self.delegate respondsToSelector:@selector(didUnselectBarChartView:)])
-        {
-            [self.delegate didUnselectBarChartView:self];
-        }
-    }
 }
 
 - (void)setSelectionViewVisible:(BOOL)selectionViewVisible
@@ -431,6 +423,14 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
         return;
     }
     [self setSelectionViewVisible:NO animated:YES];
+    
+    UITouch *touch = [touches anyObject];
+    CGPoint touchPoint = [touch locationInView:self];
+    NSInteger index = [self barViewIndexForPoint:touchPoint];
+    if ([self.delegate respondsToSelector:@selector(barChartView:didUnselectBarAtIndex:)])
+    {
+        [self.delegate barChartView:self didUnselectBarAtIndex:index];
+    }
 }
 
 @end

@@ -54,8 +54,9 @@
  *  For selection start events, see: didSelectBarAtIndex...
  *
  *  @param barChartView The origin chart
+ *  @param index        The 0-based index of a given bar. Index will be -1 if the touch ends outside of the view's bounds. 
  */
-- (void)didUnselectBarChartView:(JBBarChartView *)barChartView;
+- (void)barChartView:(JBBarChartView *)barChartView didUnselectBarAtIndex:(NSInteger)index;
 
 @end
 
