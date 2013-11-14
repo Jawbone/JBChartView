@@ -53,8 +53,9 @@
  *  For selection start events, see: didSelectChartAtIndex...
  *
  *  @param lineChartView The origin chart
+ *  @param index        The 0-based index of a selection point. Index will be -1 if the touch ends outside of the view's bounds.
  */
-- (void)didUnselectLineChartView:(JBLineChartView *)lineChartView;
+- (void)lineChartView:(JBLineChartView *)lineChartView didUnselectChartAtIndex:(NSInteger)index;
 
 @end
 

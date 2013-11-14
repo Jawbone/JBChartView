@@ -322,14 +322,6 @@ static UIColor *kJBLineSelectionViewBackgroundBottom = nil;
     {
         self.selectionView.alpha = _selectionViewVisible ? 1.0 : 0.0;
     }
-    
-    if (selectionViewVisible == NO)
-    {
-        if ([self.delegate respondsToSelector:@selector(didUnselectLineChartView:)])
-        {
-            [self.delegate didUnselectLineChartView:self];
-        }
-    }
 }
 
 - (void)setSelectionViewVisible:(BOOL)selectionViewVisible
@@ -387,6 +379,14 @@ static UIColor *kJBLineSelectionViewBackgroundBottom = nil;
     }
     
     [self setSelectionViewVisible:NO animated:YES];
+    
+    UITouch *touch = [touches anyObject];
+    CGPoint touchPoint = [touch locationInView:self];
+    NSInteger index = [self indexForPoint:touchPoint];
+    if ([self.delegate respondsToSelector:@selector(lineChartView:didUnselectChartAtIndex:)])
+    {
+        [self.delegate lineChartView:self didUnselectChartAtIndex:index];
+    }
 }
 
 @end
