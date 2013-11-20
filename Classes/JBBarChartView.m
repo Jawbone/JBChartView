@@ -443,8 +443,8 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 {
 	if (self == [JBBarSelectionView class])
 	{
-		kJBBarSelectionViewBackgroundTop = [UIColor colorWithWhite:1.0 alpha:0.75];;
-        kJBBarSelectionViewBackgroundBottom = [UIColor colorWithWhite:1.0 alpha:0.0];;
+		kJBBarSelectionViewBackgroundTop = [UIColor colorWithWhite:1.0 alpha:0.75];
+        kJBBarSelectionViewBackgroundBottom = [UIColor colorWithWhite:1.0 alpha:0.0];
 	}
 }
 
