@@ -48,6 +48,7 @@ static UIColor *kJBChartHeaderViewDefaultSeparatorColor = nil;
         _titleLabel.textColor = [UIColor whiteColor];
         _titleLabel.shadowColor = [UIColor blackColor];
         _titleLabel.shadowOffset = CGSizeMake(0, 1);
+        _titleLabel.backgroundColor = [UIColor clearColor];
         [self addSubview:_titleLabel];
         
         _subtitleLabel = [[UILabel alloc] init];
@@ -58,6 +59,7 @@ static UIColor *kJBChartHeaderViewDefaultSeparatorColor = nil;
         _subtitleLabel.textColor = [UIColor whiteColor];
         _subtitleLabel.shadowColor = [UIColor blackColor];
         _subtitleLabel.shadowOffset = CGSizeMake(0, 1);
+        _subtitleLabel.backgroundColor = [UIColor clearColor];
         [self addSubview:_subtitleLabel];
         
         _separatorView = [[UIView alloc] init];

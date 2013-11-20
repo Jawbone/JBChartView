@@ -18,8 +18,18 @@
     if (self)
     {
         self.navigationBar.translucent = NO;
-        [[UINavigationBar appearance] setBarTintColor:kJBColorNavigationTint];
-        [[UINavigationBar appearance] setTintColor:kJBColorNavigationBarTint];
+		if ([UINavigationBar respondsToSelector:@selector(appearance)])
+        {
+            if ([[UINavigationBar appearance] respondsToSelector:@selector(setBarTintColor:)])
+            {
+                [[UINavigationBar appearance] setBarTintColor:kJBColorNavigationTint];
+            }
+            
+            if ([[UINavigationBar appearance] respondsToSelector:@selector(setTintColor:)])
+            {
+                [[UINavigationBar appearance] setTintColor:kJBColorNavigationBarTint];                
+            }
+        }
     }
     return self;
 }

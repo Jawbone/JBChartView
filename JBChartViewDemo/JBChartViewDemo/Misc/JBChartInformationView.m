@@ -10,7 +10,7 @@
 
 // Numerics
 CGFloat const kJBChartValueViewPadding = 10.0f;
-CGFloat const kJBChartValueViewSeparatorSize = 0.5f;
+CGFloat const kJBChartValueViewSeparatorSize = 1.0f;
 CGFloat const kJBChartValueViewTitleHeight = 50.0f;
 CGFloat const kJBChartValueViewTitleWidth = 75.0f;
 
@@ -279,10 +279,26 @@ static UIColor *kJBChartInformationViewShadowColor = nil;
     CGFloat xOffset = kJBChartValueViewPadding;
     CGFloat width = ceil((self.bounds.size.width - (kJBChartValueViewPadding * 2)) * 0.5);
     
-    CGSize valueLabelSize = [self.valueLabel.text sizeWithAttributes:@{NSFontAttributeName:self.valueLabel.font}];
+    CGSize valueLabelSize;
+    if ([self.valueLabel.text respondsToSelector:@selector(sizeWithAttributes:)])
+    {
+        valueLabelSize = [self.valueLabel.text sizeWithAttributes:@{NSFontAttributeName:self.valueLabel.font}];
+    }
+    else
+    {
+        valueLabelSize = [self.valueLabel.text sizeWithFont:self.valueLabel.font];
+    }
     self.valueLabel.frame = CGRectMake(xOffset, ceil(self.bounds.size.height * 0.5) - ceil(valueLabelSize.height * 0.5), width, valueLabelSize.height);
-
-    CGSize unitLabelSize = [self.unitLabel.text sizeWithAttributes:@{NSFontAttributeName:self.unitLabel.font}];
+    
+    CGSize unitLabelSize;
+    if ([self.valueLabel.text respondsToSelector:@selector(sizeWithAttributes:)])
+    {
+        unitLabelSize = [self.unitLabel.text sizeWithAttributes:@{NSFontAttributeName:self.unitLabel.font}];
+    }
+    else
+    {
+        unitLabelSize = [self.unitLabel.text sizeWithFont:self.unitLabel.font];
+    }    
     self.unitLabel.frame = CGRectMake(CGRectGetMaxX(self.valueLabel.frame), ceil(self.bounds.size.height * 0.5) - ceil(unitLabelSize.height * 0.5) + kJBChartValueViewPadding + 3, width, unitLabelSize.height);
 }
 

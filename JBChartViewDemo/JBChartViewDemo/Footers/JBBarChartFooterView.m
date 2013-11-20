@@ -72,6 +72,7 @@ static UIColor *kJBBarChartFooterPolygonViewDefaultBackgroundColor = nil;
         _leftLabel.textAlignment = NSTextAlignmentLeft;
         _leftLabel.shadowColor = [UIColor blackColor];
         _leftLabel.shadowOffset = CGSizeMake(0, 1);
+        _leftLabel.backgroundColor = [UIColor clearColor];
         [self addSubview:_leftLabel];
         
         _rightLabel = [[UILabel alloc] init];
@@ -80,6 +81,7 @@ static UIColor *kJBBarChartFooterPolygonViewDefaultBackgroundColor = nil;
         _rightLabel.textAlignment = NSTextAlignmentRight;
         _rightLabel.shadowColor = [UIColor blackColor];
         _rightLabel.shadowOffset = CGSizeMake(0, 1);
+        _rightLabel.backgroundColor = [UIColor clearColor];
         [self addSubview:_rightLabel];
     }
     return self;

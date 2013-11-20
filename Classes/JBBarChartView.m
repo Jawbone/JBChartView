@@ -62,7 +62,6 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     {
         self.clipsToBounds = YES;
         _showsSelection = YES;
-        _barPadding = 0.0f;
         _cachedMaxHeight = kJBBarChartViewUndefinedMaxHeight;
     }
     return self;
@@ -249,7 +248,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
             [UIView animateWithDuration:kJBBarChartViewAnimationDuration delay:(kJBBarChartViewAnimationDuration * 0.5) * index options:UIViewAnimationOptionBeginFromCurrentState animations:^{
                 barView.frame = CGRectMake(barView.frame.origin.x, popOffset - barView.frame.size.height, barView.frame.size.width, barView.frame.size.height);
             } completion:^(BOOL finished) {
-                [UIView animateKeyframesWithDuration:kJBBarChartViewAnimationDuration delay:0.0 options:UIViewKeyframeAnimationOptionBeginFromCurrentState animations:^{
+                [UIView animateWithDuration:kJBBarChartViewAnimationDuration delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
                     if (state == JBChartViewStateExpanded)
                     {
                         barView.frame = CGRectMake(barView.frame.origin.x, popOffset - barView.frame.size.height + kJBBarChartViewPopOffset, barView.frame.size.width, barView.frame.size.height);

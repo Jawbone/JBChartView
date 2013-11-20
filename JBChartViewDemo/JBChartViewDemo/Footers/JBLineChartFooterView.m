@@ -40,6 +40,7 @@ static UIColor *kJBLineChartFooterViewDefaultSeparatorColor = nil;
     if (self)
     {
         self.clipsToBounds = NO;
+        self.backgroundColor = [UIColor clearColor];
         
         _footerSeparatorColor = kJBLineChartFooterViewDefaultSeparatorColor;
         
@@ -52,6 +53,7 @@ static UIColor *kJBLineChartFooterViewDefaultSeparatorColor = nil;
         _leftLabel.font = kJBFontFooterSubLabel;
         _leftLabel.textAlignment = NSTextAlignmentLeft;
         _leftLabel.textColor = [UIColor whiteColor];
+        _leftLabel.backgroundColor = [UIColor clearColor];
         [self addSubview:_leftLabel];
         
         _rightLabel = [[UILabel alloc] init];
@@ -59,6 +61,7 @@ static UIColor *kJBLineChartFooterViewDefaultSeparatorColor = nil;
         _rightLabel.font = kJBFontFooterSubLabel;
         _rightLabel.textAlignment = NSTextAlignmentRight;
         _rightLabel.textColor = [UIColor whiteColor];
+        _rightLabel.backgroundColor = [UIColor clearColor];
         [self addSubview:_rightLabel];
     }
     return self;
