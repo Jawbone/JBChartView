@@ -508,6 +508,8 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
         return;
     }
     
+    dispatch_block_t callbackCopy = [callback copy];
+    
     _state = state;
     self.aniamted = animated;
     [self setNeedsDisplay];
@@ -518,9 +520,9 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
     }
     else
     {
-        if (callback)
+        if (callbackCopy)
         {
-            callback();
+            callbackCopy();
         }
     }
 }
@@ -534,9 +536,11 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
 
 - (void)fireCallback:(void (^)())callback
 {
-    if (callback != nil)
+    dispatch_block_t callbackCopy = [callback copy];
+
+    if (callbackCopy != nil)
     {
-        callback();
+        callbackCopy();
     }
 }
 

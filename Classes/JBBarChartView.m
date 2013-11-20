@@ -238,6 +238,8 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 {
     [super setState:state animated:animated callback:callback];
     
+    dispatch_block_t callbackCopy = [callback copy];
+    
     if (animated)
     {
         CGFloat popOffset = self.bounds.size.height - self.footerView.frame.size.height;
@@ -260,9 +262,9 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
                 } completion:^(BOOL finished) {
                     if (index == [self.barViews count] - 1)
                     {
-                        if (callback)
+                        if (callbackCopy)
                         {
-                            callback();
+                            callbackCopy();
                         }
                     }
                 }];
@@ -283,9 +285,9 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
                 barView.frame = CGRectMake(barView.frame.origin.x, self.bounds.size.height, barView.frame.size.width, barView.frame.size.height);
             }
         }
-        if (callback)
+        if (callbackCopy)
         {
-            callback();
+            callbackCopy();
         }
     }
 }
