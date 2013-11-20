@@ -102,31 +102,4 @@
     [self setState:state animated:NO];
 }
 
-#pragma mark - Helpers
-
-+ (UIColor *)colorFromColor:(UIColor *)color withAlpha:(CGFloat)newAlpha
-{
-    CGFloat red = 0.0, green = 0.0, blue = 0.0, white = 0.0, alpha = 0.0;
-    
-    if(CGColorGetNumberOfComponents(color.CGColor) == 2)
-    {
-        [color getWhite:&white alpha:&alpha];
-        return [UIColor colorWithWhite:white alpha:newAlpha];
-    }
-    else if ([color respondsToSelector:@selector(getRed:green:blue:alpha:)])
-    {
-        [color getRed:&red green:&green blue:&blue alpha:&alpha];
-    }
-    else
-    {
-        const CGFloat *components = CGColorGetComponents(color.CGColor);
-        red = components[0];
-        green = components[1];
-        blue = components[2];
-        alpha = components[3];
-    }
-    
-    return [UIColor colorWithRed:red green:green blue:blue alpha:newAlpha];
-}
-
 @end

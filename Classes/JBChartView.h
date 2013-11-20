@@ -65,14 +65,4 @@ typedef NS_ENUM(NSInteger, JBChartViewState){
  */
 - (void)setState:(JBChartViewState)state animated:(BOOL)animated;
 
-/**
- *  Static helper function available to (sub)classes for drawing purposes.
- *
- *  @param color Base UIColor for alpha modifications
- *  @param alpha New alpha applied to the supplied base color
- *
- *  @return UIColor instance of the base color with the newly applied alpha
- */
-+ (UIColor *)colorFromColor:(UIColor *)color withAlpha:(CGFloat)alpha;
-
 @end

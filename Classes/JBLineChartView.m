@@ -616,7 +616,7 @@ static UIColor *kJBLineSelectionViewBackgroundBottom = nil;
     NSArray *colors = nil;
     if (self.selectionBackgroundColor != nil)
     {
-        colors = @[(__bridge id)[JBChartView colorFromColor:self.selectionBackgroundColor withAlpha:0.75].CGColor, (__bridge id)[JBChartView colorFromColor:self.selectionBackgroundColor withAlpha:0.0].CGColor];
+        colors = @[(__bridge id)[self.selectionBackgroundColor colorWithAlphaComponent:0.75].CGColor, (__bridge id)[self.selectionBackgroundColor colorWithAlphaComponent:0.0].CGColor];
     }
     else
     {
