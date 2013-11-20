@@ -54,6 +54,7 @@ static UIColor *kJBLineSelectionViewBackgroundBottom = nil;
 
 @property (nonatomic, assign) id<JBLineChartLineViewDelegate> delegate;
 @property (nonatomic, assign) JBLineChartLineViewState state;
+@property (nonatomic, strong) CAShapeLayer *shapeLayer;
 @property (nonatomic, assign) BOOL aniamted;
 
 // Data
@@ -447,33 +448,28 @@ static UIColor *kJBLineSelectionViewBackgroundBottom = nil;
     
     NSAssert([self.delegate respondsToSelector:@selector(lineColorForLineChartLineView:)], @"JBLineChartLineView // delegate must implement - (UIColor *)lineColorForLineChartLineView:(JBLineChartLineView*)lineChartLineView");
 
-    CAShapeLayer *shapeLayer = nil;
-    if ([[self.layer sublayers] count] > 0)
+    if (self.shapeLayer == nil)
     {
-        shapeLayer = [[self.layer sublayers] firstObject];
-    }
-    else
-    {
-        shapeLayer = [CAShapeLayer layer];
+        self.shapeLayer = [CAShapeLayer layer];
     }
     
     if (self.aniamted)
     {
-        shapeLayer.zPosition = 0.0f;
-        shapeLayer.strokeColor = [self.delegate lineColorForLineChartLineView:self].CGColor;
-        shapeLayer.lineWidth = kJBLineChartLineViewStrokeWidth;
-        shapeLayer.lineCap = kCALineCapRound;
-        shapeLayer.lineJoin = kCALineJoinRound;
-        shapeLayer.frame = self.bounds;
-        shapeLayer.fillColor = [UIColor clearColor].CGColor;
+        self.shapeLayer.zPosition = 0.0f;
+        self.shapeLayer.strokeColor = [self.delegate lineColorForLineChartLineView:self].CGColor;
+        self.shapeLayer.lineWidth = kJBLineChartLineViewStrokeWidth;
+        self.shapeLayer.lineCap = kCALineCapRound;
+        self.shapeLayer.lineJoin = kCALineJoinRound;
+        self.shapeLayer.frame = self.bounds;
+        self.shapeLayer.fillColor = [UIColor clearColor].CGColor;
         
         if (self.state == JBLineChartLineViewStateCollapsed)
         {
-            shapeLayer.path = dynamicPath.CGPath;
+            self.shapeLayer.path = dynamicPath.CGPath;
         }
         else
         {
-            shapeLayer.path = flatPath.CGPath;
+            self.shapeLayer.path = flatPath.CGPath;
         }
         
         CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:@"path"];
@@ -484,8 +480,8 @@ static UIColor *kJBLineSelectionViewBackgroundBottom = nil;
         anim.fillMode = kCAFillModeForwards;
         anim.autoreverses = NO;
         anim.repeatCount = 0;
-        [shapeLayer addAnimation:anim forKey:@"path"];
-        [self.layer addSublayer:shapeLayer];
+        [self.shapeLayer addAnimation:anim forKey:@"path"];
+        [self.layer addSublayer:self.shapeLayer];
     }
     else
     {
