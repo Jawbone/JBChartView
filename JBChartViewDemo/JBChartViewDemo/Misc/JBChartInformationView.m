@@ -37,6 +37,11 @@ static UIColor *kJBChartInformationViewShadowColor = nil;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UIView *separatorView;
 
+// Position
+- (CGRect)valueViewRect;
+- (CGRect)titleViewRectForHidden:(BOOL)hidden;
+- (CGRect)separatorViewRectForHidden:(BOOL)hidden;
+
 @end
 
 @implementation JBChartInformationView
@@ -60,20 +65,8 @@ static UIColor *kJBChartInformationViewShadowColor = nil;
     {
         self.clipsToBounds = YES;
         _layout = layout;
-        
-        if (_layout == JBChartInformationViewLayoutHorizontal)
-        {
-            _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(kJBChartValueViewPadding, kJBChartValueViewPadding, self.bounds.size.width - (kJBChartValueViewPadding * 2), kJBChartValueViewTitleHeight)];
-            _separatorView = [[UIView alloc] initWithFrame:CGRectMake(kJBChartValueViewPadding, CGRectGetMaxY(_titleLabel.frame) - kJBChartValueViewPadding, self.bounds.size.width - (kJBChartValueViewPadding * 2), kJBChartValueViewSeparatorSize)];
-            _valueView = [[JBChartValueView alloc] initWithFrame:CGRectMake(self.bounds.origin.x, self.bounds.origin.y + kJBChartValueViewTitleHeight, self.bounds.size.width, self.bounds.size.height - kJBChartValueViewTitleHeight)];
-        }
-        else
-        {
-            _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(kJBChartValueViewPadding, kJBChartValueViewPadding, kJBChartValueViewTitleWidth, self.bounds.size.height - (kJBChartValueViewPadding * 2))];
-            _separatorView = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(_titleLabel.frame) + kJBChartValueViewPadding, (kJBChartValueViewPadding * 3), kJBChartValueViewSeparatorSize, self.bounds.size.height - (kJBChartValueViewPadding * 6))];
-            _valueView = [[JBChartValueView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(_separatorView.frame) + kJBChartValueViewPadding, (kJBChartValueViewPadding * 3), self.bounds.size.width - (CGRectGetMaxX(_separatorView.frame) + (kJBChartValueViewPadding * 2)), self.bounds.size.height - (kJBChartValueViewPadding * 2))];
-        }
-        
+
+        _titleLabel = [[UILabel alloc] init];
         _titleLabel.font = kJBFontInformationTitle;
         _titleLabel.numberOfLines = 1;
         _titleLabel.adjustsFontSizeToFitWidth = YES;
@@ -82,10 +75,13 @@ static UIColor *kJBChartInformationViewShadowColor = nil;
         _titleLabel.shadowColor = kJBChartViewShadowColor;
         _titleLabel.shadowOffset = CGSizeMake(0, 1);
         _titleLabel.textAlignment = _layout == JBChartInformationViewLayoutHorizontal ? NSTextAlignmentLeft : NSTextAlignmentCenter;
-        _separatorView.backgroundColor = kJBChartViewSeparatorColor;
-        
         [self addSubview:_titleLabel];
+
+        _separatorView = [[UIView alloc] init];
+        _separatorView.backgroundColor = kJBChartViewSeparatorColor;
         [self addSubview:_separatorView];
+
+        _valueView = [[JBChartValueView alloc] initWithFrame:[self valueViewRect]];
         [self addSubview:_valueView];
         
         [self setHidden:YES animated:NO];
@@ -96,6 +92,49 @@ static UIColor *kJBChartInformationViewShadowColor = nil;
 - (id)initWithFrame:(CGRect)frame
 {
     return [self initWithFrame:frame layout:JBChartInformationViewLayoutHorizontal];
+}
+
+#pragma mark - Position
+
+- (CGRect)valueViewRect
+{
+    CGRect valueRect = CGRectZero;
+    valueRect.origin.x = (self.layout == JBChartInformationViewLayoutHorizontal) ? kJBChartValueViewPadding : (kJBChartValueViewPadding * 3) + kJBChartValueViewTitleWidth;
+    valueRect.origin.y = (self.layout == JBChartInformationViewLayoutHorizontal) ? kJBChartValueViewPadding + kJBChartValueViewTitleHeight : kJBChartValueViewPadding;
+    valueRect.size.width = (self.layout == JBChartInformationViewLayoutHorizontal) ? self.bounds.size.width - (kJBChartValueViewPadding * 2) : self.bounds.size.width - valueRect.origin.x - kJBChartValueViewPadding;
+    valueRect.size.height = (self.layout == JBChartInformationViewLayoutHorizontal) ? self.bounds.size.height - valueRect.origin.y - kJBChartValueViewPadding : self.bounds.size.height - (kJBChartValueViewPadding * 2);
+    return valueRect;
+}
+
+- (CGRect)titleViewRectForHidden:(BOOL)hidden
+{
+    CGRect titleRect = CGRectZero;
+    titleRect.origin.x = kJBChartValueViewPadding;
+    titleRect.origin.y = hidden ? -kJBChartValueViewTitleHeight : kJBChartValueViewPadding;
+    titleRect.size.width = (self.layout == JBChartInformationViewLayoutHorizontal) ? self.bounds.size.width - (kJBChartValueViewPadding * 2) : kJBChartValueViewTitleWidth;
+    titleRect.size.height = (self.layout == JBChartInformationViewLayoutHorizontal) ? kJBChartValueViewTitleHeight : self.bounds.size.height - (kJBChartValueViewPadding * 2);
+    return titleRect;
+}
+
+- (CGRect)separatorViewRectForHidden:(BOOL)hidden
+{
+    CGRect separatorRect = CGRectZero;
+    separatorRect.origin.x = (self.layout == JBChartInformationViewLayoutHorizontal) ? kJBChartValueViewPadding : (kJBChartValueViewPadding * 2) + kJBChartValueViewTitleWidth;
+    separatorRect.origin.y = (self.layout == JBChartInformationViewLayoutHorizontal) ? kJBChartValueViewTitleHeight : kJBChartValueViewPadding;
+    separatorRect.size.width = (self.layout == JBChartInformationViewLayoutHorizontal) ? self.bounds.size.width - (kJBChartValueViewPadding * 2) : kJBChartValueViewSeparatorSize;
+    separatorRect.size.height = (self.layout == JBChartInformationViewLayoutHorizontal) ? kJBChartValueViewSeparatorSize : self.bounds.size.height - (kJBChartValueViewPadding * 2);
+    if (hidden)
+    {
+        if (self.layout == JBChartInformationViewLayoutHorizontal)
+        {
+            separatorRect.origin.x -= self.bounds.size.width;
+        }
+        else
+        {
+            separatorRect.origin.y = self.bounds.size.height;
+        }
+    }
+    return separatorRect;
 }
 
 #pragma mark - Setters
@@ -152,29 +191,16 @@ static UIColor *kJBChartInformationViewShadowColor = nil;
                 self.valueView.valueLabel.alpha = 0.0;
                 self.valueView.unitLabel.alpha = 0.0;
             } completion:^(BOOL finished) {
-                if (_layout == JBChartInformationViewLayoutHorizontal)
-                {
-                    self.separatorView.frame = CGRectMake(-self.bounds.size.width, self.separatorView.frame.origin.y, self.separatorView.frame.size.width, self.separatorView.frame.size.height);
-                }
-                else
-                {
-                    self.separatorView.frame = CGRectMake(self.separatorView.frame.origin.x, self.bounds.size.height, self.separatorView.frame.size.width, self.separatorView.frame.size.height);
-                }
-                self.titleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x, -kJBChartValueViewPadding, self.titleLabel.frame.size.width, self.titleLabel.frame.size.height);
+                self.titleLabel.frame = [self titleViewRectForHidden:YES];
+                self.separatorView.frame = [self separatorViewRectForHidden:YES];
             }];
         }
         else
         {
             [UIView animateWithDuration:kJBNumericDefaultAnimationDuration animations:^{
+                self.titleLabel.frame = [self titleViewRectForHidden:NO];
                 self.titleLabel.alpha = hidden ? 0.0 : 1.0;
-                if (_layout == JBChartInformationViewLayoutHorizontal)
-                {
-                    self.separatorView.frame = CGRectMake(kJBChartValueViewPadding, self.separatorView.frame.origin.y, self.separatorView.frame.size.width, self.separatorView.frame.size.height);
-                }
-                else
-                {
-                    self.separatorView.frame = CGRectMake(self.separatorView.frame.origin.x, (kJBChartValueViewPadding * 3), self.separatorView.frame.size.width, self.separatorView.frame.size.height);
-                }
+                self.separatorView.frame = [self separatorViewRectForHidden:NO];
                 self.separatorView.alpha = hidden ? 0.0 : 1.0;
             } completion:^(BOOL finished) {
                 [UIView animateWithDuration:kJBNumericDefaultAnimationDuration animations:^{
@@ -182,29 +208,14 @@ static UIColor *kJBChartInformationViewShadowColor = nil;
                     self.valueView.unitLabel.alpha = hidden ? 0.0 : 1.0;
                 }];
             }];
-            
-            CGFloat titleYOffset = (_layout == JBChartInformationViewLayoutHorizontal) ? kJBChartValueViewPadding : (kJBChartValueViewPadding * 3);
-            [UIView animateWithDuration:kJBNumericDefaultAnimationDuration delay:0.05 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
-                self.titleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x, hidden ? -kJBChartValueViewPadding : titleYOffset, self.titleLabel.frame.size.width, self.titleLabel.frame.size.height);
-            } completion:nil];
         }
     }
     else
     {
-        if (_layout == JBChartInformationViewLayoutHorizontal)
-        {
-            self.separatorView.frame = CGRectMake(hidden ? -self.bounds.size.width : kJBChartValueViewPadding, self.separatorView.frame.origin.y, self.separatorView.frame.size.width, self.separatorView.frame.size.height);
-        }
-        else
-        {
-            self.separatorView.frame = CGRectMake(self.separatorView.frame.origin.x, hidden ? self.bounds.size.height : (kJBChartValueViewPadding * 3), self.separatorView.frame.size.width, self.separatorView.frame.size.height);
-        }
-        self.separatorView.alpha = hidden ? 0.0 : 1.0;
-        
-        CGFloat titleYOffset = (_layout == JBChartInformationViewLayoutHorizontal) ? kJBChartValueViewPadding : (kJBChartValueViewPadding * 3);
-        self.titleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x, hidden ? -kJBChartValueViewPadding : titleYOffset, self.titleLabel.frame.size.width, self.titleLabel.frame.size.height);
+        self.titleLabel.frame = [self titleViewRectForHidden:hidden];
         self.titleLabel.alpha = hidden ? 0.0 : 1.0;
-        
+        self.separatorView.frame = [self separatorViewRectForHidden:hidden];
+        self.separatorView.alpha = hidden ? 0.0 : 1.0;
         self.valueView.valueLabel.alpha = hidden ? 0.0 : 1.0;
         self.valueView.unitLabel.alpha = hidden ? 0.0 : 1.0;
     }
