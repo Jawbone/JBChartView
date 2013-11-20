@@ -346,7 +346,7 @@ static UIColor *kJBLineSelectionViewBackgroundBottom = nil;
         [self.delegate lineChartView:self didSelectChartAtIndex:[self indexForPoint:touchPoint]];
     }
     
-    CGFloat xOffset = MIN(self.bounds.size.width - self.selectionView.frame.size.width, MAX(0, touchPoint.x - (ceil(self.selectionView.frame.size.width * 0.5))));
+    CGFloat xOffset = fmin(self.bounds.size.width - self.selectionView.frame.size.width, fmax(0, touchPoint.x - (ceil(self.selectionView.frame.size.width * 0.5))));
     self.selectionView.frame = CGRectMake(xOffset, self.selectionView.frame.origin.y, self.selectionView.frame.size.width, self.selectionView.frame.size.height);
     [self setSelectionViewVisible:YES animated:YES];
 }
@@ -366,7 +366,7 @@ static UIColor *kJBLineSelectionViewBackgroundBottom = nil;
         [self.delegate lineChartView:self didSelectChartAtIndex:[self indexForPoint:touchPoint]];
     }
     
-    CGFloat xOffset = MIN(self.bounds.size.width - self.selectionView.frame.size.width, MAX(0, touchPoint.x - (ceil(self.selectionView.frame.size.width * 0.5))));
+    CGFloat xOffset = fmin(self.bounds.size.width - self.selectionView.frame.size.width, fmax(0, touchPoint.x - (ceil(self.selectionView.frame.size.width * 0.5))));
     self.selectionView.frame = CGRectMake(xOffset, self.selectionView.frame.origin.y, self.selectionView.frame.size.width, self.selectionView.frame.size.height);
     [self setSelectionViewVisible:YES animated:YES];
 }
@@ -433,12 +433,12 @@ static UIColor *kJBLineSelectionViewBackgroundBottom = nil;
     {
         if (index == 0)
         {
-            [dynamicPath moveToPoint:CGPointMake(lineChartPoint.position.x, MIN(self.bounds.size.height - kJBLineChartLineViewEdgePadding, MAX(kJBLineChartLineViewEdgePadding, lineChartPoint.position.y)))];
+            [dynamicPath moveToPoint:CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - kJBLineChartLineViewEdgePadding, fmax(kJBLineChartLineViewEdgePadding, lineChartPoint.position.y)))];
             [flatPath moveToPoint:CGPointMake(lineChartPoint.position.x, ceil(self.bounds.size.height * 0.5))];
         }
         else
         {
-            [dynamicPath addLineToPoint:CGPointMake(lineChartPoint.position.x, MIN(self.bounds.size.height - kJBLineChartLineViewEdgePadding, MAX(kJBLineChartLineViewEdgePadding, lineChartPoint.position.y)))];
+            [dynamicPath addLineToPoint:CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - kJBLineChartLineViewEdgePadding, fmax(kJBLineChartLineViewEdgePadding, lineChartPoint.position.y)))];
             [flatPath addLineToPoint:CGPointMake(lineChartPoint.position.x, ceil(self.bounds.size.height * 0.5))];
         }
         
