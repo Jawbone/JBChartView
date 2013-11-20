@@ -18,7 +18,8 @@
 
 /**
  *  If showsSelection is YES, a vertical highlight will overlayed on a the line graph during touch events.
- *  By default, showsSelection is YES.
+ *
+ *  Default: YES
  */
 @property (nonatomic, assign) BOOL showsSelection;
 
@@ -78,6 +79,8 @@
 
 /**
  *  The color of the line within the chart.
+ * 
+ *  Default: black color
  *
  *  @param lineChartView The origin chart
  *
@@ -88,6 +91,8 @@
 /**
  *  The selection color to be overlayed on the chart during touch events.
  *  The color is automically faded to transparent (vertically).
+ *
+ *  Default: white color (faded to transparent)
  *
  *  @param lineChartView The origin chart
  *

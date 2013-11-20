@@ -19,7 +19,8 @@
 
 /**
  *  If showsSelection is YES, a vertical highlight will overlayed on a bar during touch events.
- *  By default, showsSelection is YES.
+ *  
+ *  Default: YES
  */
 @property (nonatomic, assign) BOOL showsSelection;
 
@@ -78,8 +79,9 @@
 @optional
 
 /**
- *  Horizontal padding between bars. By default, the chart will use a 'best-guess' algorithm 
- *  based on the the total number of bars and width of the chart. 
+ *  Horizontal padding between bars. 
+ *
+ *  Default: 'best-guess' algorithm based on the the total number of bars and width of the chart.
  *
  *  @param barChartView The origin chart
  *
@@ -89,6 +91,8 @@
 
 /**
  *  The color of all bars within the chart.
+ *
+ *  Default: black color
  *
  *  @param barChartView The origin chart
  *  @param index        The 0-based index of a given bar (left to right, x-axis)
@@ -100,6 +104,8 @@
 /**
  *  The selection color to be overlayed on a bar during touch events. 
  *  The color is automically faded to transparent (vertically).
+ *
+ *  Default: white color (faded to transparent)
  *
  *  @param barChartView The origin chart
  *
