@@ -24,7 +24,6 @@
     if (self)
     {
         self.clipsToBounds = YES;
-        _headerPadding = 0;
     }
     return self;
 }
