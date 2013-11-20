@@ -66,3 +66,19 @@ typedef NS_ENUM(NSInteger, JBChartViewState){
 - (void)setState:(JBChartViewState)state animated:(BOOL)animated;
 
 @end
+
+/**
+ * A simple UIView subclass that fades a base color from current alpha to 0.0 (vertically).
+ * Used as a selection ivew in JBChartView subclasses.
+ */
+@interface JBChartSelectionView : UIView
+
+/**
+ * Base selection view color. This color will be faded to transparent vertically
+ *
+ * Default: white color
+ *
+ */
+@property (nonatomic, strong) UIColor *bgColor;
+
+@end

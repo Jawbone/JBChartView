@@ -32,16 +32,6 @@ CGFloat const kJBLineChartViewUndefinedMaxHeight = -1.0f;
 // Colors (JBLineChartView)
 static UIColor *kJBLineChartViewDefaultLineColor = nil;
 
-// Color (JBLineSelectionView)
-static UIColor *kJBLineSelectionViewBackgroundTop = nil;
-static UIColor *kJBLineSelectionViewBackgroundBottom = nil;
-
-@interface JBLineSelectionView : UIView
-
-@property (nonatomic, strong) UIColor *selectionBackgroundColor;
-
-@end
-
 @interface JBLineChartPoint : NSObject
 
 @property (nonatomic, assign) CGPoint position;
@@ -80,7 +70,7 @@ static UIColor *kJBLineSelectionViewBackgroundBottom = nil;
 
 @property (nonatomic, strong) NSArray *chartData;
 @property (nonatomic, strong) JBLineChartLineView *lineView;
-@property (nonatomic, strong) JBLineSelectionView *selectionView;
+@property (nonatomic, strong) JBChartSelectionView *selectionView;
 @property (nonatomic, assign) CGFloat cachedMaxHeight;
 @property (nonatomic, assign) BOOL selectionViewVisible;
 
@@ -190,11 +180,11 @@ static UIColor *kJBLineSelectionViewBackgroundBottom = nil;
             self.selectionView = nil;
         }
         
-        self.selectionView = [[JBLineSelectionView alloc] initWithFrame:CGRectMake(0, 0, kJBLineSelectionViewWidth, self.bounds.size.height - self.footerView.frame.size.height)];
+        self.selectionView = [[JBChartSelectionView alloc] initWithFrame:CGRectMake(0, 0, kJBLineSelectionViewWidth, self.bounds.size.height - self.footerView.frame.size.height)];
         self.selectionView.alpha = 0.0;
         if ([self.dataSource respondsToSelector:@selector(selectionColorForLineChartView:)])
         {
-            self.selectionView.selectionBackgroundColor = [self.dataSource selectionColorForLineChartView:self];
+            self.selectionView.bgColor = [self.dataSource selectionColorForLineChartView:self];
         }
         [self insertSubview:self.selectionView belowSubview:self.footerView];
     };
@@ -571,77 +561,6 @@ static UIColor *kJBLineSelectionViewBackgroundBottom = nil;
 - (NSComparisonResult)compare:(JBLineChartPoint *)otherObject
 {
     return self.position.x > otherObject.position.x;
-}
-
-@end
-
-@implementation JBLineSelectionView
-
-#pragma mark - Alloc/Init
-
-+ (void)initialize
-{
-	if (self == [JBLineSelectionView class])
-	{
-		kJBLineSelectionViewBackgroundTop = [UIColor colorWithWhite:1.0 alpha:0.75];;
-        kJBLineSelectionViewBackgroundBottom = [UIColor colorWithWhite:1.0 alpha:0.0];;
-	}
-}
-
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self)
-    {
-        self.backgroundColor = [UIColor clearColor];
-    }
-    return self;
-}
-
-#pragma mark - Drawing
-
-- (void)drawRect:(CGRect)rect
-{
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    [[UIColor clearColor] set];
-    CGContextFillRect(context, rect);
-    
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    CGFloat locations[] = { 0.0, 1.0 };
-    
-    NSArray *colors = nil;
-    if (self.selectionBackgroundColor != nil)
-    {
-        colors = @[(__bridge id)[self.selectionBackgroundColor colorWithAlphaComponent:0.75].CGColor, (__bridge id)[self.selectionBackgroundColor colorWithAlphaComponent:0.0].CGColor];
-    }
-    else
-    {
-        colors = @[(__bridge id)kJBLineSelectionViewBackgroundTop.CGColor, (__bridge id)kJBLineSelectionViewBackgroundBottom.CGColor];
-    }
-    
-    CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef) colors, locations);
-    
-    CGPoint startPoint = CGPointMake(CGRectGetMidX(rect), CGRectGetMaxY(rect));
-    CGPoint endPoint = CGPointMake(CGRectGetMidX(rect), CGRectGetMinY(rect));
-    
-    CGContextSaveGState(context);
-    {
-        CGContextAddRect(context, rect);
-        CGContextClip(context);
-        CGContextDrawLinearGradient(context, gradient, startPoint, endPoint, 0);
-    }
-    CGContextRestoreGState(context);
-    
-    CGGradientRelease(gradient);
-    CGColorSpaceRelease(colorSpace);
-}
-
-#pragma mark - Setters
-
-- (void)setSelectionBackgroundColor:(UIColor *)selectionBackgroundColor
-{
-    _selectionBackgroundColor = selectionBackgroundColor;
-    [self setNeedsDisplay];
 }
 
 @end

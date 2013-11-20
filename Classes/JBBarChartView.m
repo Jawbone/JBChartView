@@ -15,18 +15,8 @@ CGFloat const kJBBarChartViewAnimationDuration = 0.05f;
 CGFloat const kJBBarChartViewPopOffset = 10.0f; // used to offset bars for 'pop' animations
 NSInteger const kJBBarChartViewUndefinedBarIndex = -1;
 
-// Color (JBBarSelectionView)
-static UIColor *kJBBarSelectionViewBackgroundTop = nil;
-static UIColor *kJBBarSelectionViewBackgroundBottom = nil;
-
 // Colors (JBChartView)
 static UIColor *kJBBarChartViewDefaultBarColor = nil;
-
-@interface JBBarSelectionView : UIView
-
-@property (nonatomic, strong) UIColor *selectionBackgroundColor;
-
-@end
 
 @interface JBBarChartView ()
 
@@ -34,7 +24,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 @property (nonatomic, strong) NSArray *barViews;
 @property (nonatomic, assign) CGFloat barPadding;
 @property (nonatomic, assign) CGFloat cachedMaxHeight;
-@property (nonatomic, strong) JBBarSelectionView *selectionView;
+@property (nonatomic, strong) JBChartSelectionView *selectionView;
 @property (nonatomic, assign) BOOL selectionViewVisible;
 
 // View quick accessors
@@ -175,11 +165,11 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
             self.selectionView = nil;
         }
         
-        self.selectionView = [[JBBarSelectionView alloc] initWithFrame:CGRectMake(0, 0, [self barWidth], self.bounds.size.height)];
+        self.selectionView = [[JBChartSelectionView alloc] initWithFrame:CGRectMake(0, 0, [self barWidth], self.bounds.size.height)];
         self.selectionView.alpha = 0.0;
         if ([self.dataSource respondsToSelector:@selector(selectionBarColorForBarChartView:)])
         {
-            self.selectionView.selectionBackgroundColor = [self.dataSource selectionBarColorForBarChartView:self];
+            self.selectionView.bgColor = [self.dataSource selectionBarColorForBarChartView:self];
         }
         [self insertSubview:self.selectionView belowSubview:self.footerView];
     };
@@ -431,77 +421,6 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     {
         [self.delegate barChartView:self didUnselectBarAtIndex:index];
     }
-}
-
-@end
-
-@implementation JBBarSelectionView
-
-#pragma mark - Alloc/Init
-
-+ (void)initialize
-{
-	if (self == [JBBarSelectionView class])
-	{
-		kJBBarSelectionViewBackgroundTop = [UIColor colorWithWhite:1.0 alpha:0.75];
-        kJBBarSelectionViewBackgroundBottom = [UIColor colorWithWhite:1.0 alpha:0.0];
-	}
-}
-
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self)
-    {
-        self.backgroundColor = [UIColor clearColor];
-    }
-    return self;
-}
-
-#pragma mark - Drawing
-
-- (void)drawRect:(CGRect)rect
-{
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    [[UIColor clearColor] set];
-    CGContextFillRect(context, rect);
-    
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    CGFloat locations[] = { 0.0, 1.0 };
-    
-    NSArray *colors = nil;
-    if (self.selectionBackgroundColor != nil)
-    {
-        colors = @[(__bridge id)[self.selectionBackgroundColor colorWithAlphaComponent:0.75].CGColor, (__bridge id)[self.selectionBackgroundColor colorWithAlphaComponent:0.0].CGColor];
-    }
-    else
-    {
-        colors = @[(__bridge id)kJBBarSelectionViewBackgroundTop.CGColor, (__bridge id)kJBBarSelectionViewBackgroundBottom.CGColor];
-    }
-    
-    CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef) colors, locations);
-    
-    CGPoint startPoint = CGPointMake(CGRectGetMidX(rect), CGRectGetMaxY(rect));
-    CGPoint endPoint = CGPointMake(CGRectGetMidX(rect), CGRectGetMinY(rect));
-    
-    CGContextSaveGState(context);
-    {
-        CGContextAddRect(context, rect);
-        CGContextClip(context);
-        CGContextDrawLinearGradient(context, gradient, startPoint, endPoint, 0);
-    }
-    CGContextRestoreGState(context);
-    
-    CGGradientRelease(gradient);
-    CGColorSpaceRelease(colorSpace);
-}
-
-#pragma mark - Setters
-
-- (void)setSelectionBackgroundColor:(UIColor *)selectionBackgroundColor
-{
-    _selectionBackgroundColor = selectionBackgroundColor;
-    [self setNeedsDisplay];
 }
 
 @end
