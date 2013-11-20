@@ -17,7 +17,6 @@
     self = [super initWithRootViewController:rootViewController];
     if (self)
     {
-        self.delegate = self;
         self.navigationBar.translucent = NO;
         [[UINavigationBar appearance] setBarTintColor:kJBColorNavigationTint];
         [[UINavigationBar appearance] setTintColor:kJBColorNavigationBarTint];

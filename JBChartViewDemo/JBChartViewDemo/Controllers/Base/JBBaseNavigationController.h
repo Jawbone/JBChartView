@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface JBBaseNavigationController : UINavigationController <UINavigationControllerDelegate>
+@interface JBBaseNavigationController : UINavigationController
 
 @end
