@@ -27,6 +27,8 @@
 
 @protocol JBBarChartViewDelegate <NSObject>
 
+@required
+
 /**
  *  Height for a bar at a given index (left to right). There is no ceiling on the the height; 
  *  the chart will automatically normalize all values between the overal min and max heights.
@@ -61,6 +63,8 @@
 @end
 
 @protocol JBBarChartViewDataSource <NSObject>
+
+@required
 
 /**
  *  The number of bars in a given bar chart is the number of vertical views shown along the x-axis.

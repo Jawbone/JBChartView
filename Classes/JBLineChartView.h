@@ -26,6 +26,8 @@
 
 @protocol JBLineChartViewDelegate <NSObject>
 
+@required
+
 /**
  *  Vertical position for line point at a given index (left to right). There is no ceiling on the the height;
  *  the chart will automatically normalize all values between the overal min and max heights.
@@ -60,6 +62,8 @@
 @end
 
 @protocol JBLineChartViewDataSource <NSObject>
+
+@required
 
 /**
  *  The number of points in a given line chart equates to the number of values along the x-axis.
