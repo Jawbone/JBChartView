@@ -1,0 +1,529 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		9B0725211829822A0052109B /* JBChartListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B0725201829822A0052109B /* JBChartListViewController.m */; };
+		9B2E530518218CF20079B9D2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B2E530418218CF20079B9D2 /* Foundation.framework */; };
+		9B2E530718218CF20079B9D2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B2E530618218CF20079B9D2 /* CoreGraphics.framework */; };
+		9B2E530918218CF20079B9D2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B2E530818218CF20079B9D2 /* UIKit.framework */; };
+		9B2E530F18218CF20079B9D2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9B2E530D18218CF20079B9D2 /* InfoPlist.strings */; };
+		9B2E531118218CF20079B9D2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B2E531018218CF20079B9D2 /* main.m */; };
+		9B2E532018218CF30079B9D2 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9B2E531F18218CF30079B9D2 /* Images.xcassets */; };
+		9B2E533F18218D310079B9D2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B2E533E18218D310079B9D2 /* AppDelegate.m */; };
+		9B603D3E182C6E79000A76D0 /* JBBaseNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B603D3D182C6E79000A76D0 /* JBBaseNavigationController.m */; };
+		9B603D47182C7002000A76D0 /* icon-jawbone-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 9B603D45182C7002000A76D0 /* icon-jawbone-logo.png */; };
+		9B603D48182C7002000A76D0 /* icon-jawbone-logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9B603D46182C7002000A76D0 /* icon-jawbone-logo@2x.png */; };
+		9B603D4B182C7117000A76D0 /* JBBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B603D4A182C7117000A76D0 /* JBBaseViewController.m */; };
+		9B603D4E182C7163000A76D0 /* JBBaseTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B603D4D182C7163000A76D0 /* JBBaseTableViewController.m */; };
+		9B698F01182D5F44003C135F /* JBLineChartFooterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B698F00182D5F44003C135F /* JBLineChartFooterView.m */; };
+		9B698F09182D720E003C135F /* icon-arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 9B698F07182D720E003C135F /* icon-arrow.png */; };
+		9B698F0A182D720E003C135F /* icon-arrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9B698F08182D720E003C135F /* icon-arrow@2x.png */; };
+		9B698F11182D7BCF003C135F /* JBChartTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B698F10182D7BCF003C135F /* JBChartTableCell.m */; };
+		9B698F16182D7DAE003C135F /* icon-bar-chart.png in Resources */ = {isa = PBXBuildFile; fileRef = 9B698F12182D7DAE003C135F /* icon-bar-chart.png */; };
+		9B698F17182D7DAE003C135F /* icon-bar-chart@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9B698F13182D7DAE003C135F /* icon-bar-chart@2x.png */; };
+		9B698F18182D7DAE003C135F /* icon-line-chart.png in Resources */ = {isa = PBXBuildFile; fileRef = 9B698F14182D7DAE003C135F /* icon-line-chart.png */; };
+		9B698F19182D7DAE003C135F /* icon-line-chart@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9B698F15182D7DAE003C135F /* icon-line-chart@2x.png */; };
+		9B6A68D31829AB9F006DB3BF /* JBChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B6A68D21829AB9F006DB3BF /* JBChartView.m */; };
+		9B6A68DB1829ADE1006DB3BF /* JBBarChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B6A68DA1829ADE1006DB3BF /* JBBarChartView.m */; };
+		9B6A68DE1829BE63006DB3BF /* JBBarChartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B6A68DD1829BE63006DB3BF /* JBBarChartViewController.m */; };
+		9B6A68E11829BED5006DB3BF /* JBLineChartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B6A68E01829BED5006DB3BF /* JBLineChartViewController.m */; };
+		9BE0B0AD182AD26400232023 /* JBLineChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BE0B0AC182AD26400232023 /* JBLineChartView.m */; };
+		9BE0B0C7182B161000232023 /* JBChartHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BE0B0C6182B161000232023 /* JBChartHeaderView.m */; };
+		9BE0B0CE182B162E00232023 /* JBBarChartFooterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BE0B0CD182B162E00232023 /* JBBarChartFooterView.m */; };
+		9BEBE9D2183167050046E4A8 /* JBChartInformationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BEBE9D1183167050046E4A8 /* JBChartInformationView.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		9B07251F1829822A0052109B /* JBChartListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBChartListViewController.h; sourceTree = "<group>"; };
+		9B0725201829822A0052109B /* JBChartListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBChartListViewController.m; sourceTree = "<group>"; };
+		9B2E530118218CF20079B9D2 /* JBChartViewDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JBChartViewDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9B2E530418218CF20079B9D2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		9B2E530618218CF20079B9D2 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		9B2E530818218CF20079B9D2 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		9B2E530C18218CF20079B9D2 /* JBChartViewDemo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "JBChartViewDemo-Info.plist"; sourceTree = "<group>"; };
+		9B2E530E18218CF20079B9D2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		9B2E531018218CF20079B9D2 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		9B2E531218218CF20079B9D2 /* JBChartViewDemo-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "JBChartViewDemo-Prefix.pch"; sourceTree = "<group>"; };
+		9B2E531F18218CF30079B9D2 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		9B2E532618218CF30079B9D2 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		9B2E533D18218D310079B9D2 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		9B2E533E18218D310079B9D2 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		9B3FBA54182C3B6900CF1C5F /* JBColorConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBColorConstants.h; sourceTree = "<group>"; };
+		9B3FBA57182C3BFB00CF1C5F /* JBFontConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBFontConstants.h; sourceTree = "<group>"; };
+		9B603D3C182C6E79000A76D0 /* JBBaseNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBBaseNavigationController.h; sourceTree = "<group>"; };
+		9B603D3D182C6E79000A76D0 /* JBBaseNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBBaseNavigationController.m; sourceTree = "<group>"; };
+		9B603D45182C7002000A76D0 /* icon-jawbone-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-jawbone-logo.png"; sourceTree = "<group>"; };
+		9B603D46182C7002000A76D0 /* icon-jawbone-logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-jawbone-logo@2x.png"; sourceTree = "<group>"; };
+		9B603D49182C7117000A76D0 /* JBBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBBaseViewController.h; sourceTree = "<group>"; };
+		9B603D4A182C7117000A76D0 /* JBBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBBaseViewController.m; sourceTree = "<group>"; };
+		9B603D4C182C7163000A76D0 /* JBBaseTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBBaseTableViewController.h; sourceTree = "<group>"; };
+		9B603D4D182C7163000A76D0 /* JBBaseTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBBaseTableViewController.m; sourceTree = "<group>"; };
+		9B698EFF182D5F44003C135F /* JBLineChartFooterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBLineChartFooterView.h; sourceTree = "<group>"; };
+		9B698F00182D5F44003C135F /* JBLineChartFooterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBLineChartFooterView.m; sourceTree = "<group>"; };
+		9B698F07182D720E003C135F /* icon-arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-arrow.png"; sourceTree = "<group>"; };
+		9B698F08182D720E003C135F /* icon-arrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-arrow@2x.png"; sourceTree = "<group>"; };
+		9B698F0F182D7BCF003C135F /* JBChartTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBChartTableCell.h; sourceTree = "<group>"; };
+		9B698F10182D7BCF003C135F /* JBChartTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBChartTableCell.m; sourceTree = "<group>"; };
+		9B698F12182D7DAE003C135F /* icon-bar-chart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-bar-chart.png"; sourceTree = "<group>"; };
+		9B698F13182D7DAE003C135F /* icon-bar-chart@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-bar-chart@2x.png"; sourceTree = "<group>"; };
+		9B698F14182D7DAE003C135F /* icon-line-chart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-line-chart.png"; sourceTree = "<group>"; };
+		9B698F15182D7DAE003C135F /* icon-line-chart@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-line-chart@2x.png"; sourceTree = "<group>"; };
+		9B6A68D11829AB9F006DB3BF /* JBChartView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JBChartView.h; path = ../../Classes/JBChartView.h; sourceTree = "<group>"; };
+		9B6A68D21829AB9F006DB3BF /* JBChartView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JBChartView.m; path = ../../Classes/JBChartView.m; sourceTree = "<group>"; };
+		9B6A68D91829ADE1006DB3BF /* JBBarChartView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JBBarChartView.h; path = ../../Classes/JBBarChartView.h; sourceTree = "<group>"; };
+		9B6A68DA1829ADE1006DB3BF /* JBBarChartView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JBBarChartView.m; path = ../../Classes/JBBarChartView.m; sourceTree = "<group>"; };
+		9B6A68DC1829BE63006DB3BF /* JBBarChartViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBBarChartViewController.h; sourceTree = "<group>"; };
+		9B6A68DD1829BE63006DB3BF /* JBBarChartViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBBarChartViewController.m; sourceTree = "<group>"; };
+		9B6A68DF1829BED5006DB3BF /* JBLineChartViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBLineChartViewController.h; sourceTree = "<group>"; };
+		9B6A68E01829BED5006DB3BF /* JBLineChartViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBLineChartViewController.m; sourceTree = "<group>"; };
+		9BE0B0AB182AD26400232023 /* JBLineChartView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JBLineChartView.h; path = ../../Classes/JBLineChartView.h; sourceTree = "<group>"; };
+		9BE0B0AC182AD26400232023 /* JBLineChartView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JBLineChartView.m; path = ../../Classes/JBLineChartView.m; sourceTree = "<group>"; };
+		9BE0B0C5182B161000232023 /* JBChartHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBChartHeaderView.h; sourceTree = "<group>"; };
+		9BE0B0C6182B161000232023 /* JBChartHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBChartHeaderView.m; sourceTree = "<group>"; };
+		9BE0B0CC182B162E00232023 /* JBBarChartFooterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBBarChartFooterView.h; sourceTree = "<group>"; };
+		9BE0B0CD182B162E00232023 /* JBBarChartFooterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBBarChartFooterView.m; sourceTree = "<group>"; };
+		9BE0B0D1182B16DD00232023 /* JBConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBConstants.h; sourceTree = "<group>"; };
+		9BE0B0D2182B16ED00232023 /* JBUIConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JBUIConstants.h; sourceTree = "<group>"; };
+		9BE0B0D3182B16F700232023 /* JBStringConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBStringConstants.h; sourceTree = "<group>"; };
+		9BEBE9D0183167050046E4A8 /* JBChartInformationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBChartInformationView.h; sourceTree = "<group>"; };
+		9BEBE9D1183167050046E4A8 /* JBChartInformationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBChartInformationView.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		9B2E52FE18218CF20079B9D2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9B2E530718218CF20079B9D2 /* CoreGraphics.framework in Frameworks */,
+				9B2E530918218CF20079B9D2 /* UIKit.framework in Frameworks */,
+				9B2E530518218CF20079B9D2 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		9B2E52F818218CF20079B9D2 = {
+			isa = PBXGroup;
+			children = (
+				9B2E530A18218CF20079B9D2 /* JBChartViewDemo */,
+				9B2E530318218CF20079B9D2 /* Frameworks */,
+				9B2E530218218CF20079B9D2 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		9B2E530218218CF20079B9D2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9B2E530118218CF20079B9D2 /* JBChartViewDemo.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		9B2E530318218CF20079B9D2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9B2E530418218CF20079B9D2 /* Foundation.framework */,
+				9B2E530618218CF20079B9D2 /* CoreGraphics.framework */,
+				9B2E530818218CF20079B9D2 /* UIKit.framework */,
+				9B2E532618218CF30079B9D2 /* XCTest.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		9B2E530A18218CF20079B9D2 /* JBChartViewDemo */ = {
+			isa = PBXGroup;
+			children = (
+				9BE0B0D0182B16DD00232023 /* Constants */,
+				9B2E534018218D560079B9D2 /* Controllers */,
+				9B2E533C18218D310079B9D2 /* Delegate */,
+				9B603D43182C7002000A76D0 /* Resources */,
+				9B2E530B18218CF20079B9D2 /* Supporting Files */,
+				9B6A68D01829AB85006DB3BF /* Views */,
+				9B2E531F18218CF30079B9D2 /* Images.xcassets */,
+			);
+			path = JBChartViewDemo;
+			sourceTree = "<group>";
+		};
+		9B2E530B18218CF20079B9D2 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				9B2E530C18218CF20079B9D2 /* JBChartViewDemo-Info.plist */,
+				9B2E530D18218CF20079B9D2 /* InfoPlist.strings */,
+				9B2E531018218CF20079B9D2 /* main.m */,
+				9B2E531218218CF20079B9D2 /* JBChartViewDemo-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		9B2E533C18218D310079B9D2 /* Delegate */ = {
+			isa = PBXGroup;
+			children = (
+				9B2E533D18218D310079B9D2 /* AppDelegate.h */,
+				9B2E533E18218D310079B9D2 /* AppDelegate.m */,
+			);
+			path = Delegate;
+			sourceTree = "<group>";
+		};
+		9B2E534018218D560079B9D2 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				9B603D3B182C6E79000A76D0 /* Base */,
+				9B6A68DC1829BE63006DB3BF /* JBBarChartViewController.h */,
+				9B6A68DD1829BE63006DB3BF /* JBBarChartViewController.m */,
+				9B07251F1829822A0052109B /* JBChartListViewController.h */,
+				9B0725201829822A0052109B /* JBChartListViewController.m */,
+				9B6A68DF1829BED5006DB3BF /* JBLineChartViewController.h */,
+				9B6A68E01829BED5006DB3BF /* JBLineChartViewController.m */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		9B603D3B182C6E79000A76D0 /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				9B603D3C182C6E79000A76D0 /* JBBaseNavigationController.h */,
+				9B603D3D182C6E79000A76D0 /* JBBaseNavigationController.m */,
+				9B603D4C182C7163000A76D0 /* JBBaseTableViewController.h */,
+				9B603D4D182C7163000A76D0 /* JBBaseTableViewController.m */,
+				9B603D49182C7117000A76D0 /* JBBaseViewController.h */,
+				9B603D4A182C7117000A76D0 /* JBBaseViewController.m */,
+			);
+			path = Base;
+			sourceTree = "<group>";
+		};
+		9B603D43182C7002000A76D0 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				9B603D44182C7002000A76D0 /* Images */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		9B603D44182C7002000A76D0 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				9B698F07182D720E003C135F /* icon-arrow.png */,
+				9B698F08182D720E003C135F /* icon-arrow@2x.png */,
+				9B698F12182D7DAE003C135F /* icon-bar-chart.png */,
+				9B698F13182D7DAE003C135F /* icon-bar-chart@2x.png */,
+				9B698F14182D7DAE003C135F /* icon-line-chart.png */,
+				9B698F15182D7DAE003C135F /* icon-line-chart@2x.png */,
+				9B603D45182C7002000A76D0 /* icon-jawbone-logo.png */,
+				9B603D46182C7002000A76D0 /* icon-jawbone-logo@2x.png */,
+			);
+			path = Images;
+			sourceTree = "<group>";
+		};
+		9B698F0E182D7BCF003C135F /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				9B698F0F182D7BCF003C135F /* JBChartTableCell.h */,
+				9B698F10182D7BCF003C135F /* JBChartTableCell.m */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		9B6A68D01829AB85006DB3BF /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				9B698F0E182D7BCF003C135F /* Cells */,
+				9BE0B0C0182B15DB00232023 /* Charts */,
+				9BE0B0CB182B162E00232023 /* Footers */,
+				9BE0B0C4182B161000232023 /* Headers */,
+				9BEBE9CF183167050046E4A8 /* Misc */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		9BE0B0C0182B15DB00232023 /* Charts */ = {
+			isa = PBXGroup;
+			children = (
+				9B6A68D91829ADE1006DB3BF /* JBBarChartView.h */,
+				9B6A68DA1829ADE1006DB3BF /* JBBarChartView.m */,
+				9B6A68D11829AB9F006DB3BF /* JBChartView.h */,
+				9B6A68D21829AB9F006DB3BF /* JBChartView.m */,
+				9BE0B0AB182AD26400232023 /* JBLineChartView.h */,
+				9BE0B0AC182AD26400232023 /* JBLineChartView.m */,
+			);
+			name = Charts;
+			sourceTree = "<group>";
+		};
+		9BE0B0C4182B161000232023 /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				9BE0B0C5182B161000232023 /* JBChartHeaderView.h */,
+				9BE0B0C6182B161000232023 /* JBChartHeaderView.m */,
+			);
+			path = Headers;
+			sourceTree = "<group>";
+		};
+		9BE0B0CB182B162E00232023 /* Footers */ = {
+			isa = PBXGroup;
+			children = (
+				9BE0B0CC182B162E00232023 /* JBBarChartFooterView.h */,
+				9BE0B0CD182B162E00232023 /* JBBarChartFooterView.m */,
+				9B698EFF182D5F44003C135F /* JBLineChartFooterView.h */,
+				9B698F00182D5F44003C135F /* JBLineChartFooterView.m */,
+			);
+			path = Footers;
+			sourceTree = "<group>";
+		};
+		9BE0B0D0182B16DD00232023 /* Constants */ = {
+			isa = PBXGroup;
+			children = (
+				9B3FBA54182C3B6900CF1C5F /* JBColorConstants.h */,
+				9BE0B0D1182B16DD00232023 /* JBConstants.h */,
+				9B3FBA57182C3BFB00CF1C5F /* JBFontConstants.h */,
+				9BE0B0D3182B16F700232023 /* JBStringConstants.h */,
+				9BE0B0D2182B16ED00232023 /* JBUIConstants.h */,
+			);
+			path = Constants;
+			sourceTree = "<group>";
+		};
+		9BEBE9CF183167050046E4A8 /* Misc */ = {
+			isa = PBXGroup;
+			children = (
+				9BEBE9D0183167050046E4A8 /* JBChartInformationView.h */,
+				9BEBE9D1183167050046E4A8 /* JBChartInformationView.m */,
+			);
+			path = Misc;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		9B2E530018218CF20079B9D2 /* JBChartViewDemo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9B2E533618218CF30079B9D2 /* Build configuration list for PBXNativeTarget "JBChartViewDemo" */;
+			buildPhases = (
+				9B2E52FD18218CF20079B9D2 /* Sources */,
+				9B2E52FE18218CF20079B9D2 /* Frameworks */,
+				9B2E52FF18218CF20079B9D2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = JBChartViewDemo;
+			productName = JBChartViewDemo;
+			productReference = 9B2E530118218CF20079B9D2 /* JBChartViewDemo.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9B2E52F918218CF20079B9D2 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0500;
+				ORGANIZATIONNAME = Jawbone;
+			};
+			buildConfigurationList = 9B2E52FC18218CF20079B9D2 /* Build configuration list for PBXProject "JBChartViewDemo" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 9B2E52F818218CF20079B9D2;
+			productRefGroup = 9B2E530218218CF20079B9D2 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				9B2E530018218CF20079B9D2 /* JBChartViewDemo */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		9B2E52FF18218CF20079B9D2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9B2E532018218CF30079B9D2 /* Images.xcassets in Resources */,
+				9B698F09182D720E003C135F /* icon-arrow.png in Resources */,
+				9B698F16182D7DAE003C135F /* icon-bar-chart.png in Resources */,
+				9B698F18182D7DAE003C135F /* icon-line-chart.png in Resources */,
+				9B2E530F18218CF20079B9D2 /* InfoPlist.strings in Resources */,
+				9B698F17182D7DAE003C135F /* icon-bar-chart@2x.png in Resources */,
+				9B603D47182C7002000A76D0 /* icon-jawbone-logo.png in Resources */,
+				9B603D48182C7002000A76D0 /* icon-jawbone-logo@2x.png in Resources */,
+				9B698F19182D7DAE003C135F /* icon-line-chart@2x.png in Resources */,
+				9B698F0A182D720E003C135F /* icon-arrow@2x.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		9B2E52FD18218CF20079B9D2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9BE0B0CE182B162E00232023 /* JBBarChartFooterView.m in Sources */,
+				9B6A68D31829AB9F006DB3BF /* JBChartView.m in Sources */,
+				9BEBE9D2183167050046E4A8 /* JBChartInformationView.m in Sources */,
+				9B603D3E182C6E79000A76D0 /* JBBaseNavigationController.m in Sources */,
+				9B698F11182D7BCF003C135F /* JBChartTableCell.m in Sources */,
+				9B6A68DB1829ADE1006DB3BF /* JBBarChartView.m in Sources */,
+				9B2E531118218CF20079B9D2 /* main.m in Sources */,
+				9B698F01182D5F44003C135F /* JBLineChartFooterView.m in Sources */,
+				9BE0B0C7182B161000232023 /* JBChartHeaderView.m in Sources */,
+				9B603D4E182C7163000A76D0 /* JBBaseTableViewController.m in Sources */,
+				9B6A68DE1829BE63006DB3BF /* JBBarChartViewController.m in Sources */,
+				9BE0B0AD182AD26400232023 /* JBLineChartView.m in Sources */,
+				9B6A68E11829BED5006DB3BF /* JBLineChartViewController.m in Sources */,
+				9B2E533F18218D310079B9D2 /* AppDelegate.m in Sources */,
+				9B603D4B182C7117000A76D0 /* JBBaseViewController.m in Sources */,
+				9B0725211829822A0052109B /* JBChartListViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		9B2E530D18218CF20079B9D2 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9B2E530E18218CF20079B9D2 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		9B2E533418218CF30079B9D2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		9B2E533518218CF30079B9D2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		9B2E533718218CF30079B9D2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "JBChartViewDemo/JBChartViewDemo-Prefix.pch";
+				INFOPLIST_FILE = "JBChartViewDemo/JBChartViewDemo-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		9B2E533818218CF30079B9D2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "JBChartViewDemo/JBChartViewDemo-Prefix.pch";
+				INFOPLIST_FILE = "JBChartViewDemo/JBChartViewDemo-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		9B2E52FC18218CF20079B9D2 /* Build configuration list for PBXProject "JBChartViewDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9B2E533418218CF30079B9D2 /* Debug */,
+				9B2E533518218CF30079B9D2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9B2E533618218CF30079B9D2 /* Build configuration list for PBXNativeTarget "JBChartViewDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9B2E533718218CF30079B9D2 /* Debug */,
+				9B2E533818218CF30079B9D2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 9B2E52F918218CF20079B9D2 /* Project object */;
+}
