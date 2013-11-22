@@ -138,7 +138,7 @@ Lastly, a bar chart's selection events are delegated back via:
 	}
 
 <center>
-	<img src="Screenshots/JBBarChartView.png"/>
+	<img src="Screenshots/JBBarChartView.png">
 </center>
 
 #### JBLineChartView
@@ -170,7 +170,7 @@ Lastly, a line chart's selection events are delegated back via:
 	}
 	
 <center>
-	<img src="Screenshots/JBLineChartView.png"/>
+	<img src="Screenshots/JBLineChartView.png">
 </center>
 	
 ## License
