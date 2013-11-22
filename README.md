@@ -137,7 +137,9 @@ Lastly, a bar chart's selection events are delegated back via:
 		// Update view
 	}
 
-A JBBarChartView visuaul overview can be found <a href="Screenshots/JBBarChartView.png" target="_blank">here</a>. 
+<center>
+	<img src="Screenshots/JBBarChartView.png"/>
+</center>
 
 #### JBLineChartView
 
@@ -167,7 +169,9 @@ Lastly, a line chart's selection events are delegated back via:
 		// Update view
 	}
 	
-A JBLineChartView visuaul overview can be found <a href="Screenshots/JBLineChartView.png" target="_blank">here</a>. 
+<center>
+	<img src="Screenshots/JBLineChartView.png"/>
+</center>
 	
 ## License
 
