@@ -43,7 +43,7 @@ The simpliest way to use JBChartView with your application is to drag and drop t
 
 ## Usage
 
-Both JBChartView implementations have a similiar dataSource and delgate pattern to <i>UITableView</i>. If your familiar with using a <i>UITableView</i> or <i>UITableViewController</i>, using a JBChartView subclass should be a breeze!
+Both JBChartView implementations have a similiar data source and delgate pattern to <i>UITableView</i>. If you're familiar with using a <i>UITableView</i> or <i>UITableViewController</i>, using a JBChartView subclass should be a breeze!
 
 #### JBBarChartView
 
@@ -54,7 +54,7 @@ To initialze a <i>JBBarChartView</i>, you only need a few lines of code:
     barChartView.dataSource = self;
     [self addSubview:barChartView];
     
-At a minimum, you need to inform the dataSource how many bars are in the chart:
+At a minimum, you need to inform the data source how many bars are in the chart:
 
 	- (NSInteger)numberOfBarsInBarChartView:(JBBarChartView *)barChartView
 	{
@@ -77,7 +77,7 @@ Similiarily, to initialze a JBLineChartView, you only need a few lines of code:
     lineChartView.dataSource = self;
     [self addSubview:lineChartView];
 
-At a minimum, you need to inform the dataSource how many points are in the line chart:
+At a minimum, you need to inform the data source how many points are in the line chart:
 
 	- (NSInteger)numberOfPointsInLineChartView:(JBLineChartView *)lineChartView
 	{
@@ -132,7 +132,7 @@ Lastly, a bar chart's selection events are delegated back via:
 		// Update view
 	}
 
-	- (void)didUnselectBarChartView:(JBBarChartView *)barChartView
+	- (void)barChartView:(JBBarChartView *)barChartView didUnselectBarAtIndex:(NSInteger)index
 	{
 		// Update view
 	}
@@ -162,7 +162,7 @@ Lastly, a line chart's selection events are delegated back via:
 		// Update view
 	}
 
-	- (void)didUnselectLineChartView:(JBLineChartView *)lineChartView
+	- (void)lineChartView:(JBLineChartView *)lineChartView didUnselectChartAtIndex:(NSInteger)index
 	{
 		// Update view
 	}
