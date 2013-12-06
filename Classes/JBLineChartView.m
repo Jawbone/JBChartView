@@ -21,7 +21,7 @@ typedef NS_ENUM(NSInteger, JBLineChartLineViewState){
 CGFloat const kJBLineChartLineViewEdgePadding = 10.0;
 CGFloat const kJBLineChartLineViewStrokeWidth = 5.0;
 CGFloat const kJBLineChartLineViewMiterLimit = -5.0;
-CGFloat const kJBLineChartLineViewAnimationDuration = 0.25f;
+CGFloat const kJBLineChartLineViewStateAnimationDuration = 0.25f;
 
 // Numerics (JBLineSelectionView)
 CGFloat const kJBLineSelectionViewWidth = 20.0f;
@@ -305,7 +305,7 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
     
     if (animated)
     {
-        [UIView animateWithDuration:kJBNumericDefaultAnimationDuration delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+        [UIView animateWithDuration:kJBChartViewDefaultAnimationDuration delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
             self.selectionView.alpha = _selectionViewVisible ? 1.0 : 0.0;
         } completion:nil];
     }
@@ -465,7 +465,7 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
         CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:@"path"];
         [anim setRemovedOnCompletion:NO];
         anim.toValue = self.state == JBLineChartLineViewStateCollapsed ? (id)flatPath.CGPath : (id)dynamicPath.CGPath;
-        anim.duration = kJBLineChartLineViewAnimationDuration;
+        anim.duration = kJBLineChartLineViewStateAnimationDuration;
         anim.removedOnCompletion = NO;
         anim.fillMode = kCAFillModeForwards;
         anim.autoreverses = NO;
@@ -516,7 +516,7 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
     
     if (animated)
     {
-        [self performSelector:@selector(fireCallback:) withObject:callback afterDelay:kJBLineChartLineViewAnimationDuration];
+        [self performSelector:@selector(fireCallback:) withObject:callback afterDelay:kJBLineChartLineViewStateAnimationDuration];
     }
     else
     {

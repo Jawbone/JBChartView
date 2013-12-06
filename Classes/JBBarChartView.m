@@ -11,7 +11,7 @@
 // Numerics
 CGFloat const kJBBarChartViewBarBasePaddingMutliplier = 50.0f;
 CGFloat const kJBBarChartViewUndefinedMaxHeight = -1.0f;
-CGFloat const kJBBarChartViewAnimationDuration = 0.05f;
+CGFloat const kJBBarChartViewStateAnimationDuration = 0.05f;
 CGFloat const kJBBarChartViewPopOffset = 10.0f; // used to offset bars for 'pop' animations
 NSInteger const kJBBarChartViewUndefinedBarIndex = -1;
 
@@ -247,10 +247,10 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
         NSInteger index = 0;
         for (UIView *barView in self.barViews)
         {
-            [UIView animateWithDuration:kJBBarChartViewAnimationDuration delay:(kJBBarChartViewAnimationDuration * 0.5) * index options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+            [UIView animateWithDuration:kJBBarChartViewStateAnimationDuration delay:(kJBBarChartViewStateAnimationDuration * 0.5) * index options:UIViewAnimationOptionBeginFromCurrentState animations:^{
                 barView.frame = CGRectMake(barView.frame.origin.x, popOffset - barView.frame.size.height, barView.frame.size.width, barView.frame.size.height);
             } completion:^(BOOL finished) {
-                [UIView animateWithDuration:kJBBarChartViewAnimationDuration delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+                [UIView animateWithDuration:kJBBarChartViewStateAnimationDuration delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
                     if (state == JBChartViewStateExpanded)
                     {
                         barView.frame = CGRectMake(barView.frame.origin.x, popOffset - barView.frame.size.height + kJBBarChartViewPopOffset, barView.frame.size.width, barView.frame.size.height);
@@ -338,7 +338,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     
     if (animated)
     {
-        [UIView animateWithDuration:kJBNumericDefaultAnimationDuration delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+        [UIView animateWithDuration:kJBChartViewDefaultAnimationDuration delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
             self.selectionView.alpha = _selectionViewVisible ? 1.0 : 0.0;
         } completion:nil];
     }

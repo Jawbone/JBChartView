@@ -8,6 +8,8 @@
 
 #import "JBChartView.h"
 
+CGFloat const kJBChartViewDefaultAnimationDuration = 0.25f;
+
 // Color (JBChartSelectionView)
 static UIColor *kJBChartSelectionViewDefaultBgColor = nil;
 

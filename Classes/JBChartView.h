@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+extern CGFloat const kJBChartViewDefaultAnimationDuration;
+
 /**
  * At a minimum, a chart can support two states, along with animations to-and-from.
  */
