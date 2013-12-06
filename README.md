@@ -176,4 +176,4 @@ A JBLineChartView visuaul overview can be found <a href="Screenshots/JBLineChart
 	
 ## License
 
-Usage is provided under the <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License</a> (v2.0). See <a href="Classes/LICENSE" >LICENSE</a> for full details.
+Usage is provided under the <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License</a> (v2.0). See <a href="LICENSE" >LICENSE</a> for full details.
