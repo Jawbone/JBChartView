@@ -33,6 +33,11 @@ Simply add the following line to your <code>Podfile</code>:
 
 	pod 'JBChartView'
 	
+You Podfile should resemble:
+
+	platform :ios, '7.0'
+	pod 'JBChartView', '~> 1.0'
+	
 ### The Old School Way
 
 The simpliest way to use JBChartView with your application is to drag and drop the <i>/Classes</i> folder into you're Xcode 5 project. It's also recommended you rename the <i>/Classes</i> folder to something more descriptive (ie. "<i>Jawbone - JBChartView</i>").
