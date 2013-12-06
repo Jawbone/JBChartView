@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
   s.author       = { "Terry Worona" => "tworona@jawbone.com" }
   s.source       = { 
 	:git => "https://github.com/Jawbone/JBChartView.git",
-	:tag => "1.0"
+	:tag => "v1.0"
   }
 
   s.platform     = :ios, '7.0'
