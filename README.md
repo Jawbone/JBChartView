@@ -1,7 +1,7 @@
 # JBChartView
 
 <center>
-	<img src="Screenshots/main.png">
+	<img src="https://raw.github.com/Jawbone/JBChartView/master/Screenshots/main.png">
 </center>
 
 <b>Introducing JBChartView - </b> Jawbone's iOS-based charting library for both line and bar graphs. It is easy to set-up, and highly customizable. 
@@ -43,7 +43,7 @@ Your Podfile should look something like:
 The simpliest way to use JBChartView with your application is to drag and drop the <i>/Classes</i> folder into you're Xcode 5 project. It's also recommended you rename the <i>/Classes</i> folder to something more descriptive (ie. "<i>Jawbone - JBChartView</i>").
 
 <center>
-	<img src="Screenshots/installation.png">
+	<img src="https://raw.github.com/Jawbone/JBChartView/master/Screenshots/installation.png">
 </center>
 
 ## Usage
@@ -142,7 +142,7 @@ Lastly, a bar chart's selection events are delegated back via:
 		// Update view
 	}
 	
-A JBBarChartView visuaul overview can be found <a href="Screenshots/JBBarChartView.png" target="_blank">here</a>. 
+A JBBarChartView visuaul overview can be found <a href="https://raw.github.com/Jawbone/JBChartView/master/Screenshots/JBBarChartView.png" target="_blank">here</a>. 
 
 #### JBLineChartView
 
@@ -172,8 +172,8 @@ Lastly, a line chart's selection events are delegated back via:
 		// Update view
 	}
 			
-A JBLineChartView visuaul overview can be found <a href="Screenshots/JBLineChartView.png" target="_blank">here</a>.
+A JBLineChartView visuaul overview can be found <a href="https://raw.github.com/Jawbone/JBChartView/master/Screenshots/JBLineChartView.png" target="_blank">here</a>.
 	
 ## License
 
-Usage is provided under the <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License</a> (v2.0). See <a href="LICENSE">LICENSE</a> for full details.
+Usage is provided under the <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License</a> (v2.0). See <a href="https://github.com/Jawbone/JBChartView/blob/master/LICENSE">LICENSE</a> for full details.
