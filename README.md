@@ -36,7 +36,7 @@ Simply add the following line to your <code>Podfile</code>:
 Your Podfile should look something like:
 
 	platform :ios, '7.0'
-	pod 'JBChartView', '~> 1.0'
+	pod 'JBChartView', '~> 1.0.1'
 	
 ### The Old School Way
 
