@@ -147,7 +147,14 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
             barView.layer.shadowRadius = 1.0;
             
             [mutableBarViews addObject:barView];
-            [self insertSubview:barView belowSubview:self.footerView];
+			if (self.footerView)
+			{
+				[self insertSubview:barView belowSubview:self.footerView];
+			}
+			else
+			{
+				[self addSubview:barView];
+			}
             xOffset += ([self barWidth] + self.barPadding);
             index++;
         }
