@@ -147,7 +147,9 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
             barView.layer.shadowRadius = 1.0;
             
             [mutableBarViews addObject:barView];
-			if (self.footerView)
+			
+            // Add new bar
+            if (self.footerView)
 			{
 				[self insertSubview:barView belowSubview:self.footerView];
 			}
@@ -155,6 +157,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 			{
 				[self addSubview:barView];
 			}
+            
             xOffset += ([self barWidth] + self.barPadding);
             index++;
         }
@@ -165,6 +168,8 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
      * Creates a vertical selection view for touch events
      */
     dispatch_block_t createSelectionView = ^{
+        
+        // Remove old selection bar
         if (self.selectionView)
         {
             [self.selectionView removeFromSuperview];
@@ -177,7 +182,16 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
         {
             self.selectionView.bgColor = [self.dataSource selectionBarColorForBarChartView:self];
         }
-        [self insertSubview:self.selectionView belowSubview:self.footerView];
+        
+        // Add new selection bar
+        if (self.footerView)
+        {
+            [self insertSubview:self.selectionView belowSubview:self.footerView];
+        }
+        else
+        {
+            [self addSubview:self.selectionView];
+        }
     };
     
     createDataDictionaries();
