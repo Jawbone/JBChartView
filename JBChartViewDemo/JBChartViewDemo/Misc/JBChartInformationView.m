@@ -185,7 +185,7 @@ static UIColor *kJBChartInformationViewShadowColor = nil;
     {
         if (hidden)
         {
-            [UIView animateWithDuration:kJBNumericDefaultAnimationDuration * 0.5 animations:^{
+            [UIView animateWithDuration:kJBNumericDefaultAnimationDuration * 0.5 delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
                 self.titleLabel.alpha = 0.0;
                 self.separatorView.alpha = 0.0;
                 self.valueView.valueLabel.alpha = 0.0;
@@ -197,17 +197,14 @@ static UIColor *kJBChartInformationViewShadowColor = nil;
         }
         else
         {
-            [UIView animateWithDuration:kJBNumericDefaultAnimationDuration animations:^{
+            [UIView animateWithDuration:kJBNumericDefaultAnimationDuration delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
                 self.titleLabel.frame = [self titleViewRectForHidden:NO];
-                self.titleLabel.alpha = hidden ? 0.0 : 1.0;
+                self.titleLabel.alpha = 1.0;
+                self.valueView.valueLabel.alpha = 1.0;
+                self.valueView.unitLabel.alpha = 1.0;
                 self.separatorView.frame = [self separatorViewRectForHidden:NO];
-                self.separatorView.alpha = hidden ? 0.0 : 1.0;
-            } completion:^(BOOL finished) {
-                [UIView animateWithDuration:kJBNumericDefaultAnimationDuration animations:^{
-                    self.valueView.valueLabel.alpha = hidden ? 0.0 : 1.0;
-                    self.valueView.unitLabel.alpha = hidden ? 0.0 : 1.0;
-                }];
-            }];
+                self.separatorView.alpha = 1.0;
+            } completion:nil];
         }
     }
     else
