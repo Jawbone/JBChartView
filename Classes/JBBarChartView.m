@@ -61,6 +61,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     if (self)
     {
         self.clipsToBounds = YES;
+        _barShadowEnabled = YES;
         _showsSelection = YES;
         _cachedMaxHeight = kJBBarChartViewUndefinedMaxHeight;
     }
@@ -141,10 +142,13 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
             CGFloat height = [self normalizedHeightForRawHeight:[self.chartDataDictionary objectForKey:key]];
             barView.frame = CGRectMake(xOffset, self.bounds.size.height - height - self.footerView.frame.size.height + self.headerPadding, [self barWidth], height + kJBBarChartViewPopOffset - self.headerPadding);
             
-            barView.layer.shadowColor = [UIColor blackColor].CGColor;
-            barView.layer.shadowOffset = CGSizeMake(0, 0);
-            barView.layer.shadowOpacity = 0.4;
-            barView.layer.shadowRadius = 1.0;
+            if (self.barShadowEnabled) {
+                barView.layer.shadowColor = [UIColor blackColor].CGColor;
+                barView.layer.shadowOffset = CGSizeMake(0, 0);
+                barView.layer.shadowOpacity = 0.4;
+                barView.layer.shadowRadius = 1.0;
+                barView.layer.shadowPath = [UIBezierPath bezierPathWithRect:barView.bounds].CGPath;
+            }
             
             [mutableBarViews addObject:barView];
 			

@@ -24,6 +24,8 @@
  */
 @property (nonatomic, assign) BOOL showsSelection;
 
+@property (nonatomic, assign) BOOL barShadowEnabled;
+
 @end
 
 @protocol JBBarChartViewDelegate <NSObject>
