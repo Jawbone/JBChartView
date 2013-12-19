@@ -24,6 +24,11 @@
  */
 @property (nonatomic, assign) BOOL showsSelection;
 
+/**
+ *  If barShadowEnabled is YES, a shadow will be drawn behind each Bar
+ *
+ *  Default: YES
+ */
 @property (nonatomic, assign) BOOL barShadowEnabled;
 
 @end
