@@ -139,13 +139,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
                 barView.backgroundColor = kJBBarChartViewDefaultBarColor;
             }
             CGFloat height = [self normalizedHeightForRawHeight:[self.chartDataDictionary objectForKey:key]];
-            barView.frame = CGRectMake(xOffset, self.bounds.size.height - height - self.footerView.frame.size.height + self.headerPadding, [self barWidth], height + kJBBarChartViewPopOffset - self.headerPadding);
-            
-            barView.layer.shadowColor = [UIColor blackColor].CGColor;
-            barView.layer.shadowOffset = CGSizeMake(0, 0);
-            barView.layer.shadowOpacity = 0.4;
-            barView.layer.shadowRadius = 1.0;
-            
+            barView.frame = CGRectMake(xOffset, self.bounds.size.height - height - self.footerView.frame.size.height + self.headerPadding, [self barWidth], height + kJBBarChartViewPopOffset - self.headerPadding);                        
             [mutableBarViews addObject:barView];
 			
             // Add new bar
