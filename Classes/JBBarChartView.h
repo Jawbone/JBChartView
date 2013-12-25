@@ -90,16 +90,16 @@
 - (NSInteger)barPaddingForBarChartView:(JBBarChartView *)barChartView;
 
 /**
- *  The color of all bars within the chart.
+ *  A UIView subclass representing the bar at a particular index.
  *
- *  Default: black color
+ *  Default: solid black UIView
  *
  *  @param barChartView The origin chart
  *  @param index        The 0-based index of a given bar (left to right, x-axis)
  *
- *  @return The color to be used on each of the bars within the chart.
+ *  @return A UIView subclass. The view will automatically be resized by the chart during creation (ie. no need to set the frame).
  */
-- (UIColor *)barColorForBarChartView:(JBBarChartView *)barChartView atIndex:(NSInteger)index;
+- (UIView *)barViewForBarChartView:(JBBarChartView *)barChartView atIndex:(NSInteger)index;
 
 /**
  *  The selection color to be overlayed on a bar during touch events. 

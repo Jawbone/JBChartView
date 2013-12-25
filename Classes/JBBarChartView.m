@@ -129,15 +129,16 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
         NSMutableArray *mutableBarViews = [NSMutableArray array];
         for (NSNumber *key in [[self.chartDataDictionary allKeys] sortedArrayUsingSelector:@selector(compare:)])
         {
-            UIView *barView = [[UIView alloc] init];
-            if ([self.dataSource respondsToSelector:@selector(barColorForBarChartView:atIndex:)])
+            UIView *barView = nil; // since all bars are visible at once, no need to cache this view
+            if ([self.dataSource respondsToSelector:@selector(barViewForBarChartView:atIndex:)])
             {
-                barView.backgroundColor = [self.dataSource barColorForBarChartView:self atIndex:index];
+                barView = [self.dataSource barViewForBarChartView:self atIndex:index];
             }
             else
             {
+                barView = [[UIView alloc] init];
                 barView.backgroundColor = kJBBarChartViewDefaultBarColor;
-            }
+            }            
             CGFloat height = [self normalizedHeightForRawHeight:[self.chartDataDictionary objectForKey:key]];
             barView.frame = CGRectMake(xOffset, self.bounds.size.height - height - self.footerView.frame.size.height + self.headerPadding, [self barWidth], height + kJBBarChartViewPopOffset - self.headerPadding);                        
             [mutableBarViews addObject:barView];

@@ -137,9 +137,11 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
     return kJBBarChartViewControllerBarPadding;
 }
 
-- (UIColor *)barColorForBarChartView:(JBBarChartView *)barChartView atIndex:(NSInteger)index
+- (UIView *)barViewForBarChartView:(JBBarChartView *)barChartView atIndex:(NSInteger)index
 {
-    return (index % 2 == 0) ? kJBColorBarChartBarBlue : kJBColorBarChartBarGreen;
+    UIView *barView = [[UIView alloc] init];
+    barView.backgroundColor = (index % 2 == 0) ? kJBColorBarChartBarBlue : kJBColorBarChartBarGreen;
+    return barView;
 }
 
 - (UIColor *)selectionBarColorForBarChartView:(JBBarChartView *)barChartView
