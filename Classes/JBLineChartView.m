@@ -237,7 +237,16 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
 
 - (CGFloat)minHeight
 {
-    return 0;
+    NSAssert([self.delegate respondsToSelector:@selector(lineChartView:heightForIndex:)], @"JBLineChartView // delegate must implement - (NSInteger)lineChartView:(JBLineChartView *)lineChartView heightForIndex:(NSInteger)index");
+    NSInteger minHeight = [self.delegate lineChartView:self heightForIndex:0];
+    for (NSInteger index=0; index<[self dataCount]; index++)
+    {
+        if (([self.delegate lineChartView:self heightForIndex:index]) < minHeight)
+        {
+            minHeight = [self.delegate lineChartView:self heightForIndex:index];
+        }
+    }
+    return minHeight;
 }
 
 - (NSInteger)dataCount
