@@ -49,7 +49,7 @@
  *  @param lineChartView The origin chart
  *  @param index        The 0-based index of a selection point (left to right, x-axis)
  */
-- (void)lineChartView:(JBLineChartView *)lineChartView didSelectChartAtIndex:(NSInteger)index;
+- (void)lineChartView:(JBLineChartView *)lineChartView didSelectChartAtIndex:(NSInteger)index touchPoint:(CGPoint) point;
 
 /**
  *  Occurs when selection ends by either ending a touch event or selecting an area that is outside the view's bounds.
