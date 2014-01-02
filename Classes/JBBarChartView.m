@@ -78,6 +78,9 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 - (void)reloadData
 {
+    // reset cached max height
+    _cachedMaxHeight = kJBBarChartViewUndefinedMaxHeight;
+
     /*
      * The data collection holds all position information:
      * constructed via datasource and delegate functions
