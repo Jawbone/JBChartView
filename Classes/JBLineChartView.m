@@ -118,7 +118,7 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
 - (void)reloadData
 {
     // reset cached max height
-    _cachedMaxHeight = kJBLineChartViewUndefinedMaxHeight;
+    self.cachedMaxHeight = kJBLineChartViewUndefinedMaxHeight;
 
     /*
      * Subview rectangle calculations
