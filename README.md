@@ -36,7 +36,7 @@ Simply add the following line to your <code>Podfile</code>:
 Your Podfile should look something like:
 
 	platform :ios, '7.0'
-	pod 'JBChartView', '~> 1.1.1'
+	pod 'JBChartView', '~> 1.1.2'
 	
 ### The Old School Way
 
@@ -68,7 +68,7 @@ At a minimum, you need to inform the data source how many bars are in the chart:
 
 Secondly, you need to inform the delegate the height of each bar (automatically normalized across the entire chart):
     
-    - (NSInteger)barChartView:(JBBarChartView *)barChartView heightForBarViewAtAtIndex:(NSInteger)index
+    - (CGFloat)barChartView:(JBBarChartView *)barChartView heightForBarViewAtAtIndex:(NSInteger)index
     {
 		return ...; // height of bar at index
 	}
@@ -91,7 +91,7 @@ At a minimum, you need to inform the data source how many points are in the line
 
 Secondly, you need to inform the delegate the y-position of each point (automatically normalized across the entire chart):
     
-	- (NSInteger)lineChartView:(JBLineChartView *)lineChartView heightForIndex:(NSInteger)index
+	- (CGFloat)lineChartView:(JBLineChartView *)lineChartView heightForIndex:(NSInteger)index
     {
 		return ...; // y-position of poinnt at index (x-axis)
 	}
