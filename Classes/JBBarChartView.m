@@ -96,7 +96,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
         NSMutableDictionary *dataDictionary = [NSMutableDictionary dictionary];
         for (NSInteger index=0; index<dataCount; index++)
         {
-            [dataDictionary setObject:[NSNumber numberWithInt:(int)[self.delegate barChartView:self heightForBarViewAtAtIndex:index]] forKey:[NSNumber numberWithInt:(int)index]];
+            [dataDictionary setObject:[NSNumber numberWithFloat:[self.delegate barChartView:self heightForBarViewAtAtIndex:index]] forKey:[NSNumber numberWithInt:(int)index]];
         }
         self.chartDataDictionary = [NSDictionary dictionaryWithDictionary:dataDictionary];
 	};

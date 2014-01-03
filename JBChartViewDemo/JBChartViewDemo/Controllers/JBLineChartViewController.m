@@ -60,7 +60,7 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
     NSMutableArray *mutableChartData = [NSMutableArray array];
     for (int i=0; i<kJBLineChartViewControllerNumChartPoints; i++)
     {
-        [mutableChartData addObject:[NSNumber numberWithInteger:arc4random() % kJBLineChartViewControllerMaxPointValue]];
+        [mutableChartData addObject:[NSNumber numberWithFloat:arc4random() % kJBLineChartViewControllerMaxPointValue]];
     }
     _chartData = [NSArray arrayWithArray:mutableChartData];
 }
@@ -127,9 +127,9 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
 
 #pragma mark - JBLineChartViewDelegate
 
-- (NSInteger)lineChartView:(JBLineChartView *)lineChartView heightForIndex:(NSInteger)index
+- (CGFloat)lineChartView:(JBLineChartView *)lineChartView heightForIndex:(NSInteger)index
 {
-    return [[self.chartData objectAtIndex:index] intValue];
+    return [[self.chartData objectAtIndex:index] floatValue];
 }
 
 - (void)lineChartView:(JBLineChartView *)lineChartView didSelectChartAtIndex:(NSInteger)index

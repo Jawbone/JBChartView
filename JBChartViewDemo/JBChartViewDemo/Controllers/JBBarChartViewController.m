@@ -65,7 +65,7 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
     NSMutableArray *mutableChartData = [NSMutableArray array];
     for (int i=0; i<kJBBarChartViewControllerNumBars; i++)
     {
-        [mutableChartData addObject:[NSNumber numberWithInteger:MAX(kJBBarChartViewControllerMinBarHeight, arc4random() % kJBBarChartViewControllerMaxBarHeight)]]; // fake height
+        [mutableChartData addObject:[NSNumber numberWithFloat:MAX(kJBBarChartViewControllerMinBarHeight, arc4random() % kJBBarChartViewControllerMaxBarHeight)]]; // fake height
     }
     _chartData = [NSArray arrayWithArray:mutableChartData];
 }
@@ -120,9 +120,9 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
 
 #pragma mark - JBBarChartViewDelegate
 
-- (NSInteger)barChartView:(JBBarChartView *)barChartView heightForBarViewAtAtIndex:(NSInteger)index
+- (CGFloat)barChartView:(JBBarChartView *)barChartView heightForBarViewAtAtIndex:(NSInteger)index
 {
-    return [[self.chartData objectAtIndex:index] intValue];
+    return [[self.chartData objectAtIndex:index] floatValue];
 }
 
 #pragma mark - JBBarChartViewDataSource

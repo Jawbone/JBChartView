@@ -75,7 +75,7 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
 @property (nonatomic, assign) BOOL selectionViewVisible;
 
 // View quick accessors
-- (CGFloat)normalizedHeightForRawHeight:(NSInteger)rawHeight;
+- (CGFloat)normalizedHeightForRawHeight:(CGFloat)rawHeight;
 - (CGFloat)availableHeight;
 - (CGFloat)maxHeight;
 - (CGFloat)minHeight;
@@ -141,11 +141,10 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
         for (NSInteger index=0; index<[self dataCount]; index++)
         {
             JBLineChartPoint *chartPoint = [[JBLineChartPoint alloc] init];
-            NSInteger rawHeight = [self.delegate lineChartView:self heightForIndex:index];
+            CGFloat rawHeight = [self.delegate lineChartView:self heightForIndex:index];
             CGFloat normalizedHeight = [self normalizedHeightForRawHeight:rawHeight];
             yOffset = mainViewRect.size.height - normalizedHeight;
 
-            //yOffset = mainViewRect.size.height - yOffset;
             chartPoint.position = CGPointMake(xOffset, yOffset);
             
             [mutableChartData addObject:chartPoint];
@@ -206,7 +205,7 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
 
 #pragma mark - View Quick Accessors
 
-- (CGFloat)normalizedHeightForRawHeight:(NSInteger)rawHeight
+- (CGFloat)normalizedHeightForRawHeight:(CGFloat)rawHeight
 {
     CGFloat minHeight = [self minHeight];
     CGFloat maxHeight = [self maxHeight];

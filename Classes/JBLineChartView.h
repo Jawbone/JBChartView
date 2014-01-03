@@ -34,11 +34,11 @@
  *  the chart will automatically normalize all values between the overal min and max heights.
  *
  *  @param lineChartView The origin chart
- *  @param index        The 0-based index of a given line height (left to right, x-axis)
+ *  @param index         The 0-based index of a given line height (left to right, x-axis)
  *
  *  @return The y-axis value of the supplied line index (x-axis)
  */
-- (NSInteger)lineChartView:(JBLineChartView *)lineChartView heightForIndex:(NSInteger)index;
+- (CGFloat)lineChartView:(JBLineChartView *)lineChartView heightForIndex:(NSInteger)index;
 
 @optional
 
@@ -47,7 +47,7 @@
  *  and the selection must occur within the bounds of the chart.
  *
  *  @param lineChartView The origin chart
- *  @param index        The 0-based index of a selection point (left to right, x-axis)
+ *  @param index         The 0-based index of a selection point (left to right, x-axis)
  */
 - (void)lineChartView:(JBLineChartView *)lineChartView didSelectChartAtIndex:(NSInteger)index;
 
@@ -56,7 +56,7 @@
  *  For selection start events, see: didSelectChartAtIndex...
  *
  *  @param lineChartView The origin chart
- *  @param index        The 0-based index of a selection point. Index will be -1 if the touch ends outside of the view's bounds.
+ *  @param index         The 0-based index of a selection point. Index will be -1 if the touch ends outside of the view's bounds.
  */
 - (void)lineChartView:(JBLineChartView *)lineChartView didUnselectChartAtIndex:(NSInteger)index;
 
