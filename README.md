@@ -52,7 +52,7 @@ Both JBChartView implementations have a similiar data source and delgate pattern
 
 #### JBBarChartView
 
-To initialze a <i>JBBarChartView</i>, you only need a few lines of code:
+To initialize a <i>JBBarChartView</i>, you only need a few lines of code:
 
 	JBBarChartView *barChartView = [[JBBarChartView alloc] init];
     barChartView.delegate = self;
@@ -75,7 +75,7 @@ Secondly, you need to inform the delegate the height of each bar (automatically 
     
 #### JBLineChartView
 
-Similiarily, to initialze a JBLineChartView, you only need a few lines of code:
+Similiarily, to initialize a JBLineChartView, you only need a few lines of code:
 
 	JBLineChartView *lineChartView = [[JBLineChartView alloc] init];
     lineChartView.delegate = self;
