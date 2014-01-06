@@ -220,7 +220,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
         return 0;
     }
     
-    return ceil(((value - minHeight) / (maxHeight - minHeight)) * [self availableHeight]);
+    return ((value - minHeight) / (maxHeight - minHeight)) * [self availableHeight];
 }
 
 - (CGFloat)maxHeight

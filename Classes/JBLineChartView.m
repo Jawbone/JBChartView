@@ -45,6 +45,7 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
 @property (nonatomic, assign) id<JBLineChartLineViewDelegate> delegate;
 @property (nonatomic, assign) JBLineChartLineViewState state;
 @property (nonatomic, strong) CAShapeLayer *shapeLayer;
+@property (nonatomic, assign) CGFloat cachedMaxHeight;
 @property (nonatomic, assign) BOOL aniamted;
 
 // Data
@@ -215,7 +216,7 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
         return 0;
     }
     
-    return ceil(((rawHeight - minHeight) / (maxHeight - minHeight)) * [self availableHeight]);
+    return ((rawHeight - minHeight) / (maxHeight - minHeight)) * [self availableHeight];
 }
 
 - (CGFloat)availableHeight
@@ -225,16 +226,20 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
 
 - (CGFloat)maxHeight
 {
-    NSAssert([self.delegate respondsToSelector:@selector(lineChartView:heightForIndex:)], @"JBLineChartView // delegate must implement - (NSInteger)lineChartView:(JBLineChartView *)lineChartView heightForIndex:(NSInteger)index");
-    NSInteger maxHeight = 0;
-    for (NSInteger index=0; index<[self dataCount]; index++)
+    if (self.cachedMaxHeight == kJBLineChartViewUndefinedMaxHeight)
     {
-        if (([self.delegate lineChartView:self heightForIndex:index]) > maxHeight)
+        NSAssert([self.delegate respondsToSelector:@selector(lineChartView:heightForIndex:)], @"JBLineChartView // delegate must implement - (NSInteger)lineChartView:(JBLineChartView *)lineChartView heightForIndex:(NSInteger)index");
+        NSInteger maxHeight = 0;
+        for (NSInteger index=0; index<[self dataCount]; index++)
         {
-            maxHeight = [self.delegate lineChartView:self heightForIndex:index];
+            if (([self.delegate lineChartView:self heightForIndex:index]) > maxHeight)
+            {
+                maxHeight = [self.delegate lineChartView:self heightForIndex:index];
+            }
         }
+        self.cachedMaxHeight = maxHeight;
     }
-    return maxHeight;
+    return self.cachedMaxHeight;
 }
 
 - (CGFloat)minHeight
