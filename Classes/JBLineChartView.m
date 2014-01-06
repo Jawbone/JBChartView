@@ -243,7 +243,16 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
 
 - (CGFloat)minHeight
 {
-    return 0;
+    NSAssert([self.delegate respondsToSelector:@selector(lineChartView:heightForIndex:)], @"JBLineChartView // delegate must implement - (NSInteger)lineChartView:(JBLineChartView *)lineChartView heightForIndex:(NSInteger)index");
+    NSInteger minHeight = [self.delegate lineChartView:self heightForIndex:0];
+    for (NSInteger index=0; index<[self dataCount]; index++)
+    {
+        if (([self.delegate lineChartView:self heightForIndex:index]) < minHeight)
+        {
+            minHeight = [self.delegate lineChartView:self heightForIndex:index];
+        }
+    }
+    return minHeight;
 }
 
 - (NSInteger)dataCount
@@ -338,9 +347,8 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
     UITouch *touch = [touches anyObject];
     CGPoint touchPoint = [touch locationInView:self];
     
-    if ([self.delegate respondsToSelector:@selector(lineChartView:didSelectChartAtIndex:)])
-    {
-        [self.delegate lineChartView:self didSelectChartAtIndex:[self indexForPoint:touchPoint]];
+    if ([self.delegate respondsToSelector:@selector(lineChartView:didSelectChartAtIndex:touchPoint:)]) {
+        [self.delegate lineChartView:self didSelectChartAtIndex:[self indexForPoint:touchPoint] touchPoint:touchPoint];
     }
     
     CGFloat xOffset = fmin(self.bounds.size.width - self.selectionView.frame.size.width, fmax(0, touchPoint.x - (ceil(self.selectionView.frame.size.width * 0.5))));
@@ -358,9 +366,8 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
     UITouch *touch = [touches anyObject];
     CGPoint touchPoint = [touch locationInView:self];
     
-    if ([self.delegate respondsToSelector:@selector(lineChartView:didSelectChartAtIndex:)])
-    {
-        [self.delegate lineChartView:self didSelectChartAtIndex:[self indexForPoint:touchPoint]];
+    if ([self.delegate respondsToSelector:@selector(lineChartView:didSelectChartAtIndex:touchPoint:)]) {
+        [self.delegate lineChartView:self didSelectChartAtIndex:[self indexForPoint:touchPoint] touchPoint:touchPoint];
     }
     
     CGFloat xOffset = fmin(self.bounds.size.width - self.selectionView.frame.size.width, fmax(0, touchPoint.x - (ceil(self.selectionView.frame.size.width * 0.5))));
