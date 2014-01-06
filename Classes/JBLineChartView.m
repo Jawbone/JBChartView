@@ -45,7 +45,6 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
 @property (nonatomic, assign) id<JBLineChartLineViewDelegate> delegate;
 @property (nonatomic, assign) JBLineChartLineViewState state;
 @property (nonatomic, strong) CAShapeLayer *shapeLayer;
-@property (nonatomic, assign) CGFloat cachedMaxHeight;
 @property (nonatomic, assign) BOOL aniamted;
 
 // Data
