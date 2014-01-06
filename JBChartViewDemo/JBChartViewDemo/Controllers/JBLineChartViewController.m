@@ -14,13 +14,14 @@
 #import "JBLineChartFooterView.h"
 #import "JBChartInformationView.h"
 
+#define ARC4RANDOM_MAX 0x100000000
+
 // Numerics
 CGFloat const kJBLineChartViewControllerChartHeight = 250.0f;
 CGFloat const kJBLineChartViewControllerChartHeaderHeight = 75.0f;
 CGFloat const kJBLineChartViewControllerChartHeaderPadding = 20.0f;
 CGFloat const kJBLineChartViewControllerChartFooterHeight = 20.0f;
 NSInteger const kJBLineChartViewControllerNumChartPoints = 27;
-NSInteger const kJBLineChartViewControllerMaxPointValue = 100; // max random value
 
 // Strings
 NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
@@ -60,7 +61,7 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
     NSMutableArray *mutableChartData = [NSMutableArray array];
     for (int i=0; i<kJBLineChartViewControllerNumChartPoints; i++)
     {
-        [mutableChartData addObject:[NSNumber numberWithFloat:arc4random() % kJBLineChartViewControllerMaxPointValue]];
+        [mutableChartData addObject:[NSNumber numberWithFloat:((double)arc4random() / ARC4RANDOM_MAX)]]; // random number between 0 and 1
     }
     _chartData = [NSArray arrayWithArray:mutableChartData];
 }
@@ -135,7 +136,7 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
 - (void)lineChartView:(JBLineChartView *)lineChartView didSelectChartAtIndex:(NSInteger)index
 {
     NSNumber *valueNumber = [self.chartData objectAtIndex:index];
-    [self.informationView setValueText:[NSString stringWithFormat:@"%d", [valueNumber intValue]] unitText:kJBStringLabelMm];
+    [self.informationView setValueText:[NSString stringWithFormat:@"%.2f", [valueNumber floatValue]] unitText:kJBStringLabelMm];
     [self.informationView setTitleText:[NSString stringWithFormat:@"%d", [kJBStringLabel1987 intValue] + (int)index]];
     [self.informationView setHidden:NO animated:YES];
 }

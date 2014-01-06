@@ -228,7 +228,7 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
     if (self.cachedMaxHeight == kJBLineChartViewUndefinedMaxHeight)
     {
         NSAssert([self.delegate respondsToSelector:@selector(lineChartView:heightForIndex:)], @"JBLineChartView // delegate must implement - (NSInteger)lineChartView:(JBLineChartView *)lineChartView heightForIndex:(NSInteger)index");
-        NSInteger maxHeight = 0;
+        CGFloat maxHeight = 0;
         for (NSInteger index=0; index<[self dataCount]; index++)
         {
             if (([self.delegate lineChartView:self heightForIndex:index]) > maxHeight)
