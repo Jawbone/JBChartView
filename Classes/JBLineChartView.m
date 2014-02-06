@@ -18,16 +18,16 @@ typedef NS_ENUM(NSInteger, JBLineChartLineViewState){
 };
 
 // Numerics (JBLineChartLineView)
-CGFloat const kJBLineChartLineViewEdgePadding = 10.0;
-CGFloat const kJBLineChartLineViewStrokeWidth = 5.0;
-CGFloat const kJBLineChartLineViewMiterLimit = -5.0;
-CGFloat const kJBLineChartLineViewStateAnimationDuration = 0.25f;
+CGFloat static const kJBLineChartLineViewEdgePadding = 10.0;
+CGFloat static const kJBLineChartLineViewStrokeWidth = 5.0;
+CGFloat static const kJBLineChartLineViewMiterLimit = -5.0;
+CGFloat static const kJBLineChartLineViewStateAnimationDuration = 0.25f;
 
 // Numerics (JBLineSelectionView)
-CGFloat const kJBLineSelectionViewWidth = 20.0f;
+CGFloat static const kJBLineSelectionViewWidth = 20.0f;
 
 // Numerics (JBLineChartView)
-CGFloat const kJBLineChartViewUndefinedMaxHeight = -1.0f;
+CGFloat static const kJBLineChartViewUndefinedMaxHeight = -1.0f;
 
 // Colors (JBLineChartView)
 static UIColor *kJBLineChartViewDefaultLineColor = nil;
@@ -312,7 +312,7 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
     if (animated)
     {
         [UIView animateWithDuration:kJBChartViewDefaultAnimationDuration delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
-            self.selectionView.alpha = _selectionViewVisible ? 1.0 : 0.0;
+            self.selectionView.alpha = self.selectionViewVisible ? 1.0 : 0.0;
         } completion:nil];
     }
     else

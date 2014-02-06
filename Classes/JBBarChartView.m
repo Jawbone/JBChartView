@@ -9,11 +9,11 @@
 #import "JBBarChartView.h"
 
 // Numerics
-CGFloat const kJBBarChartViewBarBasePaddingMutliplier = 50.0f;
-CGFloat const kJBBarChartViewUndefinedMaxHeight = -1.0f;
-CGFloat const kJBBarChartViewStateAnimationDuration = 0.05f;
-CGFloat const kJBBarChartViewPopOffset = 10.0f; // used to offset bars for 'pop' animations
-NSInteger const kJBBarChartViewUndefinedBarIndex = -1;
+CGFloat static const kJBBarChartViewBarBasePaddingMutliplier = 50.0f;
+CGFloat static const kJBBarChartViewUndefinedMaxHeight = -1.0f;
+CGFloat static const kJBBarChartViewStateAnimationDuration = 0.05f;
+CGFloat static const kJBBarChartViewPopOffset = 10.0f; // used to offset bars for 'pop' animations
+NSInteger static const kJBBarChartViewUndefinedBarIndex = -1;
 
 // Colors (JBChartView)
 static UIColor *kJBBarChartViewDefaultBarColor = nil;
@@ -263,7 +263,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     {
         CGFloat popOffset = self.bounds.size.height - self.footerView.frame.size.height;
         
-        NSInteger index = 0;
+        NSUInteger index = 0;
         for (UIView *barView in self.barViews)
         {
             [UIView animateWithDuration:kJBBarChartViewStateAnimationDuration delay:(kJBBarChartViewStateAnimationDuration * 0.5) * index options:UIViewAnimationOptionBeginFromCurrentState animations:^{
@@ -278,7 +278,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
                     {
                         barView.frame = CGRectMake(barView.frame.origin.x, self.bounds.size.height, barView.frame.size.width, barView.frame.size.height);
                     }
-                } completion:^(BOOL finished) {
+                } completion:^(BOOL lastBarFinished) {
                     if (index == [self.barViews count] - 1)
                     {
                         if (callbackCopy)
@@ -358,7 +358,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     if (animated)
     {
         [UIView animateWithDuration:kJBChartViewDefaultAnimationDuration delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
-            self.selectionView.alpha = _selectionViewVisible ? 1.0 : 0.0;
+            self.selectionView.alpha = self.selectionViewVisible ? 1.0 : 0.0;
         } completion:nil];
     }
     else
