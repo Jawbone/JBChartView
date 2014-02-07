@@ -33,6 +33,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 - (CGFloat)maxHeight;
 - (CGFloat)minHeight;
 - (CGFloat)barWidth;
+- (CGFloat)popOffset;
 
 // Touch helpers
 - (NSInteger)barViewIndexForPoint:(CGPoint)point;
@@ -80,7 +81,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 {
     // reset cached max height
     self.cachedMaxHeight = kJBBarChartViewUndefinedMaxHeight;
-
+    
     /*
      * The data collection holds all position information:
      * constructed via datasource and delegate functions
@@ -115,7 +116,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
             self.barPadding = (1/(float)totalBars) * kJBBarChartViewBarBasePaddingMutliplier;
         }
     };
-
+    
     /*
      * Creates a new bar graph view using the previously calculated data model
      */
@@ -141,9 +142,10 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
             {
                 barView = [[UIView alloc] init];
                 barView.backgroundColor = kJBBarChartViewDefaultBarColor;
-            }            
+            }
             CGFloat height = [self normalizedHeightForRawHeight:[self.chartDataDictionary objectForKey:key]];
-            barView.frame = CGRectMake(xOffset, self.bounds.size.height - height - self.footerView.frame.size.height + self.headerPadding, [self barWidth], height + kJBBarChartViewPopOffset - self.headerPadding);                        
+            CGFloat extensionHeight = height > 0.0 ? kJBBarChartViewPopOffset : 0.0;
+            barView.frame = CGRectMake(xOffset, self.bounds.size.height - height - self.footerView.frame.size.height + self.headerPadding, [self barWidth], height + extensionHeight - self.headerPadding);
             [mutableBarViews addObject:barView];
 			
             // Add new bar
@@ -174,7 +176,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
             self.selectionView = nil;
         }
         
-        self.selectionView = [[JBChartSelectionView alloc] initWithFrame:CGRectMake(0, 0, [self barWidth], self.bounds.size.height)];
+        self.selectionView = [[JBChartSelectionView alloc] initWithFrame:CGRectMake(0, 0, [self barWidth], self.bounds.size.height - self.footerView.frame.size.height)];
         self.selectionView.alpha = 0.0;
         if ([self.dataSource respondsToSelector:@selector(selectionBarColorForBarChartView:)])
         {
@@ -197,7 +199,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     createBars();
     createSelectionView();
     
-    // Position header and footer    
+    // Position header and footer
     self.headerView.frame = CGRectMake(self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.width, self.headerView.frame.size.height);
     self.footerView.frame = CGRectMake(self.bounds.origin.x, self.bounds.size.height - self.footerView.frame.size.height, self.bounds.size.width, self.footerView.frame.size.height);
 }
@@ -251,6 +253,11 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     return 0;
 }
 
+- (CGFloat)popOffset
+{
+    return self.bounds.size.height - self.footerView.frame.size.height;
+}
+
 #pragma mark - Setters
 
 - (void)setState:(JBChartViewState)state animated:(BOOL)animated callback:(void (^)())callback
@@ -261,7 +268,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     
     if (animated)
     {
-        CGFloat popOffset = self.bounds.size.height - self.footerView.frame.size.height;
+        CGFloat popOffset = [self popOffset];
         
         NSUInteger index = 0;
         for (UIView *barView in self.barViews)
