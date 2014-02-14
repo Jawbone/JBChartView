@@ -93,7 +93,7 @@ Secondly, you need to inform the delegate the y-position of each point (automati
     
 	- (CGFloat)lineChartView:(JBLineChartView *)lineChartView heightForIndex:(NSInteger)index
     {
-		return ...; // y-position of poinnt at index (x-axis)
+		return ...; // y-position of point at index (x-axis)
 	}
 	
 ## Customization
