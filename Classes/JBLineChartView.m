@@ -63,6 +63,7 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
 
 - (NSArray *)chartDataForLineChartLineView:(JBLineChartLineView*)lineChartLineView;
 - (UIColor *)lineColorForLineChartLineView:(JBLineChartLineView*)lineChartLineView;
+- (CGFloat)lineWidthForLineChartLineView:(JBLineChartLineView*)lineChartLineView;
 
 @end
 
@@ -269,6 +270,15 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
     return kJBLineChartViewDefaultLineColor;
 }
 
+- (CGFloat)lineWidthForLineChartLineView:(JBLineChartLineView*)lineChartLineView
+{
+    if ([self.dataSource respondsToSelector:@selector(lineWidthForLineChartView:)])
+    {
+        return [self.dataSource lineWidthForLineChartView:self];
+    }
+    return kJBLineChartLineViewStrokeWidth;
+}
+
 #pragma mark - Setters
 
 - (void)setState:(JBChartViewState)state animated:(BOOL)animated callback:(void (^)())callback
@@ -464,7 +474,7 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
     {
         self.shapeLayer.zPosition = 0.0f;
         self.shapeLayer.strokeColor = [self.delegate lineColorForLineChartLineView:self].CGColor;
-        self.shapeLayer.lineWidth = kJBLineChartLineViewStrokeWidth;
+        self.shapeLayer.lineWidth = [self.delegate lineWidthForLineChartLineView:self];
         self.shapeLayer.lineCap = kCALineCapRound;
         self.shapeLayer.lineJoin = kCALineJoinRound;
         self.shapeLayer.frame = self.bounds;
@@ -494,7 +504,7 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
     {
         CGContextSaveGState(context);
         {
-            CGContextSetLineWidth(context, kJBLineChartLineViewStrokeWidth);
+            CGContextSetLineWidth(context, [self.delegate lineWidthForLineChartLineView:self]);
             CGContextSetStrokeColorWithColor(context, [self.delegate lineColorForLineChartLineView:self].CGColor);
             CGContextSetLineCap(context, kCGLineCapRound);
             CGContextSetLineJoin(context, kCGLineJoinRound);
