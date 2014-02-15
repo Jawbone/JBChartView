@@ -79,7 +79,7 @@
 
 /**
  *  The color of the line within the chart.
- * 
+ *
  *  Default: black color
  *
  *  @param lineChartView The origin chart
