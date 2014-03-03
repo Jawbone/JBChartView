@@ -62,11 +62,16 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     self = [super initWithFrame:frame];
     if (self)
     {
-        self.clipsToBounds = NO;
+        self.clipsToBounds = YES;
         _showsSelection = YES;
         _cachedMaxHeight = kJBBarChartViewUndefinedMaxHeight;
     }
     return self;
+}
+
+- (id)init
+{
+    return [self initWithFrame:CGRectZero];
 }
 
 #pragma mark - Memory Management

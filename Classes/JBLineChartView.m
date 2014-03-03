@@ -114,6 +114,11 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
     return self;
 }
 
+- (id)init
+{
+    return [self initWithFrame:CGRectZero];
+}
+
 #pragma mark - Data
 
 - (void)reloadData
