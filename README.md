@@ -36,7 +36,7 @@ Simply add the following line to your <code>Podfile</code>:
 Your Podfile should look something like:
 
 	platform :ios, '7.0'
-	pod 'JBChartView', '~> 1.1.5'
+	pod 'JBChartView', '~> 1.1.6'
 	
 ### The Old School Way
 
@@ -158,6 +158,12 @@ Furthermore, the color of the selection bar (on touch events) can be customized 
 	- (UIColor *)selectionColorForLineChartView:(JBLineChartView *)lineChartView
 	{
 		return ...; // color of selection view
+	}
+The width of the chart's line is defaulted to 5 (points). It can be modified through the <i>optional</i> protocol:
+
+	- (CGFloat)lineWidthForLineChartView:(JBLineChartView *)lineChartView
+	{
+		return ...; // width of line
 	}
 	
 Lastly, a line chart's selection events are delegated back via:
