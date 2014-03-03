@@ -469,6 +469,7 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
     }
 
     NSAssert([self.delegate respondsToSelector:@selector(lineColorForLineChartLineView:)], @"JBLineChartLineView // delegate must implement - (UIColor *)lineColorForLineChartLineView:(JBLineChartLineView*)lineChartLineView");
+    NSAssert([self.delegate respondsToSelector:@selector(lineWidthForLineChartLineView:)], @"JBLineChartLineView // delegate must implement - (UIColor *)lineWidthForLineChartLineView:(JBLineChartLineView*)lineChartLineView");
 
     if (self.shapeLayer == nil)
     {
