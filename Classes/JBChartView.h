@@ -34,7 +34,7 @@ typedef NS_ENUM(NSInteger, JBChartViewState){
 @property (nonatomic, strong) UIView *headerView;
 
 /**
- *  The vertical padding between the header and highest chart point (bar, line, etc)
+ *  The vertical padding between the header and highest chart point (bar, line, etc).
  */
 @property (nonatomic, assign) CGFloat headerPadding;
 
@@ -51,7 +51,7 @@ typedef NS_ENUM(NSInteger, JBChartViewState){
 - (void)reloadData;
 
 /**
- *  State setter
+ *  State setter.
  *
  *  @param state    Either collapse or expanded.
  *  @param animated Whether or not the state should be animated or not.
@@ -60,7 +60,7 @@ typedef NS_ENUM(NSInteger, JBChartViewState){
 - (void)setState:(JBChartViewState)state animated:(BOOL)animated callback:(void (^)())callback;
 
 /**
- *  State setter
+ *  State setter.
  *
  *  @param state    Either collapse or expanded.
  *  @param animated Whether or not the state should be animated or not.
@@ -76,9 +76,9 @@ typedef NS_ENUM(NSInteger, JBChartViewState){
 @interface JBChartSelectionView : UIView
 
 /**
- * Base selection view color. This color will be faded to transparent vertically
+ * Base selection view color. This color will be faded to transparent vertically.
  *
- * Default: white color
+ * Default: white color.
  *
  */
 @property (nonatomic, strong) UIColor *bgColor;
