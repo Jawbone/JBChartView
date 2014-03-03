@@ -79,7 +79,7 @@
 
 /**
  *  The color of the line within the chart.
- * 
+ *
  *  Default: black color
  *
  *  @param lineChartView The origin chart
@@ -87,6 +87,17 @@
  *  @return The color to be used to draw the line on the chart (alphas < 1 are supported)
  */
 - (UIColor *)lineColorForLineChartView:(JBLineChartView *)lineChartView;
+
+/**
+ *  The width of the line within the chart.
+ *
+ *  Default: 5 points
+ *
+ *  @param lineChartView The origin chart
+ *
+ *  @return The width to be used to draw the line on the chart.
+ */
+- (CGFloat)lineWidthForLineChartView:(JBLineChartView *)lineChartView;
 
 /**
  *  The selection color to be overlayed on the chart during touch events.
