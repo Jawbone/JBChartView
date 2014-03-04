@@ -29,16 +29,7 @@
 
 @required
 
-/**
- *  Vertical position for line point at a given index (left to right). There is no ceiling on the the height;
- *  the chart will automatically normalize all values between the overal min and max heights.
- *
- *  @param lineChartView The origin chart.
- *  @param index         The 0-based index of a given line height (left to right, x-axis).
- *
- *  @return The y-axis value of the supplied line index (x-axis).
- */
-- (CGFloat)lineChartView:(JBLineChartView *)lineChartView heightForIndex:(NSInteger)index;
+- (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSInteger)horizontalIndex atLineIndex:(NSInteger)lineIndex;
 
 @optional
 
@@ -46,19 +37,21 @@
  *  Occurs when a touch gesture event occurs anywhere on the chart. The chart must be expanded, showsSelection must be YES,
  *  and the selection must occur within the bounds of the chart.
  *
- *  @param lineChartView The origin chart.
- *  @param index         The 0-based index of a selection point (left to right, x-axis).
+ *  @param lineChartView    A line chart object informing the delegate about the new selection.
+ *  @param index            The 0-based horizontal index of a selection point (left to right, x-axis).
+ *  @param lineIndex        An index number identifying a line in the chart.
  */
-- (void)lineChartView:(JBLineChartView *)lineChartView didSelectChartAtIndex:(NSInteger)index;
+- (void)lineChartView:(JBLineChartView *)lineChartView didSelectChartAtHorizontalIndex:(NSInteger)horizontalIndex atLineIndex:(NSInteger)lineIndex;
 
 /**
  *  Occurs when selection ends by either ending a touch event or selecting an area that is outside the view's bounds.
  *  For selection start events, see: didSelectChartAtIndex...
  *
- *  @param lineChartView The origin chart.
- *  @param index         The 0-based index of a selection point. Index will be -1 if the touch ends outside of the view's bounds.
+ *  @param lineChartView    A line chart object informing the delegate about the unselection.
+ *  @param horizontalIndex  The 0-based horizontal index of a selection point. Index will be -1 if the touch ends outside of the view's bounds.
+ *  @param lineIndex        An index number identifying a line in the chart.
  */
-- (void)lineChartView:(JBLineChartView *)lineChartView didUnselectChartAtIndex:(NSInteger)index;
+- (void)lineChartView:(JBLineChartView *)lineChartView didUnselectChartAtHorizontalIndex:(NSInteger)horizontalIndex atLineIndex:(NSInteger)lineIndex;
 
 @end
 
@@ -67,45 +60,57 @@
 @required
 
 /**
- *  The number of points in a given line chart equates to the number of values along the x-axis.
+ *  Returns the number of lines for the line chart.
  *
- *  @param lineChartView The origin chart.
+ *  @param lineChartView    The line chart object requesting this information.
  *
- *  @return Number of points in the given chart.
+ *  @return The number of lines in the line chart.
  */
-- (NSInteger)numberOfPointsInLineChartView:(JBLineChartView *)lineChartView;
+- (NSInteger)numberOfLinesInLineChartView:(JBLineChartView *)lineChartView;
+
+/**
+ *  Returns the number of lines for the line chart.
+ *
+ *  @param lineChartView    The line chart object requesting this information.
+ *  @param lineIndex        An index number identifying a line in the chart.
+ *
+ *  @return The number of vertical values for a given line in the line chart.
+ */
+- (NSInteger)lineChartView:(JBLineChartView *)lineChartView numberOfVerticalValuesAtLineIndex:(NSInteger)lineIndex;
 
 @optional
 
 /**
- *  The color of the line within the chart.
+ *  Returns the color of particular line at lineIndex within the chart.
  *
  *  Default: black color.
  *
- *  @param lineChartView The origin chart.
+ *  @param lineChartView    The line chart object requesting this information.
+ *  @param lineIndex        An index number identifying a line in the chart.
  *
- *  @return The color to be used to draw the line on the chart (alphas < 1 are supported).
+ *  @return The color to be used to shade a line in the chart.
  */
-- (UIColor *)lineColorForLineChartView:(JBLineChartView *)lineChartView;
+- (UIColor *)lineChartView:(JBLineChartView *)lineChartView colorForLineAtLineIndex:(NSInteger)lineIndex;
 
 /**
- *  The width of the line within the chart.
+ *  Returnst the width of particular line at lineIndex within the chart.
  *
  *  Default: 5 points.
  *
- *  @param lineChartView The origin chart.
+ *  @param lineChartView    The line chart object requesting this information.
+ *  @param lineIndex        An index number identifying a line in the chart.
  *
- *  @return The width to be used to draw the line on the chart.
+ *  @return The width to be used to draw a line in the chart.
  */
-- (CGFloat)lineWidthForLineChartView:(JBLineChartView *)lineChartView;
+- (CGFloat)lineChartView:(JBLineChartView *)lineChartView widthForLineAtLineIndex:(NSInteger)lineIndex;
 
 /**
- *  The selection color to be overlayed on the chart during touch events.
+ *  Returns the selection color to be overlayed on the chart during touch events.
  *  The color is automically faded to transparent (vertically).
  *
  *  Default: white color (faded to transparent).
  *
- *  @param lineChartView The origin chart.
+ *  @param lineChartView    The line chart object requesting this information.
  *
  *  @return The color to be used on chart selections.
  */

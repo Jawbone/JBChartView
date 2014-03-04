@@ -16,13 +16,21 @@
 
 #define ARC4RANDOM_MAX 0x100000000
 
+typedef NS_ENUM(NSInteger, JBLineChartLine){
+	JBLineChartLine1,
+    JBLineChartLine2,
+    JBLineChartLine3,
+    JBLineChartLineCount
+};
+
 // Numerics
 CGFloat const kJBLineChartViewControllerChartHeight = 250.0f;
 CGFloat const kJBLineChartViewControllerChartHeaderHeight = 75.0f;
 CGFloat const kJBLineChartViewControllerChartHeaderPadding = 20.0f;
 CGFloat const kJBLineChartViewControllerChartFooterHeight = 20.0f;
 CGFloat const kJBLineChartViewControllerChartLineWidth = 6.0f;
-NSInteger const kJBLineChartViewControllerNumChartPoints = 27;
+NSInteger const kJBLineChartViewControllerMaxNumChartPoints = 27;
+NSInteger const kJBLineChartViewControllerMinNumChartPoints = 2;
 
 // Strings
 NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
@@ -38,6 +46,7 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
 
 // Helpers
 - (void)initFakeData;
+- (NSArray *)largestLineData; // largest collection of fake line data
 
 @end
 
@@ -59,12 +68,30 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
 
 - (void)initFakeData
 {
-    NSMutableArray *mutableChartData = [NSMutableArray array];
-    for (int i=0; i<kJBLineChartViewControllerNumChartPoints; i++)
+    NSMutableArray *mutableLineCharts = [NSMutableArray array];
+    for (int lineIndex=0; lineIndex<JBLineChartLineCount; lineIndex++)
     {
-        [mutableChartData addObject:[NSNumber numberWithFloat:((double)arc4random() / ARC4RANDOM_MAX)]]; // random number between 0 and 1
+        NSMutableArray *mutableChartData = [NSMutableArray array];
+        for (int i=0; i<MAX(kJBLineChartViewControllerMinNumChartPoints, (arc4random() % kJBLineChartViewControllerMaxNumChartPoints)); i++)
+        {
+            [mutableChartData addObject:[NSNumber numberWithFloat:((double)arc4random() / ARC4RANDOM_MAX)]]; // random number between 0 and 1
+        }
+        [mutableLineCharts addObject:mutableChartData];
     }
-    _chartData = [NSArray arrayWithArray:mutableChartData];
+    _chartData = [NSArray arrayWithArray:mutableLineCharts];
+}
+
+- (NSArray *)largestLineData
+{
+    NSArray *largestLineData = nil;
+    for (NSArray *lineData in self.chartData)
+    {
+        if ([lineData count] > [largestLineData count])
+        {
+            largestLineData = lineData;
+        }
+    }
+    return largestLineData;
 }
 
 #pragma mark - View Lifecycle
@@ -101,7 +128,7 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
     footerView.leftLabel.textColor = [UIColor whiteColor];
     footerView.rightLabel.text = kJBStringLabel2013;
     footerView.rightLabel.textColor = [UIColor whiteColor];
-    footerView.sectionCount = kJBLineChartViewControllerNumChartPoints;
+    footerView.sectionCount = [[self largestLineData] count];
     self.lineChartView.footerView = footerView;
     
     [self.view addSubview:self.lineChartView];
@@ -130,37 +157,55 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
 
 #pragma mark - JBLineChartViewDelegate
 
-- (CGFloat)lineChartView:(JBLineChartView *)lineChartView heightForIndex:(NSInteger)index
+- (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSInteger)horizontalIndex atLineIndex:(NSInteger)lineIndex
 {
-    return [[self.chartData objectAtIndex:index] floatValue];
+    return [[[self.chartData objectAtIndex:lineIndex] objectAtIndex:horizontalIndex] floatValue];
 }
 
-- (void)lineChartView:(JBLineChartView *)lineChartView didSelectChartAtIndex:(NSInteger)index
+- (void)lineChartView:(JBLineChartView *)lineChartView didSelectChartAtHorizontalIndex:(NSInteger)horizontalIndex atLineIndex:(NSInteger)lineIndex
 {
-    NSNumber *valueNumber = [self.chartData objectAtIndex:index];
+    NSNumber *valueNumber = [[self largestLineData] objectAtIndex:horizontalIndex];
     [self.informationView setValueText:[NSString stringWithFormat:@"%.2f", [valueNumber floatValue]] unitText:kJBStringLabelMm];
-    [self.informationView setTitleText:[NSString stringWithFormat:@"%d", [kJBStringLabel1987 intValue] + (int)index]];
+    [self.informationView setTitleText:[NSString stringWithFormat:@"%d", [kJBStringLabel1987 intValue] + (int)horizontalIndex]];
     [self.informationView setHidden:NO animated:YES];
 }
 
-- (void)lineChartView:(JBLineChartView *)lineChartView didUnselectChartAtIndex:(NSInteger)index
+- (void)lineChartView:(JBLineChartView *)lineChartView didUnselectChartAtHorizontalIndex:(NSInteger)horizontalIndex atLineIndex:(NSInteger)lineIndex
 {
     [self.informationView setHidden:YES animated:YES];
 }
 
 #pragma mark - JBLineChartViewDataSource
 
-- (NSInteger)numberOfPointsInLineChartView:(JBLineChartView *)lineChartView
+- (NSInteger)numberOfLinesInLineChartView:(JBLineChartView *)lineChartView
 {
     return [self.chartData count];
 }
 
-- (UIColor *)lineColorForLineChartView:(JBLineChartView *)lineChartView
+- (NSInteger)lineChartView:(JBLineChartView *)lineChartView numberOfVerticalValuesAtLineIndex:(NSInteger)lineIndex
 {
-    return kJBColorLineChartLineColor;
+    return [[self.chartData objectAtIndex:lineIndex] count];
 }
 
-- (CGFloat)lineWidthForLineChartView:(JBLineChartView *)lineChartView
+- (UIColor *)lineChartView:(JBLineChartView *)lineChartView colorForLineAtLineIndex:(NSInteger)lineIndex
+{
+    switch (lineIndex) {
+        case JBLineChartLine1:
+            return [UIColor redColor];
+            break;
+        case JBLineChartLine2:
+            return [UIColor greenColor];
+            break;
+        case JBLineChartLine3:
+            return [UIColor blueColor];
+            break;
+        default:
+            break;
+    }
+    return kJBColorLineChartDefaultLineColor;
+}
+
+- (CGFloat)lineChartView:(JBLineChartView *)lineChartView widthForLineAtLineIndex:(NSInteger)lineIndex
 {
     return kJBLineChartViewControllerChartLineWidth;
 }
