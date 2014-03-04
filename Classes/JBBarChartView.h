@@ -18,11 +18,11 @@
 @property (nonatomic, weak) id<JBBarChartViewDataSource> dataSource;
 
 /**
- *  If showsSelection is YES, a vertical highlight will overlayed on a bar during touch events.
- *  
+ *  Vertical highlight overlayed on a the line graph during touch events.
+ *
  *  Default: YES.
  */
-@property (nonatomic, assign) BOOL showsSelection;
+@property (nonatomic, assign) BOOL showsVerticalSelection;
 
 @end
 

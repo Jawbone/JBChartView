@@ -17,11 +17,11 @@
 @property (nonatomic, weak) id<JBLineChartViewDataSource> dataSource;
 
 /**
- *  If showsSelection is YES, a vertical highlight will overlayed on a the line graph during touch events.
+ *  Vertical highlight overlayed on a the line graph during touch events.
  *
  *  Default: YES.
  */
-@property (nonatomic, assign) BOOL showsSelection;
+@property (nonatomic, assign) BOOL showsVerticalSelection;
 
 @end
 
@@ -39,7 +39,7 @@
  *
  *  @param lineChartView    A line chart object informing the delegate about the new selection.
  *  @param index            The 0-based horizontal index of a selection point (left to right, x-axis).
- *  @param lineIndex        An index number identifying a line in the chart.
+ *  @param lineIndex        An index number identifying the closest line in the chart to the current touch point.
  */
 - (void)lineChartView:(JBLineChartView *)lineChartView didSelectChartAtHorizontalIndex:(NSInteger)horizontalIndex atLineIndex:(NSInteger)lineIndex;
 
@@ -49,7 +49,7 @@
  *
  *  @param lineChartView    A line chart object informing the delegate about the unselection.
  *  @param horizontalIndex  The 0-based horizontal index of a selection point. Index will be -1 if the touch ends outside of the view's bounds.
- *  @param lineIndex        An index number identifying a line in the chart.
+ *  @param lineIndex        An index number identifying the closest line in the chart to the current touch point.
  */
 - (void)lineChartView:(JBLineChartView *)lineChartView didUnselectChartAtHorizontalIndex:(NSInteger)horizontalIndex atLineIndex:(NSInteger)lineIndex;
 

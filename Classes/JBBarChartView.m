@@ -63,7 +63,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     if (self)
     {
         self.clipsToBounds = YES;
-        _showsSelection = YES;
+        _showsVerticalSelection = YES;
         _cachedMaxHeight = kJBBarChartViewUndefinedMaxHeight;
     }
     return self;
@@ -364,7 +364,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 - (void)touchesEndedOrCancelledWithTouches:(NSSet *)touches
 {
-    if (!self.showsSelection || self.state == JBChartViewStateCollapsed)
+    if (!self.showsVerticalSelection || self.state == JBChartViewStateCollapsed)
     {
         return;
     }
@@ -406,7 +406,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    if (!self.showsSelection || self.state == JBChartViewStateCollapsed)
+    if (!self.showsVerticalSelection || self.state == JBChartViewStateCollapsed)
     {
         return;
     }
@@ -432,7 +432,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    if (!self.showsSelection || self.state == JBChartViewStateCollapsed)
+    if (!self.showsVerticalSelection || self.state == JBChartViewStateCollapsed)
     {
         return;
     }

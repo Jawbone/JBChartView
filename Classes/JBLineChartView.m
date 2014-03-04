@@ -118,7 +118,7 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
     if (self)
     {
         self.clipsToBounds = NO;
-        _showsSelection = YES;
+        _showsVerticalSelection = YES;
         _cachedMaxHeight = kJBLineChartViewUndefinedMaxHeight;
     }
     return self;
@@ -367,7 +367,7 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
 
 - (void)touchesEndedOrCancelledWithTouches:(NSSet *)touches
 {
-    if (!self.showsSelection || self.state == JBChartViewStateCollapsed)
+    if (!self.showsVerticalSelection || self.state == JBChartViewStateCollapsed)
     {
         return;
     }
@@ -413,7 +413,7 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    if (!self.showsSelection || self.state == JBChartViewStateCollapsed)
+    if (!self.showsVerticalSelection || self.state == JBChartViewStateCollapsed)
     {
         return;
     }
@@ -433,7 +433,7 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    if (!self.showsSelection || self.state == JBChartViewStateCollapsed)
+    if (!self.showsVerticalSelection || self.state == JBChartViewStateCollapsed)
     {
         return;
     }

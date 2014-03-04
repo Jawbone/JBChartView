@@ -164,7 +164,7 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
 
 - (void)lineChartView:(JBLineChartView *)lineChartView didSelectChartAtHorizontalIndex:(NSInteger)horizontalIndex atLineIndex:(NSInteger)lineIndex
 {
-    NSNumber *valueNumber = [[self largestLineData] objectAtIndex:horizontalIndex];
+    NSNumber *valueNumber = [[self.chartData objectAtIndex:lineIndex] objectAtIndex:horizontalIndex];
     [self.informationView setValueText:[NSString stringWithFormat:@"%.2f", [valueNumber floatValue]] unitText:kJBStringLabelMm];
     [self.informationView setTitleText:[NSString stringWithFormat:@"%d", [kJBStringLabel1987 intValue] + (int)horizontalIndex]];
     [self.informationView setHidden:NO animated:YES];
