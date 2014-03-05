@@ -63,7 +63,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     if (self)
     {
         self.clipsToBounds = YES;
-        _showsVerticalSelection = YES;
+        _showsBarSelection = YES;
         _cachedMaxHeight = kJBBarChartViewUndefinedMaxHeight;
     }
     return self;
@@ -184,9 +184,9 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
         
         self.selectionView = [[JBChartSelectionView alloc] initWithFrame:CGRectMake(0, 0, [self barWidth], self.bounds.size.height - self.footerView.frame.size.height)];
         self.selectionView.alpha = 0.0;
-        if ([self.dataSource respondsToSelector:@selector(verticalSelectionBarColorForBarChartView:)])
+        if ([self.dataSource respondsToSelector:@selector(barSelectionColorForBarChartView:)])
         {
-            self.selectionView.bgColor = [self.dataSource verticalSelectionBarColorForBarChartView:self];
+            self.selectionView.bgColor = [self.dataSource barSelectionColorForBarChartView:self];
         }
         
         // Add new selection bar
@@ -364,7 +364,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 - (void)touchesEndedOrCancelledWithTouches:(NSSet *)touches
 {
-    if (!self.showsVerticalSelection || self.state == JBChartViewStateCollapsed)
+    if (!self.showsBarSelection || self.state == JBChartViewStateCollapsed)
     {
         return;
     }
@@ -406,7 +406,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    if (!self.showsVerticalSelection || self.state == JBChartViewStateCollapsed)
+    if (!self.showsBarSelection || self.state == JBChartViewStateCollapsed)
     {
         return;
     }
@@ -432,7 +432,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    if (!self.showsVerticalSelection || self.state == JBChartViewStateCollapsed)
+    if (!self.showsBarSelection || self.state == JBChartViewStateCollapsed)
     {
         return;
     }

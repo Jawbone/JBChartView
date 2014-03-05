@@ -145,7 +145,7 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
     return barView;
 }
 
-- (UIColor *)verticalSelectionBarColorForBarChartView:(JBBarChartView *)barChartView
+- (UIColor *)barSelectionColorForBarChartView:(JBBarChartView *)barChartView
 {
     return [UIColor whiteColor];
 }

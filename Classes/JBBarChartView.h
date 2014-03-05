@@ -18,11 +18,11 @@
 @property (nonatomic, weak) id<JBBarChartViewDataSource> dataSource;
 
 /**
- *  Vertical highlight overlayed on a the line graph during touch events.
+ *  Vertical highlight overlayed on bar during touch events.
  *
  *  Default: YES.
  */
-@property (nonatomic, assign) BOOL showsVerticalSelection;
+@property (nonatomic, assign) BOOL showsBarSelection;
 
 @end
 
@@ -111,6 +111,6 @@
  *
  *  @return The color to be used on each bar selection.
  */
-- (UIColor *)verticalSelectionBarColorForBarChartView:(JBBarChartView *)barChartView;
+- (UIColor *)barSelectionColorForBarChartView:(JBBarChartView *)barChartView;
 
 @end
