@@ -79,9 +79,9 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
 
 @property (nonatomic, strong) NSArray *chartData;
 @property (nonatomic, strong) JBLineChartLineView *lineView;
-@property (nonatomic, strong) JBChartSelectionView *selectionView;
+@property (nonatomic, strong) JBChartVerticalSelectionView *verticalSelectionView;
 @property (nonatomic, assign) CGFloat cachedMaxHeight;
-@property (nonatomic, assign) BOOL selectionViewVisible;
+@property (nonatomic, assign) BOOL verticalSelectionViewVisible;
 
 // View quick accessors
 - (CGFloat)normalizedHeightForRawHeight:(CGFloat)rawHeight;
@@ -97,7 +97,7 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
 - (void)touchesEndedOrCancelledWithTouches:(NSSet *)touches;
 
 // Setters
-- (void)setSelectionViewVisible:(BOOL)selectionViewVisible animated:(BOOL)animated;
+- (void)setVerticalSelectionViewVisible:(BOOL)verticalSelectionViewVisible animated:(BOOL)animated;
 
 @end
 
@@ -200,19 +200,19 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
      * Creates a vertical selection view for touch events
      */
     dispatch_block_t createSelectionView = ^{
-        if (self.selectionView)
+        if (self.verticalSelectionView)
         {
-            [self.selectionView removeFromSuperview];
-            self.selectionView = nil;
+            [self.verticalSelectionView removeFromSuperview];
+            self.verticalSelectionView = nil;
         }
 
-        self.selectionView = [[JBChartSelectionView alloc] initWithFrame:CGRectMake(0, 0, kJBLineSelectionViewWidth, self.bounds.size.height - self.footerView.frame.size.height)];
-        self.selectionView.alpha = 0.0;
+        self.verticalSelectionView = [[JBChartVerticalSelectionView alloc] initWithFrame:CGRectMake(0, 0, kJBLineSelectionViewWidth, self.bounds.size.height - self.footerView.frame.size.height)];
+        self.verticalSelectionView.alpha = 0.0;
         if ([self.dataSource respondsToSelector:@selector(verticalSelectionColorForLineChartView:)])
         {
-            self.selectionView.bgColor = [self.dataSource verticalSelectionColorForLineChartView:self];
+            self.verticalSelectionView.bgColor = [self.dataSource verticalSelectionColorForLineChartView:self];
         }
-        [self insertSubview:self.selectionView belowSubview:self.footerView];
+        [self insertSubview:self.verticalSelectionView belowSubview:self.footerView];
     };
 
     createChartData();
@@ -400,12 +400,12 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
 
 - (void)touchesEndedOrCancelledWithTouches:(NSSet *)touches
 {
-    if (!self.showsVerticalSelection || self.state == JBChartViewStateCollapsed)
+    if (self.state == JBChartViewStateCollapsed)
     {
         return;
     }
 
-    [self setSelectionViewVisible:NO animated:YES];
+    [self setVerticalSelectionViewVisible:NO animated:YES];
 
     UITouch *touch = [touches anyObject];
     CGPoint touchPoint = [touch locationInView:self];
@@ -418,34 +418,34 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
 
 #pragma mark - Setters
 
-- (void)setSelectionViewVisible:(BOOL)selectionViewVisible animated:(BOOL)animated
+- (void)setVerticalSelectionViewVisible:(BOOL)verticalSelectionViewVisible animated:(BOOL)animated
 {
-    _selectionViewVisible = selectionViewVisible;
+    _verticalSelectionViewVisible = verticalSelectionViewVisible;
 
-    [self bringSubviewToFront:self.selectionView];
+    [self bringSubviewToFront:self.verticalSelectionView];
 
     if (animated)
     {
         [UIView animateWithDuration:kJBChartViewDefaultAnimationDuration delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
-            self.selectionView.alpha = self.selectionViewVisible ? 1.0 : 0.0;
+            self.verticalSelectionView.alpha = self.verticalSelectionViewVisible ? 1.0 : 0.0;
         } completion:nil];
     }
     else
     {
-        self.selectionView.alpha = _selectionViewVisible ? 1.0 : 0.0;
+        self.verticalSelectionView.alpha = _verticalSelectionViewVisible ? 1.0 : 0.0;
     }
 }
 
-- (void)setSelectionViewVisible:(BOOL)selectionViewVisible
+- (void)setVerticalSelectionViewVisible:(BOOL)verticalSelectionViewVisible
 {
-    [self setSelectionViewVisible:selectionViewVisible animated:NO];
+    [self setVerticalSelectionViewVisible:verticalSelectionViewVisible animated:NO];
 }
 
 #pragma mark - Gestures
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    if (!self.showsVerticalSelection || self.state == JBChartViewStateCollapsed)
+    if (self.state == JBChartViewStateCollapsed)
     {
         return;
     }
@@ -458,14 +458,14 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
         [self.delegate lineChartView:self didSelectChartAtHorizontalIndex:[self horizontalIndexForPoint:touchPoint] atLineIndex:[self lineIndexForTouch:touch]];
     }
     
-    CGFloat xOffset = fmin(self.bounds.size.width - self.selectionView.frame.size.width, fmax(0, touchPoint.x - (ceil(self.selectionView.frame.size.width * 0.5))));
-    self.selectionView.frame = CGRectMake(xOffset, self.selectionView.frame.origin.y, self.selectionView.frame.size.width, self.selectionView.frame.size.height);
-    [self setSelectionViewVisible:YES animated:YES];
+    CGFloat xOffset = fmin(self.bounds.size.width - self.verticalSelectionView.frame.size.width, fmax(0, touchPoint.x - (ceil(self.verticalSelectionView.frame.size.width * 0.5))));
+    self.verticalSelectionView.frame = CGRectMake(xOffset, self.verticalSelectionView.frame.origin.y, self.verticalSelectionView.frame.size.width, self.verticalSelectionView.frame.size.height);
+    [self setVerticalSelectionViewVisible:YES animated:YES];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    if (!self.showsVerticalSelection || self.state == JBChartViewStateCollapsed)
+    if (self.state == JBChartViewStateCollapsed)
     {
         return;
     }
@@ -478,9 +478,9 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
         [self.delegate lineChartView:self didSelectChartAtHorizontalIndex:[self horizontalIndexForPoint:touchPoint] atLineIndex:[self lineIndexForTouch:touch]];
     }
 
-    CGFloat xOffset = fmin(self.bounds.size.width - self.selectionView.frame.size.width, fmax(0, touchPoint.x - (ceil(self.selectionView.frame.size.width * 0.5))));
-    self.selectionView.frame = CGRectMake(xOffset, self.selectionView.frame.origin.y, self.selectionView.frame.size.width, self.selectionView.frame.size.height);
-    [self setSelectionViewVisible:YES animated:YES];
+    CGFloat xOffset = fmin(self.bounds.size.width - self.verticalSelectionView.frame.size.width, fmax(0, touchPoint.x - (ceil(self.verticalSelectionView.frame.size.width * 0.5))));
+    self.verticalSelectionView.frame = CGRectMake(xOffset, self.verticalSelectionView.frame.origin.y, self.verticalSelectionView.frame.size.width, self.verticalSelectionView.frame.size.height);
+    [self setVerticalSelectionViewVisible:YES animated:YES];
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event

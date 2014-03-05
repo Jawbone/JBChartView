@@ -17,11 +17,18 @@
 @property (nonatomic, weak) id<JBLineChartViewDataSource> dataSource;
 
 /**
- *  Vertical highlight overlayed on a the line graph during touch events.
+ *  Vertical highlight overlayed on a line graph during touch events.
  *
  *  Default: YES.
  */
 @property (nonatomic, assign) BOOL showsVerticalSelection;
+
+/**
+ *  Line highlight overlayed on the  a line within the graph during touch events.
+ *
+ *  Default: YES.
+ */
+@property (nonatomic, assign) BOOL showsLineSelection;
 
 @end
 
@@ -34,7 +41,7 @@
 @optional
 
 /**
- *  Occurs when a touch gesture event occurs anywhere on the chart. The chart must be expanded, showsSelection must be YES,
+ *  Occurs when a touch gesture event occurs anywhere on the chart. The chart must be expanded,
  *  and the selection must occur within the bounds of the chart.
  *
  *  @param lineChartView    A line chart object informing the delegate about the new selection.

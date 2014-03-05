@@ -24,8 +24,8 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 @property (nonatomic, strong) NSArray *barViews;
 @property (nonatomic, assign) CGFloat barPadding;
 @property (nonatomic, assign) CGFloat cachedMaxHeight;
-@property (nonatomic, strong) JBChartSelectionView *selectionView;
-@property (nonatomic, assign) BOOL selectionViewVisible;
+@property (nonatomic, strong) JBChartVerticalSelectionView *verticalSelectionView;
+@property (nonatomic, assign) BOOL verticalSelectionViewVisible;
 
 // View quick accessors
 - (CGFloat)availableHeight;
@@ -41,7 +41,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 - (void)touchesEndedOrCancelledWithTouches:(NSSet *)touches;
 
 // Setters
-- (void)setSelectionViewVisible:(BOOL)selectionViewVisible animated:(BOOL)animated;
+- (void)setVerticalSelectionViewVisible:(BOOL)verticalSelectionViewVisible animated:(BOOL)animated;
 
 @end
 
@@ -176,27 +176,27 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     dispatch_block_t createSelectionView = ^{
         
         // Remove old selection bar
-        if (self.selectionView)
+        if (self.verticalSelectionView)
         {
-            [self.selectionView removeFromSuperview];
-            self.selectionView = nil;
+            [self.verticalSelectionView removeFromSuperview];
+            self.verticalSelectionView = nil;
         }
         
-        self.selectionView = [[JBChartSelectionView alloc] initWithFrame:CGRectMake(0, 0, [self barWidth], self.bounds.size.height - self.footerView.frame.size.height)];
-        self.selectionView.alpha = 0.0;
+        self.verticalSelectionView = [[JBChartVerticalSelectionView alloc] initWithFrame:CGRectMake(0, 0, [self barWidth], self.bounds.size.height - self.footerView.frame.size.height)];
+        self.verticalSelectionView.alpha = 0.0;
         if ([self.dataSource respondsToSelector:@selector(barSelectionColorForBarChartView:)])
         {
-            self.selectionView.bgColor = [self.dataSource barSelectionColorForBarChartView:self];
+            self.verticalSelectionView.bgColor = [self.dataSource barSelectionColorForBarChartView:self];
         }
         
         // Add new selection bar
         if (self.footerView)
         {
-            [self insertSubview:self.selectionView belowSubview:self.footerView];
+            [self insertSubview:self.verticalSelectionView belowSubview:self.footerView];
         }
         else
         {
-            [self addSubview:self.selectionView];
+            [self addSubview:self.verticalSelectionView];
         }
     };
     
@@ -368,7 +368,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     {
         return;
     }
-    [self setSelectionViewVisible:NO animated:YES];
+    [self setVerticalSelectionViewVisible:NO animated:YES];
     
     UITouch *touch = [touches anyObject];
     CGPoint touchPoint = [touch locationInView:self];
@@ -381,25 +381,25 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 #pragma mark - Setters
 
-- (void)setSelectionViewVisible:(BOOL)selectionViewVisible animated:(BOOL)animated
+- (void)setVerticalSelectionViewVisible:(BOOL)verticalSelectionViewVisible animated:(BOOL)animated
 {
-    _selectionViewVisible = selectionViewVisible;
+    _verticalSelectionViewVisible = verticalSelectionViewVisible;
     
     if (animated)
     {
         [UIView animateWithDuration:kJBChartViewDefaultAnimationDuration delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
-            self.selectionView.alpha = self.selectionViewVisible ? 1.0 : 0.0;
+            self.verticalSelectionView.alpha = self.verticalSelectionViewVisible ? 1.0 : 0.0;
         } completion:nil];
     }
     else
     {
-        self.selectionView.alpha = _selectionViewVisible ? 1.0 : 0.0;
+        self.verticalSelectionView.alpha = _verticalSelectionViewVisible ? 1.0 : 0.0;
     }
 }
 
-- (void)setSelectionViewVisible:(BOOL)selectionViewVisible
+- (void)setVerticalSelectionViewVisible:(BOOL)verticalSelectionViewVisible
 {
-    [self setSelectionViewVisible:selectionViewVisible animated:NO];
+    [self setVerticalSelectionViewVisible:verticalSelectionViewVisible animated:NO];
 }
 
 #pragma mark - Touches
@@ -415,14 +415,14 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     UIView *barView = [self barViewForForPoint:touchPoint];
     if (barView == nil)
     {
-        [self setSelectionViewVisible:NO animated:YES];
+        [self setVerticalSelectionViewVisible:NO animated:YES];
         return;
     }
     CGRect barViewFrame = barView.frame;
-    CGRect selectionViewFrame = self.selectionView.frame;
+    CGRect selectionViewFrame = self.verticalSelectionView.frame;
     selectionViewFrame.origin.x = barViewFrame.origin.x;
-    self.selectionView.frame = selectionViewFrame;
-    [self setSelectionViewVisible:YES animated:YES];
+    self.verticalSelectionView.frame = selectionViewFrame;
+    [self setVerticalSelectionViewVisible:YES animated:YES];
     
     if ([self.delegate respondsToSelector:@selector(barChartView:didSelectBarAtIndex:)])
     {
@@ -441,14 +441,14 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     UIView *barView = [self barViewForForPoint:touchPoint];
     if (barView == nil)
     {
-        [self setSelectionViewVisible:NO animated:YES];
+        [self setVerticalSelectionViewVisible:NO animated:YES];
         return;
     }
     CGRect barViewFrame = barView.frame;
-    CGRect selectionViewFrame = self.selectionView.frame;
+    CGRect selectionViewFrame = self.verticalSelectionView.frame;
     selectionViewFrame.origin.x = barViewFrame.origin.x;
-    self.selectionView.frame = selectionViewFrame;
-    [self setSelectionViewVisible:YES animated:YES];
+    self.verticalSelectionView.frame = selectionViewFrame;
+    [self setVerticalSelectionViewVisible:YES animated:YES];
     
     if ([self.delegate respondsToSelector:@selector(barChartView:didSelectBarAtIndex:)])
     {
