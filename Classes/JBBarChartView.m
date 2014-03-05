@@ -184,9 +184,9 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
         
         self.selectionView = [[JBChartSelectionView alloc] initWithFrame:CGRectMake(0, 0, [self barWidth], self.bounds.size.height - self.footerView.frame.size.height)];
         self.selectionView.alpha = 0.0;
-        if ([self.dataSource respondsToSelector:@selector(selectionBarColorForBarChartView:)])
+        if ([self.dataSource respondsToSelector:@selector(verticalSelectionBarColorForBarChartView:)])
         {
-            self.selectionView.bgColor = [self.dataSource selectionBarColorForBarChartView:self];
+            self.selectionView.bgColor = [self.dataSource verticalSelectionBarColorForBarChartView:self];
         }
         
         // Add new selection bar

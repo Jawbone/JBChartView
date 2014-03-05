@@ -105,7 +105,7 @@
 - (CGFloat)lineChartView:(JBLineChartView *)lineChartView widthForLineAtLineIndex:(NSInteger)lineIndex;
 
 /**
- *  Returns the selection color to be overlayed on the chart during touch events.
+ *  Returns the (vertical) selection color to be overlayed on the chart during touch events.
  *  The color is automically faded to transparent (vertically).
  *
  *  Default: white color (faded to transparent).
@@ -114,6 +114,6 @@
  *
  *  @return The color to be used on chart selections.
  */
-- (UIColor *)selectionColorForLineChartView:(JBLineChartView *)lineChartView;
+- (UIColor *)verticalSelectionColorForLineChartView:(JBLineChartView *)lineChartView;
 
 @end

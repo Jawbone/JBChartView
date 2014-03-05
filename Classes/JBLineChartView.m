@@ -32,7 +32,7 @@ CGFloat static const kJBLineChartViewUndefinedMaxHeight = -1.0f;
 // Colors (JBLineChartView)
 static UIColor *kJBLineChartViewDefaultLineColor = nil;
 
-@interface CALineLayer : CAShapeLayer
+@interface JBLineLayer : CAShapeLayer
 
 @property (nonatomic, assign) NSInteger tag;
 
@@ -63,7 +63,7 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
 - (void)fireCallback:(void (^)())callback;
 
 // View helpers
-- (CALineLayer *)lineLayerForLineIndex:(NSUInteger)lineIndex;
+- (JBLineLayer *)lineLayerForLineIndex:(NSUInteger)lineIndex;
 
 @end
 
@@ -93,7 +93,7 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
 // Touch helpers
 - (NSArray *)largestLineData; // largest collection of line data
 - (NSInteger)horizontalIndexForPoint:(CGPoint)point;
-- (NSInteger)lineIndexForPoint:(CGPoint)point;
+- (NSInteger)lineIndexForTouch:(UITouch *)touch;
 - (void)touchesEndedOrCancelledWithTouches:(NSSet *)touches;
 
 // Setters
@@ -208,9 +208,9 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
 
         self.selectionView = [[JBChartSelectionView alloc] initWithFrame:CGRectMake(0, 0, kJBLineSelectionViewWidth, self.bounds.size.height - self.footerView.frame.size.height)];
         self.selectionView.alpha = 0.0;
-        if ([self.dataSource respondsToSelector:@selector(selectionColorForLineChartView:)])
+        if ([self.dataSource respondsToSelector:@selector(verticalSelectionColorForLineChartView:)])
         {
-            self.selectionView.bgColor = [self.dataSource selectionColorForLineChartView:self];
+            self.selectionView.bgColor = [self.dataSource verticalSelectionColorForLineChartView:self];
         }
         [self insertSubview:self.selectionView belowSubview:self.footerView];
     };
@@ -366,9 +366,36 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
     return selectedIndex;
 }
 
-- (NSInteger)lineIndexForPoint:(CGPoint)point
+- (NSInteger)lineIndexForTouch:(UITouch *)touch
 {
-    return 0;
+    CGPoint touchPoint = [touch locationInView:self.lineView];
+    NSInteger horizontalIndex = [self horizontalIndexForPoint:touchPoint];
+    NSInteger shortestIndex = -1;
+
+    if (horizontalIndex >= 0)
+    {
+        NSUInteger shortestDistance = INT_MAX;
+        NSAssert([self.dataSource respondsToSelector:@selector(numberOfLinesInLineChartView:)], @"JBLineChartView // dataSource must implement - (NSInteger)numberOfLinesInLineChartView:(JBLineChartView *)lineChartView");
+
+        for (NSUInteger lineIndex=0; lineIndex<[self.dataSource numberOfLinesInLineChartView:self]; lineIndex++)
+        {
+            NSAssert([self.dataSource respondsToSelector:@selector(lineChartView:numberOfVerticalValuesAtLineIndex:)], @"JBLineChartView // dataSource must implement - (NSInteger)lineChartView:(JBLineChartView *)lineChartView numberOfVerticalValuesAtLineIndex:(NSInteger)lineIndex");
+            if ([self.dataSource lineChartView:self numberOfVerticalValuesAtLineIndex:lineIndex] > horizontalIndex)
+            {
+                NSAssert([self.delegate respondsToSelector:@selector(lineChartView:verticalValueForHorizontalIndex:atLineIndex:)], @"JBLineChartView // delegate must implement - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSInteger)horizontalIndex atLineIndex:(NSInteger)lineIndex");
+                CGFloat rawHeight =  [self.delegate lineChartView:self verticalValueForHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
+                CGFloat normalizedHeight = [self normalizedHeightForRawHeight:rawHeight];
+                CGFloat currentDistance = abs((self.lineView.frame.size.height - (MIN(MAX(0, touchPoint.y), self.lineView.frame.size.height))) - normalizedHeight);
+                
+                if (currentDistance < shortestDistance)
+                {
+                    shortestDistance = currentDistance;
+                    shortestIndex = lineIndex;
+                }
+            }
+        }
+    }
+    return shortestIndex;
 }
 
 - (void)touchesEndedOrCancelledWithTouches:(NSSet *)touches
@@ -385,7 +412,7 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
     
     if ([self.delegate respondsToSelector:@selector(lineChartView:didUnselectChartAtHorizontalIndex:atLineIndex:)])
     {
-        [self.delegate lineChartView:self didUnselectChartAtHorizontalIndex:[self horizontalIndexForPoint:touchPoint] atLineIndex:[self lineIndexForPoint:touchPoint]];
+        [self.delegate lineChartView:self didUnselectChartAtHorizontalIndex:[self horizontalIndexForPoint:touchPoint] atLineIndex:[self lineIndexForTouch:touch]];
     }
 }
 
@@ -428,7 +455,7 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
 
     if ([self.delegate respondsToSelector:@selector(lineChartView:didSelectChartAtHorizontalIndex:atLineIndex:)])
     {
-        [self.delegate lineChartView:self didSelectChartAtHorizontalIndex:[self horizontalIndexForPoint:touchPoint] atLineIndex:[self lineIndexForPoint:touchPoint]];
+        [self.delegate lineChartView:self didSelectChartAtHorizontalIndex:[self horizontalIndexForPoint:touchPoint] atLineIndex:[self lineIndexForTouch:touch]];
     }
     
     CGFloat xOffset = fmin(self.bounds.size.width - self.selectionView.frame.size.width, fmax(0, touchPoint.x - (ceil(self.selectionView.frame.size.width * 0.5))));
@@ -448,7 +475,7 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
    
     if ([self.delegate respondsToSelector:@selector(lineChartView:didSelectChartAtHorizontalIndex:atLineIndex:)])
     {
-        [self.delegate lineChartView:self didSelectChartAtHorizontalIndex:[self horizontalIndexForPoint:touchPoint] atLineIndex:[self lineIndexForPoint:touchPoint]];
+        [self.delegate lineChartView:self didSelectChartAtHorizontalIndex:[self horizontalIndexForPoint:touchPoint] atLineIndex:[self lineIndexForTouch:touch]];
     }
 
     CGFloat xOffset = fmin(self.bounds.size.width - self.selectionView.frame.size.width, fmax(0, touchPoint.x - (ceil(self.selectionView.frame.size.width * 0.5))));
@@ -526,10 +553,10 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
             index++;
         }
         
-        CALineLayer *shapeLayer = [self lineLayerForLineIndex:lineIndex];
+        JBLineLayer *shapeLayer = [self lineLayerForLineIndex:lineIndex];
         if (shapeLayer == nil)
         {
-            shapeLayer = [CALineLayer layer];
+            shapeLayer = [JBLineLayer layer];
             shapeLayer.tag = lineIndex;
         }
         
@@ -625,15 +652,15 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
     }
 }
 
-- (CALineLayer *)lineLayerForLineIndex:(NSUInteger)lineIndex
+- (JBLineLayer *)lineLayerForLineIndex:(NSUInteger)lineIndex
 {
     for (CALayer *layer in [self.layer sublayers])
     {
-        if ([layer isKindOfClass:[CALineLayer class]])
+        if ([layer isKindOfClass:[JBLineLayer class]])
         {
-            if (((CALineLayer *)layer).tag == lineIndex)
+            if (((JBLineLayer *)layer).tag == lineIndex)
             {
-                return (CALineLayer *)layer;
+                return (JBLineLayer *)layer;
             }
         }
     }
@@ -665,7 +692,7 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
 
 @end
 
-@implementation CALineLayer
+@implementation JBLineLayer
 
 #pragma mark - Alloc/Init
 
