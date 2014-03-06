@@ -137,6 +137,6 @@
  *
  *  @return The color to be used to highlight a line during chart selections.
  */
-- (UIColor *)lineSelectionColorForLineChartView:(JBLineChartView *)lineChartView atLineIndex:(NSInteger)lineIndex;
+- (UIColor *)lineChartView:(JBLineChartView *)lineChartView selectionColorForLineAtLineIndex:(NSInteger)lineIndex;
 
 @end

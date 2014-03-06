@@ -28,3 +28,4 @@
 #define kJBColorLineChartHeader UIColorFromHex(0x1c474e)
 #define kJBColorLineChartHeaderSeparatorColor UIColorFromHex(0x8eb6b7)
 #define kJBColorLineChartDefaultLineColor [UIColor colorWithWhite:1.0 alpha:0.5]
+#define kJBColorLineChartDefaultSelectedLineColor [UIColor colorWithWhite:0.0 alpha:1.0]

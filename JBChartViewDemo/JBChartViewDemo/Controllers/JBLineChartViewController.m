@@ -189,20 +189,12 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
 
 - (UIColor *)lineChartView:(JBLineChartView *)lineChartView colorForLineAtLineIndex:(NSInteger)lineIndex
 {
-    switch (lineIndex) {
-        case JBLineChartLine1:
-            return [UIColor redColor];
-            break;
-        case JBLineChartLine2:
-            return [UIColor greenColor];
-            break;
-        case JBLineChartLine3:
-            return [UIColor blueColor];
-            break;
-        default:
-            break;
-    }
     return kJBColorLineChartDefaultLineColor;
+}
+
+- (UIColor *)lineChartView:(JBLineChartView *)lineChartView selectionColorForLineAtLineIndex:(NSInteger)lineIndex
+{
+    return kJBColorLineChartDefaultSelectedLineColor;
 }
 
 - (CGFloat)lineChartView:(JBLineChartView *)lineChartView widthForLineAtLineIndex:(NSInteger)lineIndex
