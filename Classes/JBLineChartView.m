@@ -209,11 +209,21 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
 
         self.verticalSelectionView = [[JBChartVerticalSelectionView alloc] initWithFrame:CGRectMake(0, 0, kJBLineSelectionViewWidth, self.bounds.size.height - self.footerView.frame.size.height)];
         self.verticalSelectionView.alpha = 0.0;
+        self.verticalSelectionView.hidden = !self.showsVerticalSelection;
         if ([self.dataSource respondsToSelector:@selector(verticalSelectionColorForLineChartView:)])
         {
             self.verticalSelectionView.bgColor = [self.dataSource verticalSelectionColorForLineChartView:self];
         }
-        [self insertSubview:self.verticalSelectionView belowSubview:self.footerView];
+
+        // Add new selection bar
+        if (self.footerView)
+        {
+            [self insertSubview:self.verticalSelectionView belowSubview:self.footerView];
+        }
+        else
+        {
+            [self addSubview:self.verticalSelectionView];
+        }
     };
 
     createChartData();
@@ -421,11 +431,6 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
 
 - (void)setVerticalSelectionViewVisible:(BOOL)verticalSelectionViewVisible animated:(BOOL)animated
 {
-    if (!self.showsVerticalSelection)
-    {
-        return;
-    }
-    
     _verticalSelectionViewVisible = verticalSelectionViewVisible;
 
     [self bringSubviewToFront:self.verticalSelectionView];
@@ -445,6 +450,12 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
 - (void)setVerticalSelectionViewVisible:(BOOL)verticalSelectionViewVisible
 {
     [self setVerticalSelectionViewVisible:verticalSelectionViewVisible animated:NO];
+}
+
+- (void)setShowsVerticalSelection:(BOOL)showsVerticalSelection
+{
+    _showsVerticalSelection = showsVerticalSelection;
+    self.verticalSelectionView.hidden = _showsVerticalSelection ? NO : YES;
 }
 
 #pragma mark - Gestures

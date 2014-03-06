@@ -184,6 +184,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
         
         self.verticalSelectionView = [[JBChartVerticalSelectionView alloc] initWithFrame:CGRectMake(0, 0, [self barWidth], self.bounds.size.height - self.footerView.frame.size.height)];
         self.verticalSelectionView.alpha = 0.0;
+        self.verticalSelectionView.hidden = !self.showsVerticalSelection;
         if ([self.dataSource respondsToSelector:@selector(barSelectionColorForBarChartView:)])
         {
             self.verticalSelectionView.bgColor = [self.dataSource barSelectionColorForBarChartView:self];
@@ -384,11 +385,6 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 - (void)setVerticalSelectionViewVisible:(BOOL)verticalSelectionViewVisible animated:(BOOL)animated
 {
-    if (!self.showsVerticalSelection)
-    {
-        return;
-    }
-    
     _verticalSelectionViewVisible = verticalSelectionViewVisible;
     
     if (animated)
@@ -406,6 +402,12 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 - (void)setVerticalSelectionViewVisible:(BOOL)verticalSelectionViewVisible
 {
     [self setVerticalSelectionViewVisible:verticalSelectionViewVisible animated:NO];
+}
+
+- (void)setShowsVerticalSelection:(BOOL)showsVerticalSelection
+{
+    _showsVerticalSelection = showsVerticalSelection;
+    self.verticalSelectionView.hidden = _showsVerticalSelection ? NO : YES;
 }
 
 #pragma mark - Touches
