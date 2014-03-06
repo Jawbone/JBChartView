@@ -63,7 +63,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     if (self)
     {
         self.clipsToBounds = YES;
-        _showsBarSelection = YES;
+        _showsVerticalSelection = YES;
         _cachedMaxHeight = kJBBarChartViewUndefinedMaxHeight;
     }
     return self;
@@ -364,10 +364,11 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 - (void)touchesEndedOrCancelledWithTouches:(NSSet *)touches
 {
-    if (!self.showsBarSelection || self.state == JBChartViewStateCollapsed)
+    if (self.state == JBChartViewStateCollapsed)
     {
         return;
     }
+    
     [self setVerticalSelectionViewVisible:NO animated:YES];
     
     UITouch *touch = [touches anyObject];
@@ -383,6 +384,11 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 - (void)setVerticalSelectionViewVisible:(BOOL)verticalSelectionViewVisible animated:(BOOL)animated
 {
+    if (!self.showsVerticalSelection)
+    {
+        return;
+    }
+    
     _verticalSelectionViewVisible = verticalSelectionViewVisible;
     
     if (animated)
@@ -406,10 +412,11 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    if (!self.showsBarSelection || self.state == JBChartViewStateCollapsed)
+    if (self.state == JBChartViewStateCollapsed)
     {
         return;
     }
+    
     UITouch *touch = [touches anyObject];
     CGPoint touchPoint = [touch locationInView:self];
     UIView *barView = [self barViewForForPoint:touchPoint];
@@ -432,10 +439,11 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    if (!self.showsBarSelection || self.state == JBChartViewStateCollapsed)
+    if (self.state == JBChartViewStateCollapsed)
     {
         return;
     }
+    
     UITouch *touch = [touches anyObject];
     CGPoint touchPoint = [touch locationInView:self];
     UIView *barView = [self barViewForForPoint:touchPoint];

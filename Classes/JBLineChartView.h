@@ -24,7 +24,9 @@
 @property (nonatomic, assign) BOOL showsVerticalSelection;
 
 /**
- *  Line highlight overlayed on the  a line within the graph during touch events.
+ *  A highlight overlayed on a line within the graph during touch events. The highlighted line 
+ *  is the closest line to the touch point and corresponds to the lineIndex delegatd back via 
+ *  didSelectChartAtHorizontalIndex:atLineIndex: and didUnSlectChartAtHorizontalIndex:atLineIndex:
  *
  *  Default: YES.
  */
@@ -41,7 +43,7 @@
 @optional
 
 /**
- *  Occurs when a touch gesture event occurs anywhere on the chart. The chart must be expanded,
+ *  Occurs when a touch gesture event occurs anywhere on the chart (chart must be expanded).
  *  and the selection must occur within the bounds of the chart.
  *
  *  @param lineChartView    A line chart object informing the delegate about the new selection.

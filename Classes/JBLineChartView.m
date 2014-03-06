@@ -120,6 +120,7 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
     {
         self.clipsToBounds = NO;
         _showsVerticalSelection = YES;
+        _showsLineSelection = YES;
         _cachedMaxHeight = kJBLineChartViewUndefinedMaxHeight;
     }
     return self;
@@ -420,6 +421,11 @@ static UIColor *kJBLineChartViewDefaultLineColor = nil;
 
 - (void)setVerticalSelectionViewVisible:(BOOL)verticalSelectionViewVisible animated:(BOOL)animated
 {
+    if (!self.showsVerticalSelection)
+    {
+        return;
+    }
+    
     _verticalSelectionViewVisible = verticalSelectionViewVisible;
 
     [self bringSubviewToFront:self.verticalSelectionView];

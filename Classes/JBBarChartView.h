@@ -22,7 +22,7 @@
  *
  *  Default: YES.
  */
-@property (nonatomic, assign) BOOL showsBarSelection;
+@property (nonatomic, assign) BOOL showsVerticalSelection;
 
 @end
 
@@ -44,7 +44,7 @@
 @optional
 
 /**
- *  Occurs when a touch gesture event occurs on a given bar. The chart must be expanded, showsSelection must be YES,
+ *  Occurs when a touch gesture event occurs on a given bar (chart must be expanded).
  *  and the selection must occur within the bounds of the chart.
  *
  *  @param barChartView     The origin chart.
