@@ -38,6 +38,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 // Touch helpers
 - (NSInteger)barViewIndexForPoint:(CGPoint)point;
 - (UIView *)barViewForForPoint:(CGPoint)point;
+- (void)touchesBeganOrMovedWithTouches:(NSSet *)touches;
 - (void)touchesEndedOrCancelledWithTouches:(NSSet *)touches;
 
 // Setters
@@ -363,6 +364,33 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     return barView;
 }
 
+- (void)touchesBeganOrMovedWithTouches:(NSSet *)touches
+{
+    if (self.state == JBChartViewStateCollapsed)
+    {
+        return;
+    }
+    
+    UITouch *touch = [touches anyObject];
+    CGPoint touchPoint = [touch locationInView:self];
+    UIView *barView = [self barViewForForPoint:touchPoint];
+    if (barView == nil)
+    {
+        [self setVerticalSelectionViewVisible:NO animated:YES];
+        return;
+    }
+    CGRect barViewFrame = barView.frame;
+    CGRect selectionViewFrame = self.verticalSelectionView.frame;
+    selectionViewFrame.origin.x = barViewFrame.origin.x;
+    self.verticalSelectionView.frame = selectionViewFrame;
+    [self setVerticalSelectionViewVisible:YES animated:YES];
+    
+    if ([self.delegate respondsToSelector:@selector(barChartView:didSelectBarAtIndex:)])
+    {
+        [self.delegate barChartView:self didSelectBarAtIndex:[self barViewIndexForPoint:touchPoint]];
+    }
+}
+
 - (void)touchesEndedOrCancelledWithTouches:(NSSet *)touches
 {
     if (self.state == JBChartViewStateCollapsed)
@@ -414,56 +442,12 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    if (self.state == JBChartViewStateCollapsed)
-    {
-        return;
-    }
-    
-    UITouch *touch = [touches anyObject];
-    CGPoint touchPoint = [touch locationInView:self];
-    UIView *barView = [self barViewForForPoint:touchPoint];
-    if (barView == nil)
-    {
-        [self setVerticalSelectionViewVisible:NO animated:YES];
-        return;
-    }
-    CGRect barViewFrame = barView.frame;
-    CGRect selectionViewFrame = self.verticalSelectionView.frame;
-    selectionViewFrame.origin.x = barViewFrame.origin.x;
-    self.verticalSelectionView.frame = selectionViewFrame;
-    [self setVerticalSelectionViewVisible:YES animated:YES];
-    
-    if ([self.delegate respondsToSelector:@selector(barChartView:didSelectBarAtIndex:)])
-    {
-        [self.delegate barChartView:self didSelectBarAtIndex:[self barViewIndexForPoint:touchPoint]];
-    }
+    [self touchesBeganOrMovedWithTouches:touches];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    if (self.state == JBChartViewStateCollapsed)
-    {
-        return;
-    }
-    
-    UITouch *touch = [touches anyObject];
-    CGPoint touchPoint = [touch locationInView:self];
-    UIView *barView = [self barViewForForPoint:touchPoint];
-    if (barView == nil)
-    {
-        [self setVerticalSelectionViewVisible:NO animated:YES];
-        return;
-    }
-    CGRect barViewFrame = barView.frame;
-    CGRect selectionViewFrame = self.verticalSelectionView.frame;
-    selectionViewFrame.origin.x = barViewFrame.origin.x;
-    self.verticalSelectionView.frame = selectionViewFrame;
-    [self setVerticalSelectionViewVisible:YES animated:YES];
-    
-    if ([self.delegate respondsToSelector:@selector(barChartView:didSelectBarAtIndex:)])
-    {
-        [self.delegate barChartView:self didSelectBarAtIndex:[self barViewIndexForPoint:touchPoint]];
-    }
+    [self touchesBeganOrMovedWithTouches:touches];
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event

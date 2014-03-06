@@ -115,7 +115,8 @@
 
 /**
  *  Returns the (vertical) selection color to be overlayed on the chart during touch events.
- *  The color is automically faded to transparent (vertically).
+ *  The color is automically faded to transparent (vertically). The property showsVerticalSelection
+ *  must be YES for the color to apply.
  *
  *  Default: white color (faded to transparent).
  *
@@ -124,5 +125,18 @@
  *  @return The color to be used on chart selections.
  */
 - (UIColor *)verticalSelectionColorForLineChartView:(JBLineChartView *)lineChartView;
+
+/**
+ *  Returns the selection color to be overlayed on a line within the chart during touch events.
+ *  The property showsLineSelection must be YES for the color to apply.
+ *
+ *  Default: white color.
+ *
+ *  @param lineChartView    The line chart object requesting this information.
+ *  @param lineIndex        An index number identifying a line in the chart.
+ *
+ *  @return The color to be used to highlight a line during chart selections.
+ */
+- (UIColor *)lineSelectionColorForLineChartView:(JBLineChartView *)lineChartView atLineIndex:(NSInteger)lineIndex;
 
 @end
