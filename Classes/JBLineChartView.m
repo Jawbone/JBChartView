@@ -375,14 +375,14 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
     return largestLineData;
 }
 
-- (CGPoint)clampPoint:(CGPoint)point toBounds:(CGRect)bounds
+- (CGPoint)clampPoint:(CGPoint)point toBounds:(CGRect)bounds padding:(CGFloat)padding
 {
-    return CGPointMake(MIN(MAX(bounds.origin.x, point.x), bounds.size.width), MIN(MAX(bounds.origin.y, point.y), bounds.size.height));
+    return CGPointMake(MIN(MAX(bounds.origin.x + padding, point.x), bounds.size.width - padding), MIN(MAX(bounds.origin.y + padding, point.y), bounds.size.height) - padding);
 }
 
 - (NSInteger)horizontalIndexForPoint:(CGPoint)point
 {
-    point = [self clampPoint:point toBounds:self.lineView.bounds];
+    point = [self clampPoint:point toBounds:self.lineView.bounds padding:kJBLineChartLineViewEdgePadding];
     NSUInteger index = 0;
     CGFloat currentDistance = INT_MAX;
     NSUInteger selectedIndex = -1;
@@ -402,10 +402,10 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
 - (NSInteger)lineIndexForTouch:(UITouch *)touch
 {
     // Clamp the touchpoint
-    CGPoint touchPoint = [self clampPoint:[touch locationInView:self.lineView] toBounds:self.lineView.bounds];
+    CGPoint touchPoint = [self clampPoint:[touch locationInView:self.lineView] toBounds:self.lineView.bounds padding:kJBLineChartLineViewEdgePadding];
     NSArray *lineData = [self largestLineData];
-    JBLineChartPoint *currentPoint = nil;
-    JBLineChartPoint *nextPoint = nil;
+    JBLineChartPoint *currentPoint = [lineData firstObject];
+    JBLineChartPoint *nextPoint = [lineData lastObject];
     
     // Find the horizontal indexes
     NSUInteger leftHorizontalIndex = -1;
@@ -415,7 +415,7 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
         currentPoint = [lineData objectAtIndex:index];
         nextPoint = (index + 1) < [lineData count] ? [lineData objectAtIndex:index + 1] : nil;
         
-        if ((touchPoint.x >= currentPoint.position.x && touchPoint.x < nextPoint.position.x))
+        if ((touchPoint.x >= currentPoint.position.x && touchPoint.x <= nextPoint.position.x))
         {
             leftHorizontalIndex = index;
             if (nextPoint != nil)
