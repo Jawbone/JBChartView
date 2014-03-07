@@ -95,6 +95,7 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
 
 // Touch helpers
 - (NSArray *)largestLineData; // largest collection of line data
+- (CGPoint)clampPoint:(CGPoint)point toBounds:(CGRect)bounds;
 - (NSInteger)horizontalIndexForPoint:(CGPoint)point;
 - (NSInteger)lineIndexForTouch:(UITouch *)touch;
 - (void)touchesBeganOrMovedWithTouches:(NSSet *)touches;
@@ -374,11 +375,18 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
     return largestLineData;
 }
 
+- (CGPoint)clampPoint:(CGPoint)point toBounds:(CGRect)bounds
+{
+    return CGPointMake(MIN(MAX(bounds.origin.x, point.x), bounds.size.width), MIN(MAX(bounds.origin.y, point.y), bounds.size.height));
+}
+
 - (NSInteger)horizontalIndexForPoint:(CGPoint)point
 {
+    point = [self clampPoint:point toBounds:self.lineView.bounds];
     NSUInteger index = 0;
     CGFloat currentDistance = INT_MAX;
     NSUInteger selectedIndex = -1;
+    
     for (JBLineChartPoint *lineChartPoint in [self largestLineData])
     {
         if ((abs(point.x - lineChartPoint.position.x)) < currentDistance)
@@ -393,33 +401,62 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
 
 - (NSInteger)lineIndexForTouch:(UITouch *)touch
 {
-    CGPoint touchPoint = [touch locationInView:self.lineView];
-    NSInteger horizontalIndex = [self horizontalIndexForPoint:touchPoint];
-    NSInteger shortestIndex = -1;
-
-    if (horizontalIndex >= 0)
+    // Clamp the touchpoint
+    CGPoint touchPoint = [self clampPoint:[touch locationInView:self.lineView] toBounds:self.lineView.bounds];
+    NSArray *lineData = [self largestLineData];
+    JBLineChartPoint *currentPoint = nil;
+    JBLineChartPoint *nextPoint = nil;
+    
+    // Find the horizontal indexes
+    NSUInteger leftHorizontalIndex = -1;
+    NSUInteger rightHorizontalIndex = -1;
+    for (NSUInteger index=0; index<[lineData count]; index++)
     {
-        NSUInteger shortestDistance = INT_MAX;
-        NSAssert([self.dataSource respondsToSelector:@selector(numberOfLinesInLineChartView:)], @"JBLineChartView // dataSource must implement - (NSInteger)numberOfLinesInLineChartView:(JBLineChartView *)lineChartView");
-
-        for (NSUInteger lineIndex=0; lineIndex<[self.dataSource numberOfLinesInLineChartView:self]; lineIndex++)
+        currentPoint = [lineData objectAtIndex:index];
+        nextPoint = (index + 1) < [lineData count] ? [lineData objectAtIndex:index + 1] : nil;
+        
+        if ((touchPoint.x >= currentPoint.position.x && touchPoint.x < nextPoint.position.x))
         {
-            NSAssert([self.dataSource respondsToSelector:@selector(lineChartView:numberOfVerticalValuesAtLineIndex:)], @"JBLineChartView // dataSource must implement - (NSInteger)lineChartView:(JBLineChartView *)lineChartView numberOfVerticalValuesAtLineIndex:(NSInteger)lineIndex");
-            if ([self.dataSource lineChartView:self numberOfVerticalValuesAtLineIndex:lineIndex] > horizontalIndex)
+            leftHorizontalIndex = index;
+            if (nextPoint != nil)
             {
-                NSAssert([self.delegate respondsToSelector:@selector(lineChartView:verticalValueForHorizontalIndex:atLineIndex:)], @"JBLineChartView // delegate must implement - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSInteger)horizontalIndex atLineIndex:(NSInteger)lineIndex");
-                CGFloat rawHeight =  [self.delegate lineChartView:self verticalValueForHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
-                CGFloat normalizedHeight = [self normalizedHeightForRawHeight:rawHeight];
-                CGFloat currentDistance = abs((self.lineView.frame.size.height - (MIN(MAX(0, touchPoint.y), self.lineView.frame.size.height))) - normalizedHeight);
-                
-                if (currentDistance < shortestDistance)
-                {
-                    shortestDistance = currentDistance;
-                    shortestIndex = lineIndex;
-                }
+                rightHorizontalIndex = index + 1;
+            }
+            break;
+        }
+    }
+    
+    NSUInteger shortestDistance = INT_MAX;
+    NSInteger shortestIndex = -1;
+    NSAssert([self.dataSource respondsToSelector:@selector(numberOfLinesInLineChartView:)], @"JBLineChartView // dataSource must implement - (NSInteger)numberOfLinesInLineChartView:(JBLineChartView *)lineChartView");
+    
+    // Iterate all lines
+    for (NSUInteger lineIndex=0; lineIndex<[self.dataSource numberOfLinesInLineChartView:self]; lineIndex++)
+    {
+        NSAssert([self.dataSource respondsToSelector:@selector(lineChartView:numberOfVerticalValuesAtLineIndex:)], @"JBLineChartView // dataSource must implement - (NSInteger)lineChartView:(JBLineChartView *)lineChartView numberOfVerticalValuesAtLineIndex:(NSInteger)lineIndex");
+        if ([self.dataSource lineChartView:self numberOfVerticalValuesAtLineIndex:lineIndex] > rightHorizontalIndex)
+        {
+            NSAssert([self.delegate respondsToSelector:@selector(lineChartView:verticalValueForHorizontalIndex:atLineIndex:)], @"JBLineChartView // delegate must implement - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSInteger)horizontalIndex atLineIndex:(NSInteger)lineIndex");
+            
+            CGFloat leftRawHeight =  [self.delegate lineChartView:self verticalValueForHorizontalIndex:leftHorizontalIndex atLineIndex:lineIndex];
+            CGFloat leftNormalizedHeight = [self normalizedHeightForRawHeight:leftRawHeight];
+            
+            CGFloat rightRawHeight =  [self.delegate lineChartView:self verticalValueForHorizontalIndex:rightHorizontalIndex atLineIndex:lineIndex];
+            CGFloat rightNormalizedHeight = [self normalizedHeightForRawHeight:rightRawHeight];
+            
+            CGPoint midPoint = CGPointMake((leftHorizontalIndex + rightHorizontalIndex) * 0.5, (leftNormalizedHeight + rightNormalizedHeight) * 0.5);
+            CGFloat xDist = (touchPoint.x - midPoint.x);
+            CGFloat yDist = ((self.lineView.bounds.size.height - touchPoint.y) - midPoint.y);
+            CGFloat currentDistance = sqrt((xDist * xDist) + (yDist * yDist));
+            
+            if (currentDistance < shortestDistance)
+            {
+                shortestDistance = currentDistance;
+                shortestIndex = lineIndex;
             }
         }
     }
+    
     return shortestIndex;
 }
 
@@ -441,7 +478,6 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
     CGFloat xOffset = fmin(self.bounds.size.width - self.verticalSelectionView.frame.size.width, fmax(0, touchPoint.x - (ceil(self.verticalSelectionView.frame.size.width * 0.5))));
     self.verticalSelectionView.frame = CGRectMake(xOffset, self.verticalSelectionView.frame.origin.y, self.verticalSelectionView.frame.size.width, self.verticalSelectionView.frame.size.height);
     [self setVerticalSelectionViewVisible:YES animated:YES];
-    [self.lineView setSelectedLineIndex:[self lineIndexForTouch:touch]];
 }
 
 - (void)touchesEndedOrCancelledWithTouches:(NSSet *)touches
@@ -499,6 +535,7 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [self touchesBeganOrMovedWithTouches:touches];
+    [self.lineView setSelectedLineIndex:[self lineIndexForTouch:[touches anyObject]]];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event

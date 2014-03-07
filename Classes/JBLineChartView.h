@@ -57,7 +57,7 @@
  *  For selection start events, see: didSelectChartAtIndex...
  *
  *  @param lineChartView    A line chart object informing the delegate about the unselection.
- *  @param horizontalIndex  The 0-based horizontal index of a selection point. Index will be -1 if the touch ends outside of the view's bounds.
+ *  @param horizontalIndex  The 0-based horizontal index of a selection point.
  *  @param lineIndex        An index number identifying the closest line in the chart to the current touch point.
  */
 - (void)lineChartView:(JBLineChartView *)lineChartView didUnselectChartAtHorizontalIndex:(NSInteger)horizontalIndex atLineIndex:(NSInteger)lineIndex;
