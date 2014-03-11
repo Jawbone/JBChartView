@@ -170,7 +170,7 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
     [self.informationView setHidden:NO animated:YES];
 }
 
-- (void)lineChartView:(JBLineChartView *)lineChartView didUnselectLineAtIndex:(NSInteger)lineIndex horizontalIndex:(NSInteger)horizontalIndex
+- (void)didUnselectLineInLineChartView:(JBLineChartView *)lineChartView
 {
     [self.informationView setHidden:YES animated:YES];
 }

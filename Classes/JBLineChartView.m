@@ -28,6 +28,7 @@ CGFloat static const kJBLineChartLineViewEdgePadding = 10.0;
 CGFloat static const kJBLineChartLineViewStrokeWidth = 5.0;
 CGFloat static const kJBLineChartLineViewMiterLimit = -5.0;
 CGFloat static const kJBLineChartLineViewStateAnimationDuration = 0.25f;
+NSInteger static const kJBLineChartLineViewUnselectedLineIndex = -1;
 
 // Numerics (JBLineSelectionView)
 CGFloat static const kJBLineSelectionViewWidth = 20.0f;
@@ -60,7 +61,7 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
 
 @property (nonatomic, assign) id<JBLineChartLineViewDelegate> delegate;
 @property (nonatomic, assign) JBLineChartLineViewState state;
-@property (nonatomic, assign) NSUInteger selectedLineIndex; // -1 to unselect
+@property (nonatomic, assign) NSInteger selectedLineIndex; // kJBLineChartLineViewUnselectedLineIndex to unselect
 @property (nonatomic, assign) BOOL animated;
 
 // Data
@@ -106,7 +107,7 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
 - (CGPoint)clampPoint:(CGPoint)point toBounds:(CGRect)bounds padding:(CGFloat)padding;
 - (NSInteger)horizontalIndexForPoint:(CGPoint)point indexClamp:(JBLineChartHorizontalIndexClamp)indexClamp;
 - (NSInteger)horizontalIndexForPoint:(CGPoint)point;
-- (NSInteger)lineIndexForTouch:(UITouch *)touch;
+- (NSInteger)lineIndexForPoint:(CGPoint)point;
 - (void)touchesBeganOrMovedWithTouches:(NSSet *)touches;
 - (void)touchesEndedOrCancelledWithTouches:(NSSet *)touches;
 
@@ -411,14 +412,11 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
     return [self horizontalIndexForPoint:point indexClamp:JBLineChartHorizontalIndexClampNone];
 }
 
-- (NSInteger)lineIndexForTouch:(UITouch *)touch
+- (NSInteger)lineIndexForPoint:(CGPoint)point
 {
-    // Clamp the touchpoint
-    CGPoint touchPoint = [self clampPoint:[touch locationInView:self.lineView] toBounds:self.lineView.bounds padding:kJBLineChartLineViewEdgePadding];
-    
     // Find the horizontal indexes
-    CGFloat leftHorizontalIndex = [self horizontalIndexForPoint:touchPoint indexClamp:JBLineChartHorizontalIndexClampLeft];
-    CGFloat rightHorizontalIndex = [self horizontalIndexForPoint:touchPoint indexClamp:JBLineChartHorizontalIndexClampRight];
+    CGFloat leftHorizontalIndex = [self horizontalIndexForPoint:point indexClamp:JBLineChartHorizontalIndexClampLeft];
+    CGFloat rightHorizontalIndex = [self horizontalIndexForPoint:point indexClamp:JBLineChartHorizontalIndexClampRight];
     
     NSUInteger shortestDistance = INT_MAX;
     NSInteger shortestIndex = -1;
@@ -443,7 +441,7 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
             CGPoint rightPoint = CGPointMake(rightLineChartPoint.position.x, fmin(fmax(kJBLineChartLineViewEdgePadding, self.lineView.bounds.size.height - rightLineChartPoint.position.y), self.lineView.bounds.size.height - kJBLineChartLineViewEdgePadding));
             
             // Touch point
-            CGPoint normalizedTouchPoint = CGPointMake(touchPoint.x, self.lineView.bounds.size.height - touchPoint.y);
+            CGPoint normalizedTouchPoint = CGPointMake(point.x, self.lineView.bounds.size.height - point.y);
 
             // Slope
             CGFloat lineSlope = (CGFloat)(rightPoint.y - leftPoint.y) / (CGFloat)(rightPoint.x - leftPoint.x);
@@ -472,10 +470,10 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
     
     UITouch *touch = [touches anyObject];
     CGPoint touchPoint = [self clampPoint:[touch locationInView:self.lineView] toBounds:self.lineView.bounds padding:kJBLineChartLineViewEdgePadding];
-    
+
     if ([self.delegate respondsToSelector:@selector(lineChartView:didSelectLineAtIndex:horizontalIndex:)])
     {
-        [self.delegate lineChartView:self didSelectLineAtIndex:[self lineIndexForTouch:touch] horizontalIndex:[self horizontalIndexForPoint:touchPoint]];
+        [self.delegate lineChartView:self didSelectLineAtIndex:self.lineView.selectedLineIndex != kJBLineChartLineViewUnselectedLineIndex ? self.lineView.selectedLineIndex : [self lineIndexForPoint:touchPoint] horizontalIndex:[self horizontalIndexForPoint:touchPoint]];
     }
     
     CGFloat xOffset = fmin(self.bounds.size.width - self.verticalSelectionView.frame.size.width, fmax(0, touchPoint.x - (ceil(self.verticalSelectionView.frame.size.width * 0.5))));
@@ -491,15 +489,12 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
     }
 
     [self setVerticalSelectionViewVisible:NO animated:YES];
-
-    UITouch *touch = [touches anyObject];
-    CGPoint touchPoint = [self clampPoint:[touch locationInView:self.lineView] toBounds:self.lineView.bounds padding:kJBLineChartLineViewEdgePadding];
     
-    if ([self.delegate respondsToSelector:@selector(lineChartView:didUnselectLineAtIndex:horizontalIndex:)])
+    if ([self.delegate respondsToSelector:@selector(didUnselectLineInLineChartView:)])
     {
-        [self.delegate lineChartView:self didUnselectLineAtIndex:[self lineIndexForTouch:touch] horizontalIndex:[self horizontalIndexForPoint:touchPoint]];
+        [self.delegate didUnselectLineInLineChartView:self];
     }
-    [self.lineView setSelectedLineIndex:-1];
+    [self.lineView setSelectedLineIndex:kJBLineChartLineViewUnselectedLineIndex];
 }
 
 #pragma mark - Setters
@@ -537,8 +532,10 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
+    UITouch *touch = [touches anyObject];
+    CGPoint touchPoint = [self clampPoint:[touch locationInView:self.lineView] toBounds:self.lineView.bounds padding:kJBLineChartLineViewEdgePadding];
+    [self.lineView setSelectedLineIndex:[self lineIndexForPoint:touchPoint]];
     [self touchesBeganOrMovedWithTouches:touches];
-    [self.lineView setSelectedLineIndex:[self lineIndexForTouch:[touches anyObject]]];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
@@ -711,7 +708,7 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
     [self setState:state animated:animated callback:nil];
 }
 
-- (void)setSelectedLineIndex:(NSUInteger)selectedLineIndex
+- (void)setSelectedLineIndex:(NSInteger)selectedLineIndex
 {
     _selectedLineIndex = selectedLineIndex;
     
