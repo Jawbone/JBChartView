@@ -34,7 +34,7 @@
  *  Height for a bar at a given index (left to right). There is no ceiling on the the height; 
  *  the chart will automatically normalize all values between the overal min and max heights.
  *
- *  @param barChartView     The origin chart.
+ *  @param barChartView     The bar chart object requesting this information.
  *  @param index            The 0-based index of a given bar (left to right, x-axis).
  *
  *  @return The y-axis height of the supplied bar index (x-axis)
@@ -47,7 +47,7 @@
  *  Occurs when a touch gesture event occurs on a given bar (chart must be expanded).
  *  and the selection must occur within the bounds of the chart.
  *
- *  @param barChartView     The origin chart.
+ *  @param barChartView     A bar chart object informing the delegate about the new selection.
  *  @param index            The 0-based index of a given bar (left to right, x-axis).
  */
 - (void)barChartView:(JBBarChartView *)barChartView didSelectBarAtIndex:(NSInteger)index;
@@ -56,7 +56,7 @@
  *  Occurs when selection ends by either ending a touch event or selecting an area that is outside the view's bounds.
  *  For selection start events, see: didSelectBarAtIndex...
  *
- *  @param barChartView     The origin chart.
+ *  @param barChartView     A bar chart object informing the delegate about the unselection.
  *  @param index            The 0-based index of a given bar. Index will be -1 if the touch ends outside of the view's bounds.
  */
 - (void)barChartView:(JBBarChartView *)barChartView didUnselectBarAtIndex:(NSInteger)index;
@@ -70,7 +70,7 @@
 /**
  *  The number of bars in a given bar chart is the number of vertical views shown along the x-axis.
  *
- *  @param barChartView     The origin chart.
+ *  @param barChartView     The bar chart object requesting this information.
  *
  *  @return Number of bars in the given chart, displayed horizontally along the chart's x-axis.
  */
@@ -83,7 +83,7 @@
  *
  *  Default: 'best-guess' algorithm based on the the total number of bars and width of the chart.
  *
- *  @param barChartView     The origin chart.
+ *  @param barChartView     The bar chart object requesting this information.
  *
  *  @return Horizontal width (in pixels) between each bar.
  */
@@ -94,7 +94,7 @@
  *
  *  Default: solid black UIView.
  *
- *  @param barChartView     The origin chart.
+ *  @param barChartView     The bar chart object requesting this information.
  *  @param index            The 0-based index of a given bar (left to right, x-axis).
  *
  *  @return A UIView subclass. The view will automatically be resized by the chart during creation (ie. no need to set the frame).
@@ -103,11 +103,12 @@
 
 /**
  *  The selection color to be overlayed on a bar during touch events. 
- *  The color is automically faded to transparent (vertically).
+ *  The color is automically faded to transparent (vertically). The property showsVerticalSelection
+ *  must be YES for the color to apply.
  *
  *  Default: white color (faded to transparent).
  *
- *  @param barChartView     The origin chart.
+ *  @param barChartView     The bar chart object requesting this information.
  *
  *  @return The color to be used on each bar selection.
  */
