@@ -35,6 +35,7 @@ CGFloat static const kJBLineSelectionViewWidth = 20.0f;
 
 // Numerics (JBLineChartView)
 CGFloat static const kJBLineChartViewUndefinedMaxHeight = -1.0f;
+NSInteger static const kJBLineChartUnselectedLineIndex = -1;
 
 // Colors (JBLineChartView)
 static UIColor *kJBLineChartViewDefaultLineColor = nil;
@@ -61,7 +62,7 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
 
 @property (nonatomic, assign) id<JBLineChartLineViewDelegate> delegate;
 @property (nonatomic, assign) JBLineChartLineViewState state;
-@property (nonatomic, assign) NSInteger selectedLineIndex; // kJBLineChartLineViewUnselectedLineIndex to unselect
+@property (nonatomic, assign) NSInteger selectedLineIndex;
 @property (nonatomic, assign) BOOL animated;
 
 // Data
@@ -105,6 +106,7 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
 
 // Touch helpers
 - (CGPoint)clampPoint:(CGPoint)point toBounds:(CGRect)bounds padding:(CGFloat)padding;
+- (NSInteger)horizontalIndexForPoint:(CGPoint)point indexClamp:(JBLineChartHorizontalIndexClamp)indexClamp lineData:(NSArray *)lineData;
 - (NSInteger)horizontalIndexForPoint:(CGPoint)point indexClamp:(JBLineChartHorizontalIndexClamp)indexClamp;
 - (NSInteger)horizontalIndexForPoint:(CGPoint)point;
 - (NSInteger)lineIndexForPoint:(CGPoint)point;
@@ -378,22 +380,13 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
                        MIN(MAX(bounds.origin.y + padding, point.y), bounds.size.height - padding));
 }
 
-- (NSInteger)horizontalIndexForPoint:(CGPoint)point indexClamp:(JBLineChartHorizontalIndexClamp)indexClamp
+- (NSInteger)horizontalIndexForPoint:(CGPoint)point indexClamp:(JBLineChartHorizontalIndexClamp)indexClamp lineData:(NSArray *)lineData
 {
     NSUInteger index = 0;
     CGFloat currentDistance = INT_MAX;
-    NSUInteger selectedIndex = -1;
+    NSUInteger selectedIndex = kJBLineChartUnselectedLineIndex;
     
-    NSArray *largestLineData = nil;
-    for (NSArray *lineData in self.chartData)
-    {
-        if ([lineData count] > [largestLineData count])
-        {
-            largestLineData = lineData;
-        }
-    }
-    
-    for (JBLineChartPoint *lineChartPoint in largestLineData)
+    for (JBLineChartPoint *lineChartPoint in lineData)
     {
         BOOL clamped = (indexClamp == JBLineChartHorizontalIndexClampNone) ? YES : (indexClamp == JBLineChartHorizontalIndexClampLeft) ? (point.x - lineChartPoint.position.x >= 0) : (point.x - lineChartPoint.position.x <= 0);
         if ((abs(point.x - lineChartPoint.position.x)) < currentDistance && clamped == YES)
@@ -405,6 +398,19 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
     }
     
     return selectedIndex;
+}
+
+- (NSInteger)horizontalIndexForPoint:(CGPoint)point indexClamp:(JBLineChartHorizontalIndexClamp)indexClamp
+{
+    NSArray *largestLineData = nil;
+    for (NSArray *lineData in self.chartData)
+    {
+        if ([lineData count] > [largestLineData count])
+        {
+            largestLineData = lineData;
+        }
+    }
+    return [self horizontalIndexForPoint:point indexClamp:indexClamp lineData:largestLineData];
 }
 
 - (NSInteger)horizontalIndexForPoint:(CGPoint)point
@@ -419,7 +425,7 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
     CGFloat rightHorizontalIndex = [self horizontalIndexForPoint:point indexClamp:JBLineChartHorizontalIndexClampRight];
     
     NSUInteger shortestDistance = INT_MAX;
-    NSInteger shortestIndex = -1;
+    NSInteger selectedIndex = kJBLineChartUnselectedLineIndex;
     NSAssert([self.dataSource respondsToSelector:@selector(numberOfLinesInLineChartView:)], @"JBLineChartView // dataSource must implement - (NSInteger)numberOfLinesInLineChartView:(JBLineChartView *)lineChartView");
     
     // Iterate all lines
@@ -453,12 +459,11 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
             if (currentDistance < shortestDistance)
             {
                 shortestDistance = currentDistance;
-                shortestIndex = lineIndex;
+                selectedIndex = lineIndex;
             }
         }
     }
-    
-    return shortestIndex;
+    return selectedIndex;
 }
 
 - (void)touchesBeganOrMovedWithTouches:(NSSet *)touches
@@ -473,7 +478,8 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
 
     if ([self.delegate respondsToSelector:@selector(lineChartView:didSelectLineAtIndex:horizontalIndex:)])
     {
-        [self.delegate lineChartView:self didSelectLineAtIndex:self.lineView.selectedLineIndex != kJBLineChartLineViewUnselectedLineIndex ? self.lineView.selectedLineIndex : [self lineIndexForPoint:touchPoint] horizontalIndex:[self horizontalIndexForPoint:touchPoint]];
+        NSInteger lineIndex = self.lineView.selectedLineIndex != kJBLineChartLineViewUnselectedLineIndex ? self.lineView.selectedLineIndex : [self lineIndexForPoint:touchPoint];
+        [self.delegate lineChartView:self didSelectLineAtIndex:lineIndex horizontalIndex:[self horizontalIndexForPoint:touchPoint indexClamp:JBLineChartHorizontalIndexClampNone lineData:[self.chartData objectAtIndex:lineIndex]]];
     }
     
     CGFloat xOffset = fmin(self.bounds.size.width - self.verticalSelectionView.frame.size.width, fmax(0, touchPoint.x - (ceil(self.verticalSelectionView.frame.size.width * 0.5))));
