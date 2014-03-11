@@ -17,6 +17,12 @@ typedef NS_ENUM(NSInteger, JBLineChartLineViewState){
     JBLineChartLineViewStateCollapsed
 };
 
+typedef NS_ENUM(NSInteger, JBLineChartHorizontalIndexClamp){
+	JBLineChartHorizontalIndexClampLeft,
+    JBLineChartHorizontalIndexClampRight,
+    JBLineChartHorizontalIndexClampNone
+};
+
 // Numerics (JBLineChartLineView)
 CGFloat static const kJBLineChartLineViewEdgePadding = 10.0;
 CGFloat static const kJBLineChartLineViewStrokeWidth = 5.0;
@@ -32,6 +38,9 @@ CGFloat static const kJBLineChartViewUndefinedMaxHeight = -1.0f;
 // Colors (JBLineChartView)
 static UIColor *kJBLineChartViewDefaultLineColor = nil;
 static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
+
+// Strings
+NSString * const kJBLineChartViewAnimationPathKey = @"path";
 
 @interface JBLineLayer : CAShapeLayer
 
@@ -94,8 +103,8 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
 - (NSInteger)dataCount;
 
 // Touch helpers
-- (NSArray *)largestLineData; // largest collection of line data
 - (CGPoint)clampPoint:(CGPoint)point toBounds:(CGRect)bounds padding:(CGFloat)padding;
+- (NSInteger)horizontalIndexForPoint:(CGPoint)point indexClamp:(JBLineChartHorizontalIndexClamp)indexClamp;
 - (NSInteger)horizontalIndexForPoint:(CGPoint)point;
 - (NSInteger)lineIndexForTouch:(UITouch *)touch;
 - (void)touchesBeganOrMovedWithTouches:(NSSet *)touches;
@@ -128,8 +137,6 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
         _showsVerticalSelection = YES;
         _showsLineSelection = YES;
         _cachedMaxHeight = kJBLineChartViewUndefinedMaxHeight;
-        
-        self.backgroundColor = [UIColor colorWithRed:1 green:0 blue:0 alpha:0.5];
     }
     return self;
 }
@@ -364,8 +371,18 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
 
 #pragma mark - Touch Helpers
 
-- (NSArray *)largestLineData
+- (CGPoint)clampPoint:(CGPoint)point toBounds:(CGRect)bounds padding:(CGFloat)padding
 {
+    return CGPointMake(MIN(MAX(bounds.origin.x + padding, point.x), bounds.size.width - padding),
+                       MIN(MAX(bounds.origin.y + padding, point.y), bounds.size.height - padding));
+}
+
+- (NSInteger)horizontalIndexForPoint:(CGPoint)point indexClamp:(JBLineChartHorizontalIndexClamp)indexClamp
+{
+    NSUInteger index = 0;
+    CGFloat currentDistance = INT_MAX;
+    NSUInteger selectedIndex = -1;
+    
     NSArray *largestLineData = nil;
     for (NSArray *lineData in self.chartData)
     {
@@ -374,60 +391,34 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
             largestLineData = lineData;
         }
     }
-    return largestLineData;
-}
-
-- (CGPoint)clampPoint:(CGPoint)point toBounds:(CGRect)bounds padding:(CGFloat)padding
-{
-    return CGPointMake(MIN(MAX(bounds.origin.x + padding, point.x), bounds.size.width - padding),
-                       MIN(MAX(bounds.origin.y + padding, point.y), bounds.size.height - padding));
-}
-
-- (NSInteger)horizontalIndexForPoint:(CGPoint)point
-{
-    point = [self clampPoint:point toBounds:self.lineView.bounds padding:kJBLineChartLineViewEdgePadding];
-    NSUInteger index = 0;
-    CGFloat currentDistance = INT_MAX;
-    NSUInteger selectedIndex = -1;
     
-    for (JBLineChartPoint *lineChartPoint in [self largestLineData])
+    for (JBLineChartPoint *lineChartPoint in largestLineData)
     {
-        if ((abs(point.x - lineChartPoint.position.x)) < currentDistance)
+        BOOL clamped = (indexClamp == JBLineChartHorizontalIndexClampNone) ? YES : (indexClamp == JBLineChartHorizontalIndexClampLeft) ? (point.x - lineChartPoint.position.x >= 0) : (point.x - lineChartPoint.position.x <= 0);
+        if ((abs(point.x - lineChartPoint.position.x)) < currentDistance && clamped == YES)
         {
             currentDistance = (abs(point.x - lineChartPoint.position.x));
             selectedIndex = index;
         }
         index++;
     }
+    
     return selectedIndex;
+}
+
+- (NSInteger)horizontalIndexForPoint:(CGPoint)point
+{
+    return [self horizontalIndexForPoint:point indexClamp:JBLineChartHorizontalIndexClampNone];
 }
 
 - (NSInteger)lineIndexForTouch:(UITouch *)touch
 {
     // Clamp the touchpoint
     CGPoint touchPoint = [self clampPoint:[touch locationInView:self.lineView] toBounds:self.lineView.bounds padding:kJBLineChartLineViewEdgePadding];
-    NSArray *lineData = [self largestLineData];
-    JBLineChartPoint *currentPoint = [lineData firstObject];
-    JBLineChartPoint *nextPoint = [lineData lastObject];
     
     // Find the horizontal indexes
-    CGFloat leftHorizontalIndex = -1;
-    CGFloat rightHorizontalIndex = -1;
-    for (NSUInteger index=0; index<[lineData count]; index++)
-    {
-        currentPoint = [lineData objectAtIndex:index];
-        nextPoint = (index + 1) < [lineData count] ? [lineData objectAtIndex:index + 1] : nil;
-        
-        if ((touchPoint.x >= currentPoint.position.x && touchPoint.x <= nextPoint.position.x))
-        {
-            leftHorizontalIndex = index;
-            if (nextPoint != nil)
-            {
-                rightHorizontalIndex = index + 1;
-            }
-            break;
-        }
-    }
+    CGFloat leftHorizontalIndex = [self horizontalIndexForPoint:touchPoint indexClamp:JBLineChartHorizontalIndexClampLeft];
+    CGFloat rightHorizontalIndex = [self horizontalIndexForPoint:touchPoint indexClamp:JBLineChartHorizontalIndexClampRight];
     
     NSUInteger shortestDistance = INT_MAX;
     NSInteger shortestIndex = -1;
@@ -444,23 +435,21 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
             NSArray *lineData = [self.chartData objectAtIndex:lineIndex];
 
             // Left point
-            JBLineChartPoint *leftPoint = [lineData objectAtIndex:leftHorizontalIndex];
-            CGFloat leftYOffset = fmin(fmax(kJBLineChartLineViewEdgePadding, self.lineView.bounds.size.height - leftPoint.position.y), self.lineView.bounds.size.height - kJBLineChartLineViewEdgePadding); // top down, clamped
-            CGFloat leftXOffset = leftPoint.position.x;
+            JBLineChartPoint *leftLineChartPoint = [lineData objectAtIndex:leftHorizontalIndex];
+            CGPoint leftPoint = CGPointMake(leftLineChartPoint.position.x, fmin(fmax(kJBLineChartLineViewEdgePadding, self.lineView.bounds.size.height - leftLineChartPoint.position.y), self.lineView.bounds.size.height - kJBLineChartLineViewEdgePadding));
             
             // Right point
-            JBLineChartPoint *rightPoint = [lineData objectAtIndex:rightHorizontalIndex];
-            CGFloat rightYOffset = fmin(fmax(kJBLineChartLineViewEdgePadding, self.lineView.bounds.size.height - rightPoint.position.y), self.lineView.bounds.size.height - kJBLineChartLineViewEdgePadding); // top down, clamped
-            CGFloat rightXOffset = rightPoint.position.x;
+            JBLineChartPoint *rightLineChartPoint = [lineData objectAtIndex:rightHorizontalIndex];
+            CGPoint rightPoint = CGPointMake(rightLineChartPoint.position.x, fmin(fmax(kJBLineChartLineViewEdgePadding, self.lineView.bounds.size.height - rightLineChartPoint.position.y), self.lineView.bounds.size.height - kJBLineChartLineViewEdgePadding));
             
             // Touch point
             CGPoint normalizedTouchPoint = CGPointMake(touchPoint.x, self.lineView.bounds.size.height - touchPoint.y);
 
             // Slope
-            CGFloat lineSlope = (CGFloat)(rightYOffset - leftYOffset) / (CGFloat)(rightXOffset - leftXOffset);
+            CGFloat lineSlope = (CGFloat)(rightPoint.y - leftPoint.y) / (CGFloat)(rightPoint.x - leftPoint.x);
 
             // Insersection point
-            CGPoint interesectionPoint = CGPointMake(normalizedTouchPoint.x, (lineSlope * (normalizedTouchPoint.x - leftXOffset)) + leftYOffset);
+            CGPoint interesectionPoint = CGPointMake(normalizedTouchPoint.x, (lineSlope * (normalizedTouchPoint.x - leftPoint.x)) + leftPoint.y);
 
             CGFloat currentDistance = abs(interesectionPoint.y - normalizedTouchPoint.y);
             if (currentDistance < shortestDistance)
@@ -482,7 +471,7 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
     }
     
     UITouch *touch = [touches anyObject];
-    CGPoint touchPoint = [touch locationInView:self];
+    CGPoint touchPoint = [self clampPoint:[touch locationInView:self.lineView] toBounds:self.lineView.bounds padding:kJBLineChartLineViewEdgePadding];
     
     if ([self.delegate respondsToSelector:@selector(lineChartView:didSelectChartAtHorizontalIndex:atLineIndex:)])
     {
@@ -504,7 +493,7 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
     [self setVerticalSelectionViewVisible:NO animated:YES];
 
     UITouch *touch = [touches anyObject];
-    CGPoint touchPoint = [touch locationInView:self];
+    CGPoint touchPoint = [self clampPoint:[touch locationInView:self.lineView] toBounds:self.lineView.bounds padding:kJBLineChartLineViewEdgePadding];
     
     if ([self.delegate respondsToSelector:@selector(lineChartView:didUnselectChartAtHorizontalIndex:atLineIndex:)])
     {
@@ -579,7 +568,7 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
     if (self)
     {
         self.clipsToBounds = NO;
-        self.backgroundColor = [UIColor colorWithRed:1 green:0 blue:0 alpha:0.5];
+        self.backgroundColor = [UIColor clearColor];
     }
     return self;
 }
@@ -645,7 +634,7 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
             shapeLayer.path = (self.state == JBLineChartLineViewStateCollapsed) ? dynamicPath.CGPath : flatPath.CGPath;
             shapeLayer.frame = self.bounds;
             
-            CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:@"path"];
+            CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:kJBLineChartViewAnimationPathKey];
             [anim setRemovedOnCompletion:NO];
             anim.toValue = self.state == JBLineChartLineViewStateCollapsed ? (id)flatPath.CGPath : (id)dynamicPath.CGPath;
             anim.duration = kJBLineChartLineViewStateAnimationDuration;
@@ -653,7 +642,7 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
             anim.fillMode = kCAFillModeForwards;
             anim.autoreverses = NO;
             anim.repeatCount = 0;
-            [shapeLayer addAnimation:anim forKey:@"path"];
+            [shapeLayer addAnimation:anim forKey:kJBLineChartViewAnimationPathKey];
             [self.layer addSublayer:shapeLayer];
         }
         else
