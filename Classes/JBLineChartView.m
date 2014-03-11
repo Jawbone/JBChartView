@@ -473,9 +473,9 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
     UITouch *touch = [touches anyObject];
     CGPoint touchPoint = [self clampPoint:[touch locationInView:self.lineView] toBounds:self.lineView.bounds padding:kJBLineChartLineViewEdgePadding];
     
-    if ([self.delegate respondsToSelector:@selector(lineChartView:didSelectChartAtHorizontalIndex:atLineIndex:)])
+    if ([self.delegate respondsToSelector:@selector(lineChartView:didSelectLineAtIndex:horizontalIndex:)])
     {
-        [self.delegate lineChartView:self didSelectChartAtHorizontalIndex:[self horizontalIndexForPoint:touchPoint] atLineIndex:[self lineIndexForTouch:touch]];
+        [self.delegate lineChartView:self didSelectLineAtIndex:[self lineIndexForTouch:touch] horizontalIndex:[self horizontalIndexForPoint:touchPoint]];
     }
     
     CGFloat xOffset = fmin(self.bounds.size.width - self.verticalSelectionView.frame.size.width, fmax(0, touchPoint.x - (ceil(self.verticalSelectionView.frame.size.width * 0.5))));
@@ -495,9 +495,9 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
     UITouch *touch = [touches anyObject];
     CGPoint touchPoint = [self clampPoint:[touch locationInView:self.lineView] toBounds:self.lineView.bounds padding:kJBLineChartLineViewEdgePadding];
     
-    if ([self.delegate respondsToSelector:@selector(lineChartView:didUnselectChartAtHorizontalIndex:atLineIndex:)])
+    if ([self.delegate respondsToSelector:@selector(lineChartView:didUnselectLineAtIndex:horizontalIndex:)])
     {
-        [self.delegate lineChartView:self didUnselectChartAtHorizontalIndex:[self horizontalIndexForPoint:touchPoint] atLineIndex:[self lineIndexForTouch:touch]];
+        [self.delegate lineChartView:self didUnselectLineAtIndex:[self lineIndexForTouch:touch] horizontalIndex:[self horizontalIndexForPoint:touchPoint]];
     }
     [self.lineView setSelectedLineIndex:-1];
 }

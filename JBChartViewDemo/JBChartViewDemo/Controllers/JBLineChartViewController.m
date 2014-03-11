@@ -162,7 +162,7 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
     return [[[self.chartData objectAtIndex:lineIndex] objectAtIndex:horizontalIndex] floatValue];
 }
 
-- (void)lineChartView:(JBLineChartView *)lineChartView didSelectChartAtHorizontalIndex:(NSInteger)horizontalIndex atLineIndex:(NSInteger)lineIndex
+- (void)lineChartView:(JBLineChartView *)lineChartView didSelectLineAtIndex:(NSInteger)lineIndex horizontalIndex:(NSInteger)horizontalIndex
 {
     NSNumber *valueNumber = [[self.chartData objectAtIndex:lineIndex] objectAtIndex:horizontalIndex];
     [self.informationView setValueText:[NSString stringWithFormat:@"%.2f", [valueNumber floatValue]] unitText:kJBStringLabelMm];
@@ -170,7 +170,7 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
     [self.informationView setHidden:NO animated:YES];
 }
 
-- (void)lineChartView:(JBLineChartView *)lineChartView didUnselectChartAtHorizontalIndex:(NSInteger)horizontalIndex atLineIndex:(NSInteger)lineIndex
+- (void)lineChartView:(JBLineChartView *)lineChartView didUnselectLineAtIndex:(NSInteger)lineIndex horizontalIndex:(NSInteger)horizontalIndex
 {
     [self.informationView setHidden:YES animated:YES];
 }

@@ -53,23 +53,24 @@
 @optional
 
 /**
- *  Occurs when a touch gesture event occurs anywhere on the chart (chart must be expanded).
+ *  Occurs whenever there is a touch gesture  on the chart (chart must be expanded).
  *  The touch will be clamped to max or min indexes if the touch is outside the bounds of the view. 
+ *  The lineIndex remains constant until the line is unselected. 
  *
  *  @param lineChartView    A line chart object informing the delegate about the new selection.
- *  @param horizontalIndex  The 0-based horizontal index of a selection point (left to right, x-axis).
  *  @param lineIndex        An index number identifying the closest line in the chart to the current touch point.
+ *  @param horizontalIndex  The 0-based horizontal index of a selection point (left to right, x-axis).
  */
-- (void)lineChartView:(JBLineChartView *)lineChartView didSelectChartAtHorizontalIndex:(NSInteger)horizontalIndex atLineIndex:(NSInteger)lineIndex;
+- (void)lineChartView:(JBLineChartView *)lineChartView didSelectLineAtIndex:(NSInteger)lineIndex horizontalIndex:(NSInteger)horizontalIndex;
 
 /**
  *  Occurs when selection ends by ending a touch event. For selection start events, see: didSelectChartAtIndex:
  *
  *  @param lineChartView    A line chart object informing the delegate about the unselection.
- *  @param horizontalIndex  The 0-based horizontal index of a selection point.
  *  @param lineIndex        An index number identifying the closest line in the chart to the current touch point.
+ *  @param horizontalIndex  The 0-based horizontal index of a selection point.
  */
-- (void)lineChartView:(JBLineChartView *)lineChartView didUnselectChartAtHorizontalIndex:(NSInteger)horizontalIndex atLineIndex:(NSInteger)lineIndex;
+- (void)lineChartView:(JBLineChartView *)lineChartView didUnselectLineAtIndex:(NSInteger)lineIndex horizontalIndex:(NSInteger)horizontalIndex;
 
 @end
 
