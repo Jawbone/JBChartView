@@ -29,6 +29,7 @@ CGFloat static const kJBLineChartLineViewStrokeWidth = 5.0;
 CGFloat static const kJBLineChartLineViewMiterLimit = -5.0;
 CGFloat static const kJBLineChartLineViewStateAnimationDuration = 0.25f;
 CGFloat static const kJBLineChartLineViewDefaultLinePhase = 1.0f;
+CGFloat static const kJBLineChartLineViewDefaultDimmedOpacity = 0.5f;
 NSInteger static const kJBLineChartLineViewUnselectedLineIndex = -1;
 
 // Numerics (JBLineSelectionView)
@@ -639,8 +640,9 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
         if (shapeLayer == nil)
         {
             shapeLayer = [JBLineLayer layer];
-            shapeLayer.tag = lineIndex;
         }
+        
+        shapeLayer.tag = lineIndex;
         
         NSAssert([self.delegate respondsToSelector:@selector(lineChartLineView:lineStyleForLineAtLineIndex:)], @"JBLineChartLineView // delegate must implement - (JBLineChartViewLineStyle)lineChartLineView:(JBLineChartLineView *)lineChartLineView lineStyleForLineAtLineIndex:(NSUInteger)lineIndex");
         shapeLayer.lineStyle = [self.delegate lineChartLineView:self lineStyleForLineAtLineIndex:lineIndex];
@@ -738,15 +740,17 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
     {
         if ([layer isKindOfClass:[JBLineLayer class]])
         {
-            if (((JBLineLayer *)layer).tag == selectedLineIndex)
+            if (((JBLineLayer *)layer).tag == _selectedLineIndex)
             {
                 NSAssert([self.delegate respondsToSelector:@selector(lineChartLineView:selectedColorForLineAtLineIndex:)], @"JBLineChartLineView // delegate must implement - (UIColor *)lineChartLineView:(JBLineChartLineView *)lineChartLineView selectedColorForLineAtLineIndex:(NSUInteger)lineIndex");
-                ((JBLineLayer *)layer).strokeColor = [self.delegate lineChartLineView:self selectedColorForLineAtLineIndex:selectedLineIndex].CGColor;
+                ((JBLineLayer *)layer).strokeColor = [self.delegate lineChartLineView:self selectedColorForLineAtLineIndex:((JBLineLayer *)layer).tag].CGColor;
+                ((JBLineLayer *)layer).opacity = 1.0f;
             }
             else
             {
                 NSAssert([self.delegate respondsToSelector:@selector(lineChartLineView:colorForLineAtLineIndex:)], @"JBLineChartLineView // delegate must implement - (UIColor *)lineChartLineView:(JBLineChartLineView *)lineChartLineView colorForLineAtLineIndex:(NSUInteger)lineIndex");
-                ((JBLineLayer *)layer).strokeColor = [self.delegate lineChartLineView:self colorForLineAtLineIndex:selectedLineIndex].CGColor;
+                ((JBLineLayer *)layer).strokeColor = [self.delegate lineChartLineView:self colorForLineAtLineIndex:((JBLineLayer *)layer).tag].CGColor;
+                ((JBLineLayer *)layer).opacity = (_selectedLineIndex == kJBLineChartLineViewUnselectedLineIndex) ? 1.0f : kJBLineChartLineViewDefaultDimmedOpacity;
             }
         }
     }

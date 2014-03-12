@@ -68,8 +68,9 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
 
 /**
  *  Occurs whenever there is a touch gesture on the chart (chart must be expanded).
- *  The horizontal index is clamped to it's max or min value if the touch is outside the bounds of the view or the line.
- *  The lineIndex remains constant until the line is unselected. 
+ *  The horizontal index is the closest index to the touch point & is clamped to it's max/min value if it moves outside of the view's bounds.
+ *  The lineIndex remains constant until the line is unselected and will be highlighted using the (optional) selectionColorForLineAtLineIndex: protocol. 
+ *  Futhermore, all other lines that aren't selected will be dimmed to 50% opacity throughout the duration of the touch/move.
  *
  *  @param lineChartView    A line chart object informing the delegate about the new selection.
  *  @param lineIndex        An index number identifying the closest line in the chart to the current touch point.
