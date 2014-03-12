@@ -10,7 +10,15 @@
 
 // Enums
 typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
+    
+    /*
+     *
+     */
 	JBLineChartViewLineStyleDashed,
+    
+    /*
+     *
+     */
     JBLineChartViewLineStyleSolid
 };
 
@@ -155,7 +163,6 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
 
 
 - (JBLineChartViewLineStyle)lineChartView:(JBLineChartView *)lineChartView lineStyleForLineAtLineIndex:(NSUInteger)lineIndex;
-
 
 
 @end

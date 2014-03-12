@@ -28,6 +28,7 @@ CGFloat static const kJBLineChartLineViewEdgePadding = 10.0;
 CGFloat static const kJBLineChartLineViewStrokeWidth = 5.0;
 CGFloat static const kJBLineChartLineViewMiterLimit = -5.0;
 CGFloat static const kJBLineChartLineViewStateAnimationDuration = 0.25f;
+CGFloat static const kJBLineChartLineViewDefaultLinePhase = 1.0f;
 NSInteger static const kJBLineChartLineViewUnselectedLineIndex = -1;
 
 // Numerics (JBLineSelectionView)
@@ -37,16 +38,20 @@ CGFloat static const kJBLineSelectionViewWidth = 20.0f;
 CGFloat static const kJBLineChartViewUndefinedMaxHeight = -1.0f;
 NSInteger static const kJBLineChartUnselectedLineIndex = -1;
 
+// Collections (JBLineChartLineView)
+static NSArray *kJBLineChartLineViewDefaultDashPattern = nil;
+
 // Colors (JBLineChartView)
 static UIColor *kJBLineChartViewDefaultLineColor = nil;
 static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
 
-// Strings
+// Strings (JBLineChartView)
 NSString * const kJBLineChartViewAnimationPathKey = @"path";
 
 @interface JBLineLayer : CAShapeLayer
 
 @property (nonatomic, assign) NSUInteger tag;
+@property (nonatomic, assign) JBLineChartViewLineStyle lineStyle;
 
 @end
 
@@ -86,6 +91,7 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
 - (UIColor *)lineChartLineView:(JBLineChartLineView *)lineChartLineView colorForLineAtLineIndex:(NSUInteger)lineIndex;
 - (UIColor *)lineChartLineView:(JBLineChartLineView *)lineChartLineView selectedColorForLineAtLineIndex:(NSUInteger)lineIndex;
 - (CGFloat)lineChartLineView:(JBLineChartLineView *)lineChartLineView widthForLineAtLineIndex:(NSUInteger)lineIndex;
+- (JBLineChartViewLineStyle)lineChartLineView:(JBLineChartLineView *)lineChartLineView lineStyleForLineAtLineIndex:(NSUInteger)lineIndex;
 
 @end
 
@@ -354,6 +360,15 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
         return [self.dataSource lineChartView:self widthForLineAtLineIndex:lineIndex];
     }
     return kJBLineChartLineViewStrokeWidth;
+}
+
+- (JBLineChartViewLineStyle)lineChartLineView:(JBLineChartLineView *)lineChartLineView lineStyleForLineAtLineIndex:(NSUInteger)lineIndex
+{
+    if ([self.dataSource respondsToSelector:@selector(lineChartView:lineStyleForLineAtLineIndex:)])
+    {
+        return [self.dataSource lineChartView:self lineStyleForLineAtLineIndex:lineIndex];
+    }
+    return JBLineChartViewLineStyleSolid;
 }
 
 #pragma mark - Setters
@@ -627,6 +642,9 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
             shapeLayer.tag = lineIndex;
         }
         
+        NSAssert([self.delegate respondsToSelector:@selector(lineChartLineView:lineStyleForLineAtLineIndex:)], @"JBLineChartLineView // delegate must implement - (JBLineChartViewLineStyle)lineChartLineView:(JBLineChartLineView *)lineChartLineView lineStyleForLineAtLineIndex:(NSUInteger)lineIndex");
+        shapeLayer.lineStyle = [self.delegate lineChartLineView:self lineStyleForLineAtLineIndex:lineIndex];
+        
         if (self.animated)
         {
             NSAssert([self.delegate respondsToSelector:@selector(lineChartLineView:colorForLineAtLineIndex:)], @"JBLineChartLineView // delegate must implement - (UIColor *)lineChartLineView:(JBLineChartLineView *)lineChartLineView colorForLineAtLineIndex:(NSUInteger)lineIndex");
@@ -790,6 +808,14 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
 
 #pragma mark - Alloc/Init
 
++ (void)initialize
+{
+	if (self == [JBLineLayer class])
+	{
+		kJBLineChartLineViewDefaultDashPattern = @[@(3), @(2)];
+	}
+}
+
 - (id)init
 {
     self = [super init];
@@ -797,11 +823,30 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
     {
         self.zPosition = 0.0f;
         self.fillColor = [UIColor clearColor].CGColor;
-        self.lineDashPattern = [NSArray arrayWithObjects:[NSNumber numberWithInteger:1], [NSNumber numberWithInteger:1], nil];
-        self.lineDashPhase = 1.0f;
-        self.strokeColor = kJBLineChartViewDefaultLineColor.CGColor;
     }
     return self;
+}
+
+#pragma mark - Setters
+
+- (void)setLineStyle:(JBLineChartViewLineStyle)lineStyle
+{
+    _lineStyle = lineStyle;
+    
+    if (_lineStyle == JBLineChartViewLineStyleDashed)
+    {
+        self.lineCap = kCALineCapButt;
+        self.lineJoin = kCALineJoinMiter;
+        self.lineDashPhase = kJBLineChartLineViewDefaultLinePhase;
+        self.lineDashPattern = kJBLineChartLineViewDefaultDashPattern;
+    }
+    else if (_lineStyle == JBLineChartViewLineStyleSolid)
+    {
+        self.lineCap = kCALineCapRound;
+        self.lineJoin = kCALineJoinRound;
+        self.lineDashPhase = 0.0;
+        self.lineDashPattern = nil;
+    }
 }
 
 @end

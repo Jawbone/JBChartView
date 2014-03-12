@@ -192,19 +192,32 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
     return kJBColorLineChartDefaultLineColor;
 }
 
-- (UIColor *)lineChartView:(JBLineChartView *)lineChartView selectionColorForLineAtLineIndex:(NSUInteger)lineIndex
-{
-    return kJBColorLineChartDefaultSelectedLineColor;
-}
-
 - (CGFloat)lineChartView:(JBLineChartView *)lineChartView widthForLineAtLineIndex:(NSUInteger)lineIndex
 {
+    if (lineIndex == 1)
+    {
+        return 2;
+    }
     return kJBLineChartViewControllerChartLineWidth;
 }
 
 - (UIColor *)verticalSelectionColorForLineChartView:(JBLineChartView *)lineChartView
 {
     return [UIColor whiteColor];
+}
+
+- (UIColor *)lineChartView:(JBLineChartView *)lineChartView selectionColorForLineAtLineIndex:(NSUInteger)lineIndex
+{
+    return kJBColorLineChartDefaultSelectedLineColor;
+}
+
+- (JBLineChartViewLineStyle)lineChartView:(JBLineChartView *)lineChartView lineStyleForLineAtLineIndex:(NSUInteger)lineIndex
+{
+    if (lineIndex == 1)
+    {
+        return JBLineChartViewLineStyleDashed;
+    }
+    return JBLineChartViewLineStyleSolid;
 }
 
 #pragma mark - Buttons
