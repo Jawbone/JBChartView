@@ -12,12 +12,12 @@
 #import <QuartzCore/QuartzCore.h>
 
 // Enums
-typedef NS_ENUM(NSInteger, JBLineChartLineViewState){
+typedef NS_ENUM(NSUInteger, JBLineChartLineViewState){
 	JBLineChartLineViewStateExpanded,
     JBLineChartLineViewStateCollapsed
 };
 
-typedef NS_ENUM(NSInteger, JBLineChartHorizontalIndexClamp){
+typedef NS_ENUM(NSUInteger, JBLineChartHorizontalIndexClamp){
 	JBLineChartHorizontalIndexClampLeft,
     JBLineChartHorizontalIndexClampRight,
     JBLineChartHorizontalIndexClampNone
@@ -46,7 +46,7 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
 
 @interface JBLineLayer : CAShapeLayer
 
-@property (nonatomic, assign) NSInteger tag;
+@property (nonatomic, assign) NSUInteger tag;
 
 @end
 
@@ -62,7 +62,7 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
 
 @property (nonatomic, assign) id<JBLineChartLineViewDelegate> delegate;
 @property (nonatomic, assign) JBLineChartLineViewState state;
-@property (nonatomic, assign) NSInteger selectedLineIndex;
+@property (nonatomic, assign) NSInteger selectedLineIndex; // -1 to unselect
 @property (nonatomic, assign) BOOL animated;
 
 // Data
@@ -83,9 +83,9 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
 @protocol JBLineChartLineViewDelegate <NSObject>
 
 - (NSArray *)chartDataForLineChartLineView:(JBLineChartLineView*)lineChartLineView;
-- (UIColor *)lineChartLineView:(JBLineChartLineView *)lineChartLineView colorForLineAtLineIndex:(NSInteger)lineIndex;
-- (UIColor *)lineChartLineView:(JBLineChartLineView *)lineChartLineView selectedColorForLineAtLineIndex:(NSInteger)lineIndex;
-- (CGFloat)lineChartLineView:(JBLineChartLineView *)lineChartLineView widthForLineAtLineIndex:(NSInteger)lineIndex;
+- (UIColor *)lineChartLineView:(JBLineChartLineView *)lineChartLineView colorForLineAtLineIndex:(NSUInteger)lineIndex;
+- (UIColor *)lineChartLineView:(JBLineChartLineView *)lineChartLineView selectedColorForLineAtLineIndex:(NSUInteger)lineIndex;
+- (CGFloat)lineChartLineView:(JBLineChartLineView *)lineChartLineView widthForLineAtLineIndex:(NSUInteger)lineIndex;
 
 @end
 
@@ -102,7 +102,7 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
 - (CGFloat)availableHeight;
 - (CGFloat)maxHeight;
 - (CGFloat)minHeight;
-- (NSInteger)dataCount;
+- (NSUInteger)dataCount;
 
 // Touch helpers
 - (CGPoint)clampPoint:(CGPoint)point toBounds:(CGRect)bounds padding:(CGFloat)padding;
@@ -172,15 +172,15 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
         CGFloat yOffset = 0;
        
         NSMutableArray *mutableChartData = [NSMutableArray array];
-        NSAssert([self.dataSource respondsToSelector:@selector(numberOfLinesInLineChartView:)], @"JBLineChartView // dataSource must implement - (NSInteger)numberOfLinesInLineChartView:(JBLineChartView *)lineChartView");
+        NSAssert([self.dataSource respondsToSelector:@selector(numberOfLinesInLineChartView:)], @"JBLineChartView // dataSource must implement - (NSUInteger)numberOfLinesInLineChartView:(JBLineChartView *)lineChartView");
         for (NSUInteger lineIndex=0; lineIndex<[self.dataSource numberOfLinesInLineChartView:self]; lineIndex++)
         {
-            NSAssert([self.dataSource respondsToSelector:@selector(lineChartView:numberOfVerticalValuesAtLineIndex:)], @"JBLineChartView // dataSource must implement - (NSInteger)lineChartView:(JBLineChartView *)lineChartView numberOfVerticalValuesAtLineIndex:(NSInteger)lineIndex");
-            NSInteger dataCount = [self.dataSource lineChartView:self numberOfVerticalValuesAtLineIndex:lineIndex];
+            NSAssert([self.dataSource respondsToSelector:@selector(lineChartView:numberOfVerticalValuesAtLineIndex:)], @"JBLineChartView // dataSource must implement - (NSUInteger)lineChartView:(JBLineChartView *)lineChartView numberOfVerticalValuesAtLineIndex:(NSUInteger)lineIndex");
+            NSUInteger dataCount = [self.dataSource lineChartView:self numberOfVerticalValuesAtLineIndex:lineIndex];
             NSMutableArray *chartPointData = [NSMutableArray array];
             for (NSUInteger horizontalIndex=0; horizontalIndex<dataCount; horizontalIndex++)
             {                
-                NSAssert([self.delegate respondsToSelector:@selector(lineChartView:verticalValueForHorizontalIndex:atLineIndex:)], @"JBLineChartView // delegate must implement - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSInteger)horizontalIndex atLineIndex:(NSInteger)lineIndex");
+                NSAssert([self.delegate respondsToSelector:@selector(lineChartView:verticalValueForHorizontalIndex:atLineIndex:)], @"JBLineChartView // delegate must implement - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
                 CGFloat rawHeight =  [self.delegate lineChartView:self verticalValueForHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
                 CGFloat normalizedHeight = [self normalizedHeightForRawHeight:rawHeight];
                 yOffset = mainViewRect.size.height - normalizedHeight;
@@ -281,14 +281,14 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
     if (self.cachedMaxHeight == kJBLineChartViewUndefinedMaxHeight)
     {
         CGFloat maxHeight = 0;
-        NSAssert([self.dataSource respondsToSelector:@selector(numberOfLinesInLineChartView:)], @"JBLineChartView // dataSource must implement - (NSInteger)numberOfLinesInLineChartView:(JBLineChartView *)lineChartView");
+        NSAssert([self.dataSource respondsToSelector:@selector(numberOfLinesInLineChartView:)], @"JBLineChartView // dataSource must implement - (NSUInteger)numberOfLinesInLineChartView:(JBLineChartView *)lineChartView");
         for (NSUInteger lineIndex=0; lineIndex<[self.dataSource numberOfLinesInLineChartView:self]; lineIndex++)
         {
-            NSAssert([self.dataSource respondsToSelector:@selector(lineChartView:numberOfVerticalValuesAtLineIndex:)], @"JBLineChartView // dataSource must implement - (NSInteger)lineChartView:(JBLineChartView *)lineChartView numberOfVerticalValuesAtLineIndex:(NSInteger)lineIndex");
-            NSInteger dataCount = [self.dataSource lineChartView:self numberOfVerticalValuesAtLineIndex:lineIndex];
+            NSAssert([self.dataSource respondsToSelector:@selector(lineChartView:numberOfVerticalValuesAtLineIndex:)], @"JBLineChartView // dataSource must implement - (NSUInteger)lineChartView:(JBLineChartView *)lineChartView numberOfVerticalValuesAtLineIndex:(NSUInteger)lineIndex");
+            NSUInteger dataCount = [self.dataSource lineChartView:self numberOfVerticalValuesAtLineIndex:lineIndex];
             for (NSUInteger horizontalIndex=0; horizontalIndex<dataCount; horizontalIndex++)
             {
-                NSAssert([self.delegate respondsToSelector:@selector(lineChartView:verticalValueForHorizontalIndex:atLineIndex:)], @"JBLineChartView // delegate must implement - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSInteger)horizontalIndex atLineIndex:(NSInteger)lineIndex");
+                NSAssert([self.delegate respondsToSelector:@selector(lineChartView:verticalValueForHorizontalIndex:atLineIndex:)], @"JBLineChartView // delegate must implement - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
                 CGFloat height = [self.delegate lineChartView:self verticalValueForHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
                 if (height > maxHeight)
                 {
@@ -306,14 +306,14 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
     return 0;
 }
 
-- (NSInteger)dataCount
+- (NSUInteger)dataCount
 {
-    NSInteger dataCount = 0;
-    NSAssert([self.dataSource respondsToSelector:@selector(numberOfLinesInLineChartView:)], @"JBLineChartView // dataSource must implement - (NSInteger)numberOfLinesInLineChartView:(JBLineChartView *)lineChartView");
+    NSUInteger dataCount = 0;
+    NSAssert([self.dataSource respondsToSelector:@selector(numberOfLinesInLineChartView:)], @"JBLineChartView // dataSource must implement - (NSUInteger)numberOfLinesInLineChartView:(JBLineChartView *)lineChartView");
     for (NSUInteger lineIndex=0; lineIndex<[self.dataSource numberOfLinesInLineChartView:self]; lineIndex++)
     {
-        NSAssert([self.dataSource respondsToSelector:@selector(lineChartView:numberOfVerticalValuesAtLineIndex:)], @"JBLineChartView // dataSource must implement - (NSInteger)lineChartView:(JBLineChartView *)lineChartView numberOfVerticalValuesAtLineIndex:(NSInteger)lineIndex");
-        NSInteger lineDataCount = [self.dataSource lineChartView:self numberOfVerticalValuesAtLineIndex:lineIndex];
+        NSAssert([self.dataSource respondsToSelector:@selector(lineChartView:numberOfVerticalValuesAtLineIndex:)], @"JBLineChartView // dataSource must implement - (NSUInteger)lineChartView:(JBLineChartView *)lineChartView numberOfVerticalValuesAtLineIndex:(NSUInteger)lineIndex");
+        NSUInteger lineDataCount = [self.dataSource lineChartView:self numberOfVerticalValuesAtLineIndex:lineIndex];
         if (lineDataCount > dataCount)
         {
             dataCount = lineDataCount;
@@ -329,7 +329,7 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
     return self.chartData;
 }
 
-- (UIColor *)lineChartLineView:(JBLineChartLineView *)lineChartLineView colorForLineAtLineIndex:(NSInteger)lineIndex
+- (UIColor *)lineChartLineView:(JBLineChartLineView *)lineChartLineView colorForLineAtLineIndex:(NSUInteger)lineIndex
 {
     if ([self.dataSource respondsToSelector:@selector(lineChartView:colorForLineAtLineIndex:)])
     {
@@ -338,7 +338,7 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
     return kJBLineChartViewDefaultLineColor;
 }
 
-- (UIColor *)lineChartLineView:(JBLineChartLineView *)lineChartLineView selectedColorForLineAtLineIndex:(NSInteger)lineIndex
+- (UIColor *)lineChartLineView:(JBLineChartLineView *)lineChartLineView selectedColorForLineAtLineIndex:(NSUInteger)lineIndex
 {
     if ([self.dataSource respondsToSelector:@selector(lineChartView:selectionColorForLineAtLineIndex:)])
     {
@@ -347,7 +347,7 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
     return kJBLineChartViewDefaultLineSelectionColor;
 }
 
-- (CGFloat)lineChartLineView:(JBLineChartLineView *)lineChartLineView widthForLineAtLineIndex:(NSInteger)lineIndex
+- (CGFloat)lineChartLineView:(JBLineChartLineView *)lineChartLineView widthForLineAtLineIndex:(NSUInteger)lineIndex
 {
     if ([self.dataSource respondsToSelector:@selector(lineChartView:widthForLineAtLineIndex:)])
     {
@@ -384,7 +384,7 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
 {
     NSUInteger index = 0;
     CGFloat currentDistance = INT_MAX;
-    NSUInteger selectedIndex = kJBLineChartUnselectedLineIndex;
+    NSInteger selectedIndex = kJBLineChartUnselectedLineIndex;
     
     for (JBLineChartPoint *lineChartPoint in lineData)
     {
@@ -426,15 +426,15 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
     
     NSUInteger shortestDistance = INT_MAX;
     NSInteger selectedIndex = kJBLineChartUnselectedLineIndex;
-    NSAssert([self.dataSource respondsToSelector:@selector(numberOfLinesInLineChartView:)], @"JBLineChartView // dataSource must implement - (NSInteger)numberOfLinesInLineChartView:(JBLineChartView *)lineChartView");
+    NSAssert([self.dataSource respondsToSelector:@selector(numberOfLinesInLineChartView:)], @"JBLineChartView // dataSource must implement - (NSUInteger)numberOfLinesInLineChartView:(JBLineChartView *)lineChartView");
     
     // Iterate all lines
     for (NSUInteger lineIndex=0; lineIndex<[self.dataSource numberOfLinesInLineChartView:self]; lineIndex++)
     {
-        NSAssert([self.dataSource respondsToSelector:@selector(lineChartView:numberOfVerticalValuesAtLineIndex:)], @"JBLineChartView // dataSource must implement - (NSInteger)lineChartView:(JBLineChartView *)lineChartView numberOfVerticalValuesAtLineIndex:(NSInteger)lineIndex");
+        NSAssert([self.dataSource respondsToSelector:@selector(lineChartView:numberOfVerticalValuesAtLineIndex:)], @"JBLineChartView // dataSource must implement - (NSUInteger)lineChartView:(JBLineChartView *)lineChartView numberOfVerticalValuesAtLineIndex:(NSUInteger)lineIndex");
         if ([self.dataSource lineChartView:self numberOfVerticalValuesAtLineIndex:lineIndex] > rightHorizontalIndex)
         {
-            NSAssert([self.delegate respondsToSelector:@selector(lineChartView:verticalValueForHorizontalIndex:atLineIndex:)], @"JBLineChartView // delegate must implement - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSInteger)horizontalIndex atLineIndex:(NSInteger)lineIndex");
+            NSAssert([self.delegate respondsToSelector:@selector(lineChartView:verticalValueForHorizontalIndex:atLineIndex:)], @"JBLineChartView // delegate must implement - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
             
             NSArray *lineData = [self.chartData objectAtIndex:lineIndex];
 
@@ -478,7 +478,7 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
 
     if ([self.delegate respondsToSelector:@selector(lineChartView:didSelectLineAtIndex:horizontalIndex:)])
     {
-        NSInteger lineIndex = self.lineView.selectedLineIndex != kJBLineChartLineViewUnselectedLineIndex ? self.lineView.selectedLineIndex : [self lineIndexForPoint:touchPoint];
+        NSUInteger lineIndex = self.lineView.selectedLineIndex != kJBLineChartLineViewUnselectedLineIndex ? self.lineView.selectedLineIndex : [self lineIndexForPoint:touchPoint];
         [self.delegate lineChartView:self didSelectLineAtIndex:lineIndex horizontalIndex:[self horizontalIndexForPoint:touchPoint indexClamp:JBLineChartHorizontalIndexClampNone lineData:[self.chartData objectAtIndex:lineIndex]]];
     }
     
@@ -603,7 +603,7 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
         UIBezierPath *dynamicPath = [UIBezierPath bezierPath];
         dynamicPath.miterLimit = kJBLineChartLineViewMiterLimit;
         
-        NSInteger index = 0;
+        NSUInteger index = 0;
         for (JBLineChartPoint *lineChartPoint in [lineData sortedArrayUsingSelector:@selector(compare:)])
         {
             if (index == 0)
@@ -629,10 +629,10 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
         
         if (self.animated)
         {
-            NSAssert([self.delegate respondsToSelector:@selector(lineChartLineView:colorForLineAtLineIndex:)], @"JBLineChartLineView // delegate must implement - (UIColor *)lineChartLineView:(JBLineChartLineView *)lineChartLineView colorForLineAtLineIndex:(NSInteger)lineIndex");
+            NSAssert([self.delegate respondsToSelector:@selector(lineChartLineView:colorForLineAtLineIndex:)], @"JBLineChartLineView // delegate must implement - (UIColor *)lineChartLineView:(JBLineChartLineView *)lineChartLineView colorForLineAtLineIndex:(NSUInteger)lineIndex");
             shapeLayer.strokeColor = [self.delegate lineChartLineView:self colorForLineAtLineIndex:lineIndex].CGColor;
 
-            NSAssert([self.delegate respondsToSelector:@selector(lineChartLineView:widthForLineAtLineIndex:)], @"JBLineChartLineView // delegate must implement - (CGFloat)lineChartLineView:(JBLineChartLineView *)lineChartLineView widthForLineAtLineIndex:(NSInteger)lineIndex");
+            NSAssert([self.delegate respondsToSelector:@selector(lineChartLineView:widthForLineAtLineIndex:)], @"JBLineChartLineView // delegate must implement - (CGFloat)lineChartLineView:(JBLineChartLineView *)lineChartLineView widthForLineAtLineIndex:(NSUInteger)lineIndex");
             shapeLayer.lineWidth = [self.delegate lineChartLineView:self widthForLineAtLineIndex:lineIndex];
             shapeLayer.path = (self.state == JBLineChartLineViewStateCollapsed) ? dynamicPath.CGPath : flatPath.CGPath;
             shapeLayer.frame = self.bounds;
@@ -652,14 +652,12 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
         {
             CGContextSaveGState(context);
             {
-                NSAssert([self.delegate respondsToSelector:@selector(lineChartLineView:colorForLineAtLineIndex:)], @"JBLineChartLineView // delegate must implement - (UIColor *)lineChartLineView:(JBLineChartLineView *)lineChartLineView colorForLineAtLineIndex:(NSInteger)lineIndex");
+                NSAssert([self.delegate respondsToSelector:@selector(lineChartLineView:colorForLineAtLineIndex:)], @"JBLineChartLineView // delegate must implement - (UIColor *)lineChartLineView:(JBLineChartLineView *)lineChartLineView colorForLineAtLineIndex:(NSUInteger)lineIndex");
                 CGContextSetStrokeColorWithColor(context, [self.delegate lineChartLineView:self colorForLineAtLineIndex:lineIndex].CGColor);
 
-                NSAssert([self.delegate respondsToSelector:@selector(lineChartLineView:widthForLineAtLineIndex:)], @"JBLineChartLineView // delegate must implement - (CGFloat)lineChartLineView:(JBLineChartLineView *)lineChartLineView widthForLineAtLineIndex:(NSInteger)lineIndex");
+                NSAssert([self.delegate respondsToSelector:@selector(lineChartLineView:widthForLineAtLineIndex:)], @"JBLineChartLineView // delegate must implement - (CGFloat)lineChartLineView:(JBLineChartLineView *)lineChartLineView widthForLineAtLineIndex:(NSUInteger)lineIndex");
                 CGContextSetLineWidth(context, [self.delegate lineChartLineView:self widthForLineAtLineIndex:lineIndex]);
                 
-                CGContextSetLineCap(context, kCGLineCapRound);
-                CGContextSetLineJoin(context, kCGLineJoinRound);
                 CGContextBeginPath(context);
                 CGContextAddPath(context, self.state == JBLineChartLineViewStateCollapsed ? flatPath.CGPath : dynamicPath.CGPath);
                 CGContextDrawPath(context, kCGPathStroke);
@@ -724,12 +722,12 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
         {
             if (((JBLineLayer *)layer).tag == selectedLineIndex)
             {
-                NSAssert([self.delegate respondsToSelector:@selector(lineChartLineView:selectedColorForLineAtLineIndex:)], @"JBLineChartLineView // delegate must implement - (UIColor *)lineChartLineView:(JBLineChartLineView *)lineChartLineView selectedColorForLineAtLineIndex:(NSInteger)lineIndex");
+                NSAssert([self.delegate respondsToSelector:@selector(lineChartLineView:selectedColorForLineAtLineIndex:)], @"JBLineChartLineView // delegate must implement - (UIColor *)lineChartLineView:(JBLineChartLineView *)lineChartLineView selectedColorForLineAtLineIndex:(NSUInteger)lineIndex");
                 ((JBLineLayer *)layer).strokeColor = [self.delegate lineChartLineView:self selectedColorForLineAtLineIndex:selectedLineIndex].CGColor;
             }
             else
             {
-                NSAssert([self.delegate respondsToSelector:@selector(lineChartLineView:colorForLineAtLineIndex:)], @"JBLineChartLineView // delegate must implement - (UIColor *)lineChartLineView:(JBLineChartLineView *)lineChartLineView colorForLineAtLineIndex:(NSInteger)lineIndex");
+                NSAssert([self.delegate respondsToSelector:@selector(lineChartLineView:colorForLineAtLineIndex:)], @"JBLineChartLineView // delegate must implement - (UIColor *)lineChartLineView:(JBLineChartLineView *)lineChartLineView colorForLineAtLineIndex:(NSUInteger)lineIndex");
                 ((JBLineLayer *)layer).strokeColor = [self.delegate lineChartLineView:self colorForLineAtLineIndex:selectedLineIndex].CGColor;
             }
         }
@@ -798,9 +796,10 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
     if (self)
     {
         self.zPosition = 0.0f;
-        self.lineCap = kCALineCapRound;
-        self.lineJoin = kCALineJoinRound;
         self.fillColor = [UIColor clearColor].CGColor;
+        self.lineDashPattern = [NSArray arrayWithObjects:[NSNumber numberWithInteger:1], [NSNumber numberWithInteger:1], nil];
+        self.lineDashPhase = 1.0f;
+        self.strokeColor = kJBLineChartViewDefaultLineColor.CGColor;
     }
     return self;
 }

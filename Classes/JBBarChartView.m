@@ -96,13 +96,13 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     dispatch_block_t createDataDictionaries = ^{
         
         // Grab the count
-        NSAssert([self.dataSource respondsToSelector:@selector(numberOfBarsInBarChartView:)], @"JBBarChartView // datasource must implement - (NSInteger)numberOfBarsInBarChartView:(JBBarChartView *)barChartView");
-        NSInteger dataCount = [self.dataSource numberOfBarsInBarChartView:self];
+        NSAssert([self.dataSource respondsToSelector:@selector(numberOfBarsInBarChartView:)], @"JBBarChartView // datasource must implement - (NSUInteger)numberOfBarsInBarChartView:(JBBarChartView *)barChartView");
+        NSUInteger dataCount = [self.dataSource numberOfBarsInBarChartView:self];
         
         // Build up the data collection
-        NSAssert([self.delegate respondsToSelector:@selector(barChartView:heightForBarViewAtAtIndex:)], @"JBBarChartView // delegate must implement - (NSInteger)barChartView:(JBBarChartView *)barChartView heightForBarViewAtAtIndex:(NSInteger)index");
+        NSAssert([self.delegate respondsToSelector:@selector(barChartView:heightForBarViewAtAtIndex:)], @"JBBarChartView // delegate must implement - (NSUInteger)barChartView:(JBBarChartView *)barChartView heightForBarViewAtAtIndex:(NSUInteger)index");
         NSMutableDictionary *dataDictionary = [NSMutableDictionary dictionary];
-        for (NSInteger index=0; index<dataCount; index++)
+        for (NSUInteger index=0; index<dataCount; index++)
         {
             [dataDictionary setObject:[NSNumber numberWithFloat:[self.delegate barChartView:self heightForBarViewAtAtIndex:index]] forKey:[NSNumber numberWithInt:(int)index]];
         }
@@ -119,7 +119,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
         }
         else
         {
-            NSInteger totalBars = [[self.chartDataDictionary allKeys] count];
+            NSUInteger totalBars = [[self.chartDataDictionary allKeys] count];
             self.barPadding = (1/(float)totalBars) * kJBBarChartViewBarBasePaddingMutliplier;
         }
     };
@@ -136,7 +136,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
         }
         
         CGFloat xOffset = 0;
-        NSInteger index = 0;
+        NSUInteger index = 0;
         NSMutableArray *mutableBarViews = [NSMutableArray array];
         for (NSNumber *key in [[self.chartDataDictionary allKeys] sortedArrayUsingSelector:@selector(compare:)])
         {
@@ -251,7 +251,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 - (CGFloat)barWidth
 {
-    NSInteger barCount = [[self.chartDataDictionary allKeys] count];
+    NSUInteger barCount = [[self.chartDataDictionary allKeys] count];
     if (barCount > 0)
     {
         CGFloat totalPadding = (barCount - 1) * self.barPadding;
@@ -359,7 +359,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     NSInteger selectedIndex = [self barViewIndexForPoint:point];
     if (selectedIndex >= 0)
     {
-        barView = [self.barViews objectAtIndex:[self barViewIndexForPoint:point]];
+        return [self.barViews objectAtIndex:[self barViewIndexForPoint:point]];
     }
     return barView;
 }
@@ -402,7 +402,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     
     UITouch *touch = [touches anyObject];
     CGPoint touchPoint = [touch locationInView:self];
-    NSInteger index = [self barViewIndexForPoint:touchPoint];
+    NSUInteger index = [self barViewIndexForPoint:touchPoint];
     if ([self.delegate respondsToSelector:@selector(barChartView:didUnselectBarAtIndex:)])
     {
         [self.delegate barChartView:self didUnselectBarAtIndex:index];

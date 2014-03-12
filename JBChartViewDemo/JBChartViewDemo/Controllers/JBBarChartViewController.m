@@ -121,24 +121,24 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
 
 #pragma mark - JBBarChartViewDelegate
 
-- (CGFloat)barChartView:(JBBarChartView *)barChartView heightForBarViewAtAtIndex:(NSInteger)index
+- (CGFloat)barChartView:(JBBarChartView *)barChartView heightForBarViewAtAtIndex:(NSUInteger)index
 {
     return [[self.chartData objectAtIndex:index] floatValue];
 }
 
 #pragma mark - JBBarChartViewDataSource
 
-- (NSInteger)numberOfBarsInBarChartView:(JBBarChartView *)barChartView
+- (NSUInteger)numberOfBarsInBarChartView:(JBBarChartView *)barChartView
 {
     return kJBBarChartViewControllerNumBars;
 }
 
-- (NSInteger)barPaddingForBarChartView:(JBBarChartView *)barChartView
+- (NSUInteger)barPaddingForBarChartView:(JBBarChartView *)barChartView
 {
     return kJBBarChartViewControllerBarPadding;
 }
 
-- (UIView *)barViewForBarChartView:(JBBarChartView *)barChartView atIndex:(NSInteger)index
+- (UIView *)barViewForBarChartView:(JBBarChartView *)barChartView atIndex:(NSUInteger)index
 {
     UIView *barView = [[UIView alloc] init];
     barView.backgroundColor = (index % 2 == 0) ? kJBColorBarChartBarBlue : kJBColorBarChartBarGreen;
@@ -150,7 +150,7 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
     return [UIColor whiteColor];
 }
 
-- (void)barChartView:(JBBarChartView *)barChartView didSelectBarAtIndex:(NSInteger)index
+- (void)barChartView:(JBBarChartView *)barChartView didSelectBarAtIndex:(NSUInteger)index
 {
     NSNumber *valueNumber = [self.chartData objectAtIndex:index];
     [self.informationView setValueText:[NSString stringWithFormat:@"%d", [valueNumber intValue]] unitText:kJBStringLabelMm];
@@ -158,7 +158,7 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
     [self.informationView setHidden:NO animated:YES];
 }
 
-- (void)barChartView:(JBBarChartView *)barChartView didUnselectBarAtIndex:(NSInteger)index
+- (void)barChartView:(JBBarChartView *)barChartView didUnselectBarAtIndex:(NSUInteger)index
 {
     [self.informationView setHidden:YES animated:YES];
 }
