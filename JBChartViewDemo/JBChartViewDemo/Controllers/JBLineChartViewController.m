@@ -17,9 +17,8 @@
 #define ARC4RANDOM_MAX 0x100000000
 
 typedef NS_ENUM(NSInteger, JBLineChartLine){
-	JBLineChartLine1,
-    JBLineChartLine2,
-    JBLineChartLine3,
+	JBLineChartLineSolid,
+    JBLineChartLineDashed,
     JBLineChartLineCount
 };
 
@@ -28,9 +27,9 @@ CGFloat const kJBLineChartViewControllerChartHeight = 250.0f;
 CGFloat const kJBLineChartViewControllerChartHeaderHeight = 75.0f;
 CGFloat const kJBLineChartViewControllerChartHeaderPadding = 20.0f;
 CGFloat const kJBLineChartViewControllerChartFooterHeight = 20.0f;
-CGFloat const kJBLineChartViewControllerChartLineWidth = 6.0f;
+CGFloat const kJBLineChartViewControllerChartSolidLineWidth = 6.0f;
+CGFloat const kJBLineChartViewControllerChartDashedLineWidth = 2.0f;
 NSInteger const kJBLineChartViewControllerMaxNumChartPoints = 27;
-NSInteger const kJBLineChartViewControllerMinNumChartPoints = 2;
 
 // Strings
 NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
@@ -72,7 +71,7 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
     for (int lineIndex=0; lineIndex<JBLineChartLineCount; lineIndex++)
     {
         NSMutableArray *mutableChartData = [NSMutableArray array];
-        for (int i=0; i<MAX(kJBLineChartViewControllerMinNumChartPoints, (arc4random() % kJBLineChartViewControllerMaxNumChartPoints)); i++)
+        for (int i=0; i<kJBLineChartViewControllerMaxNumChartPoints; i++)
         {
             [mutableChartData addObject:[NSNumber numberWithFloat:((double)arc4random() / ARC4RANDOM_MAX)]]; // random number between 0 and 1
         }
@@ -189,16 +188,12 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
 
 - (UIColor *)lineChartView:(JBLineChartView *)lineChartView colorForLineAtLineIndex:(NSUInteger)lineIndex
 {
-    return kJBColorLineChartDefaultLineColor;
+    return (lineIndex == JBLineChartLineSolid) ? kJBColorLineChartDefaultSolidLineColor: kJBColorLineChartDefaultDashedLineColor;
 }
 
 - (CGFloat)lineChartView:(JBLineChartView *)lineChartView widthForLineAtLineIndex:(NSUInteger)lineIndex
 {
-    if (lineIndex == 1)
-    {
-        return 2;
-    }
-    return kJBLineChartViewControllerChartLineWidth;
+    return (lineIndex == JBLineChartLineSolid) ? kJBLineChartViewControllerChartSolidLineWidth: kJBLineChartViewControllerChartDashedLineWidth;
 }
 
 - (UIColor *)verticalSelectionColorForLineChartView:(JBLineChartView *)lineChartView
@@ -208,16 +203,12 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
 
 - (UIColor *)lineChartView:(JBLineChartView *)lineChartView selectionColorForLineAtLineIndex:(NSUInteger)lineIndex
 {
-    return kJBColorLineChartDefaultSelectedLineColor;
+    return (lineIndex == JBLineChartLineSolid) ? kJBColorLineChartDefaultSolidSelectedLineColor: kJBColorLineChartDefaultDashedSelectedLineColor;
 }
 
 - (JBLineChartViewLineStyle)lineChartView:(JBLineChartView *)lineChartView lineStyleForLineAtLineIndex:(NSUInteger)lineIndex
 {
-    if (lineIndex == 1)
-    {
-        return JBLineChartViewLineStyleDashed;
-    }
-    return JBLineChartViewLineStyleSolid;
+    return (lineIndex == JBLineChartLineSolid) ? JBLineChartViewLineStyleSolid : JBLineChartViewLineStyleDashed;
 }
 
 #pragma mark - Buttons
