@@ -8,16 +8,16 @@
 
 #import "JBChartView.h"
 
-// Enums
+/**
+ * Current support for two line styles: solid (default) and dashed. 
+ */
 typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
-    
-    /*
-     *
+    /**
+     *  Dashed square capped line with a phase of 3:2 (3 points dashed, 2 points spaced).
      */
 	JBLineChartViewLineStyleDashed,
-    
-    /*
-     *
+    /**
+     *  Solid round capped line.
      */
     JBLineChartViewLineStyleSolid
 };
@@ -124,7 +124,7 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
 - (UIColor *)lineChartView:(JBLineChartView *)lineChartView colorForLineAtLineIndex:(NSUInteger)lineIndex;
 
 /**
- *  Returnst the width of particular line at lineIndex within the chart.
+ *  Returns the width of particular line at lineIndex within the chart.
  *
  *  Default: 5 points.
  *
@@ -161,8 +161,17 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
  */
 - (UIColor *)lineChartView:(JBLineChartView *)lineChartView selectionColorForLineAtLineIndex:(NSUInteger)lineIndex;
 
-
+/**
+ *  Returns the line style of a particular line at lineIndex within the chart.
+ *  See JBLineChartViewLineStyle for line style descriptions.
+ *
+ *  Default: JBLineChartViewLineStyleSolid
+ *
+ *  @param lineChartView    The line chart object requesting this information.
+ *  @param lineIndex        An index number identifying a line in the chart.
+ *
+ *  @return The line style to be used to draw a line in the chart.
+ */
 - (JBLineChartViewLineStyle)lineChartView:(JBLineChartView *)lineChartView lineStyleForLineAtLineIndex:(NSUInteger)lineIndex;
-
 
 @end
