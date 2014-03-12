@@ -13,6 +13,7 @@ CGFloat const kJBChartValueViewPadding = 10.0f;
 CGFloat const kJBChartValueViewSeparatorSize = 1.0f;
 CGFloat const kJBChartValueViewTitleHeight = 50.0f;
 CGFloat const kJBChartValueViewTitleWidth = 75.0f;
+CGFloat const kJBChartValueViewDefaultAnimationDuration = 0.25f;
 
 // Colors (JBChartInformationView)
 static UIColor *kJBChartViewSeparatorColor = nil;
@@ -185,7 +186,7 @@ static UIColor *kJBChartInformationViewShadowColor = nil;
     {
         if (hidden)
         {
-            [UIView animateWithDuration:kJBNumericDefaultAnimationDuration * 0.5 delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+            [UIView animateWithDuration:kJBChartValueViewDefaultAnimationDuration * 0.5 delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
                 self.titleLabel.alpha = 0.0;
                 self.separatorView.alpha = 0.0;
                 self.valueView.valueLabel.alpha = 0.0;
@@ -197,7 +198,7 @@ static UIColor *kJBChartInformationViewShadowColor = nil;
         }
         else
         {
-            [UIView animateWithDuration:kJBNumericDefaultAnimationDuration delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+            [UIView animateWithDuration:kJBChartValueViewDefaultAnimationDuration delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
                 self.titleLabel.frame = [self titleViewRectForHidden:NO];
                 self.titleLabel.alpha = 1.0;
                 self.valueView.valueLabel.alpha = 1.0;
