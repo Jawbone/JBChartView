@@ -1,0 +1,91 @@
+//
+//  JBBaseChartViewController.m
+//  JBChartViewDemo
+//
+//  Created by Terry Worona on 3/13/14.
+//  Copyright (c) 2014 Jawbone. All rights reserved.
+//
+
+#import "JBBaseChartViewController.h"
+
+// Numerics
+CGFloat const kJBBaseChartViewControllerAnimationDuration = 0.25f;
+
+@interface JBBaseChartViewController ()
+
+@property (nonatomic, strong) JBChartTooltipView *tooltipView;
+
+@end
+
+@implementation JBBaseChartViewController
+
+#pragma mark - Setters
+
+- (void)setTooltipVisible:(BOOL)tooltipVisible animated:(BOOL)animated atTouchPoint:(CGPoint)touchPoint
+{
+    _tooltipVisible = tooltipVisible;
+    
+    JBChartView *chartView = [self chartView];
+    
+    if (!chartView)
+    {
+        return;
+    }
+    
+    if (!self.tooltipView)
+    {
+        self.tooltipView = [[JBChartTooltipView alloc] init];
+        self.tooltipView.alpha = 0.0;
+        [self.view addSubview:self.tooltipView];
+    }
+    
+    dispatch_block_t adjustTooltipPosition = ^{
+        CGPoint convertedTouchPoint = [self.view convertPoint:touchPoint fromView:chartView];
+        self.tooltipView.frame = CGRectMake(convertedTouchPoint.x - ceil(self.tooltipView.frame.size.width * 0.5), CGRectGetMaxY(chartView.headerView.frame), self.tooltipView.frame.size.width, self.tooltipView.frame.size.height);
+	};
+    
+    dispatch_block_t adjustTooltipVisibility = ^{
+        self.tooltipView.alpha = _tooltipVisible ? 1.0 : 0.0;
+	};
+    
+    if (tooltipVisible)
+    {
+        adjustTooltipPosition();
+    }
+    
+    if (animated)
+    {
+        [UIView animateWithDuration:kJBBaseChartViewControllerAnimationDuration animations:^{
+            adjustTooltipVisibility();
+        } completion:^(BOOL finished) {
+            if (!tooltipVisible)
+            {
+                adjustTooltipPosition();
+            }
+        }];
+    }
+    else
+    {
+        adjustTooltipVisibility();
+    }
+}
+
+- (void)setTooltipVisible:(BOOL)tooltipVisible animated:(BOOL)animated
+{
+    [self setTooltipVisible:tooltipVisible animated:animated atTouchPoint:CGPointZero];
+}
+
+- (void)setTooltipVisible:(BOOL)tooltipVisible
+{
+    [self setTooltipVisible:tooltipVisible animated:NO];
+}
+
+#pragma mark - Getters
+
+- (JBChartView *)chartView
+{
+    // Subclasses should return chart instance for tooltip functionality
+    return nil;
+}
+
+@end

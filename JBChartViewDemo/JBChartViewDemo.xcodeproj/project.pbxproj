@@ -37,6 +37,7 @@
 		9BE0B0C7182B161000232023 /* JBChartHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BE0B0C6182B161000232023 /* JBChartHeaderView.m */; };
 		9BE0B0CE182B162E00232023 /* JBBarChartFooterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BE0B0CD182B162E00232023 /* JBBarChartFooterView.m */; };
 		9BEBE9D2183167050046E4A8 /* JBChartInformationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BEBE9D1183167050046E4A8 /* JBChartInformationView.m */; };
+		9BEE694618D2789E005D9BA7 /* JBBaseChartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BEE694518D2789E005D9BA7 /* JBBaseChartViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -95,6 +96,8 @@
 		9BE0B0D3182B16F700232023 /* JBStringConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBStringConstants.h; sourceTree = "<group>"; };
 		9BEBE9D0183167050046E4A8 /* JBChartInformationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBChartInformationView.h; sourceTree = "<group>"; };
 		9BEBE9D1183167050046E4A8 /* JBChartInformationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBChartInformationView.m; sourceTree = "<group>"; };
+		9BEE694418D2789E005D9BA7 /* JBBaseChartViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBBaseChartViewController.h; sourceTree = "<group>"; };
+		9BEE694518D2789E005D9BA7 /* JBBaseChartViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBBaseChartViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -190,6 +193,8 @@
 		9B603D3B182C6E79000A76D0 /* Base */ = {
 			isa = PBXGroup;
 			children = (
+				9BEE694418D2789E005D9BA7 /* JBBaseChartViewController.h */,
+				9BEE694518D2789E005D9BA7 /* JBBaseChartViewController.m */,
 				9B603D3C182C6E79000A76D0 /* JBBaseNavigationController.h */,
 				9B603D3D182C6E79000A76D0 /* JBBaseNavigationController.m */,
 				9B603D4C182C7163000A76D0 /* JBBaseTableViewController.h */,
@@ -384,6 +389,7 @@
 				9B603D4E182C7163000A76D0 /* JBBaseTableViewController.m in Sources */,
 				9B6A68DE1829BE63006DB3BF /* JBBarChartViewController.m in Sources */,
 				9BE0B0AD182AD26400232023 /* JBLineChartView.m in Sources */,
+				9BEE694618D2789E005D9BA7 /* JBBaseChartViewController.m in Sources */,
 				9B6A68E11829BED5006DB3BF /* JBLineChartViewController.m in Sources */,
 				9B2E533F18218D310079B9D2 /* AppDelegate.m in Sources */,
 				9BD57BBC18D13D1A00ACFA52 /* JBChartTooltipView.m in Sources */,

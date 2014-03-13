@@ -13,7 +13,6 @@
 #import "JBChartHeaderView.h"
 #import "JBLineChartFooterView.h"
 #import "JBChartInformationView.h"
-#import "JBChartTooltipView.h"
 
 #define ARC4RANDOM_MAX 0x100000000
 
@@ -31,7 +30,6 @@ CGFloat const kJBLineChartViewControllerChartHeaderPadding = 20.0f;
 CGFloat const kJBLineChartViewControllerChartFooterHeight = 20.0f;
 CGFloat const kJBLineChartViewControllerChartSolidLineWidth = 6.0f;
 CGFloat const kJBLineChartViewControllerChartDashedLineWidth = 2.0f;
-CGFloat const kJBLineChartViewControllerAnimationDuration = 0.25f;
 NSInteger const kJBLineChartViewControllerMaxNumChartPoints = 27;
 
 // Strings
@@ -41,8 +39,6 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
 
 @property (nonatomic, strong) JBLineChartView *lineChartView;
 @property (nonatomic, strong) JBChartInformationView *informationView;
-@property (nonatomic, strong) JBChartTooltipView *tooltipView;
-@property (nonatomic, assign) BOOL tooltipVisible;
 @property (nonatomic, strong) NSArray *chartData;
 
 // Buttons
@@ -51,10 +47,6 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
 // Helpers
 - (void)initFakeData;
 - (NSArray *)largestLineData; // largest collection of fake line data
-
-// Setters
-- (void)setTooltipVisible:(BOOL)tooltipVisible animated:(BOOL)animated atTouchPoint:(CGPoint)touchPoint;
-- (void)setTooltipVisible:(BOOL)tooltipVisible animated:(BOOL)animated;
 
 @end
 
@@ -122,40 +114,6 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
     return largestLineData;
 }
 
-#pragma mark - Setters
-
-- (void)setTooltipVisible:(BOOL)tooltipVisible animated:(BOOL)animated atTouchPoint:(CGPoint)touchPoint
-{
-    _tooltipVisible = tooltipVisible;
-    
-    dispatch_block_t adjustTooltip = ^{
-        self.tooltipView.alpha = _tooltipVisible ? 1.0 : 0.0;
-        CGPoint convertedTouchPoint = [self.view convertPoint:touchPoint fromView:self.lineChartView];
-        self.tooltipView.frame = CGRectMake(convertedTouchPoint.x - ceil(self.tooltipView.frame.size.width * 0.5), CGRectGetMaxY(self.lineChartView.headerView.frame) + ceil(kJBLineChartViewControllerChartPadding * 0.5), self.tooltipView.frame.size.width, self.tooltipView.frame.size.height);
-	};
-
-    if (animated)
-    {
-        [UIView animateWithDuration:kJBLineChartViewControllerAnimationDuration animations:^{
-            adjustTooltip();
-        }];
-    }
-    else
-    {
-        adjustTooltip();
-    }
-}
-
-- (void)setTooltipVisible:(BOOL)tooltipVisible animated:(BOOL)animated
-{
-    [self setTooltipVisible:tooltipVisible animated:animated atTouchPoint:CGPointZero];
-}
-
-- (void)setTooltipVisible:(BOOL)tooltipVisible
-{
-    [self setTooltipVisible:tooltipVisible animated:NO];
-}
-
 #pragma mark - View Lifecycle
 
 - (void)loadView
@@ -201,10 +159,6 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
     [self.informationView setTextShadowColor:nil];
     [self.informationView setSeparatorColor:kJBColorLineChartHeaderSeparatorColor];
     [self.view addSubview:self.informationView];
-    
-    self.tooltipView = [[JBChartTooltipView alloc] init];
-    self.tooltipVisible = NO;
-    [self.view addSubview:self.tooltipView];
     
     [self.lineChartView reloadData];
 }
@@ -294,6 +248,13 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
     [self.lineChartView setState:self.lineChartView.state == JBChartViewStateExpanded ? JBChartViewStateCollapsed : JBChartViewStateExpanded animated:YES callback:^{
         buttonImageView.userInteractionEnabled = YES;
     }];
+}
+
+#pragma mark - Overrides
+
+- (JBChartView *)chartView
+{
+    return self.lineChartView;
 }
 
 @end
