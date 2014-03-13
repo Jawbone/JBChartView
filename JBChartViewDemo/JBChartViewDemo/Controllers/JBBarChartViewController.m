@@ -52,8 +52,27 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
     self = [super init];
     if (self)
     {
-        [self initFakeData]; // fake rain data
-        _monthlySymbols = [[[NSDateFormatter alloc] init] monthSymbols];
+        [self initFakeData];
+    }
+    return self;
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    if (self)
+    {
+        [self initFakeData];
+    }
+    return self;
+}
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self)
+    {
+        [self initFakeData];
     }
     return self;
 }
@@ -68,6 +87,7 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
         [mutableChartData addObject:[NSNumber numberWithFloat:MAX(kJBBarChartViewControllerMinBarHeight, arc4random() % kJBBarChartViewControllerMaxBarHeight)]]; // fake height
     }
     _chartData = [NSArray arrayWithArray:mutableChartData];
+    _monthlySymbols = [[[NSDateFormatter alloc] init] monthSymbols];
 }
 
 #pragma mark - View Lifecycle
