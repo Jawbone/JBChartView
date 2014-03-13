@@ -49,7 +49,9 @@
  *
  *  @param barChartView     A bar chart object informing the delegate about the new selection.
  *  @param index            The 0-based index of a given bar (left to right, x-axis).
+ *  @param touchPoint       The touch point in relation to the chart's bounds (excludes footer and header).
  */
+- (void)barChartView:(JBBarChartView *)barChartView didSelectBarAtIndex:(NSUInteger)index touchPoint:(CGPoint)touchPoint;
 - (void)barChartView:(JBBarChartView *)barChartView didSelectBarAtIndex:(NSUInteger)index;
 
 /**
@@ -57,9 +59,8 @@
  *  For selection start events, see: didSelectBarAtIndex...
  *
  *  @param barChartView     A bar chart object informing the delegate about the unselection.
- *  @param index            The 0-based index of a given bar. Index will be -1 if the touch ends outside of the view's bounds.
  */
-- (void)barChartView:(JBBarChartView *)barChartView didUnselectBarAtIndex:(NSUInteger)index;
+- (void)didUnselectBarChartView:(JBBarChartView *)barChartView;
 
 @end
 

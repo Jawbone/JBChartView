@@ -171,17 +171,20 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
     return [UIColor whiteColor];
 }
 
-- (void)barChartView:(JBBarChartView *)barChartView didSelectBarAtIndex:(NSUInteger)index
+- (void)barChartView:(JBBarChartView *)barChartView didSelectBarAtIndex:(NSUInteger)index touchPoint:(CGPoint)touchPoint
 {
     NSNumber *valueNumber = [self.chartData objectAtIndex:index];
     [self.informationView setValueText:[NSString stringWithFormat:@"%d", [valueNumber intValue]] unitText:kJBStringLabelMm];
-    [self.informationView setTitleText:[self.monthlySymbols objectAtIndex:index]];
+    [self.informationView setTitleText:@"Monthly Rainfall"];
     [self.informationView setHidden:NO animated:YES];
+    [self setTooltipVisible:YES animated:YES atTouchPoint:touchPoint];
+    [self.tooltipView setText:[self.monthlySymbols objectAtIndex:index]];
 }
 
-- (void)barChartView:(JBBarChartView *)barChartView didUnselectBarAtIndex:(NSUInteger)index
+- (void)didUnselectBarChartView:(JBBarChartView *)barChartView
 {
     [self.informationView setHidden:YES animated:YES];
+    [self setTooltipVisible:NO animated:YES];
 }
 
 #pragma mark - Buttons
@@ -197,6 +200,13 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
     [self.barChartView setState:self.barChartView.state == JBChartViewStateExpanded ? JBChartViewStateCollapsed : JBChartViewStateExpanded animated:YES callback:^{
         buttonImageView.userInteractionEnabled = YES;
     }];
+}
+
+#pragma mark - Overrides
+
+- (JBChartView *)chartView
+{
+    return self.barChartView;
 }
 
 @end
