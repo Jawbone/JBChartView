@@ -10,4 +10,6 @@
 
 @interface JBChartTooltipView : UIView
 
+- (void)setText:(NSString *)text;
+
 @end

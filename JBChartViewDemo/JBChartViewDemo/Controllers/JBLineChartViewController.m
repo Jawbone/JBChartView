@@ -175,7 +175,7 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
     
     [self.view addSubview:self.lineChartView];
     
-    self.informationView = [[JBChartInformationView alloc] initWithFrame:CGRectMake(self.view.bounds.origin.x, CGRectGetMaxY(self.lineChartView.frame), self.view.bounds.size.width, self.view.bounds.size.height - CGRectGetMaxY(self.lineChartView.frame) - CGRectGetMaxY(self.navigationController.navigationBar.frame)) layout:JBChartInformationViewLayoutVertical];
+    self.informationView = [[JBChartInformationView alloc] initWithFrame:CGRectMake(self.view.bounds.origin.x, CGRectGetMaxY(self.lineChartView.frame), self.view.bounds.size.width, self.view.bounds.size.height - CGRectGetMaxY(self.lineChartView.frame) - CGRectGetMaxY(self.navigationController.navigationBar.frame))];
     [self.informationView setValueAndUnitTextColor:[UIColor colorWithWhite:1.0 alpha:0.75]];
     [self.informationView setTitleTextColor:kJBColorLineChartHeader];
     [self.informationView setTextShadowColor:nil];
@@ -212,9 +212,10 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
 {
     NSNumber *valueNumber = [[self.chartData objectAtIndex:lineIndex] objectAtIndex:horizontalIndex];
     [self.informationView setValueText:[NSString stringWithFormat:@"%.2f", [valueNumber floatValue]] unitText:kJBStringLabelMm];
-    [self.informationView setTitleText:[NSString stringWithFormat:@"%d", [kJBStringLabel1987 intValue] + (int)horizontalIndex]];
+    [self.informationView setTitleText:@"Yearly Rainfall"];
     [self.informationView setHidden:NO animated:YES];
     [self setTooltipVisible:YES animated:YES atTouchPoint:touchPoint];
+    [self.tooltipView setText:[NSString stringWithFormat:@"%d", [kJBStringLabel1987 intValue] + (int)horizontalIndex]];
 }
 
 - (void)didUnselectLineInLineChartView:(JBLineChartView *)lineChartView
