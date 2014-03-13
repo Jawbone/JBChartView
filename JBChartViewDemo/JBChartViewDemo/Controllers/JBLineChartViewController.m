@@ -67,7 +67,27 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
     self = [super init];
     if (self)
     {
-        [self initFakeData]; // fake rain data
+        [self initFakeData];
+    }
+    return self;
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    if (self)
+    {
+        [self initFakeData];
+    }
+    return self;
+}
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self)
+    {
+        [self initFakeData];
     }
     return self;
 }
