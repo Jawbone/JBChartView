@@ -110,7 +110,8 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
     
     dispatch_block_t adjustTooltip = ^{
         self.tooltipView.alpha = _tooltipVisible ? 1.0 : 0.0;
-        self.tooltipView.frame = CGRectMake(touchPoint.x - ceil(self.tooltipView.frame.size.width * 0.5), touchPoint.y, self.tooltipView.frame.size.width, self.tooltipView.frame.size.height);
+        CGPoint convertedTouchPoint = [self.view convertPoint:touchPoint fromView:self.lineChartView];
+        self.tooltipView.frame = CGRectMake(convertedTouchPoint.x - ceil(self.tooltipView.frame.size.width * 0.5), CGRectGetMaxY(self.lineChartView.headerView.frame) + ceil(kJBLineChartViewControllerChartPadding * 0.5), self.tooltipView.frame.size.width, self.tooltipView.frame.size.height);
 	};
 
     if (animated)
