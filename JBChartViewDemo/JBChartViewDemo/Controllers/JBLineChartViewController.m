@@ -13,6 +13,7 @@
 #import "JBChartHeaderView.h"
 #import "JBLineChartFooterView.h"
 #import "JBChartInformationView.h"
+#import "JBChartTooltipView.h"
 
 #define ARC4RANDOM_MAX 0x100000000
 
@@ -30,6 +31,7 @@ CGFloat const kJBLineChartViewControllerChartHeaderPadding = 20.0f;
 CGFloat const kJBLineChartViewControllerChartFooterHeight = 20.0f;
 CGFloat const kJBLineChartViewControllerChartSolidLineWidth = 6.0f;
 CGFloat const kJBLineChartViewControllerChartDashedLineWidth = 2.0f;
+CGFloat const kJBLineChartViewControllerAnimationDuration = 0.25f;
 NSInteger const kJBLineChartViewControllerMaxNumChartPoints = 27;
 
 // Strings
@@ -39,6 +41,8 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
 
 @property (nonatomic, strong) JBLineChartView *lineChartView;
 @property (nonatomic, strong) JBChartInformationView *informationView;
+@property (nonatomic, strong) JBChartTooltipView *tooltipView;
+@property (nonatomic, assign) BOOL tooltipVisible;
 @property (nonatomic, strong) NSArray *chartData;
 
 // Buttons
@@ -47,6 +51,10 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
 // Helpers
 - (void)initFakeData;
 - (NSArray *)largestLineData; // largest collection of fake line data
+
+// Setters
+- (void)setTooltipVisible:(BOOL)tooltipVisible animated:(BOOL)animated atTouchPoint:(CGPoint)touchPoint;
+- (void)setTooltipVisible:(BOOL)tooltipVisible animated:(BOOL)animated;
 
 @end
 
@@ -92,6 +100,39 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
         }
     }
     return largestLineData;
+}
+
+#pragma mark - Setters
+
+- (void)setTooltipVisible:(BOOL)tooltipVisible animated:(BOOL)animated atTouchPoint:(CGPoint)touchPoint
+{
+    _tooltipVisible = tooltipVisible;
+    
+    dispatch_block_t adjustTooltip = ^{
+        self.tooltipView.alpha = _tooltipVisible ? 1.0 : 0.0;
+        self.tooltipView.frame = CGRectMake(touchPoint.x - ceil(self.tooltipView.frame.size.width * 0.5), touchPoint.y, self.tooltipView.frame.size.width, self.tooltipView.frame.size.height);
+	};
+
+    if (animated)
+    {
+        [UIView animateWithDuration:kJBLineChartViewControllerAnimationDuration animations:^{
+            adjustTooltip();
+        }];
+    }
+    else
+    {
+        adjustTooltip();
+    }
+}
+
+- (void)setTooltipVisible:(BOOL)tooltipVisible animated:(BOOL)animated
+{
+    [self setTooltipVisible:tooltipVisible animated:animated atTouchPoint:CGPointZero];
+}
+
+- (void)setTooltipVisible:(BOOL)tooltipVisible
+{
+    [self setTooltipVisible:tooltipVisible animated:NO];
 }
 
 #pragma mark - View Lifecycle
@@ -140,6 +181,10 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
     [self.informationView setSeparatorColor:kJBColorLineChartHeaderSeparatorColor];
     [self.view addSubview:self.informationView];
     
+    self.tooltipView = [[JBChartTooltipView alloc] init];
+    self.tooltipVisible = NO;
+    [self.view addSubview:self.tooltipView];
+    
     [self.lineChartView reloadData];
 }
 
@@ -162,17 +207,19 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
     return [[[self.chartData objectAtIndex:lineIndex] objectAtIndex:horizontalIndex] floatValue];
 }
 
-- (void)lineChartView:(JBLineChartView *)lineChartView didSelectLineAtIndex:(NSUInteger)lineIndex horizontalIndex:(NSUInteger)horizontalIndex
+- (void)lineChartView:(JBLineChartView *)lineChartView didSelectLineAtIndex:(NSUInteger)lineIndex horizontalIndex:(NSUInteger)horizontalIndex touchPoint:(CGPoint)touchPoint
 {
     NSNumber *valueNumber = [[self.chartData objectAtIndex:lineIndex] objectAtIndex:horizontalIndex];
     [self.informationView setValueText:[NSString stringWithFormat:@"%.2f", [valueNumber floatValue]] unitText:kJBStringLabelMm];
     [self.informationView setTitleText:[NSString stringWithFormat:@"%d", [kJBStringLabel1987 intValue] + (int)horizontalIndex]];
     [self.informationView setHidden:NO animated:YES];
+    [self setTooltipVisible:YES animated:YES atTouchPoint:touchPoint];
 }
 
 - (void)didUnselectLineInLineChartView:(JBLineChartView *)lineChartView
 {
     [self.informationView setHidden:YES animated:YES];
+    [self setTooltipVisible:NO animated:YES];
 }
 
 #pragma mark - JBLineChartViewDataSource

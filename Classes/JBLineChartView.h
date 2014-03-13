@@ -73,9 +73,11 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
  *  Futhermore, all other lines that aren't selected will be dimmed to 50% opacity throughout the duration of the touch/move.
  *
  *  @param lineChartView    A line chart object informing the delegate about the new selection.
- *  @param lineIndex        An index number identifying the closest line in the chart to the current touch point.
- *  @param horizontalIndex  The 0-based horizontal index of a selection point (left to right, x-axis).
+ *  @param lineIndex        An index number identifying the closest line in the chart to the current touch
+ *  @param horizontalIndex  The 0-based horizontal index of a selection point (left to right, x-axis).point.
+ *  @param touchPoint       The touch point in relation to the chart's bounds (excludes footer and header).
  */
+- (void)lineChartView:(JBLineChartView *)lineChartView didSelectLineAtIndex:(NSUInteger)lineIndex horizontalIndex:(NSUInteger)horizontalIndex touchPoint:(CGPoint)touchPoint;
 - (void)lineChartView:(JBLineChartView *)lineChartView didSelectLineAtIndex:(NSUInteger)lineIndex horizontalIndex:(NSUInteger)horizontalIndex;
 
 /**

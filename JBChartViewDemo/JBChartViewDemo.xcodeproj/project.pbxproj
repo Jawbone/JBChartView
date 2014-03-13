@@ -32,6 +32,7 @@
 		9B6A68DB1829ADE1006DB3BF /* JBBarChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B6A68DA1829ADE1006DB3BF /* JBBarChartView.m */; };
 		9B6A68DE1829BE63006DB3BF /* JBBarChartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B6A68DD1829BE63006DB3BF /* JBBarChartViewController.m */; };
 		9B6A68E11829BED5006DB3BF /* JBLineChartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B6A68E01829BED5006DB3BF /* JBLineChartViewController.m */; };
+		9BD57BBC18D13D1A00ACFA52 /* JBChartTooltipView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BD57BBB18D13D1A00ACFA52 /* JBChartTooltipView.m */; };
 		9BE0B0AD182AD26400232023 /* JBLineChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BE0B0AC182AD26400232023 /* JBLineChartView.m */; };
 		9BE0B0C7182B161000232023 /* JBChartHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BE0B0C6182B161000232023 /* JBChartHeaderView.m */; };
 		9BE0B0CE182B162E00232023 /* JBBarChartFooterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BE0B0CD182B162E00232023 /* JBBarChartFooterView.m */; };
@@ -81,6 +82,8 @@
 		9B6A68DD1829BE63006DB3BF /* JBBarChartViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBBarChartViewController.m; sourceTree = "<group>"; };
 		9B6A68DF1829BED5006DB3BF /* JBLineChartViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBLineChartViewController.h; sourceTree = "<group>"; };
 		9B6A68E01829BED5006DB3BF /* JBLineChartViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBLineChartViewController.m; sourceTree = "<group>"; };
+		9BD57BBA18D13D1A00ACFA52 /* JBChartTooltipView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBChartTooltipView.h; sourceTree = "<group>"; };
+		9BD57BBB18D13D1A00ACFA52 /* JBChartTooltipView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBChartTooltipView.m; sourceTree = "<group>"; };
 		9BE0B0AB182AD26400232023 /* JBLineChartView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JBLineChartView.h; path = ../../Classes/JBLineChartView.h; sourceTree = "<group>"; };
 		9BE0B0AC182AD26400232023 /* JBLineChartView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JBLineChartView.m; path = ../../Classes/JBLineChartView.m; sourceTree = "<group>"; };
 		9BE0B0C5182B161000232023 /* JBChartHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBChartHeaderView.h; sourceTree = "<group>"; };
@@ -291,6 +294,8 @@
 			children = (
 				9BEBE9D0183167050046E4A8 /* JBChartInformationView.h */,
 				9BEBE9D1183167050046E4A8 /* JBChartInformationView.m */,
+				9BD57BBA18D13D1A00ACFA52 /* JBChartTooltipView.h */,
+				9BD57BBB18D13D1A00ACFA52 /* JBChartTooltipView.m */,
 			);
 			path = Misc;
 			sourceTree = "<group>";
@@ -381,6 +386,7 @@
 				9BE0B0AD182AD26400232023 /* JBLineChartView.m in Sources */,
 				9B6A68E11829BED5006DB3BF /* JBLineChartViewController.m in Sources */,
 				9B2E533F18218D310079B9D2 /* AppDelegate.m in Sources */,
+				9BD57BBC18D13D1A00ACFA52 /* JBChartTooltipView.m in Sources */,
 				9B603D4B182C7117000A76D0 /* JBBaseViewController.m in Sources */,
 				9B0725211829822A0052109B /* JBChartListViewController.m in Sources */,
 			);
