@@ -10,7 +10,7 @@
 
 // Numerics
 CGFloat const kJBChartValueViewPadding = 10.0f;
-CGFloat const kJBChartValueViewSeparatorSize = 1.0f;
+CGFloat const kJBChartValueViewSeparatorSize = 0.5f;
 CGFloat const kJBChartValueViewTitleHeight = 50.0f;
 CGFloat const kJBChartValueViewTitleWidth = 75.0f;
 CGFloat const kJBChartValueViewDefaultAnimationDuration = 0.25f;
