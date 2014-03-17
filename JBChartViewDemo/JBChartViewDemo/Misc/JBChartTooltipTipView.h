@@ -10,6 +10,4 @@
 
 @interface JBChartTooltipTipView : UIView
 
-@property (nonatomic, strong) UIColor *tooltipTipColor;
-
 @end

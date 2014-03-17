@@ -34,8 +34,8 @@ static UIColor *kJBChartTooltipViewTextColor = nil;
 {
 	if (self == [JBChartTooltipView class])
 	{
-		kJBChartTooltipViewBackgroundColor = [UIColor colorWithWhite:1.0 alpha:0.9];
-        kJBChartTooltipViewTextColor = [UIColor darkGrayColor];
+		kJBChartTooltipViewBackgroundColor = kJBColorTooltipColor;
+        kJBChartTooltipViewTextColor = kJBColorTooltipTextColor;
 	}
 }
 

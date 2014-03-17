@@ -22,7 +22,6 @@ CGFloat const kJBChartTooltipTipViewDefaultHeight = 5.0f;
     if (self)
     {
         self.backgroundColor = [UIColor clearColor];
-        _tooltipTipColor = [UIColor colorWithWhite:1.0 alpha:0.9];
     }
     return self;
 }
@@ -44,18 +43,10 @@ CGFloat const kJBChartTooltipTipViewDefaultHeight = 5.0f;
         CGContextAddLineToPoint(context, CGRectGetMinX(rect), CGRectGetMinY(rect));
         CGContextAddLineToPoint(context, CGRectGetMaxX(rect), CGRectGetMinY(rect));
         CGContextClosePath(context);
-        CGContextSetFillColorWithColor(context, self.tooltipTipColor.CGColor);
+        CGContextSetFillColorWithColor(context, kJBColorTooltipTextColor.CGColor);
         CGContextFillPath(context);
     }
     CGContextRestoreGState(context);
-}
-
-#pragma mark - Setters
-
-- (void)setTooltipTipColor:(UIColor *)tooltipTipColor
-{
-    _tooltipTipColor = tooltipTipColor;
-    [self setNeedsDisplay];
 }
 
 @end

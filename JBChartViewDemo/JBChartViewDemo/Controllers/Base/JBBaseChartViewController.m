@@ -51,7 +51,8 @@ CGFloat const kJBBaseChartViewControllerAnimationDuration = 0.25f;
     }
     
     dispatch_block_t adjustTooltipPosition = ^{
-        CGPoint convertedTouchPoint = [self.view convertPoint:touchPoint fromView:chartView];
+        CGPoint originalTouchPoint = [self.view convertPoint:touchPoint fromView:chartView];
+        CGPoint convertedTouchPoint = originalTouchPoint; // modified
         JBChartView *chartView = [self chartView];
         if (chartView)
         {
@@ -67,12 +68,18 @@ CGFloat const kJBBaseChartViewControllerAnimationDuration = 0.25f;
             }
             self.tooltipView.frame = CGRectMake(convertedTouchPoint.x - ceil(self.tooltipView.frame.size.width * 0.5), CGRectGetMaxY(chartView.headerView.frame), self.tooltipView.frame.size.width, self.tooltipView.frame.size.height);
             
-            self.tooltipTipView.frame = CGRectMake(convertedTouchPoint.x - ceil(self.tooltipTipView.frame.size.width * 0.5), CGRectGetMaxY(self.tooltipView.frame), self.tooltipTipView.frame.size.width, self.tooltipTipView.frame.size.height);
+            CGFloat minTipX = (chartView.frame.origin.x + self.tooltipTipView.frame.size.width);
+            if (originalTouchPoint.x < minTipX)
+            {
+                originalTouchPoint.x = minTipX;
+            }
+            CGFloat maxTipX = (chartView.frame.origin.x + chartView.frame.size.width - self.tooltipTipView.frame.size.width);
+            if (originalTouchPoint.x > maxTipX)
+            {
+                originalTouchPoint.x = maxTipX;
+            }
+            self.tooltipTipView.frame = CGRectMake(originalTouchPoint.x - ceil(self.tooltipTipView.frame.size.width * 0.5), CGRectGetMaxY(self.tooltipView.frame), self.tooltipTipView.frame.size.width, self.tooltipTipView.frame.size.height);
         }
-        
-        
-        
-        //self.tooltipTipView.frame =
     };
     
     dispatch_block_t adjustTooltipVisibility = ^{
