@@ -48,7 +48,7 @@ The simpliest way to use JBChartView with your application is to drag and drop t
 
 ## Usage
 
-Both JBChartView implementations have a similiar data source and delgate pattern to <i>UITableView</i>. If you're familiar with using a <i>UITableView</i> or <i>UITableViewController</i>, using a JBChartView subclass should be a breeze!
+All JBChartView implementations have a similiar data source and delgate pattern to <i>UITableView</i>. If you're familiar with using a <i>UITableView</i> or <i>UITableViewController</i>, using a JBChartView subclass should be a breeze!
 
 #### JBBarChartView
 
@@ -91,7 +91,8 @@ At a minimum, you need to inform the data source how many lines and vertical dat
 	
 	- (NSUInteger)lineChartView:(JBLineChartView *)lineChartView numberOfVerticalValuesAtLineIndex:(NSUInteger)lineIndex
 	{
-		return ...; // number of values for a line	}
+		return ...; // number of values for a line
+	}
 
 Secondly, you need to inform the delegate of the y-position of each point (automatically normalized across the entire chart) for each line in the chart:
     
