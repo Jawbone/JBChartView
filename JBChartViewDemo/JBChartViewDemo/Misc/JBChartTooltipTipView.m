@@ -43,7 +43,7 @@ CGFloat const kJBChartTooltipTipViewDefaultHeight = 5.0f;
         CGContextAddLineToPoint(context, CGRectGetMinX(rect), CGRectGetMinY(rect));
         CGContextAddLineToPoint(context, CGRectGetMaxX(rect), CGRectGetMinY(rect));
         CGContextClosePath(context);
-        CGContextSetFillColorWithColor(context, kJBColorTooltipTextColor.CGColor);
+        CGContextSetFillColorWithColor(context, kJBColorTooltipColor.CGColor);
         CGContextFillPath(context);
     }
     CGContextRestoreGState(context);

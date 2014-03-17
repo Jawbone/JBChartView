@@ -16,10 +16,6 @@ CGFloat static const kJBChartTooltipViewCornerRadius = 5.0;
 CGFloat const kJBChartTooltipViewDefaultWidth = 50.0f;
 CGFloat const kJBChartTooltipViewDefaultHeight = 25.0f;
 
-// Colors
-static UIColor *kJBChartTooltipViewBackgroundColor = nil;
-static UIColor *kJBChartTooltipViewTextColor = nil;
-
 @interface JBChartTooltipView ()
 
 @property (nonatomic, strong) UILabel *textLabel;
@@ -30,27 +26,18 @@ static UIColor *kJBChartTooltipViewTextColor = nil;
 
 #pragma mark - Alloc/Init
 
-+ (void)initialize
-{
-	if (self == [JBChartTooltipView class])
-	{
-		kJBChartTooltipViewBackgroundColor = kJBColorTooltipColor;
-        kJBChartTooltipViewTextColor = kJBColorTooltipTextColor;
-	}
-}
-
 - (id)init
 {
     self = [super initWithFrame:CGRectMake(0, 0, kJBChartTooltipViewDefaultWidth, kJBChartTooltipViewDefaultHeight)];
     if (self)
     {
-        self.backgroundColor = kJBChartTooltipViewBackgroundColor;
+        self.backgroundColor = kJBColorTooltipColor;
         self.layer.cornerRadius = kJBChartTooltipViewCornerRadius;
         
         _textLabel = [[UILabel alloc] init];
         _textLabel.font = kJBFontTooltipText;
         _textLabel.backgroundColor = [UIColor clearColor];
-        _textLabel.textColor = kJBChartTooltipViewTextColor;
+        _textLabel.textColor = kJBColorTooltipTextColor;
         _textLabel.adjustsFontSizeToFitWidth = YES;
         _textLabel.numberOfLines = 1;
         _textLabel.textAlignment = NSTextAlignmentCenter;
