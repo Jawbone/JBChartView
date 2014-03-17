@@ -13,13 +13,13 @@
  */
 typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
     /**
-     *  Dashed square capped line with a phase of 3:2 (3 points dashed, 2 points spaced).
-     */
-	JBLineChartViewLineStyleDashed,
-    /**
      *  Solid round capped line.
      */
-    JBLineChartViewLineStyleSolid
+    JBLineChartViewLineStyleSolid,
+    /**
+     *  Dashed square capped line with a phase of 3:2 (3 points dashed, 2 points spaced).
+     */
+	JBLineChartViewLineStyleDashed
 };
 
 @protocol JBLineChartViewDelegate;
