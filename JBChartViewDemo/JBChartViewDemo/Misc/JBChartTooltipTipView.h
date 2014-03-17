@@ -8,15 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-// Enums
-typedef NS_ENUM(NSInteger, JAChartTooltipTipDirection) {
-    JAChartTooltipTipDirectionUp,
-    JAChartTooltipTipDirectionDown
-};
-
 @interface JBChartTooltipTipView : UIView
 
-@property (nonatomic, assign) JAChartTooltipTipDirection tooltipDirection;
 @property (nonatomic, strong) UIColor *tooltipTipColor;
 
 @end

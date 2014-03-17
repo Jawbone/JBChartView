@@ -8,17 +8,21 @@
 
 #import "JBChartTooltipTipView.h"
 
+// Numerics
+CGFloat const kJBChartTooltipTipViewDefaultWidth = 8.0f;
+CGFloat const kJBChartTooltipTipViewDefaultHeight = 5.0f;
+
 @implementation JBChartTooltipTipView
 
 #pragma mark - Alloc/Init
 
-- (id)initWithFrame:(CGRect)frame
+- (id)init
 {
-    self = [super initWithFrame:frame];
+    self = [super initWithFrame:CGRectMake(0, 0, kJBChartTooltipTipViewDefaultWidth, kJBChartTooltipTipViewDefaultHeight)];
     if (self)
     {
         self.backgroundColor = [UIColor clearColor];
-        _tooltipTipColor = [UIColor whiteColor]; // default
+        _tooltipTipColor = [UIColor colorWithWhite:1.0 alpha:0.9];
     }
     return self;
 }
@@ -36,23 +40,9 @@
     CGContextSaveGState(context);
     {
         CGContextBeginPath(context);
-        
-        // Down
-        if (self.tooltipDirection == JAChartTooltipTipDirectionDown)
-        {
-            CGContextMoveToPoint(context, CGRectGetMidX(rect), CGRectGetMaxY(rect));
-            CGContextAddLineToPoint(context, CGRectGetMinX(rect), CGRectGetMinY(rect));
-            CGContextAddLineToPoint(context, CGRectGetMaxX(rect), CGRectGetMinY(rect));
-        }
-        
-        // Up
-        else if (self.tooltipDirection == JAChartTooltipTipDirectionUp)
-        {
-            CGContextMoveToPoint(context, CGRectGetMidX(rect), CGRectGetMinX(rect));
-            CGContextAddLineToPoint(context, CGRectGetMaxX(rect), CGRectGetMaxY(rect));
-            CGContextAddLineToPoint(context, CGRectGetMinX(rect), CGRectGetMaxY(rect));
-        }
-        
+        CGContextMoveToPoint(context, CGRectGetMidX(rect), CGRectGetMaxY(rect));
+        CGContextAddLineToPoint(context, CGRectGetMinX(rect), CGRectGetMinY(rect));
+        CGContextAddLineToPoint(context, CGRectGetMaxX(rect), CGRectGetMinY(rect));
         CGContextClosePath(context);
         CGContextSetFillColorWithColor(context, self.tooltipTipColor.CGColor);
         CGContextFillPath(context);
@@ -61,12 +51,6 @@
 }
 
 #pragma mark - Setters
-
-- (void)setTooltipDirection:(JAChartTooltipTipDirection)tooltipDirection
-{
-    _tooltipDirection = tooltipDirection;
-    [self setNeedsDisplay];
-}
 
 - (void)setTooltipTipColor:(UIColor *)tooltipTipColor
 {

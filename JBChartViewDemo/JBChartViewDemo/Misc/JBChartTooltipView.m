@@ -13,6 +13,8 @@
 
 // Numerics
 CGFloat static const kJBChartTooltipViewCornerRadius = 5.0;
+CGFloat const kJBChartTooltipViewDefaultWidth = 50.0f;
+CGFloat const kJBChartTooltipViewDefaultHeight = 25.0f;
 
 // Colors
 static UIColor *kJBChartTooltipViewBackgroundColor = nil;
@@ -32,14 +34,14 @@ static UIColor *kJBChartTooltipViewTextColor = nil;
 {
 	if (self == [JBChartTooltipView class])
 	{
-		kJBChartTooltipViewBackgroundColor = [UIColor colorWithWhite:1.0 alpha:0.75];
+		kJBChartTooltipViewBackgroundColor = [UIColor colorWithWhite:1.0 alpha:0.9];
         kJBChartTooltipViewTextColor = [UIColor darkGrayColor];
 	}
 }
 
 - (id)init
 {
-    self = [super initWithFrame:CGRectMake(0, 0, 50, 25)];
+    self = [super initWithFrame:CGRectMake(0, 0, kJBChartTooltipViewDefaultWidth, kJBChartTooltipViewDefaultHeight)];
     if (self)
     {
         self.backgroundColor = kJBChartTooltipViewBackgroundColor;

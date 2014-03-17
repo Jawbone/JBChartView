@@ -178,7 +178,7 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
     [self.informationView setTitleText:@"Monthly Rainfall"];
     [self.informationView setHidden:NO animated:YES];
     [self setTooltipVisible:YES animated:YES atTouchPoint:touchPoint];
-    [self.tooltipView setText:[self.monthlySymbols objectAtIndex:index]];
+    [self.tooltipView setText:[[self.monthlySymbols objectAtIndex:index] uppercaseString]];
 }
 
 - (void)didUnselectBarChartView:(JBBarChartView *)barChartView

@@ -52,7 +52,26 @@ CGFloat const kJBBaseChartViewControllerAnimationDuration = 0.25f;
     
     dispatch_block_t adjustTooltipPosition = ^{
         CGPoint convertedTouchPoint = [self.view convertPoint:touchPoint fromView:chartView];
-        self.tooltipView.frame = CGRectMake(convertedTouchPoint.x - ceil(self.tooltipView.frame.size.width * 0.5), CGRectGetMaxY(chartView.headerView.frame), self.tooltipView.frame.size.width, self.tooltipView.frame.size.height);
+        JBChartView *chartView = [self chartView];
+        if (chartView)
+        {
+            CGFloat minChartX = (chartView.frame.origin.x + ceil(self.tooltipView.frame.size.width * 0.5));
+            if (convertedTouchPoint.x < minChartX)
+            {
+                convertedTouchPoint.x = minChartX;
+            }
+            CGFloat maxChartX = (chartView.frame.origin.x + chartView.frame.size.width - ceil(self.tooltipView.frame.size.width * 0.5));
+            if (convertedTouchPoint.x > maxChartX)
+            {
+                convertedTouchPoint.x = maxChartX;
+            }
+            self.tooltipView.frame = CGRectMake(convertedTouchPoint.x - ceil(self.tooltipView.frame.size.width * 0.5), CGRectGetMaxY(chartView.headerView.frame), self.tooltipView.frame.size.width, self.tooltipView.frame.size.height);
+            
+            self.tooltipTipView.frame = CGRectMake(convertedTouchPoint.x - ceil(self.tooltipTipView.frame.size.width * 0.5), CGRectGetMaxY(self.tooltipView.frame), self.tooltipTipView.frame.size.width, self.tooltipTipView.frame.size.height);
+        }
+        
+        
+        
         //self.tooltipTipView.frame =
     };
     
