@@ -147,7 +147,7 @@ Lastly, a bar chart's selection events are delegated back via:
 		// Update view
 	}
 
-The <b>touchPoint</b> is especially important as it allows you to add custom elements to your chart during  selection events. Refer to the demo project (<b>JBarChartViewController</b>) to see how a tooltip can be used to display monthly information during selection events.
+The <b>touchPoint</b> is especially important as it allows you to add custom elements to your chart during  selection events. Refer to the demo project (<b>JBarChartViewController</b>) to see how a tooltip can be used to display additional information during selection events.
 
 A JBBarChartView visuaul overview can be found <a href="https://raw.github.com/Jawbone/JBChartView/master/Screenshots/JBBarChartView.png" target="_blank">here</a>. 
 
@@ -194,7 +194,7 @@ Lastly, a line chart's selection events are delegated back via:
 		// Update view
 	}
 	
-The <b>touchPoint</b> is especially important as it allows you to add custom elements to your chart during  selection events. Refer to the demo project (<b>JBLineChartViewController</b>) to see how a tooltip can be used to display yearly information during selection events.
+The <b>touchPoint</b> is especially important as it allows you to add custom elements to your chart during  selection events. Refer to the demo project (<b>JBLineChartViewController</b>) to see how a tooltip can be used to display additional information during selection events.
 			
 A JBLineChartView visuaul overview can be found <a href="https://raw.github.com/Jawbone/JBChartView/master/Screenshots/JBLineChartView.png" target="_blank">here</a>.
 	
