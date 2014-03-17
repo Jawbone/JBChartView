@@ -88,7 +88,7 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
         [mutableChartData addObject:[NSNumber numberWithFloat:MAX(kJBBarChartViewControllerMinBarHeight, arc4random() % kJBBarChartViewControllerMaxBarHeight)]]; // fake height
     }
     _chartData = [NSArray arrayWithArray:mutableChartData];
-    _monthlySymbols = [[[NSDateFormatter alloc] init] monthSymbols];
+    _monthlySymbols = [[[NSDateFormatter alloc] init] shortMonthSymbols];
 }
 
 #pragma mark - View Lifecycle

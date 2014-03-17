@@ -8,12 +8,16 @@
 
 #import "JBBaseChartViewController.h"
 
+// Views
+#import "JBChartTooltipTipView.h"
+
 // Numerics
 CGFloat const kJBBaseChartViewControllerAnimationDuration = 0.25f;
 
 @interface JBBaseChartViewController ()
 
 @property (nonatomic, strong) JBChartTooltipView *tooltipView;
+@property (nonatomic, strong) JBChartTooltipTipView *tooltipTipView;
 
 @end
 
@@ -39,13 +43,22 @@ CGFloat const kJBBaseChartViewControllerAnimationDuration = 0.25f;
         [self.view addSubview:self.tooltipView];
     }
     
+    if (!self.tooltipTipView)
+    {
+        self.tooltipTipView = [[JBChartTooltipTipView alloc] init];
+        self.tooltipTipView.alpha = 0.0;
+        [self.view addSubview:self.tooltipTipView];
+    }
+    
     dispatch_block_t adjustTooltipPosition = ^{
         CGPoint convertedTouchPoint = [self.view convertPoint:touchPoint fromView:chartView];
         self.tooltipView.frame = CGRectMake(convertedTouchPoint.x - ceil(self.tooltipView.frame.size.width * 0.5), CGRectGetMaxY(chartView.headerView.frame), self.tooltipView.frame.size.width, self.tooltipView.frame.size.height);
-	};
+        //self.tooltipTipView.frame =
+    };
     
     dispatch_block_t adjustTooltipVisibility = ^{
         self.tooltipView.alpha = _tooltipVisible ? 1.0 : 0.0;
+        self.tooltipTipView.alpha = _tooltipVisible ? 1.0 : 0.0;
 	};
     
     if (tooltipVisible)
