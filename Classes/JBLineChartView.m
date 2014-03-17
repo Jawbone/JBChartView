@@ -104,6 +104,9 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
 @property (nonatomic, assign) CGFloat cachedMaxHeight;
 @property (nonatomic, assign) BOOL verticalSelectionViewVisible;
 
+// Initialization
+- (void)construct;
+
 // View quick accessors
 - (CGFloat)normalizedHeightForRawHeight:(CGFloat)rawHeight;
 - (CGFloat)availableHeight;
@@ -138,22 +141,42 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
 	}
 }
 
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    if (self)
+    {
+        [self construct];
+    }
+    return self;
+}
+
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self)
     {
-        self.clipsToBounds = NO;
-        _showsVerticalSelection = YES;
-        _showsLineSelection = YES;
-        _cachedMaxHeight = kJBLineChartViewUndefinedMaxHeight;
+        [self construct];
     }
     return self;
 }
 
 - (id)init
 {
-    return [self initWithFrame:CGRectZero];
+    self = [super init];
+    if (self)
+    {
+        [self construct];
+    }
+    return self;
+}
+
+- (void)construct
+{
+    self.clipsToBounds = NO;
+    _showsVerticalSelection = YES;
+    _showsLineSelection = YES;
+    _cachedMaxHeight = kJBLineChartViewUndefinedMaxHeight;
 }
 
 #pragma mark - Data

@@ -27,6 +27,9 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 @property (nonatomic, strong) JBChartVerticalSelectionView *verticalSelectionView;
 @property (nonatomic, assign) BOOL verticalSelectionViewVisible;
 
+// Initialization
+- (void)construct;
+
 // View quick accessors
 - (CGFloat)availableHeight;
 - (CGFloat)normalizedHeightForRawHeight:(NSNumber*)rawHeight;
@@ -58,21 +61,41 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 	}
 }
 
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    if (self)
+    {
+        [self construct];
+    }
+    return self;
+}
+
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self)
     {
-        self.clipsToBounds = YES;
-        _showsVerticalSelection = YES;
-        _cachedMaxHeight = kJBBarChartViewUndefinedMaxHeight;
+        [self construct];
     }
     return self;
 }
 
 - (id)init
 {
-    return [self initWithFrame:CGRectZero];
+    self = [super init];
+    if (self)
+    {
+        [self construct];
+    }
+    return self;
+}
+
+- (void)construct
+{
+    self.clipsToBounds = YES;
+    _showsVerticalSelection = YES;
+    _cachedMaxHeight = kJBBarChartViewUndefinedMaxHeight;
 }
 
 #pragma mark - Memory Management
