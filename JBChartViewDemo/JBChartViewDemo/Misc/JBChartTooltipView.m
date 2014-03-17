@@ -65,6 +65,12 @@ static UIColor *kJBChartTooltipViewTextColor = nil;
     [self setNeedsLayout];
 }
 
+- (void)setTooltipColor:(UIColor *)tooltipColor
+{
+    self.backgroundColor = tooltipColor;
+    [self setNeedsDisplay];
+}
+
 #pragma mark - Layout
 
 - (void)layoutSubviews

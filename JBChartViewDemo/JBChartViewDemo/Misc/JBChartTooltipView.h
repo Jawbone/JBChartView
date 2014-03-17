@@ -11,5 +11,6 @@
 @interface JBChartTooltipView : UIView
 
 - (void)setText:(NSString *)text;
+- (void)setTooltipColor:(UIColor *)tooltipColor;
 
 @end
