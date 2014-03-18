@@ -166,9 +166,10 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
         for (NSNumber *key in [[self.chartDataDictionary allKeys] sortedArrayUsingSelector:@selector(compare:)])
         {
             UIView *barView = nil; // since all bars are visible at once, no need to cache this view
-            if ([self.dataSource respondsToSelector:@selector(barViewForBarChartView:atIndex:)])
+            if ([self.dataSource respondsToSelector:@selector(barChartView:barViewAtIndex:)])
             {
-                barView = [self.dataSource barViewForBarChartView:self atIndex:index];
+                barView = [self.dataSource barChartView:self barViewAtIndex:index];
+                NSAssert(barView != nil, @"JBBarChartView // datasource function - (UIView *)barChartView:(JBBarChartView *)barChartView barViewAtIndex:(NSUInteger)index must return a non-nil UIView subclass");
             }
             else
             {

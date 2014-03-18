@@ -100,7 +100,7 @@
  *
  *  @return A UIView subclass. The view will automatically be resized by the chart during creation (ie. no need to set the frame).
  */
-- (UIView *)barViewForBarChartView:(JBBarChartView *)barChartView atIndex:(NSUInteger)index;
+- (UIView *)barChartView:(JBBarChartView *)barChartView barViewAtIndex:(NSUInteger)index;
 
 /**
  *  The selection color to be overlayed on a bar during touch events. 
