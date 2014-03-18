@@ -30,7 +30,7 @@ CGFloat const kJBLineChartViewControllerChartHeaderPadding = 20.0f;
 CGFloat const kJBLineChartViewControllerChartFooterHeight = 20.0f;
 CGFloat const kJBLineChartViewControllerChartSolidLineWidth = 6.0f;
 CGFloat const kJBLineChartViewControllerChartDashedLineWidth = 2.0f;
-NSInteger const kJBLineChartViewControllerMaxNumChartPoints = 27;
+NSInteger const kJBLineChartViewControllerMaxNumChartPoints = 7;
 
 // Strings
 NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
@@ -40,6 +40,7 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
 @property (nonatomic, strong) JBLineChartView *lineChartView;
 @property (nonatomic, strong) JBChartInformationView *informationView;
 @property (nonatomic, strong) NSArray *chartData;
+@property (nonatomic, strong) NSArray *daysOfWeek;
 
 // Buttons
 - (void)chartToggleButtonPressed:(id)sender;
@@ -99,6 +100,7 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
         [mutableLineCharts addObject:mutableChartData];
     }
     _chartData = [NSArray arrayWithArray:mutableLineCharts];
+    _daysOfWeek = [[[NSDateFormatter alloc] init] shortWeekdaySymbols];
 }
 
 - (NSArray *)largestLineData
@@ -131,7 +133,7 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
     self.lineChartView.backgroundColor = kJBColorLineChartBackground;
     
     JBChartHeaderView *headerView = [[JBChartHeaderView alloc] initWithFrame:CGRectMake(kJBLineChartViewControllerChartPadding, ceil(self.view.bounds.size.height * 0.5) - ceil(kJBLineChartViewControllerChartHeaderHeight * 0.5), self.view.bounds.size.width - (kJBLineChartViewControllerChartPadding * 2), kJBLineChartViewControllerChartHeaderHeight)];
-    headerView.titleLabel.text = [kJBStringLabelAverageAnnualRainfall uppercaseString];
+    headerView.titleLabel.text = [kJBStringLabelAverageWeeklyRainfall uppercaseString];
     headerView.titleLabel.textColor = kJBColorLineChartHeader;
     headerView.titleLabel.shadowColor = [UIColor colorWithWhite:1.0 alpha:0.25];
     headerView.titleLabel.shadowOffset = CGSizeMake(0, 1);
@@ -144,9 +146,9 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
     
     JBLineChartFooterView *footerView = [[JBLineChartFooterView alloc] initWithFrame:CGRectMake(kJBLineChartViewControllerChartPadding, ceil(self.view.bounds.size.height * 0.5) - ceil(kJBLineChartViewControllerChartFooterHeight * 0.5), self.view.bounds.size.width - (kJBLineChartViewControllerChartPadding * 2), kJBLineChartViewControllerChartFooterHeight)];
     footerView.backgroundColor = [UIColor clearColor];
-    footerView.leftLabel.text = kJBStringLabel1987;
+    footerView.leftLabel.text = [[self.daysOfWeek firstObject] uppercaseString];
     footerView.leftLabel.textColor = [UIColor whiteColor];
-    footerView.rightLabel.text = kJBStringLabel2013;
+    footerView.rightLabel.text = [[self.daysOfWeek lastObject] uppercaseString];;
     footerView.rightLabel.textColor = [UIColor whiteColor];
     footerView.sectionCount = [[self largestLineData] count];
     self.lineChartView.footerView = footerView;
@@ -186,10 +188,10 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
 {
     NSNumber *valueNumber = [[self.chartData objectAtIndex:lineIndex] objectAtIndex:horizontalIndex];
     [self.informationView setValueText:[NSString stringWithFormat:@"%.2f", [valueNumber floatValue]] unitText:kJBStringLabelMm];
-    [self.informationView setTitleText:@"Yearly Rainfall"];
+    [self.informationView setTitleText:lineIndex == JBLineChartLineSolid ? kJBStringLabelMetropolitanAverage : kJBStringLabelNationalAverage];
     [self.informationView setHidden:NO animated:YES];
     [self setTooltipVisible:YES animated:YES atTouchPoint:touchPoint];
-    [self.tooltipView setText:[NSString stringWithFormat:@"%d", [kJBStringLabel1987 intValue] + (int)horizontalIndex]];
+    [self.tooltipView setText:[[self.daysOfWeek objectAtIndex:horizontalIndex] uppercaseString]];
 }
 
 - (void)didUnselectLineInLineChartView:(JBLineChartView *)lineChartView
