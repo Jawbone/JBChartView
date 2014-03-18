@@ -86,7 +86,7 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
     for (int i=0; i<kJBBarChartViewControllerNumBars; i++)
     {
         NSInteger delta = (kJBBarChartViewControllerNumBars - abs((kJBBarChartViewControllerNumBars - i) - i)) + 2;
-        [mutableChartData addObject:[NSNumber numberWithFloat:MAX((delta * kJBBarChartViewControllerMinBarHeight), arc4random() % (delta * kJBBarChartViewControllerMaxBarHeight))]];
+        [mutableChartData addObject:[NSNumber numberWithFloat:-2]];
 
     }
     _chartData = [NSArray arrayWithArray:mutableChartData];
