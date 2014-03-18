@@ -23,8 +23,8 @@ CGFloat const kJBBarChartViewControllerChartFooterHeight = 25.0f;
 CGFloat const kJBBarChartViewControllerChartFooterPadding = 5.0f;
 CGFloat const kJBBarChartViewControllerBarPadding = 1;
 NSInteger const kJBBarChartViewControllerNumBars = 12;
-NSInteger const kJBBarChartViewControllerMaxBarHeight = 100; // max random value
-NSInteger const kJBBarChartViewControllerMinBarHeight = 20;
+NSInteger const kJBBarChartViewControllerMaxBarHeight = 10;
+NSInteger const kJBBarChartViewControllerMinBarHeight = 5;
 
 // Strings
 NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
@@ -85,7 +85,9 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
     NSMutableArray *mutableChartData = [NSMutableArray array];
     for (int i=0; i<kJBBarChartViewControllerNumBars; i++)
     {
-        [mutableChartData addObject:[NSNumber numberWithFloat:MAX(kJBBarChartViewControllerMinBarHeight, arc4random() % kJBBarChartViewControllerMaxBarHeight)]]; // fake height
+        NSInteger delta = (kJBBarChartViewControllerNumBars - abs((kJBBarChartViewControllerNumBars - i) - i)) + 2;
+        [mutableChartData addObject:[NSNumber numberWithFloat:MAX((delta * kJBBarChartViewControllerMinBarHeight), arc4random() % (delta * kJBBarChartViewControllerMaxBarHeight))]];
+
     }
     _chartData = [NSArray arrayWithArray:mutableChartData];
     _monthlySymbols = [[[NSDateFormatter alloc] init] shortMonthSymbols];
@@ -108,16 +110,16 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
     self.barChartView.backgroundColor = kJBColorBarChartBackground;
     
     JBChartHeaderView *headerView = [[JBChartHeaderView alloc] initWithFrame:CGRectMake(kJBBarChartViewControllerChartPadding, ceil(self.view.bounds.size.height * 0.5) - ceil(kJBBarChartViewControllerChartHeaderHeight * 0.5), self.view.bounds.size.width - (kJBBarChartViewControllerChartPadding * 2), kJBBarChartViewControllerChartHeaderHeight)];
-    headerView.titleLabel.text = [kJBStringLabelAverageMonthlyRainfall uppercaseString];
-    //headerView.subtitleLabel.text = [NSString stringWithFormat:@"%@ - %@", kJBStringLabelSanFrancisco, kJBStringLabel2013];
+    headerView.titleLabel.text = [kJBStringLabelAverageMonthlyTemperature uppercaseString];
+    headerView.subtitleLabel.text = kJBStringLabel2012;
     headerView.separatorColor = kJBColorBarChartHeaderSeparatorColor;
     self.barChartView.headerView = headerView;
     
     JBBarChartFooterView *footerView = [[JBBarChartFooterView alloc] initWithFrame:CGRectMake(kJBBarChartViewControllerChartPadding, ceil(self.view.bounds.size.height * 0.5) - ceil(kJBBarChartViewControllerChartFooterHeight * 0.5), self.view.bounds.size.width - (kJBBarChartViewControllerChartPadding * 2), kJBBarChartViewControllerChartFooterHeight)];
     footerView.padding = kJBBarChartViewControllerChartFooterPadding;
-    footerView.leftLabel.text = [kJBStringLabeJanuary uppercaseString];
+    footerView.leftLabel.text = [[self.monthlySymbols firstObject] uppercaseString];
     footerView.leftLabel.textColor = [UIColor whiteColor];
-    footerView.rightLabel.text = [kJBStringLabelDecember uppercaseString];
+    footerView.rightLabel.text = [[self.monthlySymbols lastObject] uppercaseString];
     footerView.rightLabel.textColor = [UIColor whiteColor];
     self.barChartView.footerView = footerView;
     
@@ -174,8 +176,8 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
 - (void)barChartView:(JBBarChartView *)barChartView didSelectBarAtIndex:(NSUInteger)index touchPoint:(CGPoint)touchPoint
 {
     NSNumber *valueNumber = [self.chartData objectAtIndex:index];
-    [self.informationView setValueText:[NSString stringWithFormat:@"%d", [valueNumber intValue]] unitText:kJBStringLabelMm];
-    [self.informationView setTitleText:@"Monthly Rainfall"];
+    [self.informationView setValueText:[NSString stringWithFormat:kJBStringLabelDegreesFahrenheit, [valueNumber intValue], kJBStringLabelDegreeSymbol] unitText:nil];
+    [self.informationView setTitleText:kJBStringLabelWorldwideAverage];
     [self.informationView setHidden:NO animated:YES];
     [self setTooltipVisible:YES animated:YES atTouchPoint:touchPoint];
     [self.tooltipView setText:[[self.monthlySymbols objectAtIndex:index] uppercaseString]];
