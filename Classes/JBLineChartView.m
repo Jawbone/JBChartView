@@ -400,14 +400,24 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
 - (void)setState:(JBChartViewState)state animated:(BOOL)animated callback:(void (^)())callback
 {
     [super setState:state animated:animated callback:callback];
-
-    if (state == JBChartViewStateCollapsed)
+    
+    if ([self.chartData count] > 0)
     {
-        [self.lineView setState:JBLineChartLineViewStateCollapsed animated:animated callback:callback];
+        if (state == JBChartViewStateCollapsed)
+        {
+            [self.lineView setState:JBLineChartLineViewStateCollapsed animated:animated callback:callback];
+        }
+        else if (state == JBChartViewStateExpanded)
+        {
+            [self.lineView setState:JBLineChartLineViewStateExpanded animated:animated callback:callback];
+        }
     }
-    else if (state == JBChartViewStateExpanded)
+    else
     {
-        [self.lineView setState:JBLineChartLineViewStateExpanded animated:animated callback:callback];
+        if (callback)
+        {
+            callback();
+        }
     }
 }
 
@@ -507,7 +517,7 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
 
 - (void)touchesBeganOrMovedWithTouches:(NSSet *)touches
 {
-    if (self.state == JBChartViewStateCollapsed)
+    if (self.state == JBChartViewStateCollapsed || [self.chartData count] <= 0)
     {
         return;
     }
@@ -535,7 +545,7 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
 
 - (void)touchesEndedOrCancelledWithTouches:(NSSet *)touches
 {
-    if (self.state == JBChartViewStateCollapsed)
+    if (self.state == JBChartViewStateCollapsed || [self.chartData count] <= 0)
     {
         return;
     }
