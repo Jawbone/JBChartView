@@ -436,7 +436,7 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
         index++;
     }
     
-    return selectedIndex;
+    return selectedIndex != kJBLineChartUnselectedLineIndex ? selectedIndex : [lineData count] - 1;
 }
 
 - (NSInteger)horizontalIndexForPoint:(CGPoint)point indexClamp:(JBLineChartHorizontalIndexClamp)indexClamp
@@ -460,8 +460,8 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
 - (NSInteger)lineIndexForPoint:(CGPoint)point
 {
     // Find the horizontal indexes
-    CGFloat leftHorizontalIndex = [self horizontalIndexForPoint:point indexClamp:JBLineChartHorizontalIndexClampLeft];
-    CGFloat rightHorizontalIndex = [self horizontalIndexForPoint:point indexClamp:JBLineChartHorizontalIndexClampRight];
+    NSInteger leftHorizontalIndex = [self horizontalIndexForPoint:point indexClamp:JBLineChartHorizontalIndexClampLeft];
+    NSInteger rightHorizontalIndex = [self horizontalIndexForPoint:point indexClamp:JBLineChartHorizontalIndexClampRight];
     
     NSUInteger shortestDistance = INT_MAX;
     NSInteger selectedIndex = kJBLineChartUnselectedLineIndex;
