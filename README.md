@@ -123,7 +123,7 @@ Lastly, any JBChartView subclass can be collapsed or expanded programmatically v
 
 By default, a chart's bars will be black and flat. They can be customized by supplying a UIView subclass through the <i>optional</i> protocol:
 
-	- (UIView *)barViewForBarChartView:(JBBarChartView *)barChartView atIndex:(NSInteger)index
+	- (UIView *)barChartView:(JBBarChartView *)barChartView barViewAtIndex:(NSUInteger)index
 	{
 		return ...; // color of line in chart
 	}
