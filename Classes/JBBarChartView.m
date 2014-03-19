@@ -123,12 +123,12 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
         NSUInteger dataCount = [self.dataSource numberOfBarsInBarChartView:self];
 
         // Build up the data collection
-        NSAssert([self.delegate respondsToSelector:@selector(barChartView:heightForBarViewAtAtIndex:)], @"JBBarChartView // delegate must implement - (NSUInteger)barChartView:(JBBarChartView *)barChartView heightForBarViewAtAtIndex:(NSUInteger)index");
+        NSAssert([self.delegate respondsToSelector:@selector(barChartView:heightForBarViewAtAtIndex:)], @"JBBarChartView // delegate must implement - (CGFloat)barChartView:(JBBarChartView *)barChartView heightForBarViewAtAtIndex:(NSUInteger)index");
         NSMutableDictionary *dataDictionary = [NSMutableDictionary dictionary];
         for (NSUInteger index=0; index<dataCount; index++)
         {
             CGFloat height = [self.delegate barChartView:self heightForBarViewAtAtIndex:index];
-            NSAssert(height > 0, @"JBBarChartView // datasource function - (NSUInteger)barChartView:(JBBarChartView *)barChartView heightForBarViewAtAtIndex:(NSUInteger)index must return a CGFloat >= 0");
+            NSAssert(height > 0, @"JBBarChartView // datasource function - (CGFloat)barChartView:(JBBarChartView *)barChartView heightForBarViewAtAtIndex:(NSUInteger)index must return a CGFloat >= 0");
             [dataDictionary setObject:[NSNumber numberWithFloat:height] forKey:[NSNumber numberWithInt:(int)index]];
         }
         self.chartDataDictionary = [NSDictionary dictionaryWithDictionary:dataDictionary];
