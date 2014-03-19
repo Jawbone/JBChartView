@@ -8,19 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
-typedef NS_ENUM(NSInteger, JBChartInformationViewLayout){
-	JBChartInformationViewLayoutHorizontal, // default
-    JBChartInformationViewLayoutVertical
-};
-
 @interface JBChartInformationView : UIView
 
 /*
  * View must be initialized with a layout type (default = horizontal)
  */
-- (id)initWithFrame:(CGRect)frame layout:(JBChartInformationViewLayout)layout;
-
-@property (nonatomic, assign, readonly) JBChartInformationViewLayout layout; // read-only (must be set in init..)
+- (id)initWithFrame:(CGRect)frame;
 
 // Content
 - (void)setTitleText:(NSString *)titleText;

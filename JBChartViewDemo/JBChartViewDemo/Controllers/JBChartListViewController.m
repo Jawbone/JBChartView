@@ -51,8 +51,8 @@ NSInteger const kJBChartListViewControllerCellHeight = 100;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     JBChartTableCell *cell = [tableView dequeueReusableCellWithIdentifier:kJBChartListViewControllerCellIdentifier forIndexPath:indexPath];    
-    cell.textLabel.text = indexPath.row == JBChartListViewControllerRowLineChart ? kJBStringLabelAverageAnnualRainfall : kJBStringLabelAverageMonthlyRainfall;
-    cell.detailTextLabel.text = kJBStringLabelSanFrancisco;
+    cell.textLabel.text = indexPath.row == JBChartListViewControllerRowLineChart ? kJBStringLabelAverageDailyRainfall : kJBStringLabelAverageMonthlyTemperature;
+    cell.detailTextLabel.text = indexPath.row == JBChartListViewControllerRowLineChart ? kJBStringLabelSanFrancisco2013 : kJBStringLabelWorldwide2012;
     cell.type = indexPath.row == JBChartListViewControllerRowLineChart ? JBChartTableCellTypeLineChart : JBChartTableCellTypeBarChart;
     return cell;
 }

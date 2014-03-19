@@ -21,10 +21,18 @@
 #define kJBColorBarChartBarGreen UIColorFromHex(0x34b234)
 #define kJBColorBarChartHeaderSeparatorColor UIColorFromHex(0x686868)
 
-#pragma mark - Line Char
+#pragma mark - Line Chart
 
 #define kJBColorLineChartControllerBackground UIColorFromHex(0xb7e3e4)
 #define kJBColorLineChartBackground UIColorFromHex(0xb7e3e4)
 #define kJBColorLineChartHeader UIColorFromHex(0x1c474e)
 #define kJBColorLineChartHeaderSeparatorColor UIColorFromHex(0x8eb6b7)
-#define kJBColorLineChartLineColor [UIColor colorWithWhite:1.0 alpha:0.5]
+#define kJBColorLineChartDefaultSolidLineColor [UIColor colorWithWhite:1.0 alpha:0.5]
+#define kJBColorLineChartDefaultSolidSelectedLineColor [UIColor colorWithWhite:1.0 alpha:1.0]
+#define kJBColorLineChartDefaultDashedLineColor [UIColor colorWithRed:1.0 green:0.0 blue:0.0 alpha:1.0]
+#define kJBColorLineChartDefaultDashedSelectedLineColor [UIColor colorWithWhite:1.0 alpha:1.0]
+
+#pragma mark - Tooltips
+
+#define kJBColorTooltipColor [UIColor colorWithWhite:1.0 alpha:0.9]
+#define kJBColorTooltipTextColor UIColorFromHex(0x313131)

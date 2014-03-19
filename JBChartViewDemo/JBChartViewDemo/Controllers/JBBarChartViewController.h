@@ -6,8 +6,8 @@
 //  Copyright (c) 2013 Jawbone. All rights reserved.
 //
 
-#import "JBBaseViewController.h"
+#import "JBBaseChartViewController.h"
 
-@interface JBBarChartViewController : JBBaseViewController
+@interface JBBarChartViewController : JBBaseChartViewController
 
 @end

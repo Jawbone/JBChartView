@@ -4,7 +4,7 @@
 	<img src="https://raw.github.com/Jawbone/JBChartView/master/Screenshots/main.png">
 </center>
 
-<b>Introducing JBChartView - </b> Jawbone's iOS-based charting library for both line and bar graphs. It is easy to set-up, and highly customizable. 
+Introducing <b>JBChartView - </b> Jawbone's iOS-based charting library for both line and bar graphs. It is easy to set-up, and highly customizable. 
 
 ## Features
 
@@ -36,7 +36,7 @@ Simply add the following line to your <code>Podfile</code>:
 Your Podfile should look something like:
 
 	platform :ios, '7.0'
-	pod 'JBChartView', '~> 1.1.6'
+	pod 'JBChartView', '~> 1.2.0'
 	
 ### The Old School Way
 
@@ -48,11 +48,11 @@ The simpliest way to use JBChartView with your application is to drag and drop t
 
 ## Usage
 
-Both JBChartView implementations have a similiar data source and delgate pattern to <i>UITableView</i>. If you're familiar with using a <i>UITableView</i> or <i>UITableViewController</i>, using a JBChartView subclass should be a breeze!
+All JBChartView implementations have a similiar data source and delgate pattern to <i>UITableView</i>. If you're familiar with using a <i>UITableView</i> or <i>UITableViewController</i>, using a JBChartView subclass should be a breeze!
 
 #### JBBarChartView
 
-To initialize a <i>JBBarChartView</i>, you only need a few lines of code:
+To initialize a <i>JBBarChartView</i>, you only need a few lines of code (see below). Bar charts can also be initialized via a <b>nib</b> or with a <b>frame</b>.
 
 	JBBarChartView *barChartView = [[JBBarChartView alloc] init];
     barChartView.delegate = self;
@@ -75,25 +75,30 @@ Secondly, you need to inform the delegate the height of each bar (automatically 
     
 #### JBLineChartView
 
-Similiarily, to initialize a JBLineChartView, you only need a few lines of code:
+Similiarily, to initialize a JBLineChartView, you only need a few lines of code (see below). Line charts can also be initialized via a <b>nib</b> or with a <b>frame</b>.
 
 	JBLineChartView *lineChartView = [[JBLineChartView alloc] init];
     lineChartView.delegate = self;
     lineChartView.dataSource = self;
     [self addSubview:lineChartView];
 
-At a minimum, you need to inform the data source how many points are in the line chart:
+At a minimum, you need to inform the data source how many lines and vertical data points (for each line) are in the chart:
 
-	- (NSInteger)numberOfPointsInLineChartView:(JBLineChartView *)lineChartView
+	- (NSUInteger)numberOfLinesInLineChartView:(JBLineChartView *)lineChartView
 	{
-		return ...; // number of points in chart
+		return ...; // number of lines in chart
+	}
+	
+	- (NSUInteger)lineChartView:(JBLineChartView *)lineChartView numberOfVerticalValuesAtLineIndex:(NSUInteger)lineIndex
+	{
+		return ...; // number of values for a line
 	}
 
-Secondly, you need to inform the delegate the y-position of each point (automatically normalized across the entire chart):
+Secondly, you need to inform the delegate of the y-position of each point (automatically normalized across the entire chart) for each line in the chart:
     
-	- (CGFloat)lineChartView:(JBLineChartView *)lineChartView heightForIndex:(NSInteger)index
+    - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex
     {
-		return ...; // y-position of point at index (x-axis)
+		return ...; // y-position (y-axis) of point at horizontalIndex (x-axis)
 	}
 	
 ## Customization
@@ -125,60 +130,69 @@ By default, a chart's bars will be black and flat. They can be customized by sup
 
 Furthermore, the color of the selection bar (on touch events) can be customized via the <i>optional</i> protocol:
 
-	- (UIColor *)selectionBarColorForBarChartView:(JBBarChartView *)barChartView
+	- (UIColor *)barSelectionColorForBarChartView:(JBBarChartView *)barChartView
 	{
 		return ...; // color of selection view
 	}
 	
 Lastly, a bar chart's selection events are delegated back via:
 
-	- (void)barChartView:(JBBarChartView *)barChartView didSelectBarAtIndex:(NSInteger)index
+	- (void)barChartView:(JBBarChartView *)barChartView didSelectBarAtIndex:(NSUInteger)index touchPoint:(CGPoint)touchPoint
 	{
 		// Update view
 	}
 
-	- (void)barChartView:(JBBarChartView *)barChartView didUnselectBarAtIndex:(NSInteger)index
+	- (void)didUnselectBarChartView:(JBBarChartView *)barChartView
 	{
 		// Update view
 	}
-	
-A JBBarChartView visuaul overview can be found <a href="https://raw.github.com/Jawbone/JBChartView/master/Screenshots/JBBarChartView.png" target="_blank">here</a>. 
+
+The <b>touchPoint</b> is especially important as it allows you to add custom elements to your chart during  selection events. Refer to the demo project (<b>JBarChartViewController</b>) to see how a tooltip can be used to display additional information during selection events.
 
 #### JBLineChartView
 
-The color of the chart's line can be customized via the <i>optional</i> protocol:
+The color, width and style of each line in the chart can be customized via the <i>optional</i> protocol:
 
-	- (UIColor *)lineColorForLineChartView:(JBLineChartView *)lineChartView
+	- (UIColor *)lineChartView:(JBLineChartView *)lineChartView colorForLineAtLineIndex:(NSUInteger)lineIndex
 	{
 		return ...; // color of line in chart
 	}
 	
-Furthermore, the color of the selection bar (on touch events) can be customized via the <i>optional</i> protocol:
+	- (CGFloat)lineChartView:(JBLineChartView *)lineChartView widthForLineAtLineIndex:(NSUInteger)lineIndex
+	{
+		return ...; // width of line in chart
+	}
+	
+	- (JBLineChartViewLineStyle)lineChartView:(JBLineChartView *)lineChartView lineStyleForLineAtLineIndex:(NSUInteger)lineIndex
+	{
+		return ...; // style of line in chart
+	}
+	
+Furthermore, the color of the selection bar and line can be customized via the <i>optional</i> protocols:
 
-	- (UIColor *)selectionColorForLineChartView:(JBLineChartView *)lineChartView
+	- (UIColor *)verticalSelectionColorForLineChartView:(JBLineChartView *)lineChartView
 	{
 		return ...; // color of selection view
 	}
-The width of the chart's line is defaulted to 5 (points). It can be modified through the <i>optional</i> protocol:
-
-	- (CGFloat)lineWidthForLineChartView:(JBLineChartView *)lineChartView
-	{
-		return ...; // width of line
-	}
 	
+	- (UIColor *)lineChartView:(JBLineChartView *)lineChartView selectionColorForLineAtLineIndex:(NSUInteger)lineIndex
+	{
+		return ...; // color of selected line
+	}
+		
 Lastly, a line chart's selection events are delegated back via:
 
-	- (void)lineChartView:(JBLineChartView *)lineChartView didSelectChartAtIndex:(NSInteger)index
+	- (void)lineChartView:(JBLineChartView *)lineChartView didSelectLineAtIndex:(NSUInteger)lineIndex horizontalIndex:(NSUInteger)horizontalIndex touchPoint:(CGPoint)touchPoint
 	{
 		// Update view
 	}
 
-	- (void)lineChartView:(JBLineChartView *)lineChartView didUnselectChartAtIndex:(NSInteger)index
+	- (void)didUnselectLineInLineChartView:(JBLineChartView *)lineChartView
 	{
 		// Update view
 	}
-			
-A JBLineChartView visuaul overview can be found <a href="https://raw.github.com/Jawbone/JBChartView/master/Screenshots/JBLineChartView.png" target="_blank">here</a>.
+	
+The <b>touchPoint</b> is especially important as it allows you to add custom elements to your chart during  selection events. Refer to the demo project (<b>JBLineChartViewController</b>) to see how a tooltip can be used to display additional information during selection events.
 	
 ## License
 

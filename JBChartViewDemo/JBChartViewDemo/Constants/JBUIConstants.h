@@ -6,11 +6,6 @@
 //  Copyright (c) 2013 Jawbone. All rights reserved.
 //
 
-#pragma mark - Numerics
-
-#define kJBNumericDefaultPadding 10.0f
-#define kJBNumericDefaultAnimationDuration 0.25f
-
 #pragma mark - Images
 
 #define kJBImageIconJawboneLogo @"icon-jawbone-logo.png"

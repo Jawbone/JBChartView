@@ -53,17 +53,17 @@ typedef NS_ENUM(NSInteger, JBChartViewState){
 /**
  *  State setter.
  *
- *  @param state    Either collapse or expanded.
- *  @param animated Whether or not the state should be animated or not.
- *  @param callback Called once the animation is completed. If animated == NO, then callback is immediate.
+ *  @param state        Either collapse or expanded.
+ *  @param animated     Whether or not the state should be animated or not.
+ *  @param callback     Called once the animation is completed. If animated == NO, then callback is immediate.
  */
 - (void)setState:(JBChartViewState)state animated:(BOOL)animated callback:(void (^)())callback;
 
 /**
  *  State setter.
  *
- *  @param state    Either collapse or expanded.
- *  @param animated Whether or not the state should be animated or not.
+ *  @param state        Either collapse or expanded.
+ *  @param animated     Whether or not the state should be animated or not.
  */
 - (void)setState:(JBChartViewState)state animated:(BOOL)animated;
 
@@ -71,9 +71,9 @@ typedef NS_ENUM(NSInteger, JBChartViewState){
 
 /**
  * A simple UIView subclass that fades a base color from current alpha to 0.0 (vertically).
- * Used as a selection ivew in JBChartView subclasses.
+ * Used as a vertical selection view in JBChartView subclasses.
  */
-@interface JBChartSelectionView : UIView
+@interface JBChartVerticalSelectionView : UIView
 
 /**
  * Base selection view color. This color will be faded to transparent vertically.

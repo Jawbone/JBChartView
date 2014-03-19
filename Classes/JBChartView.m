@@ -11,7 +11,7 @@
 CGFloat const kJBChartViewDefaultAnimationDuration = 0.25f;
 
 // Color (JBChartSelectionView)
-static UIColor *kJBChartSelectionViewDefaultBgColor = nil;
+static UIColor *kJBChartVerticalSelectionViewDefaultBgColor = nil;
 
 @interface JBChartView ()
 
@@ -108,15 +108,15 @@ static UIColor *kJBChartSelectionViewDefaultBgColor = nil;
 
 @end
 
-@implementation JBChartSelectionView
+@implementation JBChartVerticalSelectionView
 
 #pragma mark - Alloc/Init
 
 + (void)initialize
 {
-	if (self == [JBChartSelectionView class])
+	if (self == [JBChartVerticalSelectionView class])
 	{
-		kJBChartSelectionViewDefaultBgColor = [UIColor whiteColor];
+		kJBChartVerticalSelectionViewDefaultBgColor = [UIColor whiteColor];
 	}
 }
 
@@ -148,7 +148,7 @@ static UIColor *kJBChartSelectionViewDefaultBgColor = nil;
     }
     else
     {
-        colors = @[(__bridge id)kJBChartSelectionViewDefaultBgColor.CGColor, (__bridge id)[kJBChartSelectionViewDefaultBgColor colorWithAlphaComponent:0.0].CGColor];
+        colors = @[(__bridge id)kJBChartVerticalSelectionViewDefaultBgColor.CGColor, (__bridge id)[kJBChartVerticalSelectionViewDefaultBgColor colorWithAlphaComponent:0.0].CGColor];
     }
     
     CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef) colors, locations);

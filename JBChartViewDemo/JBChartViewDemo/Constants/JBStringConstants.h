@@ -10,11 +10,20 @@
 
 #pragma mark - Labels
 
-#define kJBStringLabel1987 localize(@"label.1985", @"1987")
+#pragma mark - Labels (Bar Chart)
+
+#define kJBStringLabel2012 localize(@"label.2012", @"2012")
+#define kJBStringLabelAverageMonthlyTemperature localize(@"label.average.monthly.temperature", @"Average Monthly Temperature")
+#define kJBStringLabelWorldwide2012 localize(@"label.worldwide.2013", @"Worldwide - 2012")
+#define kJBStringLabelWorldwideAverage localize(@"label.worldwide.average", @"Worldwide Average")
+#define kJBStringLabelDegreesFahrenheit localize(@"label.degrees.fahrenheit", @"%d%@F")
+#define kJBStringLabelDegreeSymbol localize(@"label.degree.symbol", @"\u00B0")
+
+#pragma mark - Labels (Line Chart)
+
 #define kJBStringLabel2013 localize(@"label.2013", @"2013")
-#define kJBStringLabeJanuary localize(@"label.january", @"January")
-#define kJBStringLabelDecember localize(@"label.august", @"December")
-#define kJBStringLabelAverageMonthlyRainfall localize(@"label.annual.monthly.rainfall", @"Average Monthly Rainfall")
-#define kJBStringLabelAverageAnnualRainfall localize(@"label.average.annual.rainfall", @"Average Annual Rainfall")
-#define kJBStringLabelSanFrancisco localize(@"label.san.francisco", @"San Francisco")
+#define kJBStringLabelSanFrancisco2013 localize(@"label.san.francisco.2013", @"San Francisco - 2013")
+#define kJBStringLabelAverageDailyRainfall localize(@"label.average.daily.rainfall", @"Average Daily Rainfall")
 #define kJBStringLabelMm localize(@"label.mm", @"mm")
+#define kJBStringLabelMetropolitanAverage localize(@"label.metropolitan.average", @"Metropolitan Average")
+#define kJBStringLabelNationalAverage localize(@"label.national.average", @"National Average")

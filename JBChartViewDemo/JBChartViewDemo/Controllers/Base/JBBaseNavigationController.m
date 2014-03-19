@@ -20,6 +20,7 @@
         self.navigationBar.translucent = NO;
         [[UINavigationBar appearance] setBarTintColor:kJBColorNavigationTint];
         [[UINavigationBar appearance] setTintColor:kJBColorNavigationBarTint];
+        self.interactivePopGestureRecognizer.enabled = NO;
     }
     return self;
 }
