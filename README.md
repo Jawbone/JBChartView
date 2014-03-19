@@ -72,6 +72,11 @@ Secondly, you need to inform the delegate the height of each bar (automatically 
     {
 		return ...; // height of bar at index
 	}
+	
+Lastly, ensure you have set the *frame* of your barChartView & call *reloadData* at least once:
+
+	self.barChartView.frame = CGRectMake( ... );
+	[self.barChartView reloadData];
     
 #### JBLineChartView
 
@@ -100,6 +105,12 @@ Secondly, you need to inform the delegate of the y-position of each point (autom
     {
 		return ...; // y-position (y-axis) of point at horizontalIndex (x-axis)
 	}
+
+Lastly, ensure you have set the *frame* of your lineChartView & call *reloadData* at least once:
+
+	self.lineChartView.frame = CGRectMake( ... );
+	[self.lineChartView reloadData];
+
 	
 ## Customization
 
