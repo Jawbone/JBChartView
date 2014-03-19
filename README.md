@@ -1,5 +1,5 @@
 # JBChartView
-
+<br/>
 <p align="center">	
 	<img src="https://raw.github.com/Jawbone/JBChartView/master/Screenshots/main.png">
 </p>
