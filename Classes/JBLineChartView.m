@@ -118,6 +118,14 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
 
 @end
 
+@interface JBLineChartDotView : UIView
+
+- (id)initWithRadius:(CGFloat)radius;
+
+@property (nonatomic, strong) UIColor *dotColor;
+
+@end
+
 @interface JBLineChartView () <JBLineChartLinesViewDelegate, JBLineChartDotsViewDelegate>
 
 @property (nonatomic, strong) NSArray *chartData;
@@ -704,6 +712,83 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
 
 @end
 
+@implementation JBLineLayer
+
+#pragma mark - Alloc/Init
+
++ (void)initialize
+{
+	if (self == [JBLineLayer class])
+	{
+		kJBLineChartLineViewDefaultDashPattern = @[@(3), @(2)];
+	}
+}
+
+- (id)init
+{
+    self = [super init];
+    if (self)
+    {
+        self.zPosition = 0.0f;
+        self.fillColor = [UIColor clearColor].CGColor;
+    }
+    return self;
+}
+
+#pragma mark - Setters
+
+- (void)setLineStyle:(JBLineChartViewLineStyle)lineStyle
+{
+    _lineStyle = lineStyle;
+    
+    if (_lineStyle == JBLineChartViewLineStyleDashed)
+    {
+        self.lineCap = kCALineCapButt;
+        self.lineJoin = kCALineJoinMiter;
+        self.lineDashPhase = kJBLineChartLineViewDefaultLinePhase;
+        self.lineDashPattern = kJBLineChartLineViewDefaultDashPattern;
+    }
+    else if (_lineStyle == JBLineChartViewLineStyleSolid)
+    {
+        self.lineCap = kCALineCapRound;
+        self.lineJoin = kCALineJoinRound;
+        self.lineDashPhase = 0.0;
+        self.lineDashPattern = nil;
+    }
+    else if (_lineStyle == JBLineChartViewLineStyleDotted)
+    {
+        self.lineCap = kCALineCapButt;
+        self.lineJoin = kCALineJoinMiter;
+        self.lineDashPhase = 0.0;
+        self.lineDashPattern = nil;
+    }
+}
+
+@end
+
+@implementation JBLineChartPoint
+
+#pragma mark - Alloc/Init
+
+- (id)init
+{
+    self = [super init];
+    if (self)
+    {
+        _position = CGPointZero;
+    }
+    return self;
+}
+
+#pragma mark - Compare
+
+- (NSComparisonResult)compare:(JBLineChartPoint *)otherObject
+{
+    return self.position.x > otherObject.position.x;
+}
+
+@end
+
 @implementation JBLineChartLinesView
 
 #pragma mark - Alloc/Init
@@ -955,14 +1040,12 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
                 NSAssert([self.delegate respondsToSelector:@selector(lineChartDotsView:widthForLineAtLineIndex:)], @"JBLineChartDotsView // delegate must implement - (CGFloat)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView widthForLineAtLineIndex:(NSUInteger)lineIndex");
                 CGFloat lineWidth = [self.delegate lineChartDotsView:self widthForLineAtLineIndex:lineIndex];
                 CGFloat dotRadius = lineWidth * 3;
-                
-                NSAssert([self.delegate respondsToSelector:@selector(lineChartDotsView:colorForLineAtLineIndex:)], @"JBLineChartDotsView // delegate must implement - (UIColor *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView colorForLineAtLineIndex:(NSUInteger)lineIndex");
-                UIColor *dotViewColor = [self.delegate lineChartDotsView:self colorForLineAtLineIndex:lineIndex];
-                
-                UIView *dotView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, dotRadius, dotRadius)];
+                                
+                JBLineChartDotView *dotView = [[JBLineChartDotView alloc] initWithRadius:dotRadius];
                 dotView.center = CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - kJBLineChartLineViewEdgePadding, fmax(kJBLineChartLineViewEdgePadding, lineChartPoint.position.y)));
                 
-                dotView.backgroundColor = dotViewColor;
+                NSAssert([self.delegate respondsToSelector:@selector(lineChartDotsView:colorForLineAtLineIndex:)], @"JBLineChartDotsView // delegate must implement - (UIColor *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView colorForLineAtLineIndex:(NSUInteger)lineIndex");
+                dotView.dotColor = [self.delegate lineChartDotsView:self colorForLineAtLineIndex:lineIndex];
                 
                 [self addSubview:dotView];
             }
@@ -973,79 +1056,35 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
 
 @end
 
-@implementation JBLineChartPoint
+@implementation JBLineChartDotView
 
 #pragma mark - Alloc/Init
 
-- (id)init
+- (id)initWithRadius:(CGFloat)radius
 {
-    self = [super init];
+    self = [super initWithFrame:CGRectMake(0, 0, radius, radius)];
     if (self)
     {
-        _position = CGPointZero;
-    }
-    return self;
-}
-
-#pragma mark - Compare
-
-- (NSComparisonResult)compare:(JBLineChartPoint *)otherObject
-{
-    return self.position.x > otherObject.position.x;
-}
-
-@end
-
-@implementation JBLineLayer
-
-#pragma mark - Alloc/Init
-
-+ (void)initialize
-{
-	if (self == [JBLineLayer class])
-	{
-		kJBLineChartLineViewDefaultDashPattern = @[@(3), @(2)];
-	}
-}
-
-- (id)init
-{
-    self = [super init];
-    if (self)
-    {
-        self.zPosition = 0.0f;
-        self.fillColor = [UIColor clearColor].CGColor;
+        self.backgroundColor = [UIColor clearColor];
     }
     return self;
 }
 
 #pragma mark - Setters
 
-- (void)setLineStyle:(JBLineChartViewLineStyle)lineStyle
+- (void)setDotColor:(UIColor *)dotColor
 {
-    _lineStyle = lineStyle;
+    _dotColor = dotColor;
+    [self setNeedsDisplay];
+}
+
+#pragma mark - Drawing
+
+- (void)drawRect:(CGRect)rect
+{
+    [super drawRect:rect];
     
-    if (_lineStyle == JBLineChartViewLineStyleDashed)
-    {
-        self.lineCap = kCALineCapButt;
-        self.lineJoin = kCALineJoinMiter;
-        self.lineDashPhase = kJBLineChartLineViewDefaultLinePhase;
-        self.lineDashPattern = kJBLineChartLineViewDefaultDashPattern;
-    }
-    else if (_lineStyle == JBLineChartViewLineStyleSolid)
-    {
-        self.lineCap = kCALineCapRound;
-        self.lineJoin = kCALineJoinRound;
-        self.lineDashPhase = 0.0;
-        self.lineDashPattern = nil;
-    }
-    else if (_lineStyle == JBLineChartViewLineStyleDotted)
-    {
-        self.lineCap = kCALineCapButt;
-        self.lineJoin = kCALineJoinMiter;
-        self.lineDashPhase = 0.0;
-        self.lineDashPattern = nil;
-    }
+    
 }
 
 @end
