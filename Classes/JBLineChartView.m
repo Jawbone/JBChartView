@@ -24,13 +24,16 @@ typedef NS_ENUM(NSUInteger, JBLineChartHorizontalIndexClamp){
 };
 
 // Numerics (JBLineChartLineView)
-CGFloat static const kJBLineChartLineViewEdgePadding = 10.0;
-CGFloat static const kJBLineChartLineViewStrokeWidth = 5.0;
-CGFloat static const kJBLineChartLineViewMiterLimit = -5.0;
-CGFloat static const kJBLineChartLineViewStateAnimationDuration = 0.25f;
-CGFloat static const kJBLineChartLineViewDefaultLinePhase = 1.0f;
-CGFloat static const kJBLineChartLineViewDefaultDimmedOpacity = 0.5f;
-NSInteger static const kJBLineChartLineViewUnselectedLineIndex = -1;
+CGFloat static const kJBLineChartLinesViewEdgePadding = 10.0;
+CGFloat static const kJBLineChartLinesViewStrokeWidth = 5.0;
+CGFloat static const kJBLineChartLinesViewMiterLimit = -5.0;
+CGFloat static const kJBLineChartLinesViewStateAnimationDuration = 0.25f;
+CGFloat static const kJBLineChartLinesViewDefaultLinePhase = 1.0f;
+CGFloat static const kJBLineChartLinesViewDefaultDimmedOpacity = 0.5f;
+NSInteger static const kJBLineChartLinesViewUnselectedLineIndex = -1;
+
+// Numerics (JBLineChartDotsView)
+CGFloat static const kJBLineChartDotsViewPadding = 1.0f;
 
 // Numerics (JBLineSelectionView)
 CGFloat static const kJBLineSelectionViewWidth = 20.0f;
@@ -228,8 +231,8 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
      */
     dispatch_block_t createChartData = ^{
 
-        CGFloat pointSpace = (self.bounds.size.width - (kJBLineChartLineViewEdgePadding * 2)) / ([self dataCount] - 1); // Space in between points
-        CGFloat xOffset = kJBLineChartLineViewEdgePadding;
+        CGFloat pointSpace = (self.bounds.size.width - (kJBLineChartLinesViewEdgePadding * 2)) / ([self dataCount] - 1); // Space in between points
+        CGFloat xOffset = kJBLineChartLinesViewEdgePadding;
         CGFloat yOffset = 0;
        
         NSMutableArray *mutableChartData = [NSMutableArray array];
@@ -255,7 +258,7 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
                 xOffset += pointSpace;
             }
             [mutableChartData addObject:chartPointData];
-            xOffset = kJBLineChartLineViewEdgePadding;
+            xOffset = kJBLineChartLinesViewEdgePadding;
         }
         self.chartData = [NSArray arrayWithArray:mutableChartData];
 	};
@@ -437,7 +440,7 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
     {
         return [self.dataSource lineChartView:self widthForLineAtLineIndex:lineIndex];
     }
-    return kJBLineChartLineViewStrokeWidth;
+    return kJBLineChartLinesViewStrokeWidth;
 }
 
 - (JBLineChartViewLineStyle)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView lineStyleForLineAtLineIndex:(NSUInteger)lineIndex
@@ -480,7 +483,7 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
     {
         return [self.dataSource lineChartView:self widthForLineAtLineIndex:lineIndex];
     }
-    return kJBLineChartLineViewStrokeWidth;
+    return kJBLineChartLinesViewStrokeWidth;
 }
 
 - (JBLineChartViewLineStyle)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView lineStyleForLineAtLineIndex:(NSUInteger)lineIndex
@@ -584,11 +587,11 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
 
             // Left point
             JBLineChartPoint *leftLineChartPoint = [lineData objectAtIndex:leftHorizontalIndex];
-            CGPoint leftPoint = CGPointMake(leftLineChartPoint.position.x, fmin(fmax(kJBLineChartLineViewEdgePadding, self.linesView.bounds.size.height - leftLineChartPoint.position.y), self.linesView.bounds.size.height - kJBLineChartLineViewEdgePadding));
+            CGPoint leftPoint = CGPointMake(leftLineChartPoint.position.x, fmin(fmax(kJBLineChartLinesViewEdgePadding, self.linesView.bounds.size.height - leftLineChartPoint.position.y), self.linesView.bounds.size.height - kJBLineChartLinesViewEdgePadding));
             
             // Right point
             JBLineChartPoint *rightLineChartPoint = [lineData objectAtIndex:rightHorizontalIndex];
-            CGPoint rightPoint = CGPointMake(rightLineChartPoint.position.x, fmin(fmax(kJBLineChartLineViewEdgePadding, self.linesView.bounds.size.height - rightLineChartPoint.position.y), self.linesView.bounds.size.height - kJBLineChartLineViewEdgePadding));
+            CGPoint rightPoint = CGPointMake(rightLineChartPoint.position.x, fmin(fmax(kJBLineChartLinesViewEdgePadding, self.linesView.bounds.size.height - rightLineChartPoint.position.y), self.linesView.bounds.size.height - kJBLineChartLinesViewEdgePadding));
             
             // Touch point
             CGPoint normalizedTouchPoint = CGPointMake(point.x, self.linesView.bounds.size.height - point.y);
@@ -618,18 +621,18 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
     }
     
     UITouch *touch = [touches anyObject];
-    CGPoint touchPoint = [self clampPoint:[touch locationInView:self.linesView] toBounds:self.linesView.bounds padding:kJBLineChartLineViewEdgePadding];
+    CGPoint touchPoint = [self clampPoint:[touch locationInView:self.linesView] toBounds:self.linesView.bounds padding:kJBLineChartLinesViewEdgePadding];
 
     if ([self.delegate respondsToSelector:@selector(lineChartView:didSelectLineAtIndex:horizontalIndex:touchPoint:)])
     {
-        NSUInteger lineIndex = self.linesView.selectedLineIndex != kJBLineChartLineViewUnselectedLineIndex ? self.linesView.selectedLineIndex : [self lineIndexForPoint:touchPoint];
+        NSUInteger lineIndex = self.linesView.selectedLineIndex != kJBLineChartLinesViewUnselectedLineIndex ? self.linesView.selectedLineIndex : [self lineIndexForPoint:touchPoint];
         NSUInteger horizontalIndex = [self horizontalIndexForPoint:touchPoint indexClamp:JBLineChartHorizontalIndexClampNone lineData:[self.chartData objectAtIndex:lineIndex]];
         [self.delegate lineChartView:self didSelectLineAtIndex:lineIndex horizontalIndex:horizontalIndex touchPoint:[touch locationInView:self]];
     }
     
     if ([self.delegate respondsToSelector:@selector(lineChartView:didSelectLineAtIndex:horizontalIndex:)])
     {
-        NSUInteger lineIndex = self.linesView.selectedLineIndex != kJBLineChartLineViewUnselectedLineIndex ? self.linesView.selectedLineIndex : [self lineIndexForPoint:touchPoint];
+        NSUInteger lineIndex = self.linesView.selectedLineIndex != kJBLineChartLinesViewUnselectedLineIndex ? self.linesView.selectedLineIndex : [self lineIndexForPoint:touchPoint];
         [self.delegate lineChartView:self didSelectLineAtIndex:lineIndex horizontalIndex:[self horizontalIndexForPoint:touchPoint indexClamp:JBLineChartHorizontalIndexClampNone lineData:[self.chartData objectAtIndex:lineIndex]]];
     }
     
@@ -651,7 +654,7 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
     {
         [self.delegate didUnselectLineInLineChartView:self];
     }
-    [self.linesView setSelectedLineIndex:kJBLineChartLineViewUnselectedLineIndex];
+    [self.linesView setSelectedLineIndex:kJBLineChartLinesViewUnselectedLineIndex];
 }
 
 #pragma mark - Setters
@@ -690,7 +693,7 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     UITouch *touch = [touches anyObject];
-    CGPoint touchPoint = [self clampPoint:[touch locationInView:self.linesView] toBounds:self.linesView.bounds padding:kJBLineChartLineViewEdgePadding];
+    CGPoint touchPoint = [self clampPoint:[touch locationInView:self.linesView] toBounds:self.linesView.bounds padding:kJBLineChartLinesViewEdgePadding];
     [self.linesView setSelectedLineIndex:[self lineIndexForPoint:touchPoint]];
     [self touchesBeganOrMovedWithTouches:touches];
 }
@@ -745,7 +748,7 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
     {
         self.lineCap = kCALineCapButt;
         self.lineJoin = kCALineJoinMiter;
-        self.lineDashPhase = kJBLineChartLineViewDefaultLinePhase;
+        self.lineDashPhase = kJBLineChartLinesViewDefaultLinePhase;
         self.lineDashPattern = kJBLineChartLineViewDefaultDashPattern;
     }
     else if (_lineStyle == JBLineChartViewLineStyleSolid)
@@ -826,22 +829,22 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
     for (NSArray *lineData in chartData)
     {
         UIBezierPath *flatPath = [UIBezierPath bezierPath];
-        flatPath.miterLimit = kJBLineChartLineViewMiterLimit;
+        flatPath.miterLimit = kJBLineChartLinesViewMiterLimit;
         
         UIBezierPath *dynamicPath = [UIBezierPath bezierPath];
-        dynamicPath.miterLimit = kJBLineChartLineViewMiterLimit;
+        dynamicPath.miterLimit = kJBLineChartLinesViewMiterLimit;
         
         NSUInteger index = 0;
         for (JBLineChartPoint *lineChartPoint in [lineData sortedArrayUsingSelector:@selector(compare:)])
         {
             if (index == 0)
             {
-                [dynamicPath moveToPoint:CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - kJBLineChartLineViewEdgePadding, fmax(kJBLineChartLineViewEdgePadding, lineChartPoint.position.y)))];
+                [dynamicPath moveToPoint:CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - kJBLineChartLinesViewEdgePadding, fmax(kJBLineChartLinesViewEdgePadding, lineChartPoint.position.y)))];
                 [flatPath moveToPoint:CGPointMake(lineChartPoint.position.x, ceil(self.bounds.size.height * 0.5))];
             }
             else
             {
-                [dynamicPath addLineToPoint:CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - kJBLineChartLineViewEdgePadding, fmax(kJBLineChartLineViewEdgePadding, lineChartPoint.position.y)))];
+                [dynamicPath addLineToPoint:CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - kJBLineChartLinesViewEdgePadding, fmax(kJBLineChartLinesViewEdgePadding, lineChartPoint.position.y)))];
                 [flatPath addLineToPoint:CGPointMake(lineChartPoint.position.x, ceil(self.bounds.size.height * 0.5))];
             }
             
@@ -872,7 +875,7 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
             CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:kJBLineChartViewAnimationPathKey];
             [anim setRemovedOnCompletion:NO];
             anim.toValue = self.state == JBLineChartLineViewStateCollapsed ? (id)flatPath.CGPath : (id)dynamicPath.CGPath;
-            anim.duration = kJBLineChartLineViewStateAnimationDuration;
+            anim.duration = kJBLineChartLinesViewStateAnimationDuration;
             anim.removedOnCompletion = NO;
             anim.fillMode = kCAFillModeForwards;
             anim.autoreverses = NO;
@@ -928,7 +931,7 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
 
     if (animated)
     {
-        [self performSelector:@selector(fireCallback:) withObject:callback afterDelay:kJBLineChartLineViewStateAnimationDuration];
+        [self performSelector:@selector(fireCallback:) withObject:callback afterDelay:kJBLineChartLinesViewStateAnimationDuration];
     }
     else
     {
@@ -962,7 +965,7 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
             {
                 NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:colorForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView colorForLineAtLineIndex:(NSUInteger)lineIndex");
                 ((JBLineLayer *)layer).strokeColor = [self.delegate lineChartLinesView:self colorForLineAtLineIndex:((JBLineLayer *)layer).tag].CGColor;
-                ((JBLineLayer *)layer).opacity = (_selectedLineIndex == kJBLineChartLineViewUnselectedLineIndex) ? 1.0f : kJBLineChartLineViewDefaultDimmedOpacity;
+                ((JBLineLayer *)layer).opacity = (_selectedLineIndex == kJBLineChartLinesViewUnselectedLineIndex) ? 1.0f : kJBLineChartLinesViewDefaultDimmedOpacity;
             }
         }
     }
@@ -1039,10 +1042,10 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
             {
                 NSAssert([self.delegate respondsToSelector:@selector(lineChartDotsView:widthForLineAtLineIndex:)], @"JBLineChartDotsView // delegate must implement - (CGFloat)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView widthForLineAtLineIndex:(NSUInteger)lineIndex");
                 CGFloat lineWidth = [self.delegate lineChartDotsView:self widthForLineAtLineIndex:lineIndex];
-                CGFloat dotRadius = lineWidth * 3;
-                                
+                CGFloat dotRadius = lineWidth * 6;
+                
                 JBLineChartDotView *dotView = [[JBLineChartDotView alloc] initWithRadius:dotRadius];
-                dotView.center = CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - kJBLineChartLineViewEdgePadding, fmax(kJBLineChartLineViewEdgePadding, lineChartPoint.position.y)));
+                dotView.center = CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - kJBLineChartLinesViewEdgePadding, fmax(kJBLineChartLinesViewEdgePadding, lineChartPoint.position.y)));
                 
                 NSAssert([self.delegate respondsToSelector:@selector(lineChartDotsView:colorForLineAtLineIndex:)], @"JBLineChartDotsView // delegate must implement - (UIColor *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView colorForLineAtLineIndex:(NSUInteger)lineIndex");
                 dotView.dotColor = [self.delegate lineChartDotsView:self colorForLineAtLineIndex:lineIndex];
@@ -1084,7 +1087,14 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
 {
     [super drawRect:rect];
     
-    
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSaveGState(context);
+    {
+        CGContextAddEllipseInRect(context, CGRectInset(rect, kJBLineChartDotsViewPadding, kJBLineChartDotsViewPadding));
+        CGContextSetFillColor(context, CGColorGetComponents([self.dotColor CGColor]));
+        CGContextFillPath(context);
+    }
+    CGContextRestoreGState(context);
 }
 
 @end
