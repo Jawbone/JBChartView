@@ -19,7 +19,11 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
     /**
      *  Dashed square capped line with a phase of 3:2 (3 points dashed, 2 points spaced).
      */
-	JBLineChartViewLineStyleDashed
+	JBLineChartViewLineStyleDashed,
+    /**
+     *  Square capped line with dots at each data point. Dot size is relative to line width.
+     */
+	JBLineChartViewLineStyleDotted
 };
 
 @protocol JBLineChartViewDelegate;
