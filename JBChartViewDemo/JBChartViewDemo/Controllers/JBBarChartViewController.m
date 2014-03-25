@@ -130,16 +130,10 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
     [self.barChartView reloadData];
 }
 
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-    [self.barChartView setState:JBChartViewStateExpanded animated:YES callback:nil];
-}
-
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self.barChartView setState:JBChartViewStateCollapsed];
+    [self.barChartView setState:JBChartViewStateExpanded];
 }
 
 #pragma mark - JBBarChartViewDelegate

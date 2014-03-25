@@ -12,9 +12,14 @@
 #import <QuartzCore/QuartzCore.h>
 
 // Enums
-typedef NS_ENUM(NSUInteger, JBLineChartLineViewState){
-	JBLineChartLineViewStateExpanded,
-    JBLineChartLineViewStateCollapsed
+typedef NS_ENUM(NSUInteger, JBLineChartLinesViewState){
+	JBLineChartLinesViewStateExpanded,
+    JBLineChartLinesViewStateCollapsed
+};
+
+typedef NS_ENUM(NSUInteger, JBLineChartDotsViewState){
+	JBLineChartDotsViewStateExpanded,
+    JBLineChartDotsViewStateCollapsed
 };
 
 typedef NS_ENUM(NSUInteger, JBLineChartHorizontalIndexClamp){
@@ -34,6 +39,7 @@ NSInteger static const kJBLineChartLinesViewUnselectedLineIndex = -1;
 
 // Numerics (JBLineChartDotsView)
 CGFloat static const kJBLineChartDotsViewPadding = 1.0f;
+CGFloat static const kJBLineChartDotsViewStateAnimationDuration = 0.25f;
 NSInteger static const kJBLineChartDotsRadiusFactor = 3; // 3x size of line width
 
 // Numerics (JBLineSelectionView)
@@ -71,7 +77,7 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
 @interface JBLineChartLinesView : UIView
 
 @property (nonatomic, assign) id<JBLineChartLinesViewDelegate> delegate;
-@property (nonatomic, assign) JBLineChartLineViewState state;
+@property (nonatomic, assign) JBLineChartLinesViewState state;
 @property (nonatomic, assign) NSInteger selectedLineIndex; // -1 to unselect
 @property (nonatomic, assign) BOOL animated;
 
@@ -79,8 +85,8 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
 - (void)reloadData;
 
 // Setters
-- (void)setState:(JBLineChartLineViewState)state animated:(BOOL)animated callback:(void (^)())callback;
-- (void)setState:(JBLineChartLineViewState)state animated:(BOOL)animated;
+- (void)setState:(JBLineChartLinesViewState)state animated:(BOOL)animated callback:(void (^)())callback;
+- (void)setState:(JBLineChartLinesViewState)state animated:(BOOL)animated;
 
 // Callback helpers
 - (void)fireCallback:(void (^)())callback;
@@ -105,10 +111,15 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
 @interface JBLineChartDotsView : UIView // JBLineChartViewLineStyleDotted
 
 @property (nonatomic, assign) id<JBLineChartDotsViewDelegate> delegate;
-@property (nonatomic, strong) NSDictionary *dotViews;
+@property (nonatomic, assign) JBLineChartDotsViewState state;
+@property (nonatomic, strong) NSArray *dotViews;
 
 // Data
 - (void)reloadData;
+
+// Setters
+- (void)setState:(JBLineChartDotsViewState)state animated:(BOOL)animated callback:(void (^)())callback;
+- (void)setState:(JBLineChartDotsViewState)state animated:(BOOL)animated;
 
 @end
 
@@ -506,11 +517,17 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
     {
         if (state == JBChartViewStateCollapsed)
         {
-            [self.linesView setState:JBLineChartLineViewStateCollapsed animated:animated callback:callback];
+            __weak JBLineChartLinesView *weakLinesView = self.linesView;
+            [self.dotsView setState:JBLineChartDotsViewStateCollapsed animated:animated callback:^{
+                [weakLinesView setState:JBLineChartLinesViewStateCollapsed animated:animated callback:callback];
+            }];
         }
         else if (state == JBChartViewStateExpanded)
         {
-            [self.linesView setState:JBLineChartLineViewStateExpanded animated:animated callback:callback];
+            __weak JBLineChartDotsView *weakDotsView = self.dotsView;
+            [self.linesView setState:JBLineChartLinesViewStateExpanded animated:animated callback:^{
+                [weakDotsView setState:JBLineChartDotsViewStateExpanded animated:animated callback:callback];
+            }];
         }
     }
     else
@@ -870,12 +887,12 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
 
             NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:widthForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (CGFloat)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView widthForLineAtLineIndex:(NSUInteger)lineIndex");
             shapeLayer.lineWidth = [self.delegate lineChartLinesView:self widthForLineAtLineIndex:lineIndex];
-            shapeLayer.path = (self.state == JBLineChartLineViewStateCollapsed) ? dynamicPath.CGPath : flatPath.CGPath;
+            shapeLayer.path = (self.state == JBLineChartLinesViewStateCollapsed) ? dynamicPath.CGPath : flatPath.CGPath;
             shapeLayer.frame = self.bounds;
             
             CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:kJBLineChartViewAnimationPathKey];
             [anim setRemovedOnCompletion:NO];
-            anim.toValue = self.state == JBLineChartLineViewStateCollapsed ? (id)flatPath.CGPath : (id)dynamicPath.CGPath;
+            anim.toValue = self.state == JBLineChartLinesViewStateCollapsed ? (id)flatPath.CGPath : (id)dynamicPath.CGPath;
             anim.duration = kJBLineChartLinesViewStateAnimationDuration;
             anim.removedOnCompletion = NO;
             anim.fillMode = kCAFillModeForwards;
@@ -895,7 +912,7 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
                 CGContextSetLineWidth(context, [self.delegate lineChartLinesView:self widthForLineAtLineIndex:lineIndex]);
                 
                 CGContextBeginPath(context);
-                CGContextAddPath(context, self.state == JBLineChartLineViewStateCollapsed ? flatPath.CGPath : dynamicPath.CGPath);
+                CGContextAddPath(context, self.state == JBLineChartLinesViewStateCollapsed ? flatPath.CGPath : dynamicPath.CGPath);
                 CGContextDrawPath(context, kCGPathStroke);
             }
             CGContextRestoreGState(context);
@@ -917,7 +934,7 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
 
 #pragma mark - Setters
 
-- (void)setState:(JBLineChartLineViewState)state animated:(BOOL)animated callback:(void (^)())callback
+- (void)setState:(JBLineChartLinesViewState)state animated:(BOOL)animated callback:(void (^)())callback
 {
     if (_state == state)
     {
@@ -943,7 +960,7 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
     }
 }
 
-- (void)setState:(JBLineChartLineViewState)state animated:(BOOL)animated
+- (void)setState:(JBLineChartLinesViewState)state animated:(BOOL)animated
 {
     [self setState:state animated:animated callback:nil];
 }
@@ -1020,18 +1037,16 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
 
 - (void)reloadData
 {
-    for (NSArray *lineDotViews in [self.dotViews allValues])
+    for (JBLineChartDotView *dotView in self.dotViews)
     {
-        for (UIView *lineDotView in lineDotViews)
-        {
-            [lineDotView removeFromSuperview];
-        }
+        [dotView removeFromSuperview];
     }
     
     NSAssert([self.delegate respondsToSelector:@selector(chartDataForLineChartDotsView:)], @"JBLineChartDotsView // delegate must implement - (NSArray *)chartDataForLineChartDotsView:(JBLineChartDotsView *)lineChartDotsView");
     NSArray *chartData = [self.delegate chartDataForLineChartDotsView:self];
     
     NSUInteger lineIndex = 0;
+    NSMutableArray *mutableDotViews = [NSMutableArray array];
     for (NSArray *lineData in chartData)
     {
         for (JBLineChartPoint *lineChartPoint in [lineData sortedArrayUsingSelector:@selector(compare:)])
@@ -1051,11 +1066,52 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
                 NSAssert([self.delegate respondsToSelector:@selector(lineChartDotsView:colorForLineAtLineIndex:)], @"JBLineChartDotsView // delegate must implement - (UIColor *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView colorForLineAtLineIndex:(NSUInteger)lineIndex");
                 dotView.dotColor = [self.delegate lineChartDotsView:self colorForLineAtLineIndex:lineIndex];
                 
+                [mutableDotViews addObject:dotView];
                 [self addSubview:dotView];
             }
         }
         lineIndex++;
     }
+    self.dotViews = [NSArray arrayWithArray:mutableDotViews];
+}
+
+#pragma maark - Setters
+
+- (void)setState:(JBLineChartDotsViewState)state animated:(BOOL)animated callback:(void (^)())callback
+{
+    if (_state == state)
+    {
+        return;
+    }
+    
+    _state = state;
+    
+    if (animated)
+    {
+        [UIView animateWithDuration:kJBLineChartDotsViewStateAnimationDuration animations:^{
+            for (UIView *dotView in self.dotViews)
+            {
+                dotView.alpha = _state == JBLineChartDotsViewStateCollapsed ? 0.0 : 1.0;
+            }
+        } completion:^(BOOL finished) {
+            if (callback)
+            {
+                callback();
+            }
+        }];
+    }
+    else
+    {
+        for (JBLineChartDotsView *dotView in self.dotViews)
+        {
+            dotView.alpha = _state == JBLineChartDotsViewStateCollapsed ? 0.0 : 1.0;
+        }
+    }
+}
+
+- (void)setState:(JBLineChartDotsViewState)state animated:(BOOL)animated
+{
+    [self setState:state animated:animated callback:nil];
 }
 
 @end

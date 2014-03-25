@@ -165,16 +165,10 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
     [self.lineChartView reloadData];
 }
 
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-    [self.lineChartView setState:JBChartViewStateExpanded animated:YES];
-}
-
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self.lineChartView setState:JBChartViewStateCollapsed];
+    [self.lineChartView setState:JBChartViewStateExpanded];
 }
 
 #pragma mark - JBLineChartViewDelegate
