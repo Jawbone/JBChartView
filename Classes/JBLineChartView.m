@@ -34,6 +34,7 @@ NSInteger static const kJBLineChartLinesViewUnselectedLineIndex = -1;
 
 // Numerics (JBLineChartDotsView)
 CGFloat static const kJBLineChartDotsViewPadding = 1.0f;
+NSInteger static const kJBLineChartDotsRadiusFactor = 3; // 3x size of line width
 
 // Numerics (JBLineSelectionView)
 CGFloat static const kJBLineSelectionViewWidth = 20.0f;
@@ -1042,7 +1043,7 @@ NSString * const kJBLineChartViewAnimationPathKey = @"path";
             {
                 NSAssert([self.delegate respondsToSelector:@selector(lineChartDotsView:widthForLineAtLineIndex:)], @"JBLineChartDotsView // delegate must implement - (CGFloat)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView widthForLineAtLineIndex:(NSUInteger)lineIndex");
                 CGFloat lineWidth = [self.delegate lineChartDotsView:self widthForLineAtLineIndex:lineIndex];
-                CGFloat dotRadius = lineWidth * 6;
+                CGFloat dotRadius = lineWidth * kJBLineChartDotsRadiusFactor;
                 
                 JBLineChartDotView *dotView = [[JBLineChartDotView alloc] initWithRadius:dotRadius];
                 dotView.center = CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - kJBLineChartLinesViewEdgePadding, fmax(kJBLineChartLinesViewEdgePadding, lineChartPoint.position.y)));
