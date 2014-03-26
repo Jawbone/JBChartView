@@ -72,6 +72,9 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
 // Data
 - (void)reloadData;
 
+// Setters
+- (void)setSelectedLineIndex:(NSInteger)selectedLineIndex animated:(BOOL)animated;
+
 // Callback helpers
 - (void)fireCallback:(void (^)())callback;
 
@@ -100,6 +103,9 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
 
 // Data
 - (void)reloadData;
+
+// Setters
+- (void)setSelectedLineIndex:(NSInteger)selectedLineIndex animated:(BOOL)animated;
 
 @end
 
@@ -696,8 +702,8 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
     {
         [self.delegate didUnselectLineInLineChartView:self];
     }
-    [self.linesView setSelectedLineIndex:kJBLineChartLinesViewUnselectedLineIndex];
-    [self.dotsView setSelectedLineIndex:kJBLineChartLinesViewUnselectedLineIndex];
+    [self.linesView setSelectedLineIndex:kJBLineChartLinesViewUnselectedLineIndex animated:YES];
+    [self.dotsView setSelectedLineIndex:kJBLineChartLinesViewUnselectedLineIndex animated:YES];
 }
 
 #pragma mark - Setters
@@ -737,8 +743,8 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
 {
     UITouch *touch = [touches anyObject];
     CGPoint touchPoint = [self clampPoint:[touch locationInView:self.linesView] toBounds:self.linesView.bounds padding:kJBLineChartLinesViewEdgePadding];
-    [self.linesView setSelectedLineIndex:[self lineIndexForPoint:touchPoint]];
-    [self.dotsView setSelectedLineIndex:[self lineIndexForPoint:touchPoint]];
+    [self.linesView setSelectedLineIndex:[self lineIndexForPoint:touchPoint] animated:YES];
+    [self.dotsView setSelectedLineIndex:[self lineIndexForPoint:touchPoint] animated:YES];
     [self touchesBeganOrMovedWithTouches:touches];
 }
 
@@ -917,28 +923,46 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
 
 #pragma mark - Setters
 
-- (void)setSelectedLineIndex:(NSInteger)selectedLineIndex
+- (void)setSelectedLineIndex:(NSInteger)selectedLineIndex animated:(BOOL)animated
 {
     _selectedLineIndex = selectedLineIndex;
     
-    for (CALayer *layer in [self.layer sublayers])
-    {
-        if ([layer isKindOfClass:[JBLineLayer class]])
+    dispatch_block_t adjustLines = ^{
+        for (CALayer *layer in [self.layer sublayers])
         {
-            if (((JBLineLayer *)layer).tag == _selectedLineIndex)
+            if ([layer isKindOfClass:[JBLineLayer class]])
             {
-                NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:selectedColorForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView selectedColorForLineAtLineIndex:(NSUInteger)lineIndex");
-                ((JBLineLayer *)layer).strokeColor = [self.delegate lineChartLinesView:self selectedColorForLineAtLineIndex:((JBLineLayer *)layer).tag].CGColor;
-                ((JBLineLayer *)layer).opacity = 1.0f;
-            }
-            else
-            {
-                NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:colorForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView colorForLineAtLineIndex:(NSUInteger)lineIndex");
-                ((JBLineLayer *)layer).strokeColor = [self.delegate lineChartLinesView:self colorForLineAtLineIndex:((JBLineLayer *)layer).tag].CGColor;
-                ((JBLineLayer *)layer).opacity = (_selectedLineIndex == kJBLineChartLinesViewUnselectedLineIndex) ? 1.0f : kJBLineChartLinesViewDefaultDimmedOpacity;
+                if (((JBLineLayer *)layer).tag == _selectedLineIndex)
+                {
+                    NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:selectedColorForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView selectedColorForLineAtLineIndex:(NSUInteger)lineIndex");
+                    ((JBLineLayer *)layer).strokeColor = [self.delegate lineChartLinesView:self selectedColorForLineAtLineIndex:((JBLineLayer *)layer).tag].CGColor;
+                    ((JBLineLayer *)layer).opacity = 1.0f;
+                }
+                else
+                {
+                    NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:colorForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView colorForLineAtLineIndex:(NSUInteger)lineIndex");
+                    ((JBLineLayer *)layer).strokeColor = [self.delegate lineChartLinesView:self colorForLineAtLineIndex:((JBLineLayer *)layer).tag].CGColor;
+                    ((JBLineLayer *)layer).opacity = (_selectedLineIndex == kJBLineChartLinesViewUnselectedLineIndex) ? 1.0f : kJBLineChartLinesViewDefaultDimmedOpacity;
+                }
             }
         }
+    };
+
+    if (animated)
+    {
+        [UIView animateWithDuration:kJBChartViewDefaultAnimationDuration animations:^{
+            adjustLines();
+        }];
     }
+    else
+    {
+        adjustLines();
+    }
+}
+
+- (void)setSelectedLineIndex:(NSInteger)selectedLineIndex
+{
+    [self setSelectedLineIndex:selectedLineIndex animated:NO];
 }
 
 #pragma mark - Callback Helpers
@@ -1032,31 +1056,44 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
 
 #pragma mark - Setters
 
-- (void)setSelectedLineIndex:(NSInteger)selectedLineIndex
+- (void)setSelectedLineIndex:(NSInteger)selectedLineIndex animated:(BOOL)animated
 {
     _selectedLineIndex = selectedLineIndex;
     
-    // reset all dots
-    if (_selectedLineIndex == kJBLineChartDotsViewUnselectedLineIndex)
-    {
-        [self.dotViewsDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-            NSUInteger lineIndex = [((NSNumber *)key) intValue];
-            for (JBLineChartDotView *dotView in (NSArray *)obj)
+    dispatch_block_t adjustDots = ^{
+        if (_selectedLineIndex == kJBLineChartDotsViewUnselectedLineIndex)
+        {
+            [self.dotViewsDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+                for (JBLineChartDotView *dotView in (NSArray *)obj)
+                {
+                    dotView.alpha = 1.0;
+                }
+            }];
+        }
+        else
+        {
+            for (JBLineChartDotView *dotView in [self.dotViewsDict objectForKey:[NSNumber numberWithInteger:selectedLineIndex]])
             {
-                NSAssert([self.delegate respondsToSelector:@selector(lineChartDotsView:colorForLineAtLineIndex:)], @"JBLineChartDotsView // delegate must implement - (UIColor *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView colorForLineAtLineIndex:(NSUInteger)lineIndex");
-                dotView.dotColor = [self.delegate lineChartDotsView:self colorForLineAtLineIndex:lineIndex];
+                dotView.alpha = 0.0;
             }
+        }
+    };
+    
+    if (animated)
+    {
+        [UIView animateWithDuration:kJBChartViewDefaultAnimationDuration animations:^{
+            adjustDots();
         }];
     }
-    // select single line dots
     else
     {
-        for (JBLineChartDotView *dotView in [self.dotViewsDict objectForKey:[NSNumber numberWithInteger:selectedLineIndex]])
-        {
-            NSAssert([self.delegate respondsToSelector:@selector(lineChartDotsView:selectedColorForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView selectedColorForLineAtLineIndex:(NSUInteger)lineIndex");
-            dotView.dotColor = [self.delegate lineChartDotsView:self selectedColorForLineAtLineIndex:selectedLineIndex];
-        }
+        adjustDots();
     }
+}
+
+- (void)setSelectedLineIndex:(NSInteger)selectedLineIndex
+{
+    [self setSelectedLineIndex:selectedLineIndex animated:NO];
 }
 
 @end
