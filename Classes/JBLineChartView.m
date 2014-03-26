@@ -36,6 +36,8 @@ CGFloat static const kJBLineSelectionViewWidth = 20.0f;
 // Numerics (JBLineChartView)
 CGFloat static const kJBLineChartViewUndefinedMaxHeight = -1.0f;
 CGFloat static const kJBLineChartViewStateAnimationDuration = 0.25f;
+CGFloat static const kJBLineChartViewStateAnimationDelay = 0.05f;
+CGFloat static const kJBLineChartViewStateBounceOffset = 15.0f;
 NSInteger static const kJBLineChartUnselectedLineIndex = -1;
 
 // Collections (JBLineChartLineView)
@@ -508,44 +510,34 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
     
     if ([self.chartData count] > 0)
     {
+        CGRect mainViewRect = CGRectMake(self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.width, [self availableHeight]);
+        CGFloat yOffset = self.headerView.frame.size.height + self.headerPadding;
+        
         dispatch_block_t adjustViewFrames = ^{
-            CGRect mainViewRect = CGRectMake(self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.width, [self availableHeight]);
-            CGFloat yOffset = self.headerView.frame.size.height + self.headerPadding;
-            
-            if (self.state == JBChartViewStateCollapsed)
-            {
-                yOffset += self.linesView.frame.size.height;
-                yOffset += self.footerView.frame.size.height;
-                self.linesView.frame = CGRectMake(self.linesView.frame.origin.x, yOffset, self.linesView.frame.size.width, self.linesView.frame.size.height);
-            }
-            else
-            {
-                self.linesView.frame = CGRectOffset(mainViewRect, 0, yOffset);
-            }
+            self.linesView.frame = CGRectMake(self.linesView.frame.origin.x, yOffset + ((self.state == JBChartViewStateCollapsed) ? (self.linesView.frame.size.height + self.footerView.frame.size.height) : 0.0), self.linesView.frame.size.width, self.linesView.frame.size.height);
         };
         
         dispatch_block_t adjustViewAlphas = ^{
-            self.linesView.alpha = self.state == JBChartViewStateCollapsed ? 0.0 : 1.0;
+            self.linesView.alpha = (self.state == JBChartViewStateExpanded) ? 1.0 : 0.0;
         };
         
         if (animated)
         {
-            
-            CGFloat alphaDelay = self.state == JBChartViewStateCollapsed ? 0.0 : 0.1;
-            CGFloat frameDelay = self.state == JBChartViewStateCollapsed ? 0.1 : 0.0;
-            
-            [UIView animateWithDuration:kJBLineChartViewStateAnimationDuration delay:alphaDelay options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+            [UIView animateWithDuration:(kJBLineChartViewStateAnimationDuration * 0.5) delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+                self.linesView.frame = CGRectOffset(mainViewRect, 0, yOffset - kJBLineChartViewStateBounceOffset); // bounce
+            } completion:^(BOOL finished) {
+                [UIView animateWithDuration:kJBLineChartViewStateAnimationDuration delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+                    adjustViewFrames();
+                } completion:^(BOOL finished) {
+                    if (callback)
+                    {
+                        callback();
+                    }
+                }];
+            }];            
+            [UIView animateWithDuration:kJBLineChartViewStateAnimationDuration delay:(self.state == JBChartViewStateExpanded) ? kJBLineChartViewStateAnimationDelay : 0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
                 adjustViewAlphas();
             } completion:nil];
-            
-            [UIView animateWithDuration:kJBLineChartViewStateAnimationDuration delay:frameDelay options:UIViewAnimationOptionBeginFromCurrentState animations:^{
-                adjustViewFrames();
-            } completion:^(BOOL finished) {
-                if (callback)
-                {
-                    callback();
-                }
-            }];
         }
         else
         {
