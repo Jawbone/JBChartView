@@ -36,7 +36,7 @@ Simply add the following line to your <code>Podfile</code>:
 Your Podfile should look something like:
 
 	platform :ios, '7.0'
-	pod 'JBChartView', '~> 2.0.1'
+	pod 'JBChartView', '~> 2.0.2'
 	
 ### The Old School Way
 
@@ -190,6 +190,14 @@ Furthermore, the color of the selection bar and line can be customized via the <
 	{
 		return ...; // color of selected line
 	}
+	
+By default, each line will not show dots for each point. To enable this on a per-line basis:
+
+	- (BOOL)lineChartView:(JBLineChartView *)lineChartView showsDotsForLineAtLineIndex:(NSUInteger)lineIndex;
+	
+As well, by default, each line will have squared off end caps and connection points. To enable line smoothing:
+
+	- (BOOL)lineChartView:(JBLineChartView *)lineChartView smoothLineAtLineIndex:(NSUInteger)lineIndex;
 		
 Lastly, a line chart's selection events are delegated back via:
 
