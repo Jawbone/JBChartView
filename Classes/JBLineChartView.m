@@ -1061,22 +1061,16 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
     _selectedLineIndex = selectedLineIndex;
     
     dispatch_block_t adjustDots = ^{
-        if (_selectedLineIndex == kJBLineChartDotsViewUnselectedLineIndex)
-        {
-            [self.dotViewsDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-                for (JBLineChartDotView *dotView in (NSArray *)obj)
-                {
-                    dotView.alpha = 1.0;
-                }
-            }];
-        }
-        else
-        {
-            for (JBLineChartDotView *dotView in [self.dotViewsDict objectForKey:[NSNumber numberWithInteger:selectedLineIndex]])
+        [self.dotViewsDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+            for (JBLineChartDotView *dotView in (NSArray *)obj)
             {
-                dotView.alpha = 0.0;
+                if ([key isKindOfClass:[NSNumber class]])
+                {
+                    NSUInteger index = [((NSNumber *)key) intValue];
+                    dotView.alpha = selectedLineIndex == index ? 0.0 : 1.0;
+                }
             }
-        }
+        }];
     };
     
     if (animated)
