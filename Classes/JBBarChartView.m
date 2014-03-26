@@ -93,7 +93,6 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 - (void)construct
 {
-    self.clipsToBounds = YES;
     _showsVerticalSelection = YES;
     _cachedMaxHeight = kJBBarChartViewUndefinedMaxHeight;
 }

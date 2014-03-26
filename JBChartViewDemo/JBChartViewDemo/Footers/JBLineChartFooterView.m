@@ -39,7 +39,6 @@ static UIColor *kJBLineChartFooterViewDefaultSeparatorColor = nil;
     self = [super initWithFrame:frame];
     if (self)
     {
-        self.clipsToBounds = NO;
         self.backgroundColor = [UIColor clearColor];
         
         _footerSeparatorColor = kJBLineChartFooterViewDefaultSeparatorColor;

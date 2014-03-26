@@ -29,6 +29,7 @@ typedef NS_ENUM(NSInteger, JBChartViewState){
 /**
  *  Header and footer views are shown above and below the chart respectively.
  *  Each view will be stretched horizontally to fill width of chart.
+ *  Each view's bounds are clipped to support chart state animations. 
  */
 @property (nonatomic, strong) UIView *footerView;
 @property (nonatomic, strong) UIView *headerView;

@@ -62,6 +62,7 @@ static UIColor *kJBChartVerticalSelectionViewDefaultBgColor = nil;
         _headerView = nil;
     }
     _headerView = headerView;
+    _headerView.clipsToBounds = YES;
     
     [self validateHeaderAndFooterHeights];
     
@@ -77,6 +78,7 @@ static UIColor *kJBChartVerticalSelectionViewDefaultBgColor = nil;
         _footerView = nil;
     }
     _footerView = footerView;
+    _footerView.clipsToBounds = YES;
     
     [self validateHeaderAndFooterHeights];
     

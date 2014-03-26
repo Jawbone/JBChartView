@@ -195,7 +195,6 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
 
 - (void)construct
 {
-    self.clipsToBounds = NO;
     _showsVerticalSelection = YES;
     _showsLineSelection = YES;
     _cachedMaxHeight = kJBLineChartViewUndefinedMaxHeight;
@@ -266,7 +265,16 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
         // Create new line and overlay subviews
         self.linesView = [[JBLineChartLinesView alloc] initWithFrame:CGRectOffset(mainViewRect, 0, self.headerView.frame.size.height + self.headerPadding)];
         self.linesView.delegate = self;
-        [self addSubview:self.linesView];
+        
+        // Add new lines view
+        if (self.footerView)
+        {
+            [self insertSubview:self.linesView belowSubview:self.footerView];
+        }
+        else
+        {
+            [self addSubview:self.linesView];
+        }
     };
 
     /*
@@ -284,9 +292,18 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
         // Create new line and overlay subviews
         self.dotsView = [[JBLineChartDotsView alloc] initWithFrame:CGRectOffset(mainViewRect, 0, self.headerView.frame.size.height + self.headerPadding)];
         self.dotsView.delegate = self;
-        [self addSubview:self.dotsView];
+        
+        // Add new dots view
+        if (self.footerView)
+        {
+            [self insertSubview:self.dotsView belowSubview:self.footerView];
+        }
+        else
+        {
+            [self addSubview:self.dotsView];
+        }
     };
-
+    
     /*
      * Creates a vertical selection view for touch events
      */
@@ -491,15 +508,38 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
     
     if ([self.chartData count] > 0)
     {
-        dispatch_block_t adjustViews = ^{
+        dispatch_block_t adjustViewFrames = ^{
+            CGRect mainViewRect = CGRectMake(self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.width, [self availableHeight]);
+            CGFloat yOffset = self.headerView.frame.size.height + self.headerPadding;
+            
+            if (self.state == JBChartViewStateCollapsed)
+            {
+                yOffset += self.linesView.frame.size.height;
+                yOffset += self.footerView.frame.size.height;
+                self.linesView.frame = CGRectMake(self.linesView.frame.origin.x, yOffset, self.linesView.frame.size.width, self.linesView.frame.size.height);
+            }
+            else
+            {
+                self.linesView.frame = CGRectOffset(mainViewRect, 0, yOffset);
+            }
+        };
+        
+        dispatch_block_t adjustViewAlphas = ^{
             self.linesView.alpha = self.state == JBChartViewStateCollapsed ? 0.0 : 1.0;
-            self.dotsView.alpha = self.state == JBChartViewStateCollapsed ? 0.0 : 1.0;
         };
         
         if (animated)
         {
-            [UIView animateWithDuration:kJBLineChartViewStateAnimationDuration animations:^{
-                adjustViews();
+            
+            CGFloat alphaDelay = self.state == JBChartViewStateCollapsed ? 0.0 : 0.1;
+            CGFloat frameDelay = self.state == JBChartViewStateCollapsed ? 0.1 : 0.0;
+            
+            [UIView animateWithDuration:kJBLineChartViewStateAnimationDuration delay:alphaDelay options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+                adjustViewAlphas();
+            } completion:nil];
+            
+            [UIView animateWithDuration:kJBLineChartViewStateAnimationDuration delay:frameDelay options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+                adjustViewFrames();
             } completion:^(BOOL finished) {
                 if (callback)
                 {
@@ -509,7 +549,8 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
         }
         else
         {
-            adjustViews();
+            adjustViewAlphas();
+            adjustViewFrames();
             if (callback)
             {
                 callback();
@@ -805,7 +846,6 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
     self = [super initWithFrame:frame];
     if (self)
     {
-        self.clipsToBounds = NO;
         self.backgroundColor = [UIColor clearColor];
     }
     return self;
@@ -943,7 +983,6 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
     self = [super initWithFrame:frame];
     if (self)
     {
-        self.clipsToBounds = NO;
         self.backgroundColor = [UIColor clearColor];
     }
     return self;
