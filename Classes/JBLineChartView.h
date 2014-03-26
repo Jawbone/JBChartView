@@ -13,17 +13,13 @@
  */
 typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
     /**
-     *  Solid round capped line.
+     *  Solid line.
      */
     JBLineChartViewLineStyleSolid,
     /**
-     *  Dashed square capped line with a phase of 3:2 (3 points dashed, 2 points spaced).
+     *  Dashed line with a phase of 3:2 (3 points dashed, 2 points spaced).
      */
-	JBLineChartViewLineStyleDashed,
-    /**
-     *  Square capped line with dots at each data point. Dot size is relative to line width.
-     */
-	JBLineChartViewLineStyleDotted
+	JBLineChartViewLineStyleDashed
 };
 
 @protocol JBLineChartViewDelegate;
@@ -180,5 +176,19 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
  *  @return The line style to be used to draw a line in the chart.
  */
 - (JBLineChartViewLineStyle)lineChartView:(JBLineChartView *)lineChartView lineStyleForLineAtLineIndex:(NSUInteger)lineIndex;
+
+/**
+ *  Returns whether or not the line should show a dot for each point.
+ *  Dot size is relative to the line width and not adjustable.
+ *  Dot color is equal to the line color and not adjustable.
+ *
+ *  Default: NO
+ *
+ *  @param lineChartView    The line chart object requesting this information.
+ *  @param lineIndex        An index number identifying a line in the chart.
+ *
+ *  @return Whether or not lines should show a dot for each chart point.
+ */
+- (BOOL)lineChartView:(JBLineChartView *)lineChartView showsDotsForLineAtLineIndex:(NSUInteger)lineIndex;
 
 @end
