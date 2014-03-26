@@ -233,7 +233,12 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
 
 - (BOOL)lineChartView:(JBLineChartView *)lineChartView showsDotsForLineAtLineIndex:(NSUInteger)lineIndex
 {
-    return lineIndex == JBLineChartLineSolid;
+    return lineIndex == JBLineChartViewLineStyleDashed;
+}
+
+- (BOOL)lineChartView:(JBLineChartView *)lineChartView smoothLineAtLineIndex:(NSUInteger)lineIndex
+{
+    return lineIndex == JBLineChartViewLineStyleSolid;
 }
 
 #pragma mark - Buttons

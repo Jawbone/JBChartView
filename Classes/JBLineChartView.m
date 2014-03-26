@@ -90,6 +90,7 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
 - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView selectedColorForLineAtLineIndex:(NSUInteger)lineIndex;
 - (CGFloat)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView widthForLineAtLineIndex:(NSUInteger)lineIndex;
 - (JBLineChartViewLineStyle)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView lineStyleForLineAtLineIndex:(NSUInteger)lineIndex;
+- (BOOL)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView smoothLineAtLineIndex:(NSUInteger)lineIndex;
 
 @end
 
@@ -458,6 +459,15 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
     return kJBLineChartLinesViewStrokeWidth;
 }
 
+- (BOOL)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView smoothLineAtLineIndex:(NSUInteger)lineIndex
+{
+    if ([self.dataSource respondsToSelector:@selector(lineChartView:smoothLineAtLineIndex:)])
+    {
+        return [self.dataSource lineChartView:self smoothLineAtLineIndex:lineIndex];
+    }
+    return NO;
+}
+
 - (JBLineChartViewLineStyle)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView lineStyleForLineAtLineIndex:(NSUInteger)lineIndex
 {
     if ([self.dataSource respondsToSelector:@selector(lineChartView:lineStyleForLineAtLineIndex:)])
@@ -703,7 +713,7 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
         [self.delegate didUnselectLineInLineChartView:self];
     }
     [self.linesView setSelectedLineIndex:kJBLineChartLinesViewUnselectedLineIndex animated:YES];
-    [self.dotsView setSelectedLineIndex:kJBLineChartLinesViewUnselectedLineIndex animated:YES];
+    [self.dotsView setSelectedLineIndex:kJBLineChartDotsViewUnselectedLineIndex animated:YES];
 }
 
 #pragma mark - Setters
@@ -804,12 +814,6 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
         self.lineDashPhase = 0.0;
         self.lineDashPattern = nil;
     }
-    
-    // TODO - ask delegate
-    /*
-     self.lineCap = kCALineCapButt;
-     self.lineJoin = kCALineJoinMiter;
-     */
 }
 
 @end
@@ -900,6 +904,19 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
         
         NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:colorForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView colorForLineAtLineIndex:(NSUInteger)lineIndex");
         shapeLayer.strokeColor = [self.delegate lineChartLinesView:self colorForLineAtLineIndex:lineIndex].CGColor;
+        
+        NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:smoothLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView colorForLineAtLineIndex:(NSUInteger)lineIndex");
+        BOOL smoothLine = [self.delegate lineChartLinesView:self smoothLineAtLineIndex:lineIndex];
+        if (smoothLine)
+        {
+            shapeLayer.lineCap = kCALineCapRound;
+            shapeLayer.lineJoin = kCALineJoinRound;
+        }
+        else
+        {
+            shapeLayer.lineCap = kCALineCapButt;
+            shapeLayer.lineJoin = kCALineJoinMiter;
+        }
         
         NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:widthForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (CGFloat)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView widthForLineAtLineIndex:(NSUInteger)lineIndex");
         shapeLayer.lineWidth = [self.delegate lineChartLinesView:self widthForLineAtLineIndex:lineIndex];
@@ -1066,8 +1083,7 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
             {
                 if ([key isKindOfClass:[NSNumber class]])
                 {
-                    NSUInteger index = [((NSNumber *)key) intValue];
-                    dotView.alpha = selectedLineIndex == index ? 0.0 : 1.0;
+                    dotView.alpha = selectedLineIndex == kJBLineChartDotsViewUnselectedLineIndex ? 1.0 : 0.0;
                 }
             }
         }];

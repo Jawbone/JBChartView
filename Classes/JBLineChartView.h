@@ -178,7 +178,7 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
 - (JBLineChartViewLineStyle)lineChartView:(JBLineChartView *)lineChartView lineStyleForLineAtLineIndex:(NSUInteger)lineIndex;
 
 /**
- *  Returns whether or not the line should show a dot for each point.
+ *  Returns whether or not a line should show a dot for each point (hidden on selection).
  *  Dot size is relative to the line width and not adjustable.
  *  Dot color is equal to the line color and not adjustable.
  *
@@ -187,8 +187,20 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
  *  @param lineChartView    The line chart object requesting this information.
  *  @param lineIndex        An index number identifying a line in the chart.
  *
- *  @return Whether or not lines should show a dot for each chart point.
+ *  @return Whether or not a line should show a dot for each chart point.
  */
 - (BOOL)lineChartView:(JBLineChartView *)lineChartView showsDotsForLineAtLineIndex:(NSUInteger)lineIndex;
+
+/**
+ *  Returns whether or not a line should be smoothed (rounded end caps and connections).
+ *
+ *  Default: NO
+ *
+ *  @param lineChartView    The line chart object requesting this information.
+ *  @param lineIndex        An index number identifying a line in the chart.
+ *
+ *  @return Whether or not a line should smooth it's ends and connections. 
+ */
+- (BOOL)lineChartView:(JBLineChartView *)lineChartView smoothLineAtLineIndex:(NSUInteger)lineIndex;
 
 @end
