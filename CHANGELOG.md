@@ -1,7 +1,7 @@
 # Changelog
 
 ## <a href="https://github.com/Jawbone/JBChartView/tree/2.0.2">2.0.2</a> 
-### 03/27/14
+#### 03/27/14
 - Added the ability to add point dots for lines in JBLineChartView.
 - Streamlined line styling. 
 
@@ -10,56 +10,56 @@
 - Fixes issue <a href="https://github.com/Jawbone/JBChartView/pull/22">#22</a>.
 
 ## <a href="https://github.com/Jawbone/JBChartView/tree/2.0.0">2.0.0</a> 
-### 03/18/14
+#### 03/18/14
 - Fixes issue <a href="https://github.com/Jawbone/JBChartView/pull/21">#21</a>.
 - Added multi-line support for JBLineChartView.
 - Added position delegation on touch events. 
 - Added tooltip views (demo-only).
 
 ## <a href="https://github.com/Jawbone/JBChartView/tree/1.1.6">1.1.6</a>
-### 03/02/14
+#### 03/02/14
 - Fixes issue <a href="https://github.com/Jawbone/JBChartView/pull/15">#15</a>.
 - Fixes issue <a href="https://github.com/Jawbone/JBChartView/pull/14">#14</a>.
 
 ## <a href="https://github.com/Jawbone/JBChartView/tree/1.1.5">1.1.5</a>
-### 02/11/14
+#### 02/11/14
 - Chart selection improvements.
 - Animation performance improvements. 
 
 ## <a href="https://github.com/Jawbone/JBChartView/tree/1.1.4">1.1.4</a>
-### 02/06/14
+#### 02/06/14
 - Fixed compilation warnings.
 
 ## <a href="https://github.com/Jawbone/JBChartView/tree/1.1.3">1.1.3</a>
-### 01/06/14
+#### 01/06/14
 - Fixes issue <a href="https://github.com/Jawbone/JBChartView/pull/11">#11</a>.
 
 ## <a href="https://github.com/Jawbone/JBChartView/tree/1.1.2">1.1.2</a>
-### 01/03/14
+#### 01/03/14
 - Added CGFloat support for chart heights intead of integers. 
 
 ## <a href="https://github.com/Jawbone/JBChartView/tree/1.1.1">1.1.1</a>
-### 01/02/14
+#### 01/02/14
 - Fixes issue <a href="https://github.com/Jawbone/JBChartView/pull/7">#7</a>.
 
 ## <a href="https://github.com/Jawbone/JBChartView/tree/1.1.0">1.1.0</a>
-### 12/26/13
+#### 12/26/13
 - Updated JBBarChartView datasource to request UIView subclasses for bars. 
 
 ## <a href="https://github.com/Jawbone/JBChartView/tree/1.0.3">1.0.3</a>
-### 12/23/13
+#### 12/23/13
 - Fixes issue <a href="https://github.com/Jawbone/JBChartView/pull/4">#4</a>.
 
 ## <a href="https://github.com/Jawbone/JBChartView/tree/1.0.2">1.0.2</a>
-### 12/17/13
+#### 12/17/13
 - Additional fixes for issue <a href="https://github.com/Jawbone/JBChartView/pull/2">#2</a>.
 
 ## <a href="https://github.com/Jawbone/JBChartView/tree/1.0.1">1.0.1</a>
-### (12/14/13)
+#### (12/14/13)
 - Fixes issue <a href="https://github.com/Jawbone/JBChartView/pull/2">#2</a>.
 
 ## <a href="https://github.com/Jawbone/JBChartView/tree/1.0">1.0.1</a>
-### 12/10/13
+#### 12/10/13
 - Initial public release.
 - Base line and bar charts.
 - Basic customization; color, positioning, selections.
