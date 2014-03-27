@@ -14,7 +14,7 @@ Introducing <b>JBChartView - </b> Jawbone's iOS-based charting library for both 
 - Highly customizable.
 - Expand & collapse animation support.
 
-Refer to the <a href="https://raw.github.com/Jawbone/JBChartView/master/CHANGELOG.md"">changelog</a> for an overview of JBChartView's feature history.
+Refer to the <a href="https://github.com/Jawbone/JBChartView/blob/master/CHANGELOG.md"">changelog</a> for an overview of JBChartView's feature history.
 
 ## Requirements
 
