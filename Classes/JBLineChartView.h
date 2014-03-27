@@ -178,7 +178,7 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
 - (JBLineChartViewLineStyle)lineChartView:(JBLineChartView *)lineChartView lineStyleForLineAtLineIndex:(NSUInteger)lineIndex;
 
 /**
- *  Returns whether or not a line should show a dot for each point (hidden on selection).
+ *  Returns whether or not a line should show a dot for each point.
  *  Dot size is relative to the line width and not adjustable.
  *  Dot color is equal to the line color and not adjustable.
  *
