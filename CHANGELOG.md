@@ -6,7 +6,7 @@
 - Streamlined line styling. 
 
 ## <a href="https://github.com/Jawbone/JBChartView/tree/v2.0.1">2.0.1</a> 
-### 03/19/14
+#### 03/19/14
 - Fixes issue <a href="https://github.com/Jawbone/JBChartView/pull/22">#22</a>.
 
 ## <a href="https://github.com/Jawbone/JBChartView/tree/v2.0.0">2.0.0</a> 
