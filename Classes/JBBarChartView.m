@@ -11,6 +11,7 @@
 // Numerics
 CGFloat static const kJBBarChartViewBarBasePaddingMutliplier = 50.0f;
 CGFloat static const kJBBarChartViewUndefinedMaxHeight = -1.0f;
+CGFloat static const kJBBarChartViewUndefinedMinHeight = -1.0f;
 CGFloat static const kJBBarChartViewStateAnimationDuration = 0.05f;
 CGFloat static const kJBBarChartViewPopOffset = 10.0f; // used to offset bars for 'pop' animations
 NSInteger static const kJBBarChartViewUndefinedBarIndex = -1;
@@ -24,6 +25,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 @property (nonatomic, strong) NSArray *barViews;
 @property (nonatomic, assign) CGFloat barPadding;
 @property (nonatomic, assign) CGFloat cachedMaxHeight;
+@property (nonatomic, assign) CGFloat cachedMinHeight;
 @property (nonatomic, strong) JBChartVerticalSelectionView *verticalSelectionView;
 @property (nonatomic, assign) BOOL verticalSelectionViewVisible;
 
@@ -271,7 +273,13 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 - (CGFloat)minHeight
 {
-    return 0;
+    if (self.cachedMinHeight == kJBBarChartViewUndefinedMinHeight)
+    {
+        // min height is min value across all goals and values
+        NSArray *chartValues = [[[self.chartDataDictionary allValues] arrayByAddingObjectsFromArray:[self.chartDataDictionary allValues]] sortedArrayUsingSelector:@selector(compare:)];
+        self.cachedMinHeight =  [[chartValues firstObject] floatValue];
+    }
+    return self.cachedMinHeight;
 }
 
 - (CGFloat)barWidth
