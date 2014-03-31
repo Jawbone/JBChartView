@@ -379,12 +379,9 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
 
 - (CGFloat)minHeight
 {
-    if (self.mininumValue != kJBChartViewUndefinedMinimumValue)
-    {
-        return self.mininumValue;
-    }
-    else if (self.cachedMinHeight == kJBLineChartViewUndefinedMinHeight)
-    {
+    BOOL hasCachedMinHeight = self.cachedMinHeight != kJBLineChartViewUndefinedMinHeight;
+    
+    dispatch_block_t calculateCachedMinHeight = ^{
         CGFloat minHeight = FLT_MAX;
         NSAssert([self.dataSource respondsToSelector:@selector(numberOfLinesInLineChartView:)], @"JBLineChartView // dataSource must implement - (NSUInteger)numberOfLinesInLineChartView:(JBLineChartView *)lineChartView");
         for (NSUInteger lineIndex=0; lineIndex<[self.dataSource numberOfLinesInLineChartView:self]; lineIndex++)
@@ -403,18 +400,25 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
             }
         }
         self.cachedMinHeight = minHeight;
+    };
+    
+    if (!hasCachedMinHeight)
+    {
+        calculateCachedMinHeight();
+    }
+    
+    if (self.mininumValue != kJBChartViewUndefinedMinimumValue)
+    {
+        return MIN(self.mininumValue, self.cachedMinHeight);
     }
     return self.cachedMinHeight;
 }
 
 - (CGFloat)maxHeight
 {
-    if (self.maximumValue != kJBChartViewUndefinedMaximumValue)
-    {
-        return self.maximumValue;
-    }
-    else if (self.cachedMaxHeight == kJBLineChartViewUndefinedMaxHeight)
-    {
+    BOOL hasCachedMaxHeight = self.cachedMaxHeight != kJBLineChartViewUndefinedMaxHeight;
+
+    dispatch_block_t calculateCachedMaxHeight = ^{
         CGFloat maxHeight = 0;
         NSAssert([self.dataSource respondsToSelector:@selector(numberOfLinesInLineChartView:)], @"JBLineChartView // dataSource must implement - (NSUInteger)numberOfLinesInLineChartView:(JBLineChartView *)lineChartView");
         for (NSUInteger lineIndex=0; lineIndex<[self.dataSource numberOfLinesInLineChartView:self]; lineIndex++)
@@ -433,6 +437,16 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
             }
         }
         self.cachedMaxHeight = maxHeight;
+    };
+    
+    if (!hasCachedMaxHeight)
+    {
+        calculateCachedMaxHeight();
+    }
+    
+    if (self.maximumValue != kJBChartViewUndefinedMaximumValue)
+    {
+        return MAX(self.maximumValue, self.cachedMaxHeight);
     }
     return self.cachedMaxHeight;
 }

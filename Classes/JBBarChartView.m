@@ -262,30 +262,44 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 - (CGFloat)minHeight
 {
-    if (self.mininumValue != kJBChartViewUndefinedMinimumValue)
-    {
-        return self.mininumValue;
-    }
-    else if (self.cachedMinHeight == kJBBarChartViewUndefinedMinHeight)
-    {
+    BOOL hasCachedMinHeight = self.cachedMinHeight != kJBBarChartViewUndefinedMinHeight;
+    
+    dispatch_block_t calculateCachedMinHeight = ^{
         // min height is min value across all goals and values
         NSArray *chartValues = [[[self.chartDataDictionary allValues] arrayByAddingObjectsFromArray:[self.chartDataDictionary allValues]] sortedArrayUsingSelector:@selector(compare:)];
         self.cachedMinHeight =  [[chartValues firstObject] floatValue];
+    };
+    
+    if (!hasCachedMinHeight)
+    {
+        calculateCachedMinHeight();
+    }
+    
+    if (self.mininumValue != kJBChartViewUndefinedMinimumValue)
+    {
+        return MIN(self.mininumValue, self.cachedMinHeight);
     }
     return self.cachedMinHeight;
 }
 
 - (CGFloat)maxHeight
 {
-    if (self.maximumValue != kJBChartViewUndefinedMaximumValue)
-    {
-        return self.maximumValue;
-    }
-    else if (self.cachedMaxHeight == kJBBarChartViewUndefinedMaxHeight)
-    {
+    BOOL hasCachedMaxHeight = self.cachedMaxHeight != kJBBarChartViewUndefinedMaxHeight;
+    
+    dispatch_block_t calculateCachedMaxHeight = ^{
         // max height is max value across all goals and values
         NSArray *chartValues = [[[self.chartDataDictionary allValues] arrayByAddingObjectsFromArray:[self.chartDataDictionary allValues]] sortedArrayUsingSelector:@selector(compare:)];
         self.cachedMaxHeight =  [[chartValues lastObject] floatValue];
+    };
+    
+    if (!hasCachedMaxHeight)
+    {
+        calculateCachedMaxHeight();
+    }
+    
+    if (self.maximumValue != kJBChartViewUndefinedMaximumValue)
+    {
+        return MAX(self.maximumValue, self.cachedMaxHeight);
     }
     return self.cachedMaxHeight;
 }

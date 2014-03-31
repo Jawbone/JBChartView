@@ -44,8 +44,12 @@ typedef NS_ENUM(NSInteger, JBChartViewState){
 /**
  *  The minimum and maxmimum values of the chart. 
  *  If no value(s) are supplied, the min and max values of the chart's data source are used.
- *  If value(s) are supplied, they must be >= 0, otherwise an assertion will be thrown.
- *  For min/max modifications to take effect, reloadData must be called. 
+ *
+ *  If value(s) are supplied, they must be >= 0, otherwise an assertion will be thrown. 
+ *  The min/max values are clamped to the ceiling and floor of the actual min/max values of the chart's data source;
+ *  for example, if a maximumValue of 20 is supplied & the chart's actual max is 100, then 100 will be used.
+ *
+ *  For min/max modifications to take effect, reloadData must be called.
  */
 @property (nonatomic, assign) CGFloat mininumValue;
 @property (nonatomic, assign) CGFloat maximumValue;
