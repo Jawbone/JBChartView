@@ -9,6 +9,8 @@
 #import "JBChartView.h"
 
 CGFloat const kJBChartViewDefaultAnimationDuration = 0.25f;
+CGFloat const kJBChartViewUndefinedMinimumValue = -1.0f;
+CGFloat const kJBChartViewUndefinedMaximumValue = -1.0f;
 
 // Color (JBChartSelectionView)
 static UIColor *kJBChartVerticalSelectionViewDefaultBgColor = nil;
@@ -29,6 +31,8 @@ static UIColor *kJBChartVerticalSelectionViewDefaultBgColor = nil;
     if (self)
     {
         self.clipsToBounds = YES;
+        _mininumValue = kJBChartViewUndefinedMinimumValue;
+        _maximumValue = kJBChartViewUndefinedMaximumValue;
     }
     return self;
 }
@@ -106,6 +110,18 @@ static UIColor *kJBChartVerticalSelectionViewDefaultBgColor = nil;
 - (void)setState:(JBChartViewState)state
 {
     [self setState:state animated:NO];
+}
+
+- (void)setMininumValue:(CGFloat)mininumValue
+{
+    NSAssert(mininumValue >= 0, @"JBChartView // the minimumValue must be >= 0.");
+    _mininumValue = mininumValue;
+}
+
+- (void)setMaximumValue:(CGFloat)maximumValue
+{
+    NSAssert(maximumValue >= 0, @"JBChartView // the maximumValue must be >= 0.");
+    _maximumValue = maximumValue;
 }
 
 @end

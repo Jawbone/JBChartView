@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 
 extern CGFloat const kJBChartViewDefaultAnimationDuration;
+extern CGFloat const kJBChartViewUndefinedMinimumValue; // helper for undefined min/max values
+extern CGFloat const kJBChartViewUndefinedMaximumValue;
 
 /**
  * At a minimum, a chart can support two states, along with animations to-and-from.
@@ -38,6 +40,15 @@ typedef NS_ENUM(NSInteger, JBChartViewState){
  *  The vertical padding between the header and highest chart point (bar, line, etc).
  */
 @property (nonatomic, assign) CGFloat headerPadding;
+
+/**
+ *  The minimum and maxmimum values of the chart. 
+ *  If no value(s) are supplied, the min and max values of the chart's data source are used.
+ *  If value(s) are supplied, they must be >= 0, otherwise an assertion will be thrown.
+ *  For min/max modifications to take effect, reloadData must be called. 
+ */
+@property (nonatomic, assign) CGFloat mininumValue;
+@property (nonatomic, assign) CGFloat maximumValue;
 
 /**
  *  Charts can either be expanded or contracted. 

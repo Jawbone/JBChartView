@@ -377,35 +377,13 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
     return self.bounds.size.height - self.headerView.frame.size.height - self.footerView.frame.size.height - self.headerPadding;
 }
 
-- (CGFloat)maxHeight
-{
-    if (self.cachedMaxHeight == kJBLineChartViewUndefinedMaxHeight)
-    {
-        CGFloat maxHeight = 0;
-        NSAssert([self.dataSource respondsToSelector:@selector(numberOfLinesInLineChartView:)], @"JBLineChartView // dataSource must implement - (NSUInteger)numberOfLinesInLineChartView:(JBLineChartView *)lineChartView");
-        for (NSUInteger lineIndex=0; lineIndex<[self.dataSource numberOfLinesInLineChartView:self]; lineIndex++)
-        {
-            NSAssert([self.dataSource respondsToSelector:@selector(lineChartView:numberOfVerticalValuesAtLineIndex:)], @"JBLineChartView // dataSource must implement - (NSUInteger)lineChartView:(JBLineChartView *)lineChartView numberOfVerticalValuesAtLineIndex:(NSUInteger)lineIndex");
-            NSUInteger dataCount = [self.dataSource lineChartView:self numberOfVerticalValuesAtLineIndex:lineIndex];
-            for (NSUInteger horizontalIndex=0; horizontalIndex<dataCount; horizontalIndex++)
-            {
-                NSAssert([self.delegate respondsToSelector:@selector(lineChartView:verticalValueForHorizontalIndex:atLineIndex:)], @"JBLineChartView // delegate must implement - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
-                CGFloat height = [self.delegate lineChartView:self verticalValueForHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
-                NSAssert(height >= 0, @"JBLineChartView // delegate function - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex must return a CGFloat >= 0");
-                if (height > maxHeight)
-                {
-                    maxHeight = height;
-                }
-            }
-        }
-        self.cachedMaxHeight = maxHeight;
-    }
-    return self.cachedMaxHeight;
-}
-
 - (CGFloat)minHeight
 {
-    if (self.cachedMinHeight == kJBLineChartViewUndefinedMinHeight)
+    if (self.mininumValue != kJBChartViewUndefinedMinimumValue)
+    {
+        return self.mininumValue;
+    }
+    else if (self.cachedMinHeight == kJBLineChartViewUndefinedMinHeight)
     {
         CGFloat minHeight = FLT_MAX;
         NSAssert([self.dataSource respondsToSelector:@selector(numberOfLinesInLineChartView:)], @"JBLineChartView // dataSource must implement - (NSUInteger)numberOfLinesInLineChartView:(JBLineChartView *)lineChartView");
@@ -427,6 +405,36 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
         self.cachedMinHeight = minHeight;
     }
     return self.cachedMinHeight;
+}
+
+- (CGFloat)maxHeight
+{
+    if (self.maximumValue != kJBChartViewUndefinedMaximumValue)
+    {
+        return self.maximumValue;
+    }
+    else if (self.cachedMaxHeight == kJBLineChartViewUndefinedMaxHeight)
+    {
+        CGFloat maxHeight = 0;
+        NSAssert([self.dataSource respondsToSelector:@selector(numberOfLinesInLineChartView:)], @"JBLineChartView // dataSource must implement - (NSUInteger)numberOfLinesInLineChartView:(JBLineChartView *)lineChartView");
+        for (NSUInteger lineIndex=0; lineIndex<[self.dataSource numberOfLinesInLineChartView:self]; lineIndex++)
+        {
+            NSAssert([self.dataSource respondsToSelector:@selector(lineChartView:numberOfVerticalValuesAtLineIndex:)], @"JBLineChartView // dataSource must implement - (NSUInteger)lineChartView:(JBLineChartView *)lineChartView numberOfVerticalValuesAtLineIndex:(NSUInteger)lineIndex");
+            NSUInteger dataCount = [self.dataSource lineChartView:self numberOfVerticalValuesAtLineIndex:lineIndex];
+            for (NSUInteger horizontalIndex=0; horizontalIndex<dataCount; horizontalIndex++)
+            {
+                NSAssert([self.delegate respondsToSelector:@selector(lineChartView:verticalValueForHorizontalIndex:atLineIndex:)], @"JBLineChartView // delegate must implement - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
+                CGFloat height = [self.delegate lineChartView:self verticalValueForHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
+                NSAssert(height >= 0, @"JBLineChartView // delegate function - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex must return a CGFloat >= 0");
+                if (height > maxHeight)
+                {
+                    maxHeight = height;
+                }
+            }
+        }
+        self.cachedMaxHeight = maxHeight;
+    }
+    return self.cachedMaxHeight;
 }
 
 - (NSUInteger)dataCount
