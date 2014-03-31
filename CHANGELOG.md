@@ -1,5 +1,10 @@
 # Changelog
 
+## <a href="https://github.com/Jawbone/JBChartView/tree/v2.1.0">2.1.0</a> 
+#### 03/30/14
+- Added minimumValue and maximumValue properties. 
+- Changed default min value implementation from 0 to chart's actual minimum value.
+
 ## <a href="https://github.com/Jawbone/JBChartView/tree/v2.0.2">2.0.2</a> 
 #### 03/27/14
 - Added the ability to add point dots for lines in JBLineChartView.
