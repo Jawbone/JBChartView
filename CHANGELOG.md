@@ -1,5 +1,9 @@
 # Changelog
 
+## <a href="https://github.com/Jawbone/JBChartView/tree/v2.1.1">2.1.1</a> 
+#### 04/02/14
+- Fixed minimumValue and maximumValue getter functions.
+
 ## <a href="https://github.com/Jawbone/JBChartView/tree/v2.1.0">2.1.0</a> 
 #### 03/30/14
 - Added minimumValue and maximumValue properties. 
