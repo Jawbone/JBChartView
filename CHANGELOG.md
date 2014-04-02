@@ -1,5 +1,9 @@
 # Changelog
 
+## <a href="https://github.com/Jawbone/JBChartView/tree/v2.1.2">2.1.2</a> 
+#### 04/02/14
+- Added dynamic padding to JBLineChartView (based on max line width).
+
 ## <a href="https://github.com/Jawbone/JBChartView/tree/v2.1.1">2.1.1</a> 
 #### 04/02/14
 - Fixed minimumValue and maximumValue getter functions.
