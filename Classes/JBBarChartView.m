@@ -10,8 +10,7 @@
 
 // Numerics
 CGFloat static const kJBBarChartViewBarBasePaddingMutliplier = 50.0f;
-CGFloat static const kJBBarChartViewUndefinedMaxHeight = -1.0f;
-CGFloat static const kJBBarChartViewUndefinedMinHeight = -1.0f;
+CGFloat static const kJBBarChartViewUndefinedCachedHeight = -1.0f;
 CGFloat static const kJBBarChartViewStateAnimationDuration = 0.05f;
 CGFloat static const kJBBarChartViewPopOffset = 10.0f; // used to offset bars for 'pop' animations
 NSInteger static const kJBBarChartViewUndefinedBarIndex = -1;
@@ -96,7 +95,8 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 - (void)construct
 {
     _showsVerticalSelection = YES;
-    _cachedMaxHeight = kJBBarChartViewUndefinedMaxHeight;
+    _cachedMinHeight = kJBBarChartViewUndefinedCachedHeight;
+    _cachedMaxHeight = kJBBarChartViewUndefinedCachedHeight;
 }
 
 #pragma mark - Memory Management
@@ -111,7 +111,8 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 - (void)reloadData
 {
     // reset cached max height
-    self.cachedMaxHeight = kJBBarChartViewUndefinedMaxHeight;
+    self.cachedMinHeight = kJBBarChartViewUndefinedCachedHeight;
+    self.cachedMaxHeight = kJBBarChartViewUndefinedCachedHeight;
     
     /*
      * The data collection holds all position information:
@@ -262,7 +263,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 - (CGFloat)minHeight
 {
-    BOOL hasCachedMinHeight = self.cachedMinHeight != kJBBarChartViewUndefinedMinHeight;
+    BOOL hasCachedMinHeight = self.cachedMinHeight != kJBBarChartViewUndefinedCachedHeight;
     
     dispatch_block_t calculateCachedMinHeight = ^{
         // min height is min value across all goals and values
@@ -284,7 +285,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 - (CGFloat)maxHeight
 {
-    BOOL hasCachedMaxHeight = self.cachedMaxHeight != kJBBarChartViewUndefinedMaxHeight;
+    BOOL hasCachedMaxHeight = self.cachedMaxHeight != kJBBarChartViewUndefinedCachedHeight;
     
     dispatch_block_t calculateCachedMaxHeight = ^{
         // max height is max value across all goals and values

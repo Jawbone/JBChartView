@@ -34,8 +34,7 @@ NSInteger static const kJBLineChartDotsViewUnselectedLineIndex = -1;
 CGFloat static const kJBLineSelectionViewWidth = 20.0f;
 
 // Numerics (JBLineChartView)
-CGFloat static const kJBLineChartViewUndefinedMaxHeight = -1.0f;
-CGFloat static const kJBLineChartViewUndefinedMinHeight = -1.0f;
+CGFloat static const kJBBarChartViewUndefinedCachedHeight = -1.0f;
 CGFloat static const kJBLineChartViewStateAnimationDuration = 0.25f;
 CGFloat static const kJBLineChartViewStateAnimationDelay = 0.05f;
 CGFloat static const kJBLineChartViewStateBounceOffset = 15.0f;
@@ -207,7 +206,8 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
 {
     _showsVerticalSelection = YES;
     _showsLineSelection = YES;
-    _cachedMaxHeight = kJBLineChartViewUndefinedMaxHeight;
+    _cachedMinHeight = kJBBarChartViewUndefinedCachedHeight;
+    _cachedMaxHeight = kJBBarChartViewUndefinedCachedHeight;
 }
 
 #pragma mark - Data
@@ -215,7 +215,8 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
 - (void)reloadData
 {
     // reset cached max height
-    self.cachedMaxHeight = kJBLineChartViewUndefinedMaxHeight;
+    self.cachedMinHeight = kJBBarChartViewUndefinedCachedHeight;
+    self.cachedMaxHeight = kJBBarChartViewUndefinedCachedHeight;
 
     /*
      * Subview rectangle calculations
@@ -379,7 +380,7 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
 
 - (CGFloat)minHeight
 {
-    BOOL hasCachedMinHeight = self.cachedMinHeight != kJBLineChartViewUndefinedMinHeight;
+    BOOL hasCachedMinHeight = self.cachedMinHeight != kJBBarChartViewUndefinedCachedHeight;
     
     dispatch_block_t calculateCachedMinHeight = ^{
         CGFloat minHeight = FLT_MAX;
@@ -416,7 +417,7 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
 
 - (CGFloat)maxHeight
 {
-    BOOL hasCachedMaxHeight = self.cachedMaxHeight != kJBLineChartViewUndefinedMaxHeight;
+    BOOL hasCachedMaxHeight = self.cachedMaxHeight != kJBBarChartViewUndefinedCachedHeight;
 
     dispatch_block_t calculateCachedMaxHeight = ^{
         CGFloat maxHeight = 0;
