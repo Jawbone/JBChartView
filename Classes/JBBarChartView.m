@@ -238,6 +238,9 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     // Position header and footer
     self.headerView.frame = CGRectMake(self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.width, self.headerView.frame.size.height);
     self.footerView.frame = CGRectMake(self.bounds.origin.x, self.bounds.size.height - self.footerView.frame.size.height, self.bounds.size.width, self.footerView.frame.size.height);
+
+    // Refresh state
+    [self setState:self.state animated:NO callback:nil force:YES];
 }
 
 #pragma mark - View Quick Accessors
@@ -298,9 +301,9 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 #pragma mark - Setters
 
-- (void)setState:(JBChartViewState)state animated:(BOOL)animated callback:(void (^)())callback
+- (void)setState:(JBChartViewState)state animated:(BOOL)animated callback:(void (^)())callback force:(BOOL)force
 {
-    [super setState:state animated:animated callback:callback];
+    [super setState:state animated:animated callback:callback force:force];
     
     dispatch_block_t callbackCopy = [callback copy];
     
@@ -355,7 +358,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
             {
                 callbackCopy();
             }
-        }   
+        }
     }
     else
     {
@@ -364,6 +367,11 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
             callbackCopy();
         }
     }
+}
+
+- (void)setState:(JBChartViewState)state animated:(BOOL)animated callback:(void (^)())callback
+{
+    [self setState:state animated:animated callback:callback force:NO];
 }
 
 #pragma mark - Getters
