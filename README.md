@@ -196,6 +196,10 @@ Furthermore, the color of the selection bar and line can be customized via the <
 By default, each line will not show dots for each point. To enable this on a per-line basis:
 
 	- (BOOL)lineChartView:(JBLineChartView *)lineChartView showsDotsForLineAtLineIndex:(NSUInteger)lineIndex;
+
+To customize the size of each dot, implement (default is 3x the line width):
+
+	- (BOOL)lineChartView:(JBLineChartView *)lineChartView showsDotsForLineAtLineIndex:(NSUInteger)lineIndex;
 	
 As well, by default, each line will have squared off end caps and connection points. To enable line smoothing:
 
