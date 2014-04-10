@@ -1,5 +1,9 @@
 # Changelog
 
+## <a href="https://github.com/Jawbone/JBChartView/tree/v2.1.4">2.1.4</a> 
+#### 04/10/14
+- Added ability to specify a radius for dotted lines. 
+
 ## <a href="https://github.com/Jawbone/JBChartView/tree/v2.1.3">2.1.3</a> 
 #### 04/03/14
 - Added the ability to force a chart's state. 
