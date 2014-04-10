@@ -407,21 +407,39 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
 
 - (CGFloat)padding
 {
-    if ([self.dataSource respondsToSelector:@selector(lineChartView:widthForLineAtLineIndex:)])
+    CGFloat maxLineWidth = 0.0f;
+    NSAssert([self.dataSource respondsToSelector:@selector(numberOfLinesInLineChartView:)], @"JBLineChartView // dataSource must implement - (NSUInteger)numberOfLinesInLineChartView:(JBLineChartView *)lineChartView");
+
+    for (int lineIndex=0; lineIndex<[self.dataSource numberOfLinesInLineChartView:self]; lineIndex++)
     {
-        NSAssert([self.dataSource respondsToSelector:@selector(numberOfLinesInLineChartView:)], @"JBLineChartView // dataSource must implement - (NSUInteger)numberOfLinesInLineChartView:(JBLineChartView *)lineChartView");
-        CGFloat maxWidth = 0.0f;
-        for (int lineIndex=0; lineIndex<[self.dataSource numberOfLinesInLineChartView:self]; lineIndex++)
+        BOOL showsDots = NO;
+        if ([self.dataSource respondsToSelector:@selector(lineChartView:showsDotsForLineAtLineIndex:)])
         {
-            CGFloat lineWidth = [self.dataSource lineChartView:self widthForLineAtLineIndex:lineIndex];
-            if (lineWidth > maxWidth)
+            showsDots = [self.dataSource lineChartView:self showsDotsForLineAtLineIndex:lineIndex];
+        }
+
+        CGFloat lineWidth = kJBLineChartLinesViewStrokeWidth; // default
+        if ([self.dataSource respondsToSelector:@selector(lineChartView:widthForLineAtLineIndex:)])
+        {
+            lineWidth = [self.dataSource lineChartView:self widthForLineAtLineIndex:lineWidth];
+        }
+        
+        CGFloat dotRadius = lineWidth * kJBLineChartDotsViewDefaultRadiusFactor; // default
+        if (showsDots)
+        {
+            if ([self.dataSource respondsToSelector:@selector(lineChartView:dotRadiusForLineAtLineIndex:)])
             {
-                maxWidth = lineWidth;
+                dotRadius = [self.dataSource lineChartView:self dotRadiusForLineAtLineIndex:lineIndex];
             }
         }
-        return ceil(maxWidth * 0.5);
+        
+        CGFloat currentMaxLineWidth = MAX(dotRadius, lineWidth);
+        if (currentMaxLineWidth > maxLineWidth)
+        {
+            maxLineWidth = currentMaxLineWidth;
+        }
     }
-    return ceil(kJBLineChartLinesViewStrokeWidth * 0.5);
+    return ceil(maxLineWidth * 0.5);
 }
 
 - (NSUInteger)dataCount
