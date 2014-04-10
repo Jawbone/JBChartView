@@ -26,7 +26,7 @@ CGFloat static const kJBLineChartLinesViewDefaultDimmedOpacity = 0.5f;
 NSInteger static const kJBLineChartLinesViewUnselectedLineIndex = -1;
 
 // Numerics (JBLineChartDotsView)
-NSInteger static const kJBLineChartDotsViewRadiusFactor = 3; // 3x size of line width
+NSInteger static const kJBLineChartDotsViewDefaultRadiusFactor = 3; // 3x size of line width
 NSInteger static const kJBLineChartDotsViewUnselectedLineIndex = -1;
 
 // Numerics (JBLineSelectionView)
@@ -115,6 +115,7 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
 - (UIColor *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView colorForLineAtLineIndex:(NSUInteger)lineIndex;
 - (UIColor *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView selectedColorForLineAtLineIndex:(NSUInteger)lineIndex;
 - (CGFloat)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView widthForLineAtLineIndex:(NSUInteger)lineIndex;
+- (CGFloat)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView dotRadiusForLineAtLineIndex:(NSUInteger)lineIndex;
 - (CGFloat)paddingForLineChartDotsView:(JBLineChartDotsView *)lineChartDotsView;
 - (BOOL)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView showsDotsForLineAtLineIndex:(NSUInteger)lineIndex;
 
@@ -528,6 +529,18 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
         return [self.dataSource lineChartView:self widthForLineAtLineIndex:lineIndex];
     }
     return kJBLineChartLinesViewStrokeWidth;
+}
+
+- (CGFloat)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView dotRadiusForLineAtLineIndex:(NSUInteger)lineIndex
+{
+    if ([self.dataSource respondsToSelector:@selector(lineChartView:dotRadiusForLineAtLineIndex:)])
+    {
+        return [self.dataSource lineChartView:self dotRadiusForLineAtLineIndex:lineIndex];
+    }
+    else
+    {
+        return [self lineChartDotsView:lineChartDotsView widthForLineAtLineIndex:lineIndex] * kJBLineChartDotsViewDefaultRadiusFactor;
+    }
 }
 
 - (CGFloat)paddingForLineChartDotsView:(JBLineChartDotsView *)lineChartDotsView
@@ -1160,10 +1173,9 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
         {
             NSMutableArray *mutableDotViews = [NSMutableArray array];
             for (JBLineChartPoint *lineChartPoint in [lineData sortedArrayUsingSelector:@selector(compare:)])
-            {
-                NSAssert([self.delegate respondsToSelector:@selector(lineChartDotsView:widthForLineAtLineIndex:)], @"JBLineChartDotsView // delegate must implement - (CGFloat)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView widthForLineAtLineIndex:(NSUInteger)lineIndex");
-                CGFloat lineWidth = [self.delegate lineChartDotsView:self widthForLineAtLineIndex:lineIndex];
-                CGFloat dotRadius = lineWidth * kJBLineChartDotsViewRadiusFactor;
+            {                
+                NSAssert([self.delegate respondsToSelector:@selector(lineChartDotsView:dotRadiusForLineAtLineIndex:)], @"JBLineChartDotsView // delegate must implement - (CGFloat)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView dotRadiusForLineAtLineIndex:(NSUInteger)lineIndex");
+                CGFloat dotRadius = [self.delegate lineChartDotsView:self dotRadiusForLineAtLineIndex:lineIndex];
                 
                 JBLineChartDotView *dotView = [[JBLineChartDotView alloc] initWithRadius:dotRadius];
                 dotView.center = CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - padding, fmax(padding, lineChartPoint.position.y)));

@@ -139,6 +139,20 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
 - (CGFloat)lineChartView:(JBLineChartView *)lineChartView widthForLineAtLineIndex:(NSUInteger)lineIndex;
 
 /**
+ *  Returns the radius of all dots in a particular line at lineIndex within the chart.
+ *  For this value to apply, showsDotsForLineAtLineIndex: must return YES for the line at lineIndex.
+ *  Any value can be returned for lineIndex's that don't support dots, as it will never be called. 
+ *
+ *  Default: line width x 3.
+ *
+ *  @param lineChartView    The line chart object requesting this information.
+ *  @param lineIndex        An index number identifying a line in the chart.
+ *
+ *  @return The radius of the dots within a dotted line in the chart.
+ */
+- (CGFloat)lineChartView:(JBLineChartView *)lineChartView dotRadiusForLineAtLineIndex:(NSUInteger)lineIndex;
+
+/**
  *  Returns the (vertical) selection color to be overlayed on the chart during touch events.
  *  The color is automically faded to transparent (vertically). The property showsVerticalSelection
  *  must be YES for the color to apply.

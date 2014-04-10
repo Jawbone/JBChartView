@@ -216,6 +216,11 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
     return (lineIndex == JBLineChartLineSolid) ? kJBLineChartViewControllerChartSolidLineWidth: kJBLineChartViewControllerChartDashedLineWidth;
 }
 
+- (CGFloat)lineChartView:(JBLineChartView *)lineChartView dotRadiusForLineAtLineIndex:(NSUInteger)lineIndex
+{
+    return (lineIndex == JBLineChartLineSolid) ? 0.0: (kJBLineChartViewControllerChartDashedLineWidth * 4);
+}
+
 - (UIColor *)verticalSelectionColorForLineChartView:(JBLineChartView *)lineChartView
 {
     return [UIColor whiteColor];
