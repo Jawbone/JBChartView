@@ -30,9 +30,17 @@ static UIColor *kJBChartVerticalSelectionViewDefaultBgColor = nil;
     self = [super initWithFrame:frame];
     if (self)
     {
-        self.clipsToBounds = YES;
-        _mininumValue = kJBChartViewUndefinedMinimumValue;
-        _maximumValue = kJBChartViewUndefinedMaximumValue;
+        [self jbChartViewConstruct];
+    }
+    return self;
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    if (self)
+    {
+        [self jbChartViewConstruct];
     }
     return self;
 }
@@ -40,6 +48,13 @@ static UIColor *kJBChartVerticalSelectionViewDefaultBgColor = nil;
 - (id)init
 {
     return [self initWithFrame:CGRectZero];
+}
+
+- (void)jbChartViewConstruct
+{
+    self.clipsToBounds = YES;
+    _mininumValue = kJBChartViewUndefinedMinimumValue;
+    _maximumValue = kJBChartViewUndefinedMaximumValue;
 }
 
 #pragma mark - Public
