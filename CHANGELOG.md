@@ -1,5 +1,9 @@
 # Changelog
 
+## <a href="https://github.com/Jawbone/JBChartView/tree/v2.1.5">2.1.5</a> 
+#### 04/10/14
+- Fixes issue <a href="https://github.com/Jawbone/JBChartView/pull/30">#30</a>.
+
 ## <a href="https://github.com/Jawbone/JBChartView/tree/v2.1.4">2.1.4</a> 
 #### 04/10/14
 - Added ability to specify a radius for dotted lines. 
