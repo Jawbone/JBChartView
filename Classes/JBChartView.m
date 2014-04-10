@@ -17,6 +17,10 @@ static UIColor *kJBChartVerticalSelectionViewDefaultBgColor = nil;
 
 @interface JBChartView ()
 
+// Construction
+- (void)constructChartView;
+
+// Validation
 - (void)validateHeaderAndFooterHeights;
 
 @end
@@ -25,22 +29,22 @@ static UIColor *kJBChartVerticalSelectionViewDefaultBgColor = nil;
 
 #pragma mark - Alloc/Init
 
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self)
-    {
-        [self jbChartViewConstruct];
-    }
-    return self;
-}
-
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
     self = [super initWithCoder:aDecoder];
     if (self)
     {
-        [self jbChartViewConstruct];
+        [self constructChartView];
+    }
+    return self;
+}
+
+- (id)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self)
+    {
+        [self constructChartView];
     }
     return self;
 }
@@ -50,7 +54,9 @@ static UIColor *kJBChartVerticalSelectionViewDefaultBgColor = nil;
     return [self initWithFrame:CGRectZero];
 }
 
-- (void)jbChartViewConstruct
+#pragma mark - Construction
+
+- (void)constructChartView
 {
     self.clipsToBounds = YES;
     _mininumValue = kJBChartViewUndefinedMinimumValue;
@@ -64,7 +70,7 @@ static UIColor *kJBChartVerticalSelectionViewDefaultBgColor = nil;
     // Override
 }
 
-#pragma mark - Helpers
+#pragma mark - Validation
 
 - (void)validateHeaderAndFooterHeights
 {
