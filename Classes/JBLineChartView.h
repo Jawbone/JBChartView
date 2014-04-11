@@ -67,6 +67,32 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
 @optional
 
 /**
+ * Returns the color to use as the backgroundColor of the dot displayed at the given point.
+ *
+ * If this method is not implemented, dots will have the same color as the line.
+ *
+ * @param lineChartView     The line chart object requesting this information.
+ * @param horizontalIndex   The 0-based horizontal index of a selection point (left to right, x-axis).
+ * @param lineIndex         An index number identifying the closest line in the chart to the current touch point.
+ *
+ * @return The color of the dot for each chart point.
+ */
+- (UIColor *)lineChartView:(JBLineChartView *)lineChartView colorForDotAtHorizontalIndex:(NSUInteger)horizontalIndex lineIndex:(NSUInteger)lineIndex;
+
+/**
+ * Returns the color to use as the backgroundColor of the dot displayed at the given point when the line is selected.
+ * 
+ * If this method is not implemented, dots will have the same color as the selected line.
+ *
+ * @param lineChartView     The line chart object requesting this information.
+ * @param horizontalIndex   The 0-based horizontal index of a selection point (left to right, x-axis).
+ * @param lineIndex         An index number identifying the closest line in the chart to the current touch point.
+ *
+ * @return The color of the dot for each chart point.
+ */
+- (UIColor *)lineChartView:(JBLineChartView *)lineChartView selectionColorForDotAtHorizontalIndex:(NSUInteger)horizontalIndex lineIndex:(NSUInteger)lineIndex;
+
+/**
  *  Occurs whenever there is a touch gesture on the chart (chart must be expanded).
  *  The horizontal index is the closest index to the touch point & is clamped to it's max/min value if it moves outside of the view's bounds.
  *  The lineIndex remains constant until the line is unselected and will be highlighted using the (optional) selectionColorForLineAtLineIndex: protocol. 
