@@ -113,6 +113,8 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
 
 - (NSArray *)chartDataForLineChartDotsView:(JBLineChartDotsView*)lineChartDotsView;
 - (UIColor *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView colorForLineAtLineIndex:(NSUInteger)lineIndex;
+- (UIColor *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView colorForDotAtHorizontalIndex:(NSUInteger)horizontalIndex lineIndex:(NSUInteger)lineIndex;
+- (UIColor *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView selectedColorForDotAtHorizontalIndex:(NSUInteger)horizontalIndex lineIndex:(NSUInteger)lineIndex;
 - (UIColor *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView selectedColorForLineAtLineIndex:(NSUInteger)lineIndex;
 - (CGFloat)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView widthForLineAtLineIndex:(NSUInteger)lineIndex;
 - (CGFloat)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView dotRadiusForLineAtLineIndex:(NSUInteger)lineIndex;
@@ -481,6 +483,22 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
         return [self.dataSource lineChartView:self selectionColorForLineAtLineIndex:lineIndex];
     }
     return kJBLineChartViewDefaultLineSelectionColor;
+}
+
+- (UIColor *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView colorForDotAtHorizontalIndex:(NSUInteger)horizontalIndex lineIndex:(NSUInteger)lineIndex
+{
+    if ([self.dataSource respondsToSelector:@selector(lineChartView:colorForDotAtHorizontalIndex:lineIndex:)]) {
+        return [self.delegate lineChartView:self colorForDotAtHorizontalIndex:horizontalIndex lineIndex:lineIndex];
+    }
+    return [lineChartDotsView.delegate lineChartDotsView:lineChartDotsView colorForLineAtLineIndex:lineIndex];
+}
+
+- (UIColor *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView selectedColorForDotAtHorizontalIndex:(NSUInteger)horizontalIndex lineIndex:(NSUInteger)lineIndex
+{
+    if ([self.dataSource respondsToSelector:@selector(lineChartView:selectionColorForDotAtHorizontalIndex:lineIndex:)]) {
+        return [self.delegate lineChartView:self selectionColorForDotAtHorizontalIndex:horizontalIndex lineIndex:lineIndex];
+    }
+    return [lineChartDotsView.delegate lineChartDotsView:lineChartDotsView selectedColorForLineAtLineIndex:lineIndex];
 }
 
 - (CGFloat)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView widthForLineAtLineIndex:(NSUInteger)lineIndex
@@ -1190,8 +1208,10 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
         if ([self.delegate lineChartDotsView:self showsDotsForLineAtLineIndex:lineIndex]) // line at index contains dots
         {
             NSMutableArray *mutableDotViews = [NSMutableArray array];
-            for (JBLineChartPoint *lineChartPoint in [lineData sortedArrayUsingSelector:@selector(compare:)])
-            {                
+            int i = 0;
+            NSArray *sortedLineData = [lineData sortedArrayUsingSelector:@selector(compare:)];
+            for (i = 0; i < lineData.count; i++) {
+                JBLineChartPoint *lineChartPoint = [sortedLineData objectAtIndex:i];
                 NSAssert([self.delegate respondsToSelector:@selector(lineChartDotsView:dotRadiusForLineAtLineIndex:)], @"JBLineChartDotsView // delegate must implement - (CGFloat)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView dotRadiusForLineAtLineIndex:(NSUInteger)lineIndex");
                 CGFloat dotRadius = [self.delegate lineChartDotsView:self dotRadiusForLineAtLineIndex:lineIndex];
                 
@@ -1199,7 +1219,7 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
                 dotView.center = CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - padding, fmax(padding, lineChartPoint.position.y)));
                 
                 NSAssert([self.delegate respondsToSelector:@selector(lineChartDotsView:colorForLineAtLineIndex:)], @"JBLineChartDotsView // delegate must implement - (UIColor *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView colorForLineAtLineIndex:(NSUInteger)lineIndex");
-                dotView.backgroundColor = [self.delegate lineChartDotsView:self colorForLineAtLineIndex:lineIndex];
+                dotView.backgroundColor = [self.delegate lineChartDotsView:self colorForDotAtHorizontalIndex:i lineIndex:lineIndex];
                 
                 [mutableDotViews addObject:dotView];
                 [self addSubview:dotView];
@@ -1219,8 +1239,10 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
     
     dispatch_block_t adjustDots = ^{
         [self.dotViewsDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-            for (JBLineChartDotView *dotView in (NSArray *)obj)
-            {
+            int i = 0;
+            NSArray *objArray = (NSArray *)obj;
+            for (i = 0; i < objArray.count; i++) {
+                JBLineChartDotView *dotView = [objArray objectAtIndex:i];
                 if ([key isKindOfClass:[NSNumber class]])
                 {
                     NSUInteger lineIndex = [((NSNumber *)key) intValue];
@@ -1228,12 +1250,14 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
                     if (_selectedLineIndex == lineIndex)
                     {
                         NSAssert([self.delegate respondsToSelector:@selector(lineChartDotsView:selectedColorForLineAtLineIndex:)], @"JBLineChartDotsView // delegate must implement - (UIColor *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView selectedColorForLineAtLineIndex:(NSUInteger)lineIndex");
-                        dotView.backgroundColor = [self.delegate lineChartDotsView:self selectedColorForLineAtLineIndex:lineIndex];
+                        dotView.backgroundColor = [self.delegate lineChartDotsView:self selectedColorForDotAtHorizontalIndex:i lineIndex:lineIndex];
+//                        dotView.backgroundColor = [self.delegate lineChartDotsView:self selectedColorForLineAtLineIndex:lineIndex];
                     }
                     else
                     {
                         NSAssert([self.delegate respondsToSelector:@selector(lineChartDotsView:colorForLineAtLineIndex:)], @"JBLineChartDotsView // delegate must implement - (UIColor *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView colorForLineAtLineIndex:(NSUInteger)lineIndex");
-                        dotView.backgroundColor = [self.delegate lineChartDotsView:self colorForLineAtLineIndex:lineIndex];
+                        dotView.backgroundColor = [self.delegate lineChartDotsView:self colorForDotAtHorizontalIndex:i lineIndex:lineIndex];
+//                        dotView.backgroundColor = [self.delegate lineChartDotsView:self colorForLineAtLineIndex:lineIndex];
                         dotView.alpha = (_selectedLineIndex == kJBLineChartDotsViewUnselectedLineIndex) ? 1.0f : kJBLineChartLinesViewDefaultDimmedOpacity;
                     }
                 }
