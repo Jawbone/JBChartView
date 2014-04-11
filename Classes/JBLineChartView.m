@@ -847,8 +847,12 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
     {
         [self.delegate didUnselectLineInLineChartView:self];
     }
-    [self.linesView setSelectedLineIndex:kJBLineChartLinesViewUnselectedLineIndex animated:YES];
-    [self.dotsView setSelectedLineIndex:kJBLineChartDotsViewUnselectedLineIndex animated:YES];
+    
+    if (self.showsLineSelection)
+    {
+        [self.linesView setSelectedLineIndex:kJBLineChartLinesViewUnselectedLineIndex animated:YES];
+        [self.dotsView setSelectedLineIndex:kJBLineChartDotsViewUnselectedLineIndex animated:YES];
+    }
 }
 
 #pragma mark - Setters
@@ -888,8 +892,11 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
 {
     UITouch *touch = [touches anyObject];
     CGPoint touchPoint = [self clampPoint:[touch locationInView:self.linesView] toBounds:self.linesView.bounds padding:[self padding]];
-    [self.linesView setSelectedLineIndex:[self lineIndexForPoint:touchPoint] animated:YES];
-    [self.dotsView setSelectedLineIndex:[self lineIndexForPoint:touchPoint] animated:YES];
+    if (self.showsLineSelection)
+    {
+        [self.linesView setSelectedLineIndex:[self lineIndexForPoint:touchPoint] animated:YES];
+        [self.dotsView setSelectedLineIndex:[self lineIndexForPoint:touchPoint] animated:YES];
+    }
     [self touchesBeganOrMovedWithTouches:touches];
 }
 
