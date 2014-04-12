@@ -199,7 +199,7 @@ By default, each line will not show dots for each point. To enable this on a per
 
 To customize the size of each dot, implement (default is 3x the line width):
 
-	- (BOOL)lineChartView:(JBLineChartView *)lineChartView showsDotsForLineAtLineIndex:(NSUInteger)lineIndex;
+	- (CGFloat)lineChartView:(JBLineChartView *)lineChartView dotRadiusForLineAtLineIndex:(NSUInteger)lineIndex;
 	
 As well, by default, each line will have squared off end caps and connection points. To enable line smoothing:
 
