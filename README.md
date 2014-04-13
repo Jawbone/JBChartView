@@ -181,11 +181,16 @@ The color, width and style of each line in the chart can be customized via the <
 		return ...; // style of line in chart
 	}
 	
-Furthermore, the color of the selection bar and line can be customized via the <i>optional</i> protocols:
+Furthermore, the color and width of the selection bar and the color of the selected line can be customized via the <i>optional</i> protocols:
 
 	- (UIColor *)verticalSelectionColorForLineChartView:(JBLineChartView *)lineChartView
 	{
 		return ...; // color of selection view
+	}
+	
+	- (CGFloat)verticalSelectionWidthForLineChartView:(JBLineChartView *)lineChartView
+	{
+		return ...; // width of selection view
 	}
 	
 	- (UIColor *)lineChartView:(JBLineChartView *)lineChartView selectionColorForLineAtLineIndex:(NSUInteger)lineIndex
