@@ -334,7 +334,7 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
         CGFloat selectionViewWidth = kJBLineSelectionViewWidth;
         if ([self.dataSource respondsToSelector:@selector(verticalSelectionWidthForLineChartView:)])
         {
-            selectionViewWidth = [self.dataSource verticalSelectionWidthForLineChartView:self];
+            selectionViewWidth = MIN([self.dataSource verticalSelectionWidthForLineChartView:self], self.bounds.size.width);
         }
         self.verticalSelectionView = [[JBChartVerticalSelectionView alloc] initWithFrame:CGRectMake(0, 0, selectionViewWidth, self.bounds.size.height - self.footerView.frame.size.height)];
         self.verticalSelectionView.alpha = 0.0;

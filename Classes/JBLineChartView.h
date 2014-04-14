@@ -154,7 +154,8 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
 
 /**
  *  Returns the width of the (vertical) selection view to be overlayed on the chart during touch events.
- *  The property showsVerticalSelection must be YES for the width to apply. 
+ *  The property showsVerticalSelection must be YES for the width to apply. The width is clamped to the 
+ *  maxmimum width of the chart's bounds.
  *
  *  Default: 20px.
  *
