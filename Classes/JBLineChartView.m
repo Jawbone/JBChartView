@@ -331,7 +331,12 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
             self.verticalSelectionView = nil;
         }
 
-        self.verticalSelectionView = [[JBChartVerticalSelectionView alloc] initWithFrame:CGRectMake(0, 0, kJBLineSelectionViewWidth, self.bounds.size.height - self.footerView.frame.size.height)];
+        CGFloat selectionViewWidth = kJBLineSelectionViewWidth;
+        if ([self.dataSource respondsToSelector:@selector(verticalSelectionWidthForLineChartView:)])
+        {
+            selectionViewWidth = [self.dataSource verticalSelectionWidthForLineChartView:self];
+        }
+        self.verticalSelectionView = [[JBChartVerticalSelectionView alloc] initWithFrame:CGRectMake(0, 0, selectionViewWidth, self.bounds.size.height - self.footerView.frame.size.height)];
         self.verticalSelectionView.alpha = 0.0;
         self.verticalSelectionView.hidden = !self.showsVerticalSelection;
         if ([self.dataSource respondsToSelector:@selector(verticalSelectionColorForLineChartView:)])

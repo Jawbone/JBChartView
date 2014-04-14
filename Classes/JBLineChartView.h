@@ -153,6 +153,18 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
 - (CGFloat)lineChartView:(JBLineChartView *)lineChartView dotRadiusForLineAtLineIndex:(NSUInteger)lineIndex;
 
 /**
+ *  Returns the width of the (vertical) selection view to be overlayed on the chart during touch events.
+ *  The property showsVerticalSelection must be YES for the width to apply.
+ *
+ *  Default: 20px.
+ *
+ *  @param lineChartView    The line chart object requesting this information.
+ *
+ *  @return The color to be used on chart selections.
+ */
+- (CGFloat)verticalSelectionWidthForLineChartView:(JBLineChartView *)lineChartView;
+
+/**
  *  Returns the (vertical) selection color to be overlayed on the chart during touch events.
  *  The color is automically faded to transparent (vertically). The property showsVerticalSelection
  *  must be YES for the color to apply.
