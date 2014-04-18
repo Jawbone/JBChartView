@@ -38,7 +38,7 @@ Simply add the following line to your <code>Podfile</code>:
 Your Podfile should look something like:
 
 	platform :ios, '7.0'
-	pod 'JBChartView', '~> 2.2.0'
+	pod 'JBChartView', '~> 2.3.0'
 	
 ### The Old School Way
 
@@ -202,9 +202,15 @@ By default, each line will not show dots for each point. To enable this on a per
 
 	- (BOOL)lineChartView:(JBLineChartView *)lineChartView showsDotsForLineAtLineIndex:(NSUInteger)lineIndex;
 
-To customize the size of each dot, implement (default is 3x the line width):
+To customize the size of each dot (default 3x the line width), implement:
 
 	- (CGFloat)lineChartView:(JBLineChartView *)lineChartView dotRadiusForLineAtLineIndex:(NSUInteger)lineIndex;
+	
+To customize the color of each dot during selection and non-selection events (default is white and black respectively), implement:
+
+	- (UIColor *)lineChartView:(JBLineChartView *)lineChartView colorForDotAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;	
+
+	- (UIColor *)lineChartView:(JBLineChartView *)lineChartView selectionColorForDotAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
 	
 As well, by default, each line will have squared off end caps and connection points. To enable line smoothing:
 
