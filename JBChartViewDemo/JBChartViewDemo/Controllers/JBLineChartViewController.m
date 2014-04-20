@@ -213,7 +213,25 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
 
 - (UIColor *)lineChartView:(JBLineChartView *)lineChartView colorForDotAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex
 {
-    return (lineIndex == JBLineChartLineSolid) ? kJBColorLineChartDefaultSolidLineColor: kJBColorLineChartDefaultDashedLineColor;
+    return [UIColor clearColor];//(lineIndex == JBLineChartLineSolid) ? kJBColorLineChartDefaultSolidLineColor: kJBColorLineChartDefaultDashedLineColor;
+}
+
+- (UIView *) lineChartView:(JBLineChartView *)lineChartView viewForDotAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex {
+    UIImageView* imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"test"]];
+    [imageView setContentMode:UIViewContentModeScaleAspectFit];
+    imageView.frame = CGRectMake(0, 0, 20, 20);
+    UIView* view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 10)];
+    imageView.center = view.center;
+    [view addSubview:imageView];
+    UILabel* label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 10, 10)];
+    label.textAlignment = NSTextAlignmentCenter;
+    label.text = [NSString stringWithFormat:@"%d",horizontalIndex];
+    label.font = [UIFont systemFontOfSize:10];
+    label.textColor = [UIColor whiteColor];
+    [view addSubview:label];
+    [view setBackgroundColor:[UIColor blackColor]];
+
+    return view;
 }
 
 - (CGFloat)lineChartView:(JBLineChartView *)lineChartView widthForLineAtLineIndex:(NSUInteger)lineIndex
@@ -238,7 +256,7 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
 
 - (UIColor *)lineChartView:(JBLineChartView *)lineChartView selectionColorForDotAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex
 {
-    return (lineIndex == JBLineChartLineSolid) ? kJBColorLineChartDefaultSolidSelectedLineColor: kJBColorLineChartDefaultDashedSelectedLineColor;
+    return [UIColor clearColor];//(lineIndex == JBLineChartLineSolid) ? kJBColorLineChartDefaultSolidSelectedLineColor: kJBColorLineChartDefaultDashedSelectedLineColor;
 }
 
 - (JBLineChartViewLineStyle)lineChartView:(JBLineChartView *)lineChartView lineStyleForLineAtLineIndex:(NSUInteger)lineIndex

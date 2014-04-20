@@ -143,6 +143,15 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
 - (UIColor *)lineChartView:(JBLineChartView *)lineChartView colorForDotAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
 
 /**
+ * Returns UIView for dots in a line
+ * Default: view is nil
+ * @param lineChartView    The line chart object requesting this information.
+ * @param lineIndex        An index number identifying a line in the chart.
+ * @param pointIndex       An index number identifying a point in the chart.
+ */
+- (UIView*) lineChartView: (JBLineChartView*) lineChartView viewForDotAtHorizontalIndex: (NSUInteger) horizontalIndex atLineIndex: (NSUInteger) lineIndex;
+
+/**
  *  Returns the width of particular line at lineIndex within the chart.
  *
  *  Default: 5 points.
