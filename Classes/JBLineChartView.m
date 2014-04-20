@@ -116,6 +116,9 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 - (NSArray *)chartDataForLineChartDotsView:(JBLineChartDotsView*)lineChartDotsView;
 - (UIColor *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView colorForLineAtLineIndex:(NSUInteger)lineIndex;
 - (UIColor *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView colorForDotAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
+
+- (UIView *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView viewForDotAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
+
 - (UIColor *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView selectedColorForLineAtLineIndex:(NSUInteger)lineIndex;
 - (UIColor *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView selectedColorForDotAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
 - (CGFloat)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView widthForLineAtLineIndex:(NSUInteger)lineIndex;
@@ -128,6 +131,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 @interface JBLineChartDotView : UIView
 
 - (id)initWithRadius:(CGFloat)radius;
+- (id)initWithView: (UIView*) view;
 
 @end
 
@@ -549,6 +553,14 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         return [self.dataSource lineChartView:self colorForDotAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
     }
     return kJBLineChartViewDefaultDotColor;
+}
+
+- (UIView *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView viewForDotAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex {
+    if ([self.dataSource respondsToSelector:@selector(lineChartView:viewForDotAtHorizontalIndex:atLineIndex:)])
+    {
+        return [self.dataSource lineChartView:self viewForDotAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
+    }
+    return nil;
 }
 
 - (UIColor *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView selectedColorForLineAtLineIndex:(NSUInteger)lineIndex
@@ -1228,11 +1240,23 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
             NSMutableArray *mutableDotViews = [NSMutableArray array];
             NSUInteger horizontalIndex = 0;
             for (JBLineChartPoint *lineChartPoint in [lineData sortedArrayUsingSelector:@selector(compare:)])
-            {                
+            {
+                JBLineChartDotView *dotView;
+                UIView* view;
+                if ([self.delegate respondsToSelector:@selector(lineChartDotsView:viewForDotAtHorizontalIndex:atLineIndex:)]) {
+                    view = [self.delegate lineChartDotsView:self viewForDotAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
+                }
+                
+                if (view != nil) {
+                    dotView = [[JBLineChartDotView alloc] initWithView:view];
+                }
+                
                 NSAssert([self.delegate respondsToSelector:@selector(lineChartDotsView:dotRadiusForLineAtLineIndex:)], @"JBLineChartDotsView // delegate must implement - (CGFloat)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView dotRadiusForLineAtLineIndex:(NSUInteger)lineIndex");
                 CGFloat dotRadius = [self.delegate lineChartDotsView:self dotRadiusForLineAtLineIndex:lineIndex];
                 
-                JBLineChartDotView *dotView = [[JBLineChartDotView alloc] initWithRadius:dotRadius];
+                if (dotView == nil) {
+                    dotView = [[JBLineChartDotView alloc] initWithRadius:dotRadius];
+                }
                 dotView.center = CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - padding, fmax(padding, lineChartPoint.position.y)));
                 
                 NSAssert([self.delegate respondsToSelector:@selector(lineChartDotsView:colorForDotAtHorizontalIndex:atLineIndex:)], @"JBLineChartDotsView // delegate must implement - (UIColor *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView colorForDotAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
@@ -1312,6 +1336,14 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
     {
         self.clipsToBounds = YES;
         self.layer.cornerRadius = (radius * 0.5);
+    }
+    return self;
+}
+
+- (id) initWithView: (UIView*) view {
+    self = [super initWithFrame:view.frame];
+    if (self) {
+        self = (JBLineChartDotView*)view;
     }
     return self;
 }
