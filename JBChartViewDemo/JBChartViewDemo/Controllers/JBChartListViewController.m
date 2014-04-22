@@ -66,15 +66,15 @@ NSInteger const kJBChartListViewControllerCellHeight = 100;
             detailText = kJBStringLabelWorldwide2012;
             break;
         case JBChartListViewControllerRowAreaChart:
-            text = @"Text missing";
-            detailText = @"detailText missing";
+            text = kJBStringLabelAverageShineHours;
+            detailText = kJBStringLabelSeattle2014;
             break;
         default:
             break;
     }
     cell.textLabel.text = text;
     cell.detailTextLabel.text = detailText;
-    cell.type = indexPath.row == JBChartListViewControllerRowLineChart ? JBChartTableCellTypeLineChart : JBChartTableCellTypeBarChart;
+    cell.type = indexPath.row == JBChartListViewControllerRowBarChart ?  JBChartTableCellTypeBarChart : JBChartTableCellTypeLineChart;
     //TODO: area chart type
     return cell;
 }

@@ -57,10 +57,20 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
 
 /**
  *  Fills the area under the lines till the next lane below or the bottom.
+ *  For best results the lines should not intersect each other. One way to achive this is 
+ *  makeing the diagramm cumulative by setting the BOOL isCumulative to YES
  *
  *  Default: NO.
  */
 @property (nonatomic, assign) BOOL fillsAreaBelowLine;
+
+/**
+ *  If YES the chart adds the value of the next line to the previous. The distance of a line to the one below
+ *  represents the upper lines real value. For best results you should also set the BOOL fillsAreaBelowLine to YES
+ *  
+ *  Default: NO.
+ */
+@property (nonatomic, assign) BOOL isCumulative;
 
 @end
 

@@ -32,6 +32,21 @@
 #define kJBColorLineChartDefaultDashedLineColor [UIColor colorWithRed:1.0 green:0.0 blue:0.0 alpha:1.0]
 #define kJBColorLineChartDefaultDashedSelectedLineColor [UIColor colorWithWhite:1.0 alpha:1.0]
 
+#define mark - Area Chart
+
+#define kJBColorAreaChartControllerBackground UIColorFromHex(0xb7e3e4)
+#define kJBColorAreaChartBackground UIColorFromHex(0xb7e3e4)
+#define kJBColorAreaChartHeader UIColorFromHex(0x1c474e)
+#define kJBColorAreaChartHeaderSeparatorColor UIColorFromHex(0x8eb6b7)
+#define kJBColorAreaChartDefaultSunLineColor [UIColor clearColor]
+#define kJBColorAreaChartDefaultSunAreaColor [UIColorFromHex(0xfcfb3a) colorWithAlphaComponent:0.5]
+#define kJBColorAreaChartDefaultSunSelectedLineColor [UIColor clearColor]
+#define kJBColorAreaChartDefaultSunSelectedAreaColor UIColorFromHex(0xfcfb3a)
+#define kJBColorAreaChartDefaultMoonLineColor [UIColor clearColor]
+#define kJBColorAreaChartDefaultMoonAreaColor [[UIColor blackColor] colorWithAlphaComponent:0.5]
+#define kJBColorAreaChartDefaultMoonSelectedLineColor [UIColor clearColor]
+#define kJBColorAreaChartDefaultMoonSelectedAreaColor [UIColor blackColor]
+
 #pragma mark - Tooltips
 
 #define kJBColorTooltipColor [UIColor colorWithWhite:1.0 alpha:0.9]
