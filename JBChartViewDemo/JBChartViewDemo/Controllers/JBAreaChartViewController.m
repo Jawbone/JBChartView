@@ -188,7 +188,6 @@ NSString * const kJBAreaChartViewControllerNavButtonViewKey = @"view";
     [self.informationView setHidden:NO animated:YES];
     [self setTooltipVisible:YES animated:YES atTouchPoint:touchPoint];
     [self.tooltipView setText:[[self.daysOfWeek objectAtIndex:horizontalIndex] uppercaseString]];
-    //FIXME: hh
 }
 
 - (void)didUnselectLineInLineChartView:(JBLineChartView *)lineChartView

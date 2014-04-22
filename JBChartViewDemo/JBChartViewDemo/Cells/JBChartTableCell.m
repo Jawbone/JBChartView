@@ -22,7 +22,21 @@
 - (void)setType:(JBChartTableCellType)type
 {
     _type = type;
-    self.accessoryView = [[UIImageView alloc] initWithImage:_type == JBChartTableCellTypeBarChart ? [UIImage imageNamed:kJBImageIconBarChart] : [UIImage imageNamed:kJBImageIconLineChart]];
+    UIImage *image = nil;
+    switch (type) {
+        case JBChartTableCellTypeBarChart:
+            image = [UIImage imageNamed:kJBImageIconBarChart];
+            break;
+        case JBChartTableCellTypeLineChart:
+            image = [UIImage imageNamed:kJBImageIconLineChart];
+            break;
+        case JBChartTableCellTypeAreaChart:
+            image = [UIImage imageNamed:kJBImageIconAreaChart];
+            break;
+        default:
+            break;
+    }
+    self.accessoryView = [[UIImageView alloc] initWithImage:image];
 }
 
 @end

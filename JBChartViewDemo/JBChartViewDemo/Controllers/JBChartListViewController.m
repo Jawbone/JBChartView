@@ -56,26 +56,30 @@ NSInteger const kJBChartListViewControllerCellHeight = 100;
 
     NSString *text = nil;
     NSString *detailText = nil;
+    JBChartTableCellType type = -1;
     switch (indexPath.row) {
         case JBChartListViewControllerRowLineChart:
             text = kJBStringLabelAverageDailyRainfall;
             detailText = kJBStringLabelSanFrancisco2013;
+            type = JBChartTableCellTypeLineChart;
             break;
         case JBChartListViewControllerRowBarChart:
             text = kJBStringLabelAverageMonthlyTemperature;
             detailText = kJBStringLabelWorldwide2012;
+            type = JBChartTableCellTypeBarChart;
             break;
         case JBChartListViewControllerRowAreaChart:
             text = kJBStringLabelAverageShineHours;
             detailText = kJBStringLabelSeattle2014;
+            type = JBChartTableCellTypeAreaChart;
             break;
         default:
             break;
     }
     cell.textLabel.text = text;
     cell.detailTextLabel.text = detailText;
-    cell.type = indexPath.row == JBChartListViewControllerRowBarChart ?  JBChartTableCellTypeBarChart : JBChartTableCellTypeLineChart;
-    //TODO: area chart type
+    cell.type = type;
+
     return cell;
 }
 
