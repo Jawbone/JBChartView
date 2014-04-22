@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		44EB67A11905B47800FABB5D /* JBAreaChartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 44EB67A01905B47800FABB5D /* JBAreaChartViewController.m */; };
 		9B0725211829822A0052109B /* JBChartListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B0725201829822A0052109B /* JBChartListViewController.m */; };
 		9B2E530518218CF20079B9D2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B2E530418218CF20079B9D2 /* Foundation.framework */; };
 		9B2E530718218CF20079B9D2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B2E530618218CF20079B9D2 /* CoreGraphics.framework */; };
@@ -42,6 +43,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		44EB679F1905B47800FABB5D /* JBAreaChartViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBAreaChartViewController.h; sourceTree = "<group>"; };
+		44EB67A01905B47800FABB5D /* JBAreaChartViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBAreaChartViewController.m; sourceTree = "<group>"; };
 		9B07251F1829822A0052109B /* JBChartListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBChartListViewController.h; sourceTree = "<group>"; };
 		9B0725201829822A0052109B /* JBChartListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBChartListViewController.m; sourceTree = "<group>"; };
 		9B2E530118218CF20079B9D2 /* JBChartViewDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JBChartViewDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -189,6 +192,8 @@
 				9B0725201829822A0052109B /* JBChartListViewController.m */,
 				9B6A68DF1829BED5006DB3BF /* JBLineChartViewController.h */,
 				9B6A68E01829BED5006DB3BF /* JBLineChartViewController.m */,
+				44EB679F1905B47800FABB5D /* JBAreaChartViewController.h */,
+				44EB67A01905B47800FABB5D /* JBAreaChartViewController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -398,6 +403,7 @@
 				9BEE694618D2789E005D9BA7 /* JBBaseChartViewController.m in Sources */,
 				9B6A68E11829BED5006DB3BF /* JBLineChartViewController.m in Sources */,
 				9B2E533F18218D310079B9D2 /* AppDelegate.m in Sources */,
+				44EB67A11905B47800FABB5D /* JBAreaChartViewController.m in Sources */,
 				9BD57BBC18D13D1A00ACFA52 /* JBChartTooltipView.m in Sources */,
 				9B603D4B182C7117000A76D0 /* JBBaseViewController.m in Sources */,
 				9B0725211829822A0052109B /* JBChartListViewController.m in Sources */,

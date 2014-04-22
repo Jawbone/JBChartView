@@ -27,8 +27,8 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
 
 @interface JBLineChartView : JBChartView
 
-@property (nonatomic, weak) id<JBLineChartViewDelegate> delegate;
-@property (nonatomic, weak) id<JBLineChartViewDataSource> dataSource;
+@property (nonatomic, weak) IBOutlet id<JBLineChartViewDelegate> delegate;
+@property (nonatomic, weak) IBOutlet id<JBLineChartViewDataSource> dataSource;
 
 /**
  *  Vertical highlight overlayed on a line graph during touch events.
@@ -45,6 +45,22 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
  *  Default: YES.
  */
 @property (nonatomic, assign) BOOL showsLineSelection;
+
+/**
+ *  A highlight shown on a area under a line within the graph during touch events. The highlighted area
+ *  is the on under the closest line to the touch point and corresponds to the lineIndex delegatd back via
+ *  didSelectChartAtHorizontalIndex:atLineIndex: and didUnSlectChartAtHorizontalIndex:atLineIndex:
+ *
+ *  Default: NO.
+ */
+@property (nonatomic, assign) BOOL showsAreaSelection;
+
+/**
+ *  Fills the area under the lines till the next lane below or the bottom.
+ *
+ *  Default: NO.
+ */
+@property (nonatomic, assign) BOOL fillsAreaBelowLine;
 
 @end
 
@@ -128,6 +144,18 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
 - (UIColor *)lineChartView:(JBLineChartView *)lineChartView colorForLineAtLineIndex:(NSUInteger)lineIndex;
 
 /**
+ *  Returns the color of particular area under the line at lineIndex within the chart.
+ *
+ *  Default: black color.
+ *
+ *  @param lineChartView    The line chart object requesting this information.
+ *  @param lineIndex        An index number identifying a line in the chart.
+ *
+ *  @return The color to be used to shade a line in the chart.
+ */
+- (UIColor *)lineChartView:(JBLineChartView *)lineChartView colorForAreaUnderLineAtLineIndex:(NSUInteger)lineIndex;
+
+/**
  *  Returns the color of a particular dot in a line at lineIndex within the chart.
  *  For this value to apply, showsDotsForLineAtLineIndex: must return YES for the line at lineIndex.
  *  Any value can be returned for lineIndex's that don't support dots, as it will never be called.
@@ -208,6 +236,19 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
 - (UIColor *)lineChartView:(JBLineChartView *)lineChartView selectionColorForLineAtLineIndex:(NSUInteger)lineIndex;
 
 /**
+ *  Returns the selection color to be overlayed on a area under a line within the chart during touch events.
+ *  The property showsAreaSelection must be YES for the color to apply.
+ *
+ *  Default: white color.
+ *
+ *  @param lineChartView    The line chart object requesting this information.
+ *  @param lineIndex        An index number identifying a line in the chart.
+ *
+ *  @return The color to be used to highlight a line during chart selections.
+ */
+- (UIColor *)lineChartView:(JBLineChartView *)lineChartView selectionColorForAreaUnderLineAtLineIndex:(NSUInteger)lineIndex;
+
+/**
  *  Returns the selection color to be overlayed on a line within the chart during touch events.
  *  The property showsLineSelection must be YES for the color to apply.
  *
@@ -259,5 +300,17 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
  *  @return Whether or not a line should smooth it's ends and connections. 
  */
 - (BOOL)lineChartView:(JBLineChartView *)lineChartView smoothLineAtLineIndex:(NSUInteger)lineIndex;
+
+/**
+ *  Returns whether or not the area under the line should be filled
+ *  
+ *  Default: NO
+ *
+ *  @param lineChartView    The line chart object requesting this information.
+ *  @param lineIndex        An index number identifying a line in the chart.
+ *
+ *  @return Whether or not the area under the line should be filled
+ */
+- (BOOL)lineChartView:(JBLineChartView *)lineChartView fillsAreaUnderLineWithIndex:(NSUInteger)lineIndex;
 
 @end

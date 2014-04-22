@@ -44,14 +44,22 @@ static NSArray *kJBLineChartLineViewDefaultDashPattern = nil;
 
 // Colors (JBLineChartView)
 static UIColor *kJBLineChartViewDefaultLineColor = nil;
+static UIColor *kJBLineChartViewDefaultAreaColor = nil;
 static UIColor *kJBLineChartViewDefaultDotColor = nil;
 static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
+static UIColor *kJBLineChartViewDefaultAreaSelectionColor = nil;
 static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 
 @interface JBLineLayer : CAShapeLayer
 
 @property (nonatomic, assign) NSUInteger tag;
 @property (nonatomic, assign) JBLineChartViewLineStyle lineStyle;
+
+@end
+
+@interface JBAreaLayer : CAShapeLayer
+
+@property (nonatomic, assign) NSUInteger tag;
 
 @end
 
@@ -131,11 +139,45 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 
 @end
 
-@interface JBLineChartView () <JBLineChartLinesViewDelegate, JBLineChartDotsViewDelegate>
+@protocol JBLineChartAreasViewDelegate;
+
+@interface JBLineChartAreasView : UIView
+
+@property (nonatomic, assign) id<JBLineChartAreasViewDelegate> delegate;
+@property (nonatomic, assign) NSInteger selectedLineIndex; // -1 to unselect
+@property (nonatomic, assign) BOOL animated;
+
+// Data
+- (void)reloadData;
+
+// Setters
+- (void)setSelectedLineIndex:(NSInteger)selectedLineIndex animated:(BOOL)animated;
+
+// Callback helpers
+- (void)fireCallback:(void (^)())callback;
+
+// View helpers
+- (JBAreaLayer *)areaLayerForLineIndex:(NSUInteger)lineIndex;
+
+
+@end
+
+
+@protocol JBLineChartAreasViewDelegate <NSObject>
+
+- (NSArray *)chartDataForLineChartAreasView:(JBLineChartAreasView*)lineChartAreasView;
+- (UIColor *)lineChartAreasView:(JBLineChartAreasView *)lineChartAreasView colorForAreaUnderLineAtLineIndex:(NSUInteger)lineIndex;
+- (UIColor *)lineChartAreasView:(JBLineChartAreasView *)lineChartAreasView selectedColorForAreaUnderLineAtLineIndex:(NSUInteger)lineIndex;
+- (CGFloat)paddingForLineChartAreasView:(JBLineChartAreasView *)lineChartAreasView;
+
+@end
+
+@interface JBLineChartView () <JBLineChartLinesViewDelegate, JBLineChartDotsViewDelegate, JBLineChartAreasViewDelegate>
 
 @property (nonatomic, strong) NSArray *chartData;
 @property (nonatomic, strong) JBLineChartLinesView *linesView;
 @property (nonatomic, strong) JBLineChartDotsView *dotsView;
+@property (nonatomic, strong) JBLineChartAreasView *areasView;
 @property (nonatomic, strong) JBChartVerticalSelectionView *verticalSelectionView;
 @property (nonatomic, assign) CGFloat cachedMaxHeight;
 @property (nonatomic, assign) CGFloat cachedMinHeight;
@@ -175,8 +217,10 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 	if (self == [JBLineChartView class])
 	{
 		kJBLineChartViewDefaultLineColor = [UIColor blackColor];
+        kJBLineChartViewDefaultAreaColor = [[UIColor blackColor] colorWithAlphaComponent:0.5];
         kJBLineChartViewDefaultDotColor = [UIColor blackColor];
 		kJBLineChartViewDefaultLineSelectionColor = [UIColor whiteColor];
+        kJBLineChartViewDefaultAreaSelectionColor = [[UIColor whiteColor] colorWithAlphaComponent:0.5];
         kJBLineChartViewDefaultDotSelectionColor = [UIColor whiteColor];
 	}
 }
@@ -215,6 +259,8 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 {
     _showsVerticalSelection = YES;
     _showsLineSelection = YES;
+    _showsAreaSelection = NO;
+    _fillsAreaBelowLine = NO;
     _cachedMinHeight = kJBBarChartViewUndefinedCachedHeight;
     _cachedMaxHeight = kJBBarChartViewUndefinedCachedHeight;
 }
@@ -326,6 +372,38 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
             [self addSubview:self.dotsView];
         }
     };
+
+    /*
+     * Creates a new areas view using the previously calculated data model
+     */
+    dispatch_block_t createAreaView = ^{
+
+        // Remove old areas view
+        if (self.areasView)
+        {
+            [self.areasView removeFromSuperview];
+            self.areasView = nil;
+        }
+
+
+        // Create new areas and overlay subviews
+        self.areasView = [[JBLineChartAreasView alloc] initWithFrame:CGRectOffset(mainViewRect, 0, self.headerView.frame.size.height + self.headerPadding)];
+        self.areasView.delegate = self;
+        //hide when not needed
+        self.areasView.hidden = !self.fillsAreaBelowLine;
+
+
+        // Add new areas view
+        if (self.footerView)
+        {
+            [self insertSubview:self.areasView belowSubview:self.footerView];
+        }
+        else
+        {
+            [self addSubview:self.areasView];
+        }
+    };
+
     
     /*
      * Creates a vertical selection view for touch events
@@ -362,6 +440,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
     };
 
     createChartData();
+    createAreaView();
     createLineGraphView();
     createDotGraphView();
     createSelectionView();
@@ -604,6 +683,49 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
     return NO;
 }
 
+#pragma mark - JBLineChartAreasViewDelegate
+
+- (NSArray *)chartDataForLineChartAreasView:(JBLineChartAreasView*)lineChartAreasView
+{
+    return self.chartData;
+}
+
+- (UIColor *)lineChartAreasView:(JBLineChartAreasView *)lineChartAreasView colorForAreaUnderLineAtLineIndex:(NSUInteger)lineIndex
+{
+    if ([self.dataSource respondsToSelector:@selector(lineChartView:colorForAreaUnderLineAtLineIndex:)])
+    {
+        return [self.dataSource lineChartView:self colorForAreaUnderLineAtLineIndex:lineIndex];
+    }
+
+    if ([self.dataSource respondsToSelector:@selector(lineChartView:colorForLineAtLineIndex:)])
+    {
+        return [[self.dataSource lineChartView:self colorForLineAtLineIndex:lineIndex] colorWithAlphaComponent:0.5];
+    }
+    
+    return kJBLineChartViewDefaultAreaColor;
+}
+
+- (UIColor *)lineChartAreasView:(JBLineChartAreasView *)lineChartAreasView selectedColorForAreaUnderLineAtLineIndex:(NSUInteger)lineIndex
+{
+    if ([self.dataSource respondsToSelector:@selector(lineChartView:selectionColorForAreaUnderLineAtLineIndex:)])
+    {
+        return [self.dataSource lineChartView:self selectionColorForAreaUnderLineAtLineIndex:lineIndex];
+    }
+
+    if ([self.dataSource respondsToSelector:@selector(lineChartView:selectionColorForLineAtLineIndex:)])
+    {
+        return [[self.dataSource lineChartView:self selectionColorForLineAtLineIndex:lineIndex] colorWithAlphaComponent:0.5];
+    }
+
+    return kJBLineChartViewDefaultAreaSelectionColor;
+}
+
+- (CGFloat)paddingForLineChartAreasView:(JBLineChartAreasView *)lineChartAreasView
+{
+    return [self padding];
+}
+
+
 #pragma mark - Setters
 
 - (void)setState:(JBChartViewState)state animated:(BOOL)animated callback:(void (^)())callback force:(BOOL)force
@@ -618,11 +740,13 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         dispatch_block_t adjustViewFrames = ^{
             self.linesView.frame = CGRectMake(self.linesView.frame.origin.x, yOffset + ((self.state == JBChartViewStateCollapsed) ? (self.linesView.frame.size.height + self.footerView.frame.size.height) : 0.0), self.linesView.frame.size.width, self.linesView.frame.size.height);
             self.dotsView.frame = CGRectMake(self.dotsView.frame.origin.x, yOffset + ((self.state == JBChartViewStateCollapsed) ? (self.dotsView.frame.size.height + self.footerView.frame.size.height) : 0.0), self.dotsView.frame.size.width, self.dotsView.frame.size.height);
+             self.areasView.frame = CGRectMake(self.areasView.frame.origin.x, yOffset + ((self.state == JBChartViewStateCollapsed) ? (self.areasView.frame.size.height + self.footerView.frame.size.height) : 0.0), self.areasView.frame.size.width, self.areasView.frame.size.height);
         };
         
         dispatch_block_t adjustViewAlphas = ^{
             self.linesView.alpha = (self.state == JBChartViewStateExpanded) ? 1.0 : 0.0;
             self.dotsView.alpha = (self.state == JBChartViewStateExpanded) ? 1.0 : 0.0;
+            self.areasView.alpha = (self.state == JBChartViewStateExpanded) ? 1.0 : 0.0;
         };
         
         if (animated)
@@ -630,6 +754,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
             [UIView animateWithDuration:(kJBLineChartViewStateAnimationDuration * 0.5) delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
                 self.linesView.frame = CGRectOffset(mainViewRect, 0, yOffset - kJBLineChartViewStateBounceOffset); // bounce
                 self.dotsView.frame = CGRectOffset(mainViewRect, 0, yOffset - kJBLineChartViewStateBounceOffset);
+                self.areasView.frame = CGRectOffset(mainViewRect, 0, yOffset - kJBLineChartViewStateBounceOffset);
             } completion:^(BOOL finished) {
                 [UIView animateWithDuration:kJBLineChartViewStateAnimationDuration delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
                     adjustViewFrames();
@@ -881,6 +1006,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
     {
         [self.linesView setSelectedLineIndex:kJBLineChartLinesViewUnselectedLineIndex animated:YES];
         [self.dotsView setSelectedLineIndex:kJBLineChartDotsViewUnselectedLineIndex animated:YES];
+        [self.areasView setSelectedLineIndex:kJBLineChartLinesViewUnselectedLineIndex animated:YES];
     }
 }
 
@@ -925,6 +1051,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
     {
         [self.linesView setSelectedLineIndex:[self lineIndexForPoint:touchPoint] animated:YES];
         [self.dotsView setSelectedLineIndex:[self lineIndexForPoint:touchPoint] animated:YES];
+        [self.areasView setSelectedLineIndex:[self lineIndexForPoint:touchPoint] animated:YES];
     }
     [self touchesBeganOrMovedWithTouches:touches];
 }
@@ -1065,6 +1192,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
             
             index++;
         }
+
         
         JBLineLayer *shapeLayer = [self lineLayerForLineIndex:lineIndex];
         if (shapeLayer == nil)
@@ -1075,10 +1203,10 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         shapeLayer.tag = lineIndex;
         NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:lineStyleForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (JBLineChartViewLineStyle)lineChartLineView:(JBLineChartLinesView *)lineChartLinesView lineStyleForLineAtLineIndex:(NSUInteger)lineIndex");
         shapeLayer.lineStyle = [self.delegate lineChartLinesView:self lineStyleForLineAtLineIndex:lineIndex];
-        
+
         NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:colorForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView colorForLineAtLineIndex:(NSUInteger)lineIndex");
         shapeLayer.strokeColor = [self.delegate lineChartLinesView:self colorForLineAtLineIndex:lineIndex].CGColor;
-        
+
         NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:smoothLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView colorForLineAtLineIndex:(NSUInteger)lineIndex");
         BOOL smoothLine = [self.delegate lineChartLinesView:self smoothLineAtLineIndex:lineIndex];
         if (smoothLine)
@@ -1094,11 +1222,13 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         
         NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:widthForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (CGFloat)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView widthForLineAtLineIndex:(NSUInteger)lineIndex");
         shapeLayer.lineWidth = [self.delegate lineChartLinesView:self widthForLineAtLineIndex:lineIndex];
+
         shapeLayer.path = path.CGPath;
         shapeLayer.frame = self.bounds;
         [self.layer addSublayer:shapeLayer];
 
         lineIndex++;
+
     }
 
     self.animated = NO;
@@ -1175,6 +1305,21 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         if ([layer isKindOfClass:[JBLineLayer class]])
         {
             if (((JBLineLayer *)layer).tag == lineIndex)
+            {
+                return (JBLineLayer *)layer;
+            }
+        }
+    }
+    return nil;
+}
+
+- (JBLineLayer *)fillLayerForAreaIndex:(NSUInteger)areaIndex
+{
+    for (CALayer *layer in [self.layer sublayers])
+    {
+        if ([layer isKindOfClass:[JBLineLayer class]])
+        {
+            if (((JBLineLayer *)layer).tag == areaIndex)
             {
                 return (JBLineLayer *)layer;
             }
@@ -1314,6 +1459,210 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         self.layer.cornerRadius = (radius * 0.5);
     }
     return self;
+}
+
+@end
+
+
+@implementation JBAreaLayer
+
+#pragma mark - Alloc/Init
+
++ (void)initialize
+{
+	if (self == [JBAreaLayer class])
+	{
+
+	}
+}
+
+- (id)init
+{
+    self = [super init];
+    if (self)
+    {
+        self.zPosition = 0.0f;
+        self.strokeColor = [UIColor clearColor].CGColor;
+    }
+    return self;
+}
+@end
+
+@implementation JBLineChartAreasView
+
+#pragma mark - Alloc/Init
+
+- (id)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self)
+    {
+        self.backgroundColor = [UIColor clearColor];
+    }
+    return self;
+}
+
+#pragma mark - Memory Management
+
+- (void)dealloc
+{
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
+}
+
+#pragma mark - Drawing
+
+- (void)drawRect:(CGRect)rect
+{
+    [super drawRect:rect];
+
+    NSAssert([self.delegate respondsToSelector:@selector(chartDataForLineChartAreasView:)], @"JBLineChartAreasView // delegate must implement - (NSArray *)chartDataForLineChartAreasView:(JBLineChartAreasView *)lineChartAreasView");
+    NSArray *chartData = [self.delegate chartDataForLineChartAreasView:self];
+
+    NSAssert([self.delegate respondsToSelector:@selector(paddingForLineChartAreasView:)], @"JBLineChartAreasView // delegate must implement - (CGFloat)paddingForLineChartAreasView:(JBLineChartAreasView *)lineChartAreasView");
+    CGFloat padding = [self.delegate paddingForLineChartAreasView:self];
+
+    NSUInteger lineIndex = 0;
+    NSArray *previousLineData = nil;
+    for (NSArray *lineData in chartData)
+    {
+        UIBezierPath *path = [UIBezierPath bezierPath];
+        path.miterLimit = kJBLineChartLinesViewMiterLimit;
+
+        if (!previousLineData) {
+            JBLineChartPoint *lowerRightCornor = [[JBLineChartPoint alloc] init];
+            lowerRightCornor.position = CGPointMake(self.bounds.size.width - padding, self.bounds.size.height - padding);
+            JBLineChartPoint *lowerLeftCornor = [[JBLineChartPoint alloc] init];
+            lowerLeftCornor.position = CGPointMake(padding, self.bounds.size.height);
+            previousLineData = @[lowerLeftCornor, lowerRightCornor];
+        }
+
+        //add the previous line in inversed order at the beginning of the path to create a polygon
+        NSUInteger index = 0;
+        for (JBLineChartPoint *lineChartPoint in [[previousLineData reverseObjectEnumerator] allObjects])
+        {
+            if (index == 0)
+            {
+                [path moveToPoint:CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - padding, fmax(padding, lineChartPoint.position.y)))];
+            }
+            else
+            {
+                [path addLineToPoint:CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - padding, fmax(padding, lineChartPoint.position.y)))];
+            }
+            index ++;
+        }
+
+        for (JBLineChartPoint *lineChartPoint in [lineData sortedArrayUsingSelector:@selector(compare:)])
+        {
+
+            [path addLineToPoint:CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - padding, fmax(padding, lineChartPoint.position.y)))];
+        }
+
+        [path closePath];
+
+
+
+        JBAreaLayer *areaLayer = [self areaLayerForLineIndex:lineIndex];
+        if (areaLayer == nil) {
+            areaLayer = [JBAreaLayer layer];
+        }
+
+        areaLayer.tag = lineIndex;
+        NSAssert([self.delegate respondsToSelector:@selector(lineChartAreasView:colorForAreaUnderLineAtLineIndex:)], @"JBLineChartAreasView // delegate must implement - (UIColor *)lineChartAreasView:(JBLineChartAreasView *)lineChartAreasView colorForAreaUnderLineAtLineIndex:(NSUInteger)lineIndex");
+        areaLayer.fillColor = [self.delegate lineChartAreasView:self colorForAreaUnderLineAtLineIndex:lineIndex].CGColor;
+
+
+        areaLayer.path = path.CGPath;
+        areaLayer.frame = self.bounds;
+        [self.layer addSublayer:areaLayer];
+        
+        previousLineData = lineData;
+        
+        lineIndex++;
+    }
+    
+    self.animated = NO;
+}
+
+
+#pragma mark - Data
+
+- (void)reloadData
+{
+    // Drawing is all done with CG (no subviews here)
+    [self setNeedsDisplay];
+}
+
+
+#pragma mark - Setters
+
+- (void)setSelectedLineIndex:(NSInteger)selectedLineIndex animated:(BOOL)animated
+{
+    _selectedLineIndex = selectedLineIndex;
+
+    dispatch_block_t adjustLines = ^{
+        for (CALayer *layer in [self.layer sublayers])
+        {
+            if ([layer isKindOfClass:[JBAreaLayer class]])
+            {
+                if (((JBAreaLayer *)layer).tag == _selectedLineIndex)
+                {
+                    NSAssert([self.delegate respondsToSelector:@selector(lineChartAreasView:selectedColorForAreaUnderLineAtLineIndex:)], @"JBLineChartAreasView // delegate must implement - (UIColor *)lineChartAreasView:(JBLineChartAreasView *)lineChartAreasView selectedColorForAreaUnderLineAtLineIndex:(NSUInteger)lineIndex");
+                    ((JBLineLayer *)layer).fillColor = [self.delegate lineChartAreasView:self selectedColorForAreaUnderLineAtLineIndex:((JBAreaLayer *)layer).tag].CGColor;
+                    ((JBAreaLayer *)layer).opacity = 1.0f;
+                }
+                else
+                {
+                    NSAssert([self.delegate respondsToSelector:@selector(lineChartAreasView:colorForAreaUnderLineAtLineIndex:)], @"JBLineChartAreasView // delegate must implement - (UIColor *)lineChartAreasView:(JBLineChartAreasView *)lineChartAreasView colorForAreaUnderLineAtLineIndex:(NSUInteger)lineIndex");
+                    ((JBAreaLayer *)layer).fillColor = [self.delegate lineChartAreasView:self colorForAreaUnderLineAtLineIndex:((JBLineLayer *)layer).tag].CGColor;
+                    ((JBAreaLayer *)layer).opacity = (_selectedLineIndex == kJBLineChartLinesViewUnselectedLineIndex) ? 1.0f : kJBLineChartLinesViewDefaultDimmedOpacity;
+                }
+            }
+        }
+    };
+
+    if (animated)
+    {
+        [UIView animateWithDuration:kJBChartViewDefaultAnimationDuration animations:^{
+            adjustLines();
+        }];
+    }
+    else
+    {
+        adjustLines();
+    }
+}
+
+- (void)setSelectedLineIndex:(NSInteger)selectedLineIndex
+{
+    [self setSelectedLineIndex:selectedLineIndex animated:NO];
+}
+
+
+#pragma mark - Callback Helpers
+
+- (void)fireCallback:(void (^)())callback
+{
+    dispatch_block_t callbackCopy = [callback copy];
+
+    if (callbackCopy != nil)
+    {
+        callbackCopy();
+    }
+}
+
+- (JBAreaLayer *)areaLayerForLineIndex:(NSUInteger)areaIndex
+{
+    for (CALayer *layer in [self.layer sublayers])
+    {
+        if ([layer isKindOfClass:[JBAreaLayer class]])
+        {
+            if (((JBAreaLayer *)layer).tag == areaIndex)
+            {
+                return (JBAreaLayer *)layer;
+            }
+        }
+    }
+    return nil;
 }
 
 @end
