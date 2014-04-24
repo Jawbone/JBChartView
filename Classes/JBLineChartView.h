@@ -258,6 +258,6 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
  *
  *  @return Whether or not a line should smooth it's ends and connections. 
  */
-- (BOOL)lineChartView:(JBLineChartView *)lineChartView smoothLineAtLineIndex:(NSUInteger)lineIndex;
+- (BOOL)lineChartView:(JBLineChartView *)lineChartView roundedConnectionsAtLineIndex:(NSUInteger)lineIndex;
 
 @end
