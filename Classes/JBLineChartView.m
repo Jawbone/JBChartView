@@ -24,6 +24,7 @@ CGFloat static const kJBLineChartLinesViewMiterLimit = -5.0;
 CGFloat static const kJBLineChartLinesViewDefaultLinePhase = 1.0f;
 CGFloat static const kJBLineChartLinesViewDefaultDimmedOpacity = 0.20f;
 NSInteger static const kJBLineChartLinesViewUnselectedLineIndex = -1;
+NSInteger static const kJBLineChartLinesViewSmoothLineThreshold = 5;
 
 // Numerics (JBLineChartDotsView)
 NSInteger static const kJBLineChartDotsViewDefaultRadiusFactor = 3; // 3x size of line width
@@ -1063,11 +1064,12 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
             if (index == 0)
             {
                 [path moveToPoint:CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - padding, fmax(padding, lineChartPoint.position.y)))];
-                previousLineChartPoint = lineChartPoint;
             }
             else
             {
-                if (roundedConnections)
+                if (roundedConnections &&
+                    ((lineChartPoint.position.y>(previousLineChartPoint.position.y+kJBLineChartLinesViewSmoothLineThreshold)) ||
+                    (lineChartPoint.position.y<(previousLineChartPoint.position.y-kJBLineChartLinesViewSmoothLineThreshold))) )
                 {
                     CGFloat dx = lineChartPoint.position.x-previousLineChartPoint.position.x;
                     CGFloat controlPointX = previousLineChartPoint.position.x+(dx/2);
