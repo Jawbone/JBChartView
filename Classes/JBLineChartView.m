@@ -24,7 +24,7 @@ CGFloat static const kJBLineChartLinesViewMiterLimit = -5.0;
 CGFloat static const kJBLineChartLinesViewDefaultLinePhase = 1.0f;
 CGFloat static const kJBLineChartLinesViewDefaultDimmedOpacity = 0.20f;
 NSInteger static const kJBLineChartLinesViewUnselectedLineIndex = -1;
-NSInteger static const kJBLineChartLinesViewSmoothLineThreshold = 5;
+CGFloat static const kJBLineChartLinesViewSlopeThreshold = 0.01f;
 
 // Numerics (JBLineChartDotsView)
 NSInteger static const kJBLineChartDotsViewDefaultRadiusFactor = 3; // 3x size of line width
@@ -1053,10 +1053,13 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         path.miterLimit = kJBLineChartLinesViewMiterLimit;
         
         JBLineChartPoint *previousLineChartPoint = nil;
+        CGFloat previousSlope;
         
         NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:roundedConnectionsAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView colorForLineAtLineIndex:(NSUInteger)lineIndex");
         BOOL roundedConnections = [self.delegate lineChartLinesView:self roundedConnectionsAtLineIndex:lineIndex];
 
+        CGFloat nextSlope = 0;
+        CGFloat currentSlope = 0;
         NSUInteger index = 0;
         for (JBLineChartPoint *lineChartPoint in [lineData sortedArrayUsingSelector:@selector(compare:)])
         {
@@ -1067,9 +1070,18 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
             }
             else
             {
+                if (roundedConnections) {
+                    JBLineChartPoint *nextLineChartPoint = nil;
+                    if (index!=([lineData count]-1)) {
+                        nextLineChartPoint = [[lineData sortedArrayUsingSelector:@selector(compare:)] objectAtIndex:index+1];
+                    }
+                    
+                    nextSlope = nextLineChartPoint ? (nextLineChartPoint.position.y-lineChartPoint.position.y)/(nextLineChartPoint.position.x-lineChartPoint.position.x) : previousSlope;
+                    currentSlope = (lineChartPoint.position.y-previousLineChartPoint.position.y)/(lineChartPoint.position.x-previousLineChartPoint.position.x);
+                }
+
                 if (roundedConnections &&
-                    ((lineChartPoint.position.y>(previousLineChartPoint.position.y+kJBLineChartLinesViewSmoothLineThreshold)) ||
-                    (lineChartPoint.position.y<(previousLineChartPoint.position.y-kJBLineChartLinesViewSmoothLineThreshold))) )
+                    ((currentSlope>=nextSlope+kJBLineChartLinesViewSlopeThreshold) || (currentSlope<=nextSlope-kJBLineChartLinesViewSlopeThreshold)) )
                 {
                     CGFloat dx = lineChartPoint.position.x-previousLineChartPoint.position.x;
                     CGFloat controlPointX = previousLineChartPoint.position.x+(dx/2);
@@ -1083,6 +1095,8 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
                 {
                     [path addLineToPoint:CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - padding, fmax(padding, lineChartPoint.position.y)))];
                 }
+                
+                previousSlope = currentSlope;
             }
             previousLineChartPoint = lineChartPoint;
             index++;
