@@ -24,6 +24,7 @@ CGFloat static const kJBLineChartLinesViewMiterLimit = -5.0;
 CGFloat static const kJBLineChartLinesViewDefaultLinePhase = 1.0f;
 CGFloat static const kJBLineChartLinesViewDefaultDimmedOpacity = 0.20f;
 NSInteger static const kJBLineChartLinesViewUnselectedLineIndex = -1;
+CGFloat static const kJBLineChartLinesViewSlopeThreshold = 0.01f;
 
 // Numerics (JBLineChartDotsView)
 NSInteger static const kJBLineChartDotsViewDefaultRadiusFactor = 3; // 3x size of line width
@@ -91,7 +92,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 - (CGFloat)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView widthForLineAtLineIndex:(NSUInteger)lineIndex;
 - (CGFloat)paddingForLineChartLinesView:(JBLineChartLinesView *)lineChartLinesView;
 - (JBLineChartViewLineStyle)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView lineStyleForLineAtLineIndex:(NSUInteger)lineIndex;
-- (BOOL)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView smoothLineAtLineIndex:(NSUInteger)lineIndex;
+- (BOOL)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView roundedConnectionsAtLineIndex:(NSUInteger)lineIndex;
 
 @end
 
@@ -244,7 +245,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         CGFloat pointSpace = (self.bounds.size.width - (chartPadding * 2)) / ([self dataCount] - 1); // Space in between points
         CGFloat xOffset = chartPadding;
         CGFloat yOffset = 0;
-       
+
         NSMutableArray *mutableChartData = [NSMutableArray array];
         NSAssert([self.dataSource respondsToSelector:@selector(numberOfLinesInLineChartView:)], @"JBLineChartView // dataSource must implement - (NSUInteger)numberOfLinesInLineChartView:(JBLineChartView *)lineChartView");
         for (NSUInteger lineIndex=0; lineIndex<[self.dataSource numberOfLinesInLineChartView:self]; lineIndex++)
@@ -253,7 +254,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
             NSUInteger dataCount = [self.dataSource lineChartView:self numberOfVerticalValuesAtLineIndex:lineIndex];
             NSMutableArray *chartPointData = [NSMutableArray array];
             for (NSUInteger horizontalIndex=0; horizontalIndex<dataCount; horizontalIndex++)
-            {                
+            {               
                 NSAssert([self.delegate respondsToSelector:@selector(lineChartView:verticalValueForHorizontalIndex:atLineIndex:)], @"JBLineChartView // delegate must implement - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
                 CGFloat rawHeight =  [self.delegate lineChartView:self verticalValueForHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
                 NSAssert(rawHeight >= 0, @"JBLineChartView // delegate function - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex must return a CGFloat >= 0");
@@ -288,7 +289,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         // Create new line and overlay subviews
         self.linesView = [[JBLineChartLinesView alloc] initWithFrame:CGRectOffset(mainViewRect, 0, self.headerView.frame.size.height + self.headerPadding)];
         self.linesView.delegate = self;
-        
+
         // Add new lines view
         if (self.footerView)
         {
@@ -408,7 +409,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 }
 
 - (CGFloat)maxHeight
-{    
+{
     if (self.maximumValue != kJBChartViewUndefinedMaximumValue)
     {
         return MAX(self.maximumValue, self.cachedMaxHeight);
@@ -508,11 +509,11 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
     return [self padding];
 }
 
-- (BOOL)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView smoothLineAtLineIndex:(NSUInteger)lineIndex
+- (BOOL)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView roundedConnectionsAtLineIndex:(NSUInteger)lineIndex
 {
-    if ([self.dataSource respondsToSelector:@selector(lineChartView:smoothLineAtLineIndex:)])
+    if ([self.dataSource respondsToSelector:@selector(lineChartView:roundedConnectionsAtLineIndex:)])
     {
-        return [self.dataSource lineChartView:self smoothLineAtLineIndex:lineIndex];
+        return [self.dataSource lineChartView:self roundedConnectionsAtLineIndex:lineIndex];
     }
     return NO;
 }
@@ -1051,18 +1052,53 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         UIBezierPath *path = [UIBezierPath bezierPath];
         path.miterLimit = kJBLineChartLinesViewMiterLimit;
         
+        JBLineChartPoint *previousLineChartPoint = nil;
+        CGFloat previousSlope;
+        
+        NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:roundedConnectionsAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView colorForLineAtLineIndex:(NSUInteger)lineIndex");
+        BOOL roundedConnections = [self.delegate lineChartLinesView:self roundedConnectionsAtLineIndex:lineIndex];
+
+        CGFloat nextSlope = 0;
+        CGFloat currentSlope = 0;
         NSUInteger index = 0;
         for (JBLineChartPoint *lineChartPoint in [lineData sortedArrayUsingSelector:@selector(compare:)])
         {
+            
             if (index == 0)
             {
                 [path moveToPoint:CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - padding, fmax(padding, lineChartPoint.position.y)))];
             }
             else
             {
-                [path addLineToPoint:CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - padding, fmax(padding, lineChartPoint.position.y)))];
+                if (roundedConnections) {
+                    JBLineChartPoint *nextLineChartPoint = nil;
+                    if (index!=([lineData count]-1)) {
+                        nextLineChartPoint = [[lineData sortedArrayUsingSelector:@selector(compare:)] objectAtIndex:index+1];
+                    }
+                    
+                    nextSlope = nextLineChartPoint ? (nextLineChartPoint.position.y-lineChartPoint.position.y)/(nextLineChartPoint.position.x-lineChartPoint.position.x) : previousSlope;
+                    currentSlope = (lineChartPoint.position.y-previousLineChartPoint.position.y)/(lineChartPoint.position.x-previousLineChartPoint.position.x);
+                }
+
+                if (roundedConnections &&
+                    ((currentSlope>=nextSlope+kJBLineChartLinesViewSlopeThreshold) || (currentSlope<=nextSlope-kJBLineChartLinesViewSlopeThreshold)) )
+                {
+                    CGFloat dx = lineChartPoint.position.x-previousLineChartPoint.position.x;
+                    CGFloat controlPointX = previousLineChartPoint.position.x+(dx/2);
+                    
+                    CGPoint controlPoint1 = CGPointMake(controlPointX, previousLineChartPoint.position.y);
+                    CGPoint controlPoint2 = CGPointMake(controlPointX, lineChartPoint.position.y);
+                    
+                    [path addCurveToPoint:CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - padding, fmax(padding, lineChartPoint.position.y))) controlPoint1:controlPoint1 controlPoint2:controlPoint2];
+                }
+                else
+                {
+                    [path addLineToPoint:CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - padding, fmax(padding, lineChartPoint.position.y)))];
+                }
+                
+                previousSlope = currentSlope;
             }
-            
+            previousLineChartPoint = lineChartPoint;
             index++;
         }
         
@@ -1079,9 +1115,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:colorForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView colorForLineAtLineIndex:(NSUInteger)lineIndex");
         shapeLayer.strokeColor = [self.delegate lineChartLinesView:self colorForLineAtLineIndex:lineIndex].CGColor;
         
-        NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:smoothLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView colorForLineAtLineIndex:(NSUInteger)lineIndex");
-        BOOL smoothLine = [self.delegate lineChartLinesView:self smoothLineAtLineIndex:lineIndex];
-        if (smoothLine)
+        if (roundedConnections)
         {
             shapeLayer.lineCap = kCALineCapRound;
             shapeLayer.lineJoin = kCALineJoinRound;
@@ -1228,7 +1262,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
             NSMutableArray *mutableDotViews = [NSMutableArray array];
             NSUInteger horizontalIndex = 0;
             for (JBLineChartPoint *lineChartPoint in [lineData sortedArrayUsingSelector:@selector(compare:)])
-            {                
+            {                               
                 NSAssert([self.delegate respondsToSelector:@selector(lineChartDotsView:dotRadiusForLineAtLineIndex:)], @"JBLineChartDotsView // delegate must implement - (CGFloat)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView dotRadiusForLineAtLineIndex:(NSUInteger)lineIndex");
                 CGFloat dotRadius = [self.delegate lineChartDotsView:self dotRadiusForLineAtLineIndex:lineIndex];
                 
