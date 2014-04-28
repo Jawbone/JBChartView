@@ -1084,8 +1084,8 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 
                 if (smoothLine && ((currentSlope >= (nextSlope + kJBLineChartLinesViewSlopeThreshold)) || (currentSlope <= (nextSlope - kJBLineChartLinesViewSlopeThreshold))))
                 {
-                    CGFloat dx = lineChartPoint.position.x - previousLineChartPoint.position.x;
-                    CGFloat controlPointX = previousLineChartPoint.position.x + (dx / 2);
+                    CGFloat deltaX = lineChartPoint.position.x - previousLineChartPoint.position.x;
+                    CGFloat controlPointX = previousLineChartPoint.position.x + (deltaX / 2);
                     
                     CGPoint controlPoint1 = CGPointMake(controlPointX, previousLineChartPoint.position.y);
                     CGPoint controlPoint2 = CGPointMake(controlPointX, lineChartPoint.position.y);
