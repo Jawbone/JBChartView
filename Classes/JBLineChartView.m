@@ -92,7 +92,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 - (CGFloat)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView widthForLineAtLineIndex:(NSUInteger)lineIndex;
 - (CGFloat)paddingForLineChartLinesView:(JBLineChartLinesView *)lineChartLinesView;
 - (JBLineChartViewLineStyle)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView lineStyleForLineAtLineIndex:(NSUInteger)lineIndex;
-- (BOOL)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView roundedConnectionsAtLineIndex:(NSUInteger)lineIndex;
+- (BOOL)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView smoothLineAtLineIndex:(NSUInteger)lineIndex;
 
 @end
 
@@ -509,15 +509,6 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
     return [self padding];
 }
 
-- (BOOL)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView roundedConnectionsAtLineIndex:(NSUInteger)lineIndex
-{
-    if ([self.dataSource respondsToSelector:@selector(lineChartView:roundedConnectionsAtLineIndex:)])
-    {
-        return [self.dataSource lineChartView:self roundedConnectionsAtLineIndex:lineIndex];
-    }
-    return NO;
-}
-
 - (JBLineChartViewLineStyle)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView lineStyleForLineAtLineIndex:(NSUInteger)lineIndex
 {
     if ([self.dataSource respondsToSelector:@selector(lineChartView:lineStyleForLineAtLineIndex:)])
@@ -525,6 +516,15 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         return [self.dataSource lineChartView:self lineStyleForLineAtLineIndex:lineIndex];
     }
     return JBLineChartViewLineStyleSolid;
+}
+
+- (BOOL)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView smoothLineAtLineIndex:(NSUInteger)lineIndex
+{
+    if ([self.dataSource respondsToSelector:@selector(lineChartView:smoothLineAtLineIndex:)])
+    {
+        return [self.dataSource lineChartView:self smoothLineAtLineIndex:lineIndex];
+    }
+    return NO;
 }
 
 #pragma mark - JBLineChartDotsViewDelegate
@@ -1055,36 +1055,37 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         JBLineChartPoint *previousLineChartPoint = nil;
         CGFloat previousSlope;
         
-        NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:roundedConnectionsAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView colorForLineAtLineIndex:(NSUInteger)lineIndex");
-        BOOL roundedConnections = [self.delegate lineChartLinesView:self roundedConnectionsAtLineIndex:lineIndex];
+        NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:smoothLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (BOOL)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView smoothLineAtLineIndex:(NSUInteger)lineIndex");
+        BOOL smoothLine = [self.delegate lineChartLinesView:self smoothLineAtLineIndex:lineIndex];
 
         CGFloat nextSlope = 0;
         CGFloat currentSlope = 0;
         NSUInteger index = 0;
-        for (JBLineChartPoint *lineChartPoint in [lineData sortedArrayUsingSelector:@selector(compare:)])
+        NSArray *sortedLineData = [lineData sortedArrayUsingSelector:@selector(compare:)];
+        for (JBLineChartPoint *lineChartPoint in sortedLineData)
         {
-            
             if (index == 0)
             {
                 [path moveToPoint:CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - padding, fmax(padding, lineChartPoint.position.y)))];
             }
             else
             {
-                if (roundedConnections) {
+                if (smoothLine == YES)
+                {
                     JBLineChartPoint *nextLineChartPoint = nil;
-                    if (index!=([lineData count]-1)) {
-                        nextLineChartPoint = [[lineData sortedArrayUsingSelector:@selector(compare:)] objectAtIndex:index+1];
+                    if (index != ([lineData count] - 1))
+                    {
+                        nextLineChartPoint = [sortedLineData objectAtIndex:(index + 1)];
                     }
                     
-                    nextSlope = nextLineChartPoint ? (nextLineChartPoint.position.y-lineChartPoint.position.y)/(nextLineChartPoint.position.x-lineChartPoint.position.x) : previousSlope;
-                    currentSlope = (lineChartPoint.position.y-previousLineChartPoint.position.y)/(lineChartPoint.position.x-previousLineChartPoint.position.x);
+                    nextSlope = (nextLineChartPoint != nil) ? ((nextLineChartPoint.position.y - lineChartPoint.position.y)) / ((nextLineChartPoint.position.x - lineChartPoint.position.x)) : previousSlope;
+                    currentSlope = ((lineChartPoint.position.y - previousLineChartPoint.position.y)) / (lineChartPoint.position.x-previousLineChartPoint.position.x);
                 }
 
-                if (roundedConnections &&
-                    ((currentSlope>=nextSlope+kJBLineChartLinesViewSlopeThreshold) || (currentSlope<=nextSlope-kJBLineChartLinesViewSlopeThreshold)) )
+                if (smoothLine && ((currentSlope >= (nextSlope + kJBLineChartLinesViewSlopeThreshold)) || (currentSlope <= (nextSlope - kJBLineChartLinesViewSlopeThreshold))))
                 {
-                    CGFloat dx = lineChartPoint.position.x-previousLineChartPoint.position.x;
-                    CGFloat controlPointX = previousLineChartPoint.position.x+(dx/2);
+                    CGFloat dx = lineChartPoint.position.x - previousLineChartPoint.position.x;
+                    CGFloat controlPointX = previousLineChartPoint.position.x + (dx / 2);
                     
                     CGPoint controlPoint1 = CGPointMake(controlPointX, previousLineChartPoint.position.y);
                     CGPoint controlPoint2 = CGPointMake(controlPointX, lineChartPoint.position.y);
@@ -1115,7 +1116,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:colorForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView colorForLineAtLineIndex:(NSUInteger)lineIndex");
         shapeLayer.strokeColor = [self.delegate lineChartLinesView:self colorForLineAtLineIndex:lineIndex].CGColor;
         
-        if (roundedConnections)
+        if (smoothLine == YES)
         {
             shapeLayer.lineCap = kCALineCapRound;
             shapeLayer.lineJoin = kCALineJoinRound;

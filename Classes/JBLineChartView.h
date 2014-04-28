@@ -249,15 +249,15 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
 - (BOOL)lineChartView:(JBLineChartView *)lineChartView showsDotsForLineAtLineIndex:(NSUInteger)lineIndex;
 
 /**
- *  Returns whether or not a line should be smoothed (rounded end caps and connections).
+ *  Returns whether or not a line should be rendered with curved connections and rounded end caps.
  *
  *  Default: NO
  *
  *  @param lineChartView    The line chart object requesting this information.
  *  @param lineIndex        An index number identifying a line in the chart.
  *
- *  @return Whether or not a line should smooth it's ends and connections. 
+ *  @return Whether or not a line should smooth it's connections and end caps.
  */
-- (BOOL)lineChartView:(JBLineChartView *)lineChartView roundedConnectionsAtLineIndex:(NSUInteger)lineIndex;
+- (BOOL)lineChartView:(JBLineChartView *)lineChartView smoothLineAtLineIndex:(NSUInteger)lineIndex;
 
 @end

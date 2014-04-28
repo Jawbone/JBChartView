@@ -251,7 +251,7 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
     return lineIndex == JBLineChartViewLineStyleDashed;
 }
 
-- (BOOL)lineChartView:(JBLineChartView *)lineChartView roundedConnectionsAtLineIndex:(NSUInteger)lineIndex
+- (BOOL)lineChartView:(JBLineChartView *)lineChartView smoothLineAtLineIndex:(NSUInteger)lineIndex
 {
     return lineIndex == JBLineChartViewLineStyleSolid;
 }
