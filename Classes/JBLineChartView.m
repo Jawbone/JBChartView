@@ -1598,6 +1598,10 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 
         NSAssert([self.delegate respondsToSelector:@selector(lineChartAreasView:smoothLineAtLineIndex:)], @"JBLineChartAreasView // delegate must implement - (BOOL)lineChartAreasView:(JBLineChartAreasView *)lineChartAreasView smoothLineAtLineIndex:(NSUInteger)lineIndex");
         BOOL smoothLine = [self.delegate lineChartAreasView:self smoothLineAtLineIndex:lineIndex];
+        BOOL previousSmoothLine = NO;
+        if (lineIndex > 0) {
+            previousSmoothLine = [self.delegate lineChartAreasView:self smoothLineAtLineIndex:lineIndex - 1];
+        }
 
         CGFloat nextSlope = 0;
         CGFloat currentSlope = 0;
@@ -1621,7 +1625,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
             }
             else
             {
-                if (smoothLine == YES)
+                if (previousSmoothLine == YES)
                 {
                     JBLineChartPoint *nextLineChartPoint = nil;
                     if (index != ([lineData count] - 1))
