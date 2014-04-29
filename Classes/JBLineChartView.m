@@ -1630,7 +1630,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
                     JBLineChartPoint *nextLineChartPoint = nil;
                     if (index != ([lineData count] - 1))
                     {
-                        nextLineChartPoint = [sortedLineData objectAtIndex:(index + 1)];
+                        nextLineChartPoint = [[[previousLineData reverseObjectEnumerator] allObjects] objectAtIndex:(index + 1)];
                     }
 
                     nextSlope = (nextLineChartPoint != nil) ? ((nextLineChartPoint.position.y - lineChartPoint.position.y)) / ((nextLineChartPoint.position.x - lineChartPoint.position.x)) : previousSlope;
