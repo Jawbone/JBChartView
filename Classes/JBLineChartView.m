@@ -170,6 +170,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 - (UIColor *)lineChartAreasView:(JBLineChartAreasView *)lineChartAreasView colorForAreaUnderLineAtLineIndex:(NSUInteger)lineIndex;
 - (UIColor *)lineChartAreasView:(JBLineChartAreasView *)lineChartAreasView selectedColorForAreaUnderLineAtLineIndex:(NSUInteger)lineIndex;
 - (CGFloat)paddingForLineChartAreasView:(JBLineChartAreasView *)lineChartAreasView;
+- (BOOL)lineChartAreasView:(JBLineChartAreasView *)lineChartAreasView smoothLineAtLineIndex:(NSUInteger)lineIndex;
 
 @end
 
@@ -739,6 +740,16 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
     return [self padding];
 }
 
+- (BOOL)lineChartAreasView:(JBLineChartAreasView *)lineChartAreasView smoothLineAtLineIndex:(NSUInteger)lineIndex;
+{
+    {
+        if ([self.dataSource respondsToSelector:@selector(lineChartView:smoothLineAtLineIndex:)])
+        {
+            return [self.dataSource lineChartView:self smoothLineAtLineIndex:lineIndex];
+        }
+        return NO;
+    }
+}
 
 #pragma mark - Setters
 
@@ -856,6 +867,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
                     {
                         maxHeight = height;
                     }
+
                 }
             }
         } else {
@@ -1265,7 +1277,6 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
             previousLineChartPoint = lineChartPoint;
             index++;
         }
-
         
         JBLineLayer *shapeLayer = [self lineLayerForLineIndex:lineIndex];
         if (shapeLayer == nil)
@@ -1276,13 +1287,11 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         shapeLayer.tag = lineIndex;
         NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:lineStyleForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (JBLineChartViewLineStyle)lineChartLineView:(JBLineChartLinesView *)lineChartLinesView lineStyleForLineAtLineIndex:(NSUInteger)lineIndex");
         shapeLayer.lineStyle = [self.delegate lineChartLinesView:self lineStyleForLineAtLineIndex:lineIndex];
-
+        
         NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:colorForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView colorForLineAtLineIndex:(NSUInteger)lineIndex");
         shapeLayer.strokeColor = [self.delegate lineChartLinesView:self colorForLineAtLineIndex:lineIndex].CGColor;
-
-        NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:smoothLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView colorForLineAtLineIndex:(NSUInteger)lineIndex");
-        BOOL smoothLine = [self.delegate lineChartLinesView:self smoothLineAtLineIndex:lineIndex];
-        if (smoothLine)
+        
+        if (smoothLine == YES)
         {
             shapeLayer.lineCap = kCALineCapRound;
             shapeLayer.lineJoin = kCALineJoinRound;
@@ -1295,13 +1304,11 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         
         NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:widthForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (CGFloat)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView widthForLineAtLineIndex:(NSUInteger)lineIndex");
         shapeLayer.lineWidth = [self.delegate lineChartLinesView:self widthForLineAtLineIndex:lineIndex];
-
         shapeLayer.path = path.CGPath;
         shapeLayer.frame = self.bounds;
         [self.layer addSublayer:shapeLayer];
 
         lineIndex++;
-
     }
 
     self.animated = NO;
@@ -1378,21 +1385,6 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         if ([layer isKindOfClass:[JBLineLayer class]])
         {
             if (((JBLineLayer *)layer).tag == lineIndex)
-            {
-                return (JBLineLayer *)layer;
-            }
-        }
-    }
-    return nil;
-}
-
-- (JBLineLayer *)fillLayerForAreaIndex:(NSUInteger)areaIndex
-{
-    for (CALayer *layer in [self.layer sublayers])
-    {
-        if ([layer isKindOfClass:[JBLineLayer class]])
-        {
-            if (((JBLineLayer *)layer).tag == areaIndex)
             {
                 return (JBLineLayer *)layer;
             }
@@ -1601,6 +1593,17 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         UIBezierPath *path = [UIBezierPath bezierPath];
         path.miterLimit = kJBLineChartLinesViewMiterLimit;
 
+        JBLineChartPoint *previousLineChartPoint = nil;
+        CGFloat previousSlope;
+
+        NSAssert([self.delegate respondsToSelector:@selector(lineChartAreasView:smoothLineAtLineIndex:)], @"JBLineChartAreasView // delegate must implement - (BOOL)lineChartAreasView:(JBLineChartAreasView *)lineChartAreasView smoothLineAtLineIndex:(NSUInteger)lineIndex");
+        BOOL smoothLine = [self.delegate lineChartAreasView:self smoothLineAtLineIndex:lineIndex];
+
+        CGFloat nextSlope = 0;
+        CGFloat currentSlope = 0;
+        NSUInteger index = 0;
+        NSArray *sortedLineData = [lineData sortedArrayUsingSelector:@selector(compare:)];
+
         if (!previousLineData) {
             JBLineChartPoint *lowerRightCornor = [[JBLineChartPoint alloc] init];
             lowerRightCornor.position = CGPointMake(self.bounds.size.width - padding, self.bounds.size.height - padding);
@@ -1610,7 +1613,6 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         }
 
         //add the previous line in inversed order at the beginning of the path to create a polygon
-        NSUInteger index = 0;
         for (JBLineChartPoint *lineChartPoint in [[previousLineData reverseObjectEnumerator] allObjects])
         {
             if (index == 0)
@@ -1619,15 +1621,81 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
             }
             else
             {
-                [path addLineToPoint:CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - padding, fmax(padding, lineChartPoint.position.y)))];
+                if (smoothLine == YES)
+                {
+                    JBLineChartPoint *nextLineChartPoint = nil;
+                    if (index != ([lineData count] - 1))
+                    {
+                        nextLineChartPoint = [sortedLineData objectAtIndex:(index + 1)];
+                    }
+
+                    nextSlope = (nextLineChartPoint != nil) ? ((nextLineChartPoint.position.y - lineChartPoint.position.y)) / ((nextLineChartPoint.position.x - lineChartPoint.position.x)) : previousSlope;
+                    currentSlope = ((lineChartPoint.position.y - previousLineChartPoint.position.y)) / (lineChartPoint.position.x-previousLineChartPoint.position.x);
+                }
+
+                if (smoothLine && ((currentSlope >= (nextSlope + kJBLineChartLinesViewSlopeThreshold)) || (currentSlope <= (nextSlope - kJBLineChartLinesViewSlopeThreshold))))
+                {
+                    CGFloat deltaX = lineChartPoint.position.x - previousLineChartPoint.position.x;
+                    CGFloat controlPointX = previousLineChartPoint.position.x + (deltaX / 2);
+
+                    CGPoint controlPoint1 = CGPointMake(controlPointX, previousLineChartPoint.position.y);
+                    CGPoint controlPoint2 = CGPointMake(controlPointX, lineChartPoint.position.y);
+
+                    [path addCurveToPoint:CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - padding, fmax(padding, lineChartPoint.position.y))) controlPoint1:controlPoint1 controlPoint2:controlPoint2];
+                }
+                else
+                {
+                    [path addLineToPoint:CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - padding, fmax(padding, lineChartPoint.position.y)))];
+                }
+
+                previousSlope = currentSlope;
             }
-            index ++;
+            previousLineChartPoint = lineChartPoint;
+            index++;
         }
 
+        index = 0;
         for (JBLineChartPoint *lineChartPoint in [lineData sortedArrayUsingSelector:@selector(compare:)])
         {
 
-            [path addLineToPoint:CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - padding, fmax(padding, lineChartPoint.position.y)))];
+            if (index == 0)
+            {
+                [path addLineToPoint:CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - padding, fmax(padding, lineChartPoint.position.y)))];
+            }
+            else
+            {
+                if (smoothLine == YES)
+                {
+                    JBLineChartPoint *nextLineChartPoint = nil;
+                    if (index != ([lineData count] - 1))
+                    {
+                        nextLineChartPoint = [sortedLineData objectAtIndex:(index + 1)];
+                    }
+
+                    nextSlope = (nextLineChartPoint != nil) ? ((nextLineChartPoint.position.y - lineChartPoint.position.y)) / ((nextLineChartPoint.position.x - lineChartPoint.position.x)) : previousSlope;
+                    currentSlope = ((lineChartPoint.position.y - previousLineChartPoint.position.y)) / (lineChartPoint.position.x-previousLineChartPoint.position.x);
+                }
+
+                if (smoothLine && ((currentSlope >= (nextSlope + kJBLineChartLinesViewSlopeThreshold)) || (currentSlope <= (nextSlope - kJBLineChartLinesViewSlopeThreshold))))
+                {
+                    CGFloat deltaX = lineChartPoint.position.x - previousLineChartPoint.position.x;
+                    CGFloat controlPointX = previousLineChartPoint.position.x + (deltaX / 2);
+
+                    CGPoint controlPoint1 = CGPointMake(controlPointX, previousLineChartPoint.position.y);
+                    CGPoint controlPoint2 = CGPointMake(controlPointX, lineChartPoint.position.y);
+
+                    [path addCurveToPoint:CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - padding, fmax(padding, lineChartPoint.position.y))) controlPoint1:controlPoint1 controlPoint2:controlPoint2];
+                }
+                else
+                {
+                    [path addLineToPoint:CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - padding, fmax(padding, lineChartPoint.position.y)))];
+                }
+
+                previousSlope = currentSlope;
+            }
+            previousLineChartPoint = lineChartPoint;
+            index++;
+
         }
 
         [path closePath];
