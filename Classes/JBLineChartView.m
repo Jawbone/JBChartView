@@ -1083,7 +1083,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
                 BOOL deltaFromPreviousSlope = ((currentSlope >= (previousSlope + kJBLineChartLinesViewSmoothThresholdSlope)) || (currentSlope <= (previousSlope - kJBLineChartLinesViewSmoothThresholdSlope)));
                 BOOL deltaFromPreviousY = (lineChartPoint.position.y >= previousLineChartPoint.position.y + kJBLineChartLinesViewSmoothThresholdVertical) || (lineChartPoint.position.y <= previousLineChartPoint.position.y - kJBLineChartLinesViewSmoothThresholdVertical);
                 
-                if (YES && deltaFromNextSlope && deltaFromPreviousSlope && deltaFromPreviousY)
+                if (smoothLine && deltaFromNextSlope && deltaFromPreviousSlope && deltaFromPreviousY)
                 {
                     CGFloat deltaX = lineChartPoint.position.x - previousLineChartPoint.position.x;
                     CGFloat controlPointX = previousLineChartPoint.position.x + (deltaX / 2);
