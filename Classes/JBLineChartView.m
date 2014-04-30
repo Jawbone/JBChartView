@@ -1069,7 +1069,6 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
             }
             else
             {
-                
                 JBLineChartPoint *nextLineChartPoint = nil;
                 if (index != ([lineData count] - 1))
                 {
