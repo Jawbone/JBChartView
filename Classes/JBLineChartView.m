@@ -24,7 +24,8 @@ CGFloat static const kJBLineChartLinesViewMiterLimit = -5.0;
 CGFloat static const kJBLineChartLinesViewDefaultLinePhase = 1.0f;
 CGFloat static const kJBLineChartLinesViewDefaultDimmedOpacity = 0.20f;
 NSInteger static const kJBLineChartLinesViewUnselectedLineIndex = -1;
-CGFloat static const kJBLineChartLinesViewSlopeThreshold = 0.01f;
+CGFloat static const kJBLineChartLinesViewSmoothThresholdSlope = 0.01f;
+NSInteger static const kJBLineChartLinesViewSmoothThresholdVertical = 1;
 
 // Numerics (JBLineChartDotsView)
 NSInteger static const kJBLineChartDotsViewDefaultRadiusFactor = 3; // 3x size of line width
@@ -1057,9 +1058,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         
         NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:smoothLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (BOOL)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView smoothLineAtLineIndex:(NSUInteger)lineIndex");
         BOOL smoothLine = [self.delegate lineChartLinesView:self smoothLineAtLineIndex:lineIndex];
-
-        CGFloat nextSlope = 0;
-        CGFloat currentSlope = 0;
+        
         NSUInteger index = 0;
         NSArray *sortedLineData = [lineData sortedArrayUsingSelector:@selector(compare:)];
         for (JBLineChartPoint *lineChartPoint in sortedLineData)
@@ -1070,19 +1069,21 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
             }
             else
             {
-                if (smoothLine == YES)
+                
+                JBLineChartPoint *nextLineChartPoint = nil;
+                if (index != ([lineData count] - 1))
                 {
-                    JBLineChartPoint *nextLineChartPoint = nil;
-                    if (index != ([lineData count] - 1))
-                    {
-                        nextLineChartPoint = [sortedLineData objectAtIndex:(index + 1)];
-                    }
-                    
-                    nextSlope = (nextLineChartPoint != nil) ? ((nextLineChartPoint.position.y - lineChartPoint.position.y)) / ((nextLineChartPoint.position.x - lineChartPoint.position.x)) : previousSlope;
-                    currentSlope = ((lineChartPoint.position.y - previousLineChartPoint.position.y)) / (lineChartPoint.position.x-previousLineChartPoint.position.x);
+                    nextLineChartPoint = [sortedLineData objectAtIndex:(index + 1)];
                 }
-
-                if (smoothLine && ((currentSlope >= (nextSlope + kJBLineChartLinesViewSlopeThreshold)) || (currentSlope <= (nextSlope - kJBLineChartLinesViewSlopeThreshold))))
+                
+                CGFloat nextSlope = (nextLineChartPoint != nil) ? ((nextLineChartPoint.position.y - lineChartPoint.position.y)) / ((nextLineChartPoint.position.x - lineChartPoint.position.x)) : previousSlope;
+                CGFloat currentSlope = ((lineChartPoint.position.y - previousLineChartPoint.position.y)) / (lineChartPoint.position.x-previousLineChartPoint.position.x);
+                
+                BOOL deltaFromNextSlope = ((currentSlope >= (nextSlope + kJBLineChartLinesViewSmoothThresholdSlope)) || (currentSlope <= (nextSlope - kJBLineChartLinesViewSmoothThresholdSlope)));
+                BOOL deltaFromPreviousSlope = ((currentSlope >= (previousSlope + kJBLineChartLinesViewSmoothThresholdSlope)) || (currentSlope <= (previousSlope - kJBLineChartLinesViewSmoothThresholdSlope)));
+                BOOL deltaFromPreviousY = (lineChartPoint.position.y >= previousLineChartPoint.position.y + kJBLineChartLinesViewSmoothThresholdVertical) || (lineChartPoint.position.y <= previousLineChartPoint.position.y - kJBLineChartLinesViewSmoothThresholdVertical);
+                
+                if (smoothLine && deltaFromNextSlope && deltaFromPreviousSlope && deltaFromPreviousY)
                 {
                     CGFloat deltaX = lineChartPoint.position.x - previousLineChartPoint.position.x;
                     CGFloat controlPointX = previousLineChartPoint.position.x + (deltaX / 2);
