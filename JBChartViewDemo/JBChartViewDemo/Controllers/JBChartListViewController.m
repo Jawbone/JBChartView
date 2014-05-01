@@ -11,6 +11,7 @@
 // Controllers
 #import "JBBarChartViewController.h"
 #import "JBLineChartViewController.h"
+#import "JBAreaChartViewController.h"
 
 // Views
 #import "JBChartTableCell.h"
@@ -18,6 +19,7 @@
 typedef NS_ENUM(NSInteger, JBChartListViewControllerRow){
 	JBChartListViewControllerRowLineChart,
     JBChartListViewControllerRowBarChart,
+    JBChartListViewControllerRowAreaChart,
     JBChartListViewControllerRowCount
 };
 
@@ -50,10 +52,34 @@ NSInteger const kJBChartListViewControllerCellHeight = 100;
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    JBChartTableCell *cell = [tableView dequeueReusableCellWithIdentifier:kJBChartListViewControllerCellIdentifier forIndexPath:indexPath];    
-    cell.textLabel.text = indexPath.row == JBChartListViewControllerRowLineChart ? kJBStringLabelAverageDailyRainfall : kJBStringLabelAverageMonthlyTemperature;
-    cell.detailTextLabel.text = indexPath.row == JBChartListViewControllerRowLineChart ? kJBStringLabelSanFrancisco2013 : kJBStringLabelWorldwide2012;
-    cell.type = indexPath.row == JBChartListViewControllerRowLineChart ? JBChartTableCellTypeLineChart : JBChartTableCellTypeBarChart;
+    JBChartTableCell *cell = [tableView dequeueReusableCellWithIdentifier:kJBChartListViewControllerCellIdentifier forIndexPath:indexPath];
+
+    NSString *text = nil;
+    NSString *detailText = nil;
+    JBChartTableCellType type = -1;
+    switch (indexPath.row) {
+        case JBChartListViewControllerRowLineChart:
+            text = kJBStringLabelAverageDailyRainfall;
+            detailText = kJBStringLabelSanFrancisco2013;
+            type = JBChartTableCellTypeLineChart;
+            break;
+        case JBChartListViewControllerRowBarChart:
+            text = kJBStringLabelAverageMonthlyTemperature;
+            detailText = kJBStringLabelWorldwide2012;
+            type = JBChartTableCellTypeBarChart;
+            break;
+        case JBChartListViewControllerRowAreaChart:
+            text = kJBStringLabelAverageShineHours;
+            detailText = kJBStringLabelSeattle2014;
+            type = JBChartTableCellTypeAreaChart;
+            break;
+        default:
+            break;
+    }
+    cell.textLabel.text = text;
+    cell.detailTextLabel.text = detailText;
+    cell.type = type;
+
     return cell;
 }
 
@@ -77,6 +103,11 @@ NSInteger const kJBChartListViewControllerCellHeight = 100;
     {
         JBBarChartViewController *barChartController = [[JBBarChartViewController alloc] init];
         [self.navigationController pushViewController:barChartController animated:YES];
+    }
+    else if (indexPath.row == JBChartListViewControllerRowAreaChart)
+    {
+        JBAreaChartViewController *areaChartController = [[JBAreaChartViewController alloc] init];
+        [self.navigationController pushViewController:areaChartController animated:YES];
     }
 }
 
