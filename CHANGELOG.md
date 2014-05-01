@@ -1,5 +1,9 @@
 # Changelog
 
+## <a href="https://github.com/Jawbone/JBChartView/tree/v2.4.2">2.4.2</a> 
+#### 04/30/14
+- Fixes issue <a href="https://github.com/Jawbone/JBChartView/pull/46">#46</a>.
+
 ## <a href="https://github.com/Jawbone/JBChartView/tree/v2.4.1">2.4.1</a> 
 #### 04/30/14
 - Fixes issue <a href="https://github.com/Jawbone/JBChartView/pull/45">#45</a>.
