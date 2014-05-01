@@ -14,8 +14,8 @@
 
 @interface JBBarChartView : JBChartView
 
-@property (nonatomic, weak) id<JBBarChartViewDelegate> delegate;
-@property (nonatomic, weak) id<JBBarChartViewDataSource> dataSource;
+@property (nonatomic, weak) IBOutlet id<JBBarChartViewDelegate> delegate;
+@property (nonatomic, weak) IBOutlet id<JBBarChartViewDataSource> dataSource;
 
 /**
  *  Vertical highlight overlayed on bar during touch events.
