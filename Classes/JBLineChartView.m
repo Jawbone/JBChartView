@@ -402,9 +402,9 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 
 - (CGFloat)minHeight
 {
-    if (self.mininumValue != kJBChartViewUndefinedMinimumValue)
+    if (self.minimumValue != kJBChartViewUndefinedMinimumValue)
     {
-        return MIN(self.mininumValue, self.cachedMinHeight);
+        return MIN(self.minimumValue, self.cachedMinHeight);
     }
     return self.cachedMinHeight;
 }
@@ -724,13 +724,13 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
     return _cachedMaxHeight;
 }
 
-- (CGFloat)mininumValue
+- (CGFloat)minimumValue
 {
-    if ([super mininumValue] == kJBChartViewUndefinedMinimumValue)
+    if ([super minimumValue] == kJBChartViewUndefinedMinimumValue)
     {
         return self.cachedMinHeight;
     }
-    return [super mininumValue];
+    return [super minimumValue];
 }
 
 - (CGFloat)maximumValue

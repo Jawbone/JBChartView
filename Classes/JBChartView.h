@@ -51,7 +51,7 @@ typedef NS_ENUM(NSInteger, JBChartViewState){
  *
  *  For min/max modifications to take effect, reloadData must be called.
  */
-@property (nonatomic, assign) CGFloat mininumValue;
+@property (nonatomic, assign) CGFloat minimumValue;
 @property (nonatomic, assign) CGFloat maximumValue;
 
 /**

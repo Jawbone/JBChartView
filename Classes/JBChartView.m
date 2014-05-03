@@ -59,7 +59,7 @@ static UIColor *kJBChartVerticalSelectionViewDefaultBgColor = nil;
 - (void)constructChartView
 {
     self.clipsToBounds = YES;
-    _mininumValue = kJBChartViewUndefinedMinimumValue;
+    _minimumValue = kJBChartViewUndefinedMinimumValue;
     _maximumValue = kJBChartViewUndefinedMaximumValue;
 }
 
@@ -138,10 +138,10 @@ static UIColor *kJBChartVerticalSelectionViewDefaultBgColor = nil;
     [self setState:state animated:NO];
 }
 
-- (void)setMininumValue:(CGFloat)mininumValue
+- (void)setMinimumValue:(CGFloat)minimumValue
 {
-    NSAssert(mininumValue >= 0, @"JBChartView // the minimumValue must be >= 0.");
-    _mininumValue = mininumValue;
+    NSAssert(minimumValue >= 0, @"JBChartView // the minimumValue must be >= 0.");
+    _minimumValue = minimumValue;
 }
 
 - (void)setMaximumValue:(CGFloat)maximumValue
