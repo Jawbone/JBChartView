@@ -38,7 +38,7 @@ Simply add the following line to your <code>Podfile</code>:
 Your Podfile should look something like:
 
 	platform :ios, '7.0'
-	pod 'JBChartView', '~> 2.4.3'
+	pod 'JBChartView', '~> 2.5.0'
 	
 ### The Old School Way
 
@@ -229,6 +229,21 @@ Lastly, a line chart's selection events are delegated back via:
 	}
 	
 The <b>touchPoint</b> is especially important as it allows you to add custom elements to your chart during  selection events. Refer to the demo project (<b>JBLineChartViewController</b>) to see how a tooltip can be used to display additional information during selection events.
+
+## Minimum & Maximum Values
+
+By default, the a chart's minimum value (y-axis) will be clamped to 0. The maximum is equal to the max value supplied by the dataSource. You can override either value via:
+
+	- (void)setMinimumValue:(CGFloat)minimumValue;
+	- (void)setMaximumValue:(CGFloat)maximumValue;
+
+If value(s) are supplied, they must be >= 0, otherwise an assertion will be thrown. For the changes to take effect, reloadData must be called. To reset the values back to their original defaults:
+
+	- (void)resetMinimumValue;
+	- (void)resetMaximumValue;
+	
+The min/max values are clamped to the ceiling and floor of the actual min/max values of the chart's data source; for example, if a maximumValue of 20 is supplied & the chart's actual max is 100, then 100 will be used. For min/max modifications to take effect, reloadData must be called.
+
 	
 ## License
 
