@@ -232,12 +232,12 @@ The <b>touchPoint</b> is especially important as it allows you to add custom ele
 
 ## Minimum & Maximum Values
 
-By default, the a chart's minimum value (y-axis) will be clamped to 0. The maximum is equal to the max value supplied by the dataSource. You can override either value via:
+By default, a chart's minimum value (y-axis) is equal to 0. The maximum is equal to the max value supplied by the dataSource. You can override either value via:
 
 	- (void)setMinimumValue:(CGFloat)minimumValue;
 	- (void)setMaximumValue:(CGFloat)maximumValue;
 
-If value(s) are supplied, they must be >= 0, otherwise an assertion will be thrown. For the changes to take effect, reloadData must be called. To reset the values back to their original defaults:
+If value(s) are supplied, they must be >= 0, otherwise an assertion will be thrown. To reset the values back to their original defaults:
 
 	- (void)resetMinimumValue;
 	- (void)resetMaximumValue;
