@@ -8,14 +8,17 @@
 
 #import "JBChartView.h"
 
+// Numerics
 CGFloat const kJBChartViewDefaultAnimationDuration = 0.25f;
-CGFloat const kJBChartViewUndefinedMinimumValue = -1.0f;
-CGFloat const kJBChartViewUndefinedMaximumValue = -1.0f;
+CGFloat const kJBChartViewDefaulMinimumValue = 0.0f;
 
 // Color (JBChartSelectionView)
 static UIColor *kJBChartVerticalSelectionViewDefaultBgColor = nil;
 
 @interface JBChartView ()
+
+@property (nonatomic, assign) BOOL hasMaximumValue;
+@property (nonatomic, assign) BOOL hasMinimumValue;
 
 // Construction
 - (void)constructChartView;
@@ -59,8 +62,7 @@ static UIColor *kJBChartVerticalSelectionViewDefaultBgColor = nil;
 - (void)constructChartView
 {
     self.clipsToBounds = YES;
-    _minimumValue = kJBChartViewUndefinedMinimumValue;
-    _maximumValue = kJBChartViewUndefinedMaximumValue;
+    self.minimumValue = kJBChartViewDefaulMinimumValue;
 }
 
 #pragma mark - Public
@@ -142,12 +144,24 @@ static UIColor *kJBChartVerticalSelectionViewDefaultBgColor = nil;
 {
     NSAssert(minimumValue >= 0, @"JBChartView // the minimumValue must be >= 0.");
     _minimumValue = minimumValue;
+    _hasMinimumValue = YES;
 }
 
 - (void)setMaximumValue:(CGFloat)maximumValue
 {
     NSAssert(maximumValue >= 0, @"JBChartView // the maximumValue must be >= 0.");
     _maximumValue = maximumValue;
+    _hasMaximumValue = YES;
+}
+
+- (void)resetMinimumValue
+{
+    self.minimumValue = kJBChartViewDefaulMinimumValue; // resets to default
+}
+
+- (void)resetMaximumValue
+{
+    _hasMaximumValue = NO; // clears max
 }
 
 @end

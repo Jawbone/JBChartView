@@ -50,6 +50,13 @@ static UIColor *kJBLineChartViewDefaultDotColor = nil;
 static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
 static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 
+@interface JBChartView (Private)
+
+- (BOOL)hasMaximumValue;
+- (BOOL)hasMinimumValue;
+
+@end
+
 @interface JBLineLayer : CAShapeLayer
 
 @property (nonatomic, assign) NSUInteger tag;
@@ -149,8 +156,6 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 // View quick accessors
 - (CGFloat)normalizedHeightForRawHeight:(CGFloat)rawHeight;
 - (CGFloat)availableHeight;
-- (CGFloat)minHeight;
-- (CGFloat)maxHeight;
 - (CGFloat)padding;
 - (NSUInteger)dataCount;
 
@@ -384,8 +389,8 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 
 - (CGFloat)normalizedHeightForRawHeight:(CGFloat)rawHeight
 {
-    CGFloat minHeight = [self minHeight];
-    CGFloat maxHeight = [self maxHeight];
+    CGFloat minHeight = [self minimumValue];
+    CGFloat maxHeight = [self maximumValue];
 
     if ((maxHeight - minHeight) <= 0)
     {
@@ -398,24 +403,6 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 - (CGFloat)availableHeight
 {
     return self.bounds.size.height - self.headerView.frame.size.height - self.footerView.frame.size.height - self.headerPadding;
-}
-
-- (CGFloat)minHeight
-{
-    if (self.minimumValue != kJBChartViewUndefinedMinimumValue)
-    {
-        return MIN(self.minimumValue, self.cachedMinHeight);
-    }
-    return self.cachedMinHeight;
-}
-
-- (CGFloat)maxHeight
-{
-    if (self.maximumValue != kJBChartViewUndefinedMaximumValue)
-    {
-        return MAX(self.maximumValue, self.cachedMaxHeight);
-    }
-    return self.cachedMaxHeight;
 }
 
 - (CGFloat)padding
@@ -726,20 +713,20 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 
 - (CGFloat)minimumValue
 {
-    if ([super minimumValue] == kJBChartViewUndefinedMinimumValue)
+    if ([self hasMinimumValue])
     {
-        return self.cachedMinHeight;
+        return fminf(self.cachedMinHeight, [super minimumValue]);
     }
-    return [super minimumValue];
+    return self.cachedMinHeight;
 }
 
 - (CGFloat)maximumValue
 {
-    if ([super maximumValue] == kJBChartViewUndefinedMaximumValue)
+    if ([self hasMaximumValue])
     {
-        return self.cachedMaxHeight;
+        return fmaxf(self.cachedMaxHeight, [super maximumValue]);
     }
-    return [super maximumValue];
+    return self.cachedMaxHeight;
 }
 
 #pragma mark - Touch Helpers
