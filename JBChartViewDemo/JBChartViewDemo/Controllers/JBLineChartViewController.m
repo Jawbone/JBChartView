@@ -161,7 +161,7 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
     [self.informationView setTextShadowColor:nil];
     [self.informationView setSeparatorColor:kJBColorLineChartHeaderSeparatorColor];
     [self.view addSubview:self.informationView];
-    
+
     [self.lineChartView reloadData];
 }
 
@@ -255,6 +255,12 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
 {
     return lineIndex == JBLineChartViewLineStyleSolid;
 }
+
+-(BOOL)lineChartView:(JBLineChartView *)lineChartView fillsAreaUnderLineWithIndex:(NSUInteger)lineIndex
+{
+    return lineIndex == JBLineChartLineSolid;
+}
+
 
 #pragma mark - Buttons
 

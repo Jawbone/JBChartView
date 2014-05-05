@@ -56,15 +56,6 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
 @property (nonatomic, assign) BOOL showsAreaSelection;
 
 /**
- *  Fills the area under the lines till the next lane below or the bottom.
- *  For best results the lines should not intersect each other. One way to achive this is 
- *  makeing the diagramm cumulative by setting the BOOL isCumulative to YES
- *
- *  Default: NO.
- */
-@property (nonatomic, assign) BOOL fillsAreaBelowLine;
-
-/**
  *  If YES the chart adds the value of the next line to the previous. The distance of a line to the one below
  *  represents the upper lines real value. For best results you should also set the BOOL fillsAreaBelowLine to YES
  *  
@@ -154,18 +145,6 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
 - (UIColor *)lineChartView:(JBLineChartView *)lineChartView colorForLineAtLineIndex:(NSUInteger)lineIndex;
 
 /**
- *  Returns the color of particular area under the line at lineIndex within the chart.
- *
- *  Default: black color.
- *
- *  @param lineChartView    The line chart object requesting this information.
- *  @param lineIndex        An index number identifying a line in the chart.
- *
- *  @return The color to be used to shade a line in the chart.
- */
-- (UIColor *)lineChartView:(JBLineChartView *)lineChartView colorForAreaUnderLineAtLineIndex:(NSUInteger)lineIndex;
-
-/**
  *  Returns the color of a particular dot in a line at lineIndex within the chart.
  *  For this value to apply, showsDotsForLineAtLineIndex: must return YES for the line at lineIndex.
  *  Any value can be returned for lineIndex's that don't support dots, as it will never be called.
@@ -244,19 +223,6 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
  *  @return The color to be used to highlight a line during chart selections.
  */
 - (UIColor *)lineChartView:(JBLineChartView *)lineChartView selectionColorForLineAtLineIndex:(NSUInteger)lineIndex;
-
-/**
- *  Returns the selection color to be overlayed on a area under a line within the chart during touch events.
- *  The property showsAreaSelection must be YES for the color to apply.
- *
- *  Default: white color.
- *
- *  @param lineChartView    The line chart object requesting this information.
- *  @param lineIndex        An index number identifying a line in the chart.
- *
- *  @return The color to be used to highlight a line during chart selections.
- */
-- (UIColor *)lineChartView:(JBLineChartView *)lineChartView selectionColorForAreaUnderLineAtLineIndex:(NSUInteger)lineIndex;
 
 /**
  *  Returns the selection color to be overlayed on a line within the chart during touch events.
