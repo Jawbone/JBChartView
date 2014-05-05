@@ -38,7 +38,7 @@ Simply add the following line to your <code>Podfile</code>:
 Your Podfile should look something like:
 
 	platform :ios, '7.0'
-	pod 'JBChartView', '~> 2.5.0'
+	pod 'JBChartView', '~> 2.5.1'
 	
 ### The Old School Way
 
@@ -232,7 +232,7 @@ The <b>touchPoint</b> is especially important as it allows you to add custom ele
 
 ## Minimum & Maximum Values
 
-By default, a chart's minimum value (y-axis) is equal to 0. The maximum is equal to the max value supplied by the dataSource. You can override either value via:
+By default, a chart's minimum and maximum values are equal to the min and max supplied by the dataSource. You can override either value via:
 
 	- (void)setMinimumValue:(CGFloat)minimumValue;
 	- (void)setMaximumValue:(CGFloat)maximumValue;
