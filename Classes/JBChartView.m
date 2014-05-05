@@ -10,7 +10,6 @@
 
 // Numerics
 CGFloat const kJBChartViewDefaultAnimationDuration = 0.25f;
-CGFloat const kJBChartViewDefaulMinimumValue = 0.0f;
 
 // Color (JBChartSelectionView)
 static UIColor *kJBChartVerticalSelectionViewDefaultBgColor = nil;
@@ -62,7 +61,6 @@ static UIColor *kJBChartVerticalSelectionViewDefaultBgColor = nil;
 - (void)constructChartView
 {
     self.clipsToBounds = YES;
-    self.minimumValue = kJBChartViewDefaulMinimumValue;
 }
 
 #pragma mark - Public
@@ -156,7 +154,7 @@ static UIColor *kJBChartVerticalSelectionViewDefaultBgColor = nil;
 
 - (void)resetMinimumValue
 {
-    self.minimumValue = kJBChartViewDefaulMinimumValue; // resets to default
+    _hasMinimumValue = NO; // clears min
 }
 
 - (void)resetMaximumValue

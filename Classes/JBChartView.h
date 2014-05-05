@@ -43,7 +43,7 @@ typedef NS_ENUM(NSInteger, JBChartViewState){
  *  The minimum and maxmimum values of the chart. 
  *  If no value(s) are supplied:
  *  
- *  minimumValue = 0
+ *  minimumValue = chart's data source min value. 
  *  maxmimumValue = chart's data source max value.
  *
  *  If value(s) are supplied, they must be >= 0, otherwise an assertion will be thrown. 
@@ -55,8 +55,9 @@ typedef NS_ENUM(NSInteger, JBChartViewState){
 @property (nonatomic, assign) CGFloat minimumValue;
 @property (nonatomic, assign) CGFloat maximumValue;
 
-- (void)resetMinimumValue; // resets to default (0)
-- (void)resetMaximumValue; // reset to default (chart's data source max value)
+// reset to default (chart's data source min & max value)
+- (void)resetMinimumValue;
+- (void)resetMaximumValue;
 
 /**
  *  Charts can either be expanded or contracted. 
