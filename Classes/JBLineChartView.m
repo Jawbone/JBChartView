@@ -1041,7 +1041,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         path.miterLimit = kJBLineChartLinesViewMiterLimit;
         
         JBLineChartPoint *previousLineChartPoint = nil;
-        CGFloat previousSlope;
+        CGFloat previousSlope = 0.0f;
         
         NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:smoothLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (BOOL)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView smoothLineAtLineIndex:(NSUInteger)lineIndex");
         BOOL smoothLine = [self.delegate lineChartLinesView:self smoothLineAtLineIndex:lineIndex];
