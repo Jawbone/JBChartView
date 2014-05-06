@@ -1,5 +1,9 @@
 # Changelog
 
+## <a href="https://github.com/Jawbone/JBChartView/tree/v2.5.2">2.5.2</a> 
+#### 05/06/14
+- Fixed compiler warnings. 
+
 ## <a href="https://github.com/Jawbone/JBChartView/tree/v2.5.1">2.5.1</a> 
 #### 05/05/14
 - Additional fixes to issue <a href="https://github.com/Jawbone/JBChartView/pull/48">#48</a>.
