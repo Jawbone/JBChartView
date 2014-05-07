@@ -38,7 +38,7 @@ Simply add the following line to your <code>Podfile</code>:
 Your Podfile should look something like:
 
 	platform :ios, '7.0'
-	pod 'JBChartView', '~> 2.5.3'
+	pod 'JBChartView', '~> 2.5.4'
 	
 ### The Old School Way
 
@@ -140,6 +140,10 @@ By default, a chart's bars will be black and flat. They can be customized by sup
 	{
 		return ...; // color of line in chart
 	}
+	
+If you don't require a custom UIView, simply supply a color for the bar instead:
+
+	- (UIColor *)barChartView:(JBBarChartView *)barChartView colorForBarViewAtIndex:(NSUInteger)index;
 
 Furthermore, the color of the selection bar (on touch events) can be customized via the <i>optional</i> protocol:
 

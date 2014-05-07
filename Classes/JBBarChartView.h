@@ -103,15 +103,15 @@
 - (UIView *)barChartView:(JBBarChartView *)barChartView barViewAtIndex:(NSUInteger)index;
 
 /**
- *  The color for bar at a particular index.
  *  If you already implement barChartView:barViewAtIndex: delegate - this method has no effect.
+ *  If a custom UIView isn't supplied, a flat bar will be made automatically (default color black).
  *
  *  Default: if none specified - calls barChartView:barViewAtIndex:.
  *
- *  @param barChartView The bar chart object requesting this information.
- *  @param index        The 0-based index of a given bar (left to right, x-axis).
+ *  @param barChartView     The bar chart object requesting this information.
+ *  @param index            The 0-based index of a given bar (left to right, x-axis).
  *
- *  @return The color to be used to shade a bar in the chart.
+ *  @return The color to be used to color a bar in the chart.
  */
 - (UIColor *)barChartView:(JBBarChartView *)barChartView colorForBarViewAtIndex:(NSUInteger)index;
 
