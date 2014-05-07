@@ -103,6 +103,19 @@
 - (UIView *)barChartView:(JBBarChartView *)barChartView barViewAtIndex:(NSUInteger)index;
 
 /**
+ *  The color for bar at a particular index.
+ *  If you already implement barChartView:barViewAtIndex: delegate - this method has no effect.
+ *
+ *  Default: if none specified - calls barChartView:barViewAtIndex:.
+ *
+ *  @param barChartView The bar chart object requesting this information.
+ *  @param index        The 0-based index of a given bar (left to right, x-axis).
+ *
+ *  @return The color to be used to shade a bar in the chart.
+ */
+- (UIColor *)barChartView:(JBBarChartView *)barChartView colorForBarViewAtIndex:(NSUInteger)index;
+
+/**
  *  The selection color to be overlayed on a bar during touch events. 
  *  The color is automatically faded to transparent (vertically). The property showsVerticalSelection
  *  must be YES for the color to apply.

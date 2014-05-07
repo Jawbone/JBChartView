@@ -181,8 +181,21 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
             else
             {
                 barView = [[UIView alloc] init];
-                barView.backgroundColor = kJBBarChartViewDefaultBarColor;
+                UIColor *backgroundColor = nil;
+
+                if ([self.dataSource respondsToSelector:@selector(barChartView:colorForBarViewAtIndex:)])
+                {
+                    backgroundColor = [self.dataSource barChartView:self colorForBarViewAtIndex:index];
+                    NSAssert(backgroundColor != nil, @"JBBarChartView // datasource function - (UIColor *)barChartView:(JBBarChartView *)barChartView colorForBarViewAtIndex:(NSUInteger)index must return a non-nil UIColor");
+                }
+                else
+                {
+                    backgroundColor = kJBBarChartViewDefaultBarColor;
+                }
+
+                barView.backgroundColor = backgroundColor;
             }
+
             CGFloat height = [self normalizedHeightForRawHeight:[self.chartDataDictionary objectForKey:key]];
             CGFloat extensionHeight = height > 0.0 ? kJBBarChartViewPopOffset : 0.0;
             barView.frame = CGRectMake(xOffset, self.bounds.size.height - height - self.footerView.frame.size.height + self.headerPadding, [self barWidth], height + extensionHeight - self.headerPadding);
