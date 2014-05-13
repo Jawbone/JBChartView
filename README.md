@@ -63,14 +63,14 @@ To initialize a <i>JBBarChartView</i>, you only need a few lines of code (see be
     
 At a minimum, you need to inform the data source how many bars are in the chart:
 
-	- (NSInteger)numberOfBarsInBarChartView:(JBBarChartView *)barChartView
+	- (NSUInteger)numberOfBarsInBarChartView:(JBBarChartView *)barChartView
 	{
 		return ...; // number of bars in chart
 	}
 
 Secondly, you need to inform the delegate the height of each bar (automatically normalized across the entire chart):
     
-    - (CGFloat)barChartView:(JBBarChartView *)barChartView heightForBarViewAtAtIndex:(NSInteger)index
+    - (CGFloat)barChartView:(JBBarChartView *)barChartView heightForBarViewAtAtIndex:(NSUInteger)index
     {
 		return ...; // height of bar at index
 	}
