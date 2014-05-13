@@ -198,7 +198,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
             CGFloat height = [self normalizedHeightForRawHeight:[self.chartDataDictionary objectForKey:key]];
             CGFloat extensionHeight = height > 0.0 ? kJBBarChartViewPopOffset : 0.0;
-            barView.frame = CGRectMake(xOffset, self.bounds.size.height - height - self.footerView.frame.size.height + self.headerPadding, [self barWidth], height + extensionHeight - self.headerPadding);
+            barView.frame = CGRectMake(xOffset, self.bounds.size.height - height - self.footerView.frame.size.height + self.headerPadding, [self barWidth], height + extensionHeight);
             [mutableBarViews addObject:barView];
 			
             // Add new bar
