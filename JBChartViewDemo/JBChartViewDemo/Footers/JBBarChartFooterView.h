@@ -10,7 +10,6 @@
 
 @interface JBBarChartFooterView : UIView
 
-@property (nonatomic, strong) UIColor *footerBackgroundColor; // footer background (default = black)
 @property (nonatomic, assign) CGFloat padding; // label left & right padding (default = 4.0)
 @property (nonatomic, readonly) UILabel *leftLabel;
 @property (nonatomic, readonly) UILabel *rightLabel;
