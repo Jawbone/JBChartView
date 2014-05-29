@@ -44,6 +44,15 @@
 @optional
 
 /**
+ *  Width for each bar.
+ *
+ *  @param barChartView     The bar chart object requesting this information
+ *
+ *  @return The x-axis width of the supplied barChart
+ */
+- (CGFloat) barWidthForBarChart:(JBBarChartView *)barChartView;
+
+/**
  *  Occurs when a touch gesture event occurs on a given bar (chart must be expanded).
  *  and the selection must occur within the bounds of the chart.
  *
