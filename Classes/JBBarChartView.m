@@ -273,6 +273,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     CGFloat minHeight = [self minimumValue];
     CGFloat maxHeight = [self maximumValue];
     CGFloat value = [rawHeight floatValue];
+    minHeight = minHeight - ((maxHeight - minHeight) / 4.0);
     
     if ((maxHeight - minHeight) <= 0)
     {
@@ -284,12 +285,19 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 - (CGFloat)barWidth
 {
-    NSUInteger barCount = [[self.chartDataDictionary allKeys] count];
-    if (barCount > 0)
+    if ([self.dataSource respondsToSelector:@selector(barWidthForBarChart:)])
     {
-        CGFloat totalPadding = (barCount - 1) * self.barPadding;
-        CGFloat availableWidth = self.bounds.size.width - totalPadding;
-        return availableWidth / barCount;
+        return [self.delegate barWidthForBarChart:self];
+    }
+    else
+    {
+        NSUInteger barCount = [[self.chartDataDictionary allKeys] count];
+        if (barCount > 0)
+        {
+            CGFloat totalPadding = (barCount - 1) * self.barPadding;
+            CGFloat availableWidth = self.bounds.size.width - totalPadding;
+            return availableWidth / barCount;
+        }
     }
     return 0;
 }
