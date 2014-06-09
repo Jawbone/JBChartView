@@ -128,4 +128,15 @@
  */
 - (UIColor *)barSelectionColorForBarChartView:(JBBarChartView *)barChartView;
 
+/**
+ *  The corner radius of each bar
+ *
+ *  Default: 0 radius
+ *
+ *  @param barChartView     The bar chart object requesting this information.
+ *
+ *  @return Radius of each UIView bar
+ */
+- (NSUInteger) barCornerRadiusForBarChartView:(JBBarChartView *)barChartView;
+
 @end

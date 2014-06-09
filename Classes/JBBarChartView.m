@@ -194,6 +194,11 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
                 }
 
                 barView.backgroundColor = backgroundColor;
+                
+                if ([self.dataSource respondsToSelector:@selector(barCornerRadiusForBarChartView:)])
+                {
+                    barView.layer.cornerRadius = [self.dataSource barCornerRadiusForBarChartView:self];
+                }
             }
 
             CGFloat height = [self normalizedHeightForRawHeight:[self.chartDataDictionary objectForKey:key]];
