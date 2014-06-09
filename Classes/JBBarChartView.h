@@ -44,15 +44,6 @@
 @optional
 
 /**
- *  Width for each bar.
- *
- *  @param barChartView     The bar chart object requesting this information
- *
- *  @return The x-axis width of the supplied barChart
- */
-- (CGFloat) barWidthForBarChart:(JBBarChartView *)barChartView;
-
-/**
  *  Occurs when a touch gesture event occurs on a given bar (chart must be expanded).
  *  and the selection must occur within the bounds of the chart.
  *
@@ -136,5 +127,16 @@
  *  @return The color to be used on each bar selection.
  */
 - (UIColor *)barSelectionColorForBarChartView:(JBBarChartView *)barChartView;
+
+/**
+ *  The corner radius of each bar
+ *
+ *  Default: 0 radius
+ *
+ *  @param barChartView     The bar chart object requesting this information.
+ *
+ *  @return Radius of each UIView bar
+ */
+- (NSUInteger) barCornerRadiusForBarChartView:(JBBarChartView *)barChartView;
 
 @end

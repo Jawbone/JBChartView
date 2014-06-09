@@ -194,6 +194,11 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
                 }
 
                 barView.backgroundColor = backgroundColor;
+                
+                if ([self.dataSource respondsToSelector:@selector(barCornerRadiusForBarChartView:)])
+                {
+                    barView.layer.cornerRadius = [self.dataSource barCornerRadiusForBarChartView:self];
+                }
             }
 
             CGFloat height = [self normalizedHeightForRawHeight:[self.chartDataDictionary objectForKey:key]];
@@ -273,7 +278,6 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     CGFloat minHeight = [self minimumValue];
     CGFloat maxHeight = [self maximumValue];
     CGFloat value = [rawHeight floatValue];
-    minHeight = minHeight - ((maxHeight - minHeight) / 4.0);
     
     if ((maxHeight - minHeight) <= 0)
     {
@@ -285,19 +289,12 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 - (CGFloat)barWidth
 {
-    if ([self.dataSource respondsToSelector:@selector(barWidthForBarChart:)])
+    NSUInteger barCount = [[self.chartDataDictionary allKeys] count];
+    if (barCount > 0)
     {
-        return [self.delegate barWidthForBarChart:self];
-    }
-    else
-    {
-        NSUInteger barCount = [[self.chartDataDictionary allKeys] count];
-        if (barCount > 0)
-        {
-            CGFloat totalPadding = (barCount - 1) * self.barPadding;
-            CGFloat availableWidth = self.bounds.size.width - totalPadding;
-            return availableWidth / barCount;
-        }
+        CGFloat totalPadding = (barCount - 1) * self.barPadding;
+        CGFloat availableWidth = self.bounds.size.width - totalPadding;
+        return availableWidth / barCount;
     }
     return 0;
 }
