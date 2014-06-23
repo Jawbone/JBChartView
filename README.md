@@ -63,6 +63,8 @@ To use JBCartView in a Swift project add the following to your bridging header (
 	#import "JBChartView/JBBarChartView.h"
 	#import "JBChartView/JBLineChartView.h"
 
+For more information about adding bridging headers see <a href="https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/BuildingCocoaApps/MixandMatch.html" target="_blank">Swift and Objective-C in the Same Project</a>.
+
 #### JBBarChartView
 
 To initialize a <i>JBBarChartView</i>, you only need a few lines of code (see below). Bar charts can also be initialized via a <b>nib</b> or with a <b>frame</b>.
