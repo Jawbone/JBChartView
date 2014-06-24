@@ -1,7 +1,7 @@
 # JBChartView
 <br/>
 <p align="center">	
-	<img src="https://raw.github.com/Jawbone/JBChartView/master/Screenshots/main.png">
+	<img src="https://raw.github.com/Jawbone/JBChartView/master/Screenshots/main.jpg">
 </p>
 
 Introducing <b>JBChartView - </b> Jawbone's iOS-based charting library for both line and bar graphs. It is easy to set-up, and highly customizable. 
