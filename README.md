@@ -21,9 +21,13 @@ Refer to the <a href="https://github.com/Jawbone/JBChartView/blob/master/CHANGEL
 - Requires iOS 7 or later
 - Requires Automatic Reference Counting (ARC)
 
-## Demo
+## Demo Project
 
 Build and run the <i>JBChartViewDemo</i> project in Xcode. The demo demonstrates the use of both the line and bar charts. It also outlines how a chart's appearance can be customized. 
+
+## More Demos
+
+- <a href="https://github.com/Jawbone/anscombe-quartet-ios">Amsombe's Quartet</a>: project showcasing the use of JBChartView in the classic data visualization example known as Anscombe's Quartet.
 
 ## Installation
 
