@@ -28,6 +28,7 @@ Build and run the <i>JBChartViewDemo</i> project in Xcode. The demo demonstrates
 ## More Demos
 
 - <a href="https://github.com/Jawbone/anscombe-quartet-ios">Amsombe's Quartet</a>: project showcasing the use of JBChartView in the classic data visualization example known as Anscombe's Quartet.
+- <a href="https://github.com/Jawbone/spark-friends-ios">Spark Friends</a>: project showcasing the use of JBChartView in the context of sparklines and (fake) user step data. 
 
 ## Installation
 
