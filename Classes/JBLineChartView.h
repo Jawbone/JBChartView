@@ -260,4 +260,29 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
  */
 - (BOOL)lineChartView:(JBLineChartView *)lineChartView smoothLineAtLineIndex:(NSUInteger)lineIndex;
 
+/**
+ *  Returns the fill color of particular line at lineIndex within the chart.
+ *
+ *  Default: clear color.
+ *
+ *  @param lineChartView    The line chart object requesting this information.
+ *  @param lineIndex        An index number identifying a line in the chart.
+ *
+ *  @return The fill color that show under a line in the chart.
+ */
+- (UIColor *)lineChartView:(JBLineChartView *)lineChartView fillColorForLineAtLineIndex:(NSUInteger)lineIndex;
+
+/**
+ *  Returns the selection fill color to be overlayed under a line within the chart during touch events.
+ *  The property showsLineSelection must be YES for the color to apply.
+ *
+ *  Default: clear color.
+ *
+ *  @param lineChartView    The line chart object requesting this information.
+ *  @param lineIndex        An index number identifying a line in the chart.
+ *
+ *  @return The color to be used to highlight under a line during chart selections.
+ */
+- (UIColor *)lineChartView:(JBLineChartView *)lineChartView selectionFillColorForLineAtLineIndex:(NSUInteger)lineIndex;
+
 @end
