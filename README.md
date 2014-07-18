@@ -57,6 +57,19 @@ The simpliest way to use JBChartView with your application is to drag and drop t
 
 All JBChartView implementations have a similiar data source and delgate pattern to <i>UITableView</i>. If you're familiar with using a <i>UITableView</i> or <i>UITableViewController</i>, using a JBChartView subclass should be a breeze!
 
+#### Swift Projects
+
+To use JBCartView in a Swift project add the following to your bridging header (JBChartView-Bridging-Header.h):
+
+	#import <UIKit/UIKit.h>
+	#import <Foundation/Foundation.h>
+	#import <QuartzCore/QuartzCore.h>
+	#import "JBChartView/JBChartView.h"
+	#import "JBChartView/JBBarChartView.h"
+	#import "JBChartView/JBLineChartView.h"
+
+For more information about adding bridging headers see <a href="https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/BuildingCocoaApps/MixandMatch.html" target="_blank">Swift and Objective-C in the Same Project</a>.
+
 #### JBBarChartView
 
 To initialize a <i>JBBarChartView</i>, you only need a few lines of code (see below). Bar charts can also be initialized via a <b>nib</b> or with a <b>frame</b>.
