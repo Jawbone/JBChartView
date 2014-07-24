@@ -2,7 +2,7 @@
 
 ## <a href="https://github.com/Jawbone/JBChartView/tree/v2.6.0">2.6.0</a>
 #### 07/24/14
-- Fixes issue <a href="https://github.com/Jawbone/JBChartView/pull/57">#71</a>.
+- Fixes issue <a href="https://github.com/Jawbone/JBChartView/pull/71">#71</a>.
 
 ## <a href="https://github.com/Jawbone/JBChartView/tree/v2.5.5">2.5.5</a>
 #### 05/13/14
