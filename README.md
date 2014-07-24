@@ -62,8 +62,6 @@ All JBChartView implementations have a similiar data source and delgate pattern 
 To use JBCartView in a Swift project add the following to your bridging header (JBChartView-Bridging-Header.h):
 
 	#import <UIKit/UIKit.h>
-	#import <Foundation/Foundation.h>
-	#import <QuartzCore/QuartzCore.h>
 	#import "JBChartView/JBChartView.h"
 	#import "JBChartView/JBBarChartView.h"
 	#import "JBChartView/JBLineChartView.h"
