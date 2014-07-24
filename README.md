@@ -43,7 +43,7 @@ Simply add the following line to your <code>Podfile</code>:
 Your Podfile should look something like:
 
 	platform :ios, '7.0'
-	pod 'JBChartView', '~> 2.5.5'
+	pod 'JBChartView', '~> 2.6.0'
 	
 ### The Old School Way
 
@@ -191,6 +191,11 @@ The color, width and style of each line in the chart can be customized via the <
 		return ...; // color of line in chart
 	}
 	
+	- (UIColor *)lineChartView:(JBLineChartView *)lineChartView fillColorForLineAtLineIndex:(NSUInteger)lineIndex
+	{
+		return ...; // color of area under line in chart
+	}
+	
 	- (CGFloat)lineChartView:(JBLineChartView *)lineChartView widthForLineAtLineIndex:(NSUInteger)lineIndex
 	{
 		return ...; // width of line in chart
@@ -216,6 +221,11 @@ Furthermore, the color and width of the selection view along with the color of t
 	- (UIColor *)lineChartView:(JBLineChartView *)lineChartView selectionColorForLineAtLineIndex:(NSUInteger)lineIndex
 	{
 		return ...; // color of selected line
+	}
+	
+	- (UIColor *)lineChartView:(JBLineChartView *)lineChartView selectionFillColorForLineAtLineIndex:(NSUInteger)lineIndex
+	{
+		return ...; // color of area under selected line
 	}
 	
 By default, each line will not show dots for each point. To enable this on a per-line basis:

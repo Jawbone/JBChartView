@@ -128,6 +128,18 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
 - (UIColor *)lineChartView:(JBLineChartView *)lineChartView colorForLineAtLineIndex:(NSUInteger)lineIndex;
 
 /**
+ *  Returns the fill color of particular line at lineIndex within the chart.
+ *
+ *  Default: clear color.
+ *
+ *  @param lineChartView    The line chart object requesting this information.
+ *  @param lineIndex        An index number identifying a line in the chart.
+ *
+ *  @return The fill color to show under a line in the chart.
+ */
+- (UIColor *)lineChartView:(JBLineChartView *)lineChartView fillColorForLineAtLineIndex:(NSUInteger)lineIndex;
+
+/**
  *  Returns the color of a particular dot in a line at lineIndex within the chart.
  *  For this value to apply, showsDotsForLineAtLineIndex: must return YES for the line at lineIndex.
  *  Any value can be returned for lineIndex's that don't support dots, as it will never be called.
@@ -208,6 +220,19 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
 - (UIColor *)lineChartView:(JBLineChartView *)lineChartView selectionColorForLineAtLineIndex:(NSUInteger)lineIndex;
 
 /**
+ *  Returns the selection fill color to be overlayed under a line within the chart during touch events.
+ *  The property showsLineSelection must be YES for the color to apply.
+ *
+ *  Default: clear color.
+ *
+ *  @param lineChartView    The line chart object requesting this information.
+ *  @param lineIndex        An index number identifying a line in the chart.
+ *
+ *  @return The color to be used to highlight under a line during chart selections.
+ */
+- (UIColor *)lineChartView:(JBLineChartView *)lineChartView selectionFillColorForLineAtLineIndex:(NSUInteger)lineIndex;
+
+/**
  *  Returns the selection color to be overlayed on a line within the chart during touch events.
  *  The property showsLineSelection must be YES for the color to apply.
  *
@@ -220,31 +245,6 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
  *  @return The color to be used to highlight a dot within a dotted line during chart selections.
  */
 - (UIColor *)lineChartView:(JBLineChartView *)lineChartView selectionColorForDotAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
-
-/**
- *  Returns the fill color of particular line at lineIndex within the chart.
- *
- *  Default: clear color.
- *
- *  @param lineChartView    The line chart object requesting this information.
- *  @param lineIndex        An index number identifying a line in the chart.
- *
- *  @return The fill color to show under a line in the chart.
- */
-- (UIColor *)lineChartView:(JBLineChartView *)lineChartView fillColorForLineAtLineIndex:(NSUInteger)lineIndex;
-
-/**
- *  Returns the selection fill color to be overlayed under a line within the chart during touch events.
- *  The property showsLineSelection must be YES for the color to apply.
- *
- *  Default: clear color.
- *
- *  @param lineChartView    The line chart object requesting this information.
- *  @param lineIndex        An index number identifying a line in the chart.
- *
- *  @return The color to be used to highlight under a line during chart selections.
- */
-- (UIColor *)lineChartView:(JBLineChartView *)lineChartView selectionFillColorForLineAtLineIndex:(NSUInteger)lineIndex;
 
 /**
  *  Returns the line style of a particular line at lineIndex within the chart.
