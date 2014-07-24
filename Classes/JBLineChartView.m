@@ -47,10 +47,10 @@ static NSArray *kJBLineChartLineViewDefaultDashPattern = nil;
 // Colors (JBLineChartView)
 static UIColor *kJBLineChartViewDefaultLineColor = nil;
 static UIColor *kJBLineChartViewDefaultLineFillColor = nil;
-static UIColor *kJBLineChartViewDefaultDotColor = nil;
 static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
-static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 static UIColor *kJBLineChartViewDefaultLineSelectionFillColor = nil;
+static UIColor *kJBLineChartViewDefaultDotColor = nil;
+static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 
 @interface JBChartView (Private)
 
@@ -193,11 +193,11 @@ static UIColor *kJBLineChartViewDefaultLineSelectionFillColor = nil;
 	if (self == [JBLineChartView class])
 	{
 		kJBLineChartViewDefaultLineColor = [UIColor blackColor];
-        kJBLineChartViewDefaultDotColor = [UIColor blackColor];
         kJBLineChartViewDefaultLineFillColor = [UIColor clearColor];
 		kJBLineChartViewDefaultLineSelectionColor = [UIColor whiteColor];
-        kJBLineChartViewDefaultDotSelectionColor = [UIColor whiteColor];
         kJBLineChartViewDefaultLineSelectionFillColor = [UIColor clearColor];
+        kJBLineChartViewDefaultDotColor = [UIColor blackColor];
+        kJBLineChartViewDefaultDotSelectionColor = [UIColor whiteColor];
 	}
 }
 
@@ -496,6 +496,24 @@ static UIColor *kJBLineChartViewDefaultLineSelectionFillColor = nil;
     return kJBLineChartViewDefaultLineSelectionColor;
 }
 
+- (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView fillColorForLineAtLineIndex:(NSUInteger)lineIndex
+{
+    if ([self.dataSource respondsToSelector:@selector(lineChartView:fillColorForLineAtLineIndex:)])
+    {
+        return [self.dataSource lineChartView:self fillColorForLineAtLineIndex:lineIndex];
+    }
+    return kJBLineChartViewDefaultLineFillColor;
+}
+
+- (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView selectedFillColorForLineAtLineIndex:(NSUInteger)lineIndex
+{
+    if ([self.dataSource respondsToSelector:@selector(lineChartView:selectionFillColorForLineAtLineIndex:)])
+    {
+        return [self.dataSource lineChartView:self selectionFillColorForLineAtLineIndex:lineIndex];
+    }
+    return kJBLineChartViewDefaultLineSelectionFillColor;
+}
+
 - (CGFloat)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView widthForLineAtLineIndex:(NSUInteger)lineIndex
 {
     if ([self.dataSource respondsToSelector:@selector(lineChartView:widthForLineAtLineIndex:)])
@@ -526,24 +544,6 @@ static UIColor *kJBLineChartViewDefaultLineSelectionFillColor = nil;
         return [self.dataSource lineChartView:self smoothLineAtLineIndex:lineIndex];
     }
     return NO;
-}
-
-- (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView fillColorForLineAtLineIndex:(NSUInteger)lineIndex
-{
-    if ([self.dataSource respondsToSelector:@selector(lineChartView:fillColorForLineAtLineIndex:)])
-    {
-        return [self.dataSource lineChartView:self fillColorForLineAtLineIndex:lineIndex];
-    }
-    return kJBLineChartViewDefaultLineFillColor;
-}
-
-- (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView selectedFillColorForLineAtLineIndex:(NSUInteger)lineIndex
-{
-    if ([self.dataSource respondsToSelector:@selector(lineChartView:selectionFillColorForLineAtLineIndex:)])
-    {
-        return [self.dataSource lineChartView:self selectionFillColorForLineAtLineIndex:lineIndex];
-    }
-    return kJBLineChartViewDefaultLineSelectionFillColor;
 }
 
 #pragma mark - JBLineChartDotsViewDelegate
@@ -1137,7 +1137,6 @@ static UIColor *kJBLineChartViewDefaultLineSelectionFillColor = nil;
                 }
                 
                 lastXPosition = lineChartPoint.position.x;
-                
                 previousSlope = currentSlope;
             }
             previousLineChartPoint = lineChartPoint;
@@ -1179,8 +1178,8 @@ static UIColor *kJBLineChartViewDefaultLineSelectionFillColor = nil;
         {
             shapeLayer.lineCap = kCALineCapButt;
             shapeLayer.lineJoin = kCALineJoinMiter;
-            shapeFillLayer.lineCap = kCALineCapRound;
-            shapeFillLayer.lineJoin = kCALineJoinRound;
+            shapeFillLayer.lineCap = kCALineCapButt;
+            shapeFillLayer.lineJoin = kCALineJoinMiter;
         }
         
         NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:widthForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (CGFloat)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView widthForLineAtLineIndex:(NSUInteger)lineIndex");
@@ -1188,9 +1187,7 @@ static UIColor *kJBLineChartViewDefaultLineSelectionFillColor = nil;
         shapeLayer.path = path.CGPath;
         shapeLayer.frame = self.bounds;
         
-        /**
-         *  Continue Path for the fill layer
-         */
+        // Continue the path for the fill layer (close and fill)
         UIBezierPath *fillPath = [path copy];
         
         [fillPath addLineToPoint:CGPointMake(lastXPosition, self.bounds.size.height - padding)];
@@ -1288,6 +1285,8 @@ static UIColor *kJBLineChartViewDefaultLineSelectionFillColor = nil;
         callbackCopy();
     }
 }
+
+#pragma mark - View Helpers
 
 - (JBLineLayer *)lineLayerForLineIndex:(NSUInteger)lineIndex
 {
