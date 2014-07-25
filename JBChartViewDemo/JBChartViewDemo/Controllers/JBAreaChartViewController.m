@@ -132,11 +132,11 @@ NSString * const kJBAreaChartViewControllerNavButtonViewKey = @"view";
     self.lineChartView.backgroundColor = kJBColorLineChartBackground;
     
     JBChartHeaderView *headerView = [[JBChartHeaderView alloc] initWithFrame:CGRectMake(kJBAreaChartViewControllerChartPadding, ceil(self.view.bounds.size.height * 0.5) - ceil(kJBAreaChartViewControllerChartHeaderHeight * 0.5), self.view.bounds.size.width - (kJBAreaChartViewControllerChartPadding * 2), kJBAreaChartViewControllerChartHeaderHeight)];
-    headerView.titleLabel.text = [kJBStringLabelAverageShineHours uppercaseString];
+    headerView.titleLabel.text = [kJBStringLabelAverageShineHoursOfSunMoon uppercaseString];
     headerView.titleLabel.textColor = kJBColorLineChartHeader;
     headerView.titleLabel.shadowColor = [UIColor colorWithWhite:1.0 alpha:0.25];
     headerView.titleLabel.shadowOffset = CGSizeMake(0, 1);
-    headerView.subtitleLabel.text = kJBStringLabel2014;
+    headerView.subtitleLabel.text = kJBStringLabel2011;
     headerView.subtitleLabel.textColor = kJBColorLineChartHeader;
     headerView.subtitleLabel.shadowColor = [UIColor colorWithWhite:1.0 alpha:0.25];
     headerView.subtitleLabel.shadowOffset = CGSizeMake(0, 1);

@@ -15,6 +15,7 @@
 #define kJBStringLabel2012 localize(@"label.2012", @"2012")
 #define kJBStringLabelAverageMonthlyTemperature localize(@"label.average.monthly.temperature", @"Average Monthly Temperature")
 #define kJBStringLabelWorldwide2012 localize(@"label.worldwide.2013", @"Worldwide - 2012")
+#define kJBStringLabelWorldwide2011 localize(@"label.worldwide.2013", @"Worldwide - 2011")
 #define kJBStringLabelWorldwideAverage localize(@"label.worldwide.average", @"Worldwide Average")
 #define kJBStringLabelDegreesFahrenheit localize(@"label.degrees.fahrenheit", @"%d%@F")
 #define kJBStringLabelDegreeSymbol localize(@"label.degree.symbol", @"\u00B0")
@@ -30,9 +31,10 @@
 
 #pragma mark - Labels (Area Chart)
 
-#define kJBStringLabel2014 localize(@"label.2014", @"2014")
+#define kJBStringLabel2011 localize(@"label.2011", @"2011")
 #define kJBStringLabelSeattle2014 localize(@"label.seattle.2014", @"Seattle - 2014")
-#define kJBStringLabelAverageShineHours localize(@"label.average.shine.hours", @"Average Shine Hours of Sun/Moon")
+#define kJBStringLabelAverageShineHoursOfSunMoon localize(@"label.average.shine.hours.of.sun.moon", @"Average Shine Hours of Sun/Moon")
+#define kJBStringLabelAverageShineHours localize(@"label.average.shine.hours", @"Average Shine Hours")
 #define kJBStringLabelHours localize(@"label.hours", @"h")
 #define kJBStringLabelMoon localize(@"label.moon", @"Moon")
 #define kJBStringLabelSun localize(@"label.sun", @"Sun")

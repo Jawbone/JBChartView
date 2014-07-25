@@ -70,7 +70,7 @@ NSInteger const kJBChartListViewControllerCellHeight = 100;
             break;
         case JBChartListViewControllerRowAreaChart:
             text = kJBStringLabelAverageShineHours;
-            detailText = kJBStringLabelSeattle2014;
+            detailText = kJBStringLabelWorldwide2011;
             type = JBChartTableCellTypeAreaChart;
             break;
         default:
