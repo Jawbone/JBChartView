@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
 	:tag => "v2.6.0"
   }
 
-  s.platform     = :ios, '7.0'
+  s.platform     = :ios, '6.0'
   s.source_files = 'Classes/**/*.{h,m}'
   s.requires_arc = true
 end
