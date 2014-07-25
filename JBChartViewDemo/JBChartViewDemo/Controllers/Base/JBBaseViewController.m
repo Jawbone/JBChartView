@@ -19,7 +19,9 @@
 - (void)loadView
 {
     [super loadView];
-    self.edgesForExtendedLayout = UIRectEdgeTop;
+    if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
+        self.edgesForExtendedLayout = UIRectEdgeTop;
+    }
     self.view.backgroundColor = [UIColor whiteColor];
     self.navigationItem.titleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:kJBImageIconJawboneLogo]];
 }

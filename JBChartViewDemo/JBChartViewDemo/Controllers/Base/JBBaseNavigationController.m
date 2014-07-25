@@ -18,9 +18,13 @@
     if (self)
     {
         self.navigationBar.translucent = NO;
-        [[UINavigationBar appearance] setBarTintColor:kJBColorNavigationTint];
-        [[UINavigationBar appearance] setTintColor:kJBColorNavigationBarTint];
-        self.interactivePopGestureRecognizer.enabled = NO;
+        if ([[UINavigationBar appearance] respondsToSelector:@selector(setBarTintColor:)]) {
+            [[UINavigationBar appearance] setBarTintColor:kJBColorNavigationTint];
+            [[UINavigationBar appearance] setTintColor:kJBColorNavigationBarTint];
+        }
+        if ([self respondsToSelector:@selector(interactivePopGestureRecognizer)]) {
+            self.interactivePopGestureRecognizer.enabled = NO;
+        }
     }
     return self;
 }
