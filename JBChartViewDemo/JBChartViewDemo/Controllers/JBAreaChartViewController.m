@@ -29,7 +29,7 @@ CGFloat const kJBAreaChartViewControllerChartHeaderHeight = 75.0f;
 CGFloat const kJBAreaChartViewControllerChartHeaderPadding = 20.0f;
 CGFloat const kJBAreaChartViewControllerChartFooterHeight = 20.0f;
 CGFloat const kJBAreaChartViewControllerChartLineWidth = 2.0f;
-NSInteger const kJBAreaChartViewControllerMaxNumChartPoints = 7;
+NSInteger const kJBAreaChartViewControllerMaxNumChartPoints = 12;
 
 // Strings
 NSString * const kJBAreaChartViewControllerNavButtonViewKey = @"view";
@@ -39,7 +39,7 @@ NSString * const kJBAreaChartViewControllerNavButtonViewKey = @"view";
 @property (nonatomic, strong) JBLineChartView *lineChartView;
 @property (nonatomic, strong) JBChartInformationView *informationView;
 @property (nonatomic, strong) NSArray *chartData;
-@property (nonatomic, strong) NSArray *daysOfWeek;
+@property (nonatomic, strong) NSArray *monthlySymbols;
 
 // Buttons
 - (void)chartToggleButtonPressed:(id)sender;
@@ -99,7 +99,7 @@ NSString * const kJBAreaChartViewControllerNavButtonViewKey = @"view";
         [mutableLineCharts addObject:mutableChartData];
     }
     _chartData = [NSArray arrayWithArray:mutableLineCharts];
-    _daysOfWeek = [[[NSDateFormatter alloc] init] shortWeekdaySymbols];
+    _monthlySymbols = [[[NSDateFormatter alloc] init] shortMonthSymbols];
 }
 
 - (NSArray *)largestLineData
@@ -145,9 +145,9 @@ NSString * const kJBAreaChartViewControllerNavButtonViewKey = @"view";
     
     JBLineChartFooterView *footerView = [[JBLineChartFooterView alloc] initWithFrame:CGRectMake(kJBAreaChartViewControllerChartPadding, ceil(self.view.bounds.size.height * 0.5) - ceil(kJBAreaChartViewControllerChartFooterHeight * 0.5), self.view.bounds.size.width - (kJBAreaChartViewControllerChartPadding * 2), kJBAreaChartViewControllerChartFooterHeight)];
     footerView.backgroundColor = [UIColor clearColor];
-    footerView.leftLabel.text = [[self.daysOfWeek firstObject] uppercaseString];
+    footerView.leftLabel.text = [[self.monthlySymbols firstObject] uppercaseString];
     footerView.leftLabel.textColor = [UIColor whiteColor];
-    footerView.rightLabel.text = [[self.daysOfWeek lastObject] uppercaseString];;
+    footerView.rightLabel.text = [[self.monthlySymbols lastObject] uppercaseString];;
     footerView.rightLabel.textColor = [UIColor whiteColor];
     footerView.sectionCount = [[self chartData] count];
     self.lineChartView.footerView = footerView;
@@ -184,7 +184,7 @@ NSString * const kJBAreaChartViewControllerNavButtonViewKey = @"view";
     [self.informationView setTitleText:lineIndex == JBLineChartLineSun ? kJBStringLabelSun : kJBStringLabelMoon];
     [self.informationView setHidden:NO animated:YES];
     [self setTooltipVisible:YES animated:YES atTouchPoint:touchPoint];
-    [self.tooltipView setText:[[self.daysOfWeek objectAtIndex:horizontalIndex] uppercaseString]];
+    [self.tooltipView setText:[[self.monthlySymbols objectAtIndex:horizontalIndex] uppercaseString]];
 }
 
 - (void)didUnselectLineInLineChartView:(JBLineChartView *)lineChartView
