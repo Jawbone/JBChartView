@@ -18,7 +18,7 @@ Refer to the <a href="https://github.com/Jawbone/JBChartView/blob/master/CHANGEL
 
 ## Requirements
 
-- Requires iOS 7 or later
+- Requires iOS 6 or later
 - Requires Automatic Reference Counting (ARC)
 
 ## Demo Project
@@ -42,8 +42,8 @@ Simply add the following line to your <code>Podfile</code>:
 	
 Your Podfile should look something like:
 
-	platform :ios, '7.0'
-	pod 'JBChartView', '~> 2.6.0'
+	platform :ios, '6.0'
+	pod 'JBChartView', '~> 2.6.1'
 	
 ### The Old School Way
 
