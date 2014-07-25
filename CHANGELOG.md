@@ -1,5 +1,9 @@
 # Changelog
 
+## <a href="https://github.com/Jawbone/JBChartView/tree/v2.6.2">2.6.2</a>
+#### 07/25/14
+- Added new controller (JBAreaChartViewController) to demonstrate area charts.
+
 ## <a href="https://github.com/Jawbone/JBChartView/tree/v2.6.1">2.6.1</a>
 #### 07/25/14
 - Fixes issue <a href="https://github.com/Jawbone/JBChartView/pull/74">#74</a>.
