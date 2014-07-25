@@ -261,8 +261,15 @@ static UIColor *kJBChartInformationViewShadowColor = nil;
 
 - (void)layoutSubviews
 {
-    CGSize valueLabelSize = [self.valueLabel.text sizeWithAttributes:@{NSFontAttributeName:self.valueLabel.font}];
-    CGSize unitLabelSize = [self.unitLabel.text sizeWithAttributes:@{NSFontAttributeName:self.unitLabel.font}];
+    CGSize valueLabelSize = CGSizeZero;
+    CGSize unitLabelSize = CGSizeZero;
+    if ([[NSString string] respondsToSelector:@selector(sizeWithAttributes:)]) {
+        valueLabelSize = [self.valueLabel.text sizeWithAttributes:@{NSFontAttributeName:self.valueLabel.font}];
+        unitLabelSize = [self.unitLabel.text sizeWithAttributes:@{NSFontAttributeName:self.unitLabel.font}];
+    } else {
+        valueLabelSize = [self.valueLabel.text sizeWithFont:self.valueLabel.font];
+        unitLabelSize = [self.unitLabel.text sizeWithFont:self.unitLabel.font];
+    }
     
     CGFloat xOffset = ceil((self.bounds.size.width - (valueLabelSize.width + unitLabelSize.width)) * 0.5);
 
