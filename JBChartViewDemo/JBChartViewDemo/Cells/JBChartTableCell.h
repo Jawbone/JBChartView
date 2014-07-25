@@ -10,7 +10,8 @@
 
 typedef NS_ENUM(NSInteger, JBChartTableCellType){
 	JBChartTableCellTypeLineChart,
-    JBChartTableCellTypeBarChart
+    JBChartTableCellTypeBarChart,
+    JBChartTableCellTypeAreaChart
 };
 
 @interface JBChartTableCell : UITableViewCell

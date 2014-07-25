@@ -12,3 +12,4 @@
 #define kJBImageIconArrow @"icon-arrow.png"
 #define kJBImageIconLineChart @"icon-line-chart.png"
 #define kJBImageIconBarChart @"icon-bar-chart.png"
+#define kJBImageIconAreaChart @"icon-area-chart.png"

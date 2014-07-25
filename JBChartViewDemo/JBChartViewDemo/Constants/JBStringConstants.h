@@ -27,3 +27,12 @@
 #define kJBStringLabelMm localize(@"label.mm", @"mm")
 #define kJBStringLabelMetropolitanAverage localize(@"label.metropolitan.average", @"Metropolitan Average")
 #define kJBStringLabelNationalAverage localize(@"label.national.average", @"National Average")
+
+#pragma mark - Labels (Area Chart)
+
+#define kJBStringLabel2014 localize(@"label.2014", @"2014")
+#define kJBStringLabelSeattle2014 localize(@"label.seattle.2014", @"Seattle - 2014")
+#define kJBStringLabelAverageShineHours localize(@"label.average.shine.hours", @"Average Shine Hours of Sun/Moon")
+#define kJBStringLabelHours localize(@"label.hours", @"h")
+#define kJBStringLabelMoon localize(@"label.moon", @"Moon")
+#define kJBStringLabelSun localize(@"label.sun", @"Sun")
