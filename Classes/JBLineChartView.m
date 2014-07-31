@@ -434,7 +434,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         CGFloat lineWidth = kJBLineChartLinesViewStrokeWidth; // default
         if ([self.dataSource respondsToSelector:@selector(lineChartView:widthForLineAtLineIndex:)])
         {
-            lineWidth = [self.dataSource lineChartView:self widthForLineAtLineIndex:lineWidth];
+            lineWidth = [self.dataSource lineChartView:self widthForLineAtLineIndex:lineIndex];
         }
         
         CGFloat dotRadius = lineWidth * kJBLineChartDotsViewDefaultRadiusFactor; // default
