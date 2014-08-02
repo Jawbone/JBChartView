@@ -170,6 +170,28 @@ NSString * const kJBAreaChartViewControllerNavButtonViewKey = @"view";
     [self.lineChartView setState:JBChartViewStateExpanded];
 }
 
+#pragma mark - JBLineChartViewDataSource
+
+- (NSUInteger)numberOfLinesInLineChartView:(JBLineChartView *)lineChartView
+{
+    return [self.chartData count];
+}
+
+- (NSUInteger)lineChartView:(JBLineChartView *)lineChartView numberOfVerticalValuesAtLineIndex:(NSUInteger)lineIndex
+{
+    return [[self.chartData objectAtIndex:lineIndex] count];
+}
+
+- (BOOL)lineChartView:(JBLineChartView *)lineChartView showsDotsForLineAtLineIndex:(NSUInteger)lineIndex
+{
+    return NO;
+}
+
+- (BOOL)lineChartView:(JBLineChartView *)lineChartView smoothLineAtLineIndex:(NSUInteger)lineIndex
+{
+    return YES;
+}
+
 #pragma mark - JBLineChartViewDelegate
 
 - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex
@@ -187,22 +209,10 @@ NSString * const kJBAreaChartViewControllerNavButtonViewKey = @"view";
     [self.tooltipView setText:[[self.monthlySymbols objectAtIndex:horizontalIndex] uppercaseString]];
 }
 
-- (void)didUnselectLineInLineChartView:(JBLineChartView *)lineChartView
+- (void)didDeselectLineInLineChartView:(JBLineChartView *)lineChartView
 {
     [self.informationView setHidden:YES animated:YES];
     [self setTooltipVisible:NO animated:YES];
-}
-
-#pragma mark - JBLineChartViewDataSource
-
-- (NSUInteger)numberOfLinesInLineChartView:(JBLineChartView *)lineChartView
-{
-    return [self.chartData count];
-}
-
-- (NSUInteger)lineChartView:(JBLineChartView *)lineChartView numberOfVerticalValuesAtLineIndex:(NSUInteger)lineIndex
-{
-    return [[self.chartData objectAtIndex:lineIndex] count];
 }
 
 - (UIColor *)lineChartView:(JBLineChartView *)lineChartView colorForLineAtLineIndex:(NSUInteger)lineIndex
@@ -248,16 +258,6 @@ NSString * const kJBAreaChartViewControllerNavButtonViewKey = @"view";
 - (JBLineChartViewLineStyle)lineChartView:(JBLineChartView *)lineChartView lineStyleForLineAtLineIndex:(NSUInteger)lineIndex
 {
     return JBLineChartViewLineStyleSolid;
-}
-
-- (BOOL)lineChartView:(JBLineChartView *)lineChartView showsDotsForLineAtLineIndex:(NSUInteger)lineIndex
-{
-    return NO;
-}
-
-- (BOOL)lineChartView:(JBLineChartView *)lineChartView smoothLineAtLineIndex:(NSUInteger)lineIndex
-{
-    return YES;
 }
 
 #pragma mark - Buttons
