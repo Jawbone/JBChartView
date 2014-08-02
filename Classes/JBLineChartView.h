@@ -74,16 +74,36 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
 @optional
 
 /**
- *  Returns the color of particular line at lineIndex within the chart.
+ *  Returns whether or not a line should show a dot for each point.
+ *  Dot size is relative to the line width and not adjustable.
+ *  Dot color is equal to the line color and not adjustable.
  *
- *  Default: black color.
+ *  Default: NO
  *
  *  @param lineChartView    The line chart object requesting this information.
  *  @param lineIndex        An index number identifying a line in the chart.
  *
- *  @return The color to be used to shade a line in the chart.
+ *  @return Whether or not a line should show a dot for each chart point.
  */
-- (UIColor *)lineChartView:(JBLineChartView *)lineChartView colorForLineAtLineIndex:(NSUInteger)lineIndex;
+- (BOOL)lineChartView:(JBLineChartView *)lineChartView showsDotsForLineAtLineIndex:(NSUInteger)lineIndex;
+
+/**
+ *  Returns whether or not a line should be rendered with curved connections and rounded end caps.
+ *
+ *  Default: NO
+ *
+ *  @param lineChartView    The line chart object requesting this information.
+ *  @param lineIndex        An index number identifying a line in the chart.
+ *
+ *  @return Whether or not a line should smooth it's connections and end caps.
+ */
+- (BOOL)lineChartView:(JBLineChartView *)lineChartView smoothLineAtLineIndex:(NSUInteger)lineIndex;
+
+
+
+
+
+
 
 /**
  *  Returns the fill color of particular line at lineIndex within the chart.
@@ -217,32 +237,6 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
  */
 - (JBLineChartViewLineStyle)lineChartView:(JBLineChartView *)lineChartView lineStyleForLineAtLineIndex:(NSUInteger)lineIndex;
 
-/**
- *  Returns whether or not a line should show a dot for each point.
- *  Dot size is relative to the line width and not adjustable.
- *  Dot color is equal to the line color and not adjustable.
- *
- *  Default: NO
- *
- *  @param lineChartView    The line chart object requesting this information.
- *  @param lineIndex        An index number identifying a line in the chart.
- *
- *  @return Whether or not a line should show a dot for each chart point.
- */
-- (BOOL)lineChartView:(JBLineChartView *)lineChartView showsDotsForLineAtLineIndex:(NSUInteger)lineIndex;
-
-/**
- *  Returns whether or not a line should be rendered with curved connections and rounded end caps.
- *
- *  Default: NO
- *
- *  @param lineChartView    The line chart object requesting this information.
- *  @param lineIndex        An index number identifying a line in the chart.
- *
- *  @return Whether or not a line should smooth it's connections and end caps.
- */
-- (BOOL)lineChartView:(JBLineChartView *)lineChartView smoothLineAtLineIndex:(NSUInteger)lineIndex;
-
 @end
 
 @protocol JBLineChartViewDelegate <NSObject>
@@ -284,5 +278,17 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
  *  @param lineChartView    A line chart object informing the delegate about the deselection.
  */
 - (void)didDeselectLineInLineChartView:(JBLineChartView *)lineChartView;
+
+/**
+ *  Returns the color of particular line at lineIndex within the chart.
+ *
+ *  Default: black color.
+ *
+ *  @param lineChartView    The line chart object requesting this information.
+ *  @param lineIndex        An index number identifying a line in the chart.
+ *
+ *  @return The color to be used to shade a line in the chart.
+ */
+- (UIColor *)lineChartView:(JBLineChartView *)lineChartView colorForLineAtLineIndex:(NSUInteger)lineIndex;
 
 @end
