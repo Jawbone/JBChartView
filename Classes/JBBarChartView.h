@@ -26,6 +26,35 @@
 
 @end
 
+@protocol JBBarChartViewDataSource <NSObject>
+
+@required
+
+/**
+ *  The number of bars in a given bar chart is the number of vertical views shown along the x-axis.
+ *
+ *  @param barChartView     The bar chart object requesting this information.
+ *
+ *  @return Number of bars in the given chart, displayed horizontally along the chart's x-axis.
+ */
+- (NSUInteger)numberOfBarsInBarChartView:(JBBarChartView *)barChartView;
+
+@optional
+
+/**
+ *  A UIView subclass representing the bar at a particular index.
+ *
+ *  Default: solid black UIView.
+ *
+ *  @param barChartView     The bar chart object requesting this information.
+ *  @param index            The 0-based index of a given bar (left to right, x-axis).
+ *
+ *  @return A UIView subclass. The view will automatically be resized by the chart during creation (ie. no need to set the frame).
+ */
+- (UIView *)barChartView:(JBBarChartView *)barChartView barViewAtIndex:(NSUInteger)index;
+
+@end
+
 @protocol JBBarChartViewDelegate <NSObject>
 
 @required
@@ -60,47 +89,7 @@
  *
  *  @param barChartView     A bar chart object informing the delegate about the unselection.
  */
-- (void)didUnselectBarChartView:(JBBarChartView *)barChartView;
-
-@end
-
-@protocol JBBarChartViewDataSource <NSObject>
-
-@required
-
-/**
- *  The number of bars in a given bar chart is the number of vertical views shown along the x-axis.
- *
- *  @param barChartView     The bar chart object requesting this information.
- *
- *  @return Number of bars in the given chart, displayed horizontally along the chart's x-axis.
- */
-- (NSUInteger)numberOfBarsInBarChartView:(JBBarChartView *)barChartView;
-
-@optional
-
-/**
- *  Horizontal padding between bars. 
- *
- *  Default: 'best-guess' algorithm based on the the total number of bars and width of the chart.
- *
- *  @param barChartView     The bar chart object requesting this information.
- *
- *  @return Horizontal width (in pixels) between each bar.
- */
-- (NSUInteger)barPaddingForBarChartView:(JBBarChartView *)barChartView;
-
-/**
- *  A UIView subclass representing the bar at a particular index.
- *
- *  Default: solid black UIView.
- *
- *  @param barChartView     The bar chart object requesting this information.
- *  @param index            The 0-based index of a given bar (left to right, x-axis).
- *
- *  @return A UIView subclass. The view will automatically be resized by the chart during creation (ie. no need to set the frame).
- */
-- (UIView *)barChartView:(JBBarChartView *)barChartView barViewAtIndex:(NSUInteger)index;
+- (void)didDeselectBarChartView:(JBBarChartView *)barChartView;
 
 /**
  *  If you already implement barChartView:barViewAtIndex: delegate - this method has no effect.
@@ -116,7 +105,7 @@
 - (UIColor *)barChartView:(JBBarChartView *)barChartView colorForBarViewAtIndex:(NSUInteger)index;
 
 /**
- *  The selection color to be overlayed on a bar during touch events. 
+ *  The selection color to be overlayed on a bar during touch events.
  *  The color is automatically faded to transparent (vertically). The property showsVerticalSelection
  *  must be YES for the color to apply.
  *
@@ -127,5 +116,16 @@
  *  @return The color to be used on each bar selection.
  */
 - (UIColor *)barSelectionColorForBarChartView:(JBBarChartView *)barChartView;
+
+/**
+ *  Horizontal padding between bars.
+ *
+ *  Default: 'best-guess' algorithm based on the the total number of bars and width of the chart.
+ *
+ *  @param barChartView     The bar chart object requesting this information.
+ *
+ *  @return Horizontal width (in pixels) between each bar.
+ */
+- (NSUInteger)barPaddingForBarChartView:(JBBarChartView *)barChartView;
 
 @end

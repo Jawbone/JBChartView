@@ -137,33 +137,11 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
     [self.barChartView setState:JBChartViewStateExpanded];
 }
 
-#pragma mark - JBBarChartViewDelegate
-
-- (CGFloat)barChartView:(JBBarChartView *)barChartView heightForBarViewAtAtIndex:(NSUInteger)index
-{
-    return [[self.chartData objectAtIndex:index] floatValue];
-}
-
 #pragma mark - JBBarChartViewDataSource
 
 - (NSUInteger)numberOfBarsInBarChartView:(JBBarChartView *)barChartView
 {
     return kJBBarChartViewControllerNumBars;
-}
-
-- (NSUInteger)barPaddingForBarChartView:(JBBarChartView *)barChartView
-{
-    return kJBBarChartViewControllerBarPadding;
-}
-
-- (UIColor *)barChartView:(JBBarChartView *)barChartView colorForBarViewAtIndex:(NSUInteger)index
-{
-    return (index % 2 == 0) ? kJBColorBarChartBarBlue : kJBColorBarChartBarGreen;
-}
-
-- (UIColor *)barSelectionColorForBarChartView:(JBBarChartView *)barChartView
-{
-    return [UIColor whiteColor];
 }
 
 - (void)barChartView:(JBBarChartView *)barChartView didSelectBarAtIndex:(NSUInteger)index touchPoint:(CGPoint)touchPoint
@@ -176,10 +154,32 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
     [self.tooltipView setText:[[self.monthlySymbols objectAtIndex:index] uppercaseString]];
 }
 
-- (void)didUnselectBarChartView:(JBBarChartView *)barChartView
+- (void)didDeselectBarChartView:(JBBarChartView *)barChartView
 {
     [self.informationView setHidden:YES animated:YES];
     [self setTooltipVisible:NO animated:YES];
+}
+
+#pragma mark - JBBarChartViewDelegate
+
+- (CGFloat)barChartView:(JBBarChartView *)barChartView heightForBarViewAtAtIndex:(NSUInteger)index
+{
+    return [[self.chartData objectAtIndex:index] floatValue];
+}
+
+- (UIColor *)barChartView:(JBBarChartView *)barChartView colorForBarViewAtIndex:(NSUInteger)index
+{
+    return (index % 2 == 0) ? kJBColorBarChartBarBlue : kJBColorBarChartBarGreen;
+}
+
+- (UIColor *)barSelectionColorForBarChartView:(JBBarChartView *)barChartView
+{
+    return [UIColor whiteColor];
+}
+
+- (NSUInteger)barPaddingForBarChartView:(JBBarChartView *)barChartView
+{
+    return kJBBarChartViewControllerBarPadding;
 }
 
 #pragma mark - Buttons

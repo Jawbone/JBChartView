@@ -145,9 +145,9 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
      * Determines the padding between bars as a function of # of bars
      */
     dispatch_block_t createBarPadding = ^{
-        if ([self.dataSource respondsToSelector:@selector(barPaddingForBarChartView:)])
+        if ([self.delegate respondsToSelector:@selector(barPaddingForBarChartView:)])
         {
-            self.barPadding = [self.dataSource barPaddingForBarChartView:self];
+            self.barPadding = [self.delegate barPaddingForBarChartView:self];
         }
         else
         {
@@ -183,10 +183,10 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
                 barView = [[UIView alloc] init];
                 UIColor *backgroundColor = nil;
 
-                if ([self.dataSource respondsToSelector:@selector(barChartView:colorForBarViewAtIndex:)])
+                if ([self.delegate respondsToSelector:@selector(barChartView:colorForBarViewAtIndex:)])
                 {
-                    backgroundColor = [self.dataSource barChartView:self colorForBarViewAtIndex:index];
-                    NSAssert(backgroundColor != nil, @"JBBarChartView // datasource function - (UIColor *)barChartView:(JBBarChartView *)barChartView colorForBarViewAtIndex:(NSUInteger)index must return a non-nil UIColor");
+                    backgroundColor = [self.delegate barChartView:self colorForBarViewAtIndex:index];
+                    NSAssert(backgroundColor != nil, @"JBBarChartView // delegate function - (UIColor *)barChartView:(JBBarChartView *)barChartView colorForBarViewAtIndex:(NSUInteger)index must return a non-nil UIColor");
                 }
                 else
                 {
@@ -232,9 +232,11 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
         self.verticalSelectionView = [[JBChartVerticalSelectionView alloc] initWithFrame:CGRectMake(0, 0, [self barWidth], self.bounds.size.height - self.footerView.frame.size.height)];
         self.verticalSelectionView.alpha = 0.0;
         self.verticalSelectionView.hidden = !self.showsVerticalSelection;
-        if ([self.dataSource respondsToSelector:@selector(barSelectionColorForBarChartView:)])
+        if ([self.delegate respondsToSelector:@selector(barSelectionColorForBarChartView:)])
         {
-            self.verticalSelectionView.bgColor = [self.dataSource barSelectionColorForBarChartView:self];
+            UIColor *selectionViewBackgroundColor = [self.delegate barSelectionColorForBarChartView:self];
+            NSAssert(selectionViewBackgroundColor != nil, @"JBBarChartView // delegate function - (UIColor *)barSelectionColorForBarChartView:(JBBarChartView *)barChartView must return a non-nil UIColor");
+            self.verticalSelectionView.bgColor = selectionViewBackgroundColor;
         }
         
         // Add new selection bar
@@ -258,7 +260,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     self.footerView.frame = CGRectMake(self.bounds.origin.x, self.bounds.size.height - self.footerView.frame.size.height, self.bounds.size.width, self.footerView.frame.size.height);
 
     // Refresh state
-    [self setState:self.state animated:NO callback:nil force:YES];
+    [self setState:self.state animated:NO force:YES callback:nil];
 }
 
 #pragma mark - View Quick Accessors
@@ -301,9 +303,9 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 #pragma mark - Setters
 
-- (void)setState:(JBChartViewState)state animated:(BOOL)animated callback:(void (^)())callback force:(BOOL)force
+- (void)setState:(JBChartViewState)state animated:(BOOL)animated force:(BOOL)force callback:(void (^)())callback
 {
-    [super setState:state animated:animated callback:callback force:force];
+    [super setState:state animated:animated force:force callback:callback];
     
     dispatch_block_t callbackCopy = [callback copy];
     
@@ -371,7 +373,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 - (void)setState:(JBChartViewState)state animated:(BOOL)animated callback:(void (^)())callback
 {
-    [self setState:state animated:animated callback:callback force:NO];
+    [self setState:state animated:animated force:NO callback:callback];
 }
 
 #pragma mark - Getters
@@ -493,9 +495,9 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     
     [self setVerticalSelectionViewVisible:NO animated:YES];
     
-    if ([self.delegate respondsToSelector:@selector(didUnselectBarChartView:)])
+    if ([self.delegate respondsToSelector:@selector(didDeselectBarChartView:)])
     {
-        [self.delegate didUnselectBarChartView:self];
+        [self.delegate didDeselectBarChartView:self];
     }
 }
 

@@ -395,7 +395,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
     self.footerView.frame = CGRectMake(self.bounds.origin.x, self.bounds.size.height - self.footerView.frame.size.height, self.bounds.size.width, self.footerView.frame.size.height);
 
     // Refresh state
-    [self setState:self.state animated:NO callback:nil force:YES];
+    [self setState:self.state animated:NO force:YES callback:nil];
 }
 
 #pragma mark - View Quick Accessors
@@ -626,9 +626,9 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 
 #pragma mark - Setters
 
-- (void)setState:(JBChartViewState)state animated:(BOOL)animated callback:(void (^)())callback force:(BOOL)force
+- (void)setState:(JBChartViewState)state animated:(BOOL)animated force:(BOOL)force callback:(void (^)())callback
 {
-    [super setState:state animated:animated callback:callback force:force];
+    [super setState:state animated:animated force:force callback:callback];
     
     if ([self.chartData count] > 0)
     {
@@ -685,7 +685,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 
 - (void)setState:(JBChartViewState)state animated:(BOOL)animated callback:(void (^)())callback
 {
-    [self setState:state animated:animated callback:callback force:NO];
+    [self setState:state animated:animated force:NO callback:callback];
 }
 
 #pragma mark - Getters
