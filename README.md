@@ -175,7 +175,7 @@ Lastly, a bar chart's selection events are delegated back via:
 		// Update view
 	}
 
-	- (void)didUnselectBarChartView:(JBBarChartView *)barChartView
+	- (void)didDeselectBarChartView:(JBBarChartView *)barChartView
 	{
 		// Update view
 	}
@@ -253,7 +253,7 @@ Lastly, a line chart's selection events are delegated back via:
 		// Update view
 	}
 
-	- (void)didUnselectLineInLineChartView:(JBLineChartView *)lineChartView
+	- (void)didDeselectLineInLineChartView:(JBLineChartView *)lineChartView
 	{
 		// Update view
 	}
