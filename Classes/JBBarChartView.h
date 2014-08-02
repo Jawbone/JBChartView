@@ -9,13 +9,13 @@
 // Views
 #import "JBChartView.h"
 
-@protocol JBBarChartViewDelegate;
 @protocol JBBarChartViewDataSource;
+@protocol JBBarChartViewDelegate;
 
 @interface JBBarChartView : JBChartView
 
-@property (nonatomic, weak) id<JBBarChartViewDelegate> delegate;
 @property (nonatomic, weak) id<JBBarChartViewDataSource> dataSource;
+@property (nonatomic, weak) id<JBBarChartViewDelegate> delegate;
 
 /**
  *  Vertical highlight overlayed on bar during touch events.
@@ -87,7 +87,7 @@
  *  Occurs when selection ends by either ending a touch event or selecting an area that is outside the view's bounds.
  *  For selection start events, see: didSelectBarAtIndex...
  *
- *  @param barChartView     A bar chart object informing the delegate about the unselection.
+ *  @param barChartView     A bar chart object informing the delegate about the deselection.
  */
 - (void)didDeselectBarChartView:(JBBarChartView *)barChartView;
 

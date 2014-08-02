@@ -892,9 +892,9 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 
     [self setVerticalSelectionViewVisible:NO animated:YES];
     
-    if ([self.delegate respondsToSelector:@selector(didUnselectLineInLineChartView:)])
+    if ([self.delegate respondsToSelector:@selector(didDeselectLineInLineChartView:)])
     {
-        [self.delegate didUnselectLineInLineChartView:self];
+        [self.delegate didDeselectLineInLineChartView:self];
     }
     
     if (self.showsLineSelection)

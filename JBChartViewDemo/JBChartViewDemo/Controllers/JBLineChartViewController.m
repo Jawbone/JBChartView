@@ -188,7 +188,7 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
     [self.tooltipView setText:[[self.daysOfWeek objectAtIndex:horizontalIndex] uppercaseString]];
 }
 
-- (void)didUnselectLineInLineChartView:(JBLineChartView *)lineChartView
+- (void)didDeselectLineInLineChartView:(JBLineChartView *)lineChartView
 {
     [self.informationView setHidden:YES animated:YES];
     [self setTooltipVisible:NO animated:YES];
