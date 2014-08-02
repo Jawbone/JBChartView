@@ -43,7 +43,7 @@ Simply add the following line to your <code>Podfile</code>:
 Your Podfile should look something like:
 
 	platform :ios, '6.0'
-	pod 'JBChartView', '~> 2.6.3'
+	pod 'JBChartView', '~> 2.7.0'
 	
 ### The Old School Way
 
@@ -73,8 +73,8 @@ For more information about adding bridging headers see <a href="https://develope
 To initialize a <i>JBBarChartView</i>, you only need a few lines of code (see below). Bar charts can also be initialized via a <b>nib</b> or with a <b>frame</b>.
 
 	JBBarChartView *barChartView = [[JBBarChartView alloc] init];
-    barChartView.delegate = self;
     barChartView.dataSource = self;
+    barChartView.delegate = self;
     [self addSubview:barChartView];
     
 At a minimum, you need to inform the data source how many bars are in the chart:
@@ -101,8 +101,8 @@ Lastly, ensure you have set the *frame* of your barChartView & call *reloadData*
 Similiarily, to initialize a JBLineChartView, you only need a few lines of code (see below). Line charts can also be initialized via a <b>nib</b> or with a <b>frame</b>.
 
 	JBLineChartView *lineChartView = [[JBLineChartView alloc] init];
-    lineChartView.delegate = self;
     lineChartView.dataSource = self;
+    lineChartView.delegate = self;
     [self addSubview:lineChartView];
 
 At a minimum, you need to inform the data source how many lines and vertical data points (for each line) are in the chart:
