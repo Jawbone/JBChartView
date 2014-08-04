@@ -68,7 +68,7 @@
  *
  *  @return The y-axis height of the supplied bar index (x-axis)
  */
-- (CGFloat)barChartView:(JBBarChartView *)barChartView heightForBarViewAtAtIndex:(NSUInteger)index;
+- (CGFloat)barChartView:(JBBarChartView *)barChartView heightForBarViewAtIndex:(NSUInteger)index;
 
 @optional
 

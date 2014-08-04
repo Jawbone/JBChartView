@@ -162,7 +162,7 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
 
 #pragma mark - JBBarChartViewDelegate
 
-- (CGFloat)barChartView:(JBBarChartView *)barChartView heightForBarViewAtAtIndex:(NSUInteger)index
+- (CGFloat)barChartView:(JBBarChartView *)barChartView heightForBarViewAtIndex:(NSUInteger)index
 {
     return [[self.chartData objectAtIndex:index] floatValue];
 }
