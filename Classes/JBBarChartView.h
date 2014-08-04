@@ -9,24 +9,9 @@
 // Views
 #import "JBChartView.h"
 
-@protocol JBBarChartViewDataSource;
-@protocol JBBarChartViewDelegate;
+@class JBBarChartView;
 
-@interface JBBarChartView : JBChartView
-
-@property (nonatomic, weak) id<JBBarChartViewDataSource> dataSource;
-@property (nonatomic, weak) id<JBBarChartViewDelegate> delegate;
-
-/**
- *  Vertical highlight overlayed on bar during touch events.
- *
- *  Default: YES.
- */
-@property (nonatomic, assign) BOOL showsVerticalSelection;
-
-@end
-
-@protocol JBBarChartViewDataSource <NSObject>
+@protocol JBBarChartViewDataSource <JBChartViewDataSource>
 
 @required
 
@@ -55,12 +40,12 @@
 
 @end
 
-@protocol JBBarChartViewDelegate <NSObject>
+@protocol JBBarChartViewDelegate <JBChartViewDelegate>
 
 @required
 
 /**
- *  Height for a bar at a given index (left to right). There is no ceiling on the the height; 
+ *  Height for a bar at a given index (left to right). There is no ceiling on the the height;
  *  the chart will automatically normalize all values between the overal min and max heights.
  *
  *  @param barChartView     The bar chart object requesting this information.
@@ -127,5 +112,19 @@
  *  @return Horizontal width (in pixels) between each bar.
  */
 - (NSUInteger)barPaddingForBarChartView:(JBBarChartView *)barChartView;
+
+@end
+
+@interface JBBarChartView : JBChartView
+
+@property (nonatomic, weak) id<JBBarChartViewDataSource> dataSource;
+@property (nonatomic, weak) id<JBBarChartViewDelegate> delegate;
+
+/**
+ *  Vertical highlight overlayed on bar during touch events.
+ *
+ *  Default: YES.
+ */
+@property (nonatomic, assign) BOOL showsVerticalSelection;
 
 @end

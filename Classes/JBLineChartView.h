@@ -8,6 +8,8 @@
 
 #import "JBChartView.h"
 
+@class JBLineChartView;
+
 /**
  * Current support for two line styles: solid (default) and dashed. 
  */
@@ -22,33 +24,7 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
 	JBLineChartViewLineStyleDashed
 };
 
-@protocol JBLineChartViewDataSource;
-@protocol JBLineChartViewDelegate;
-
-@interface JBLineChartView : JBChartView
-
-@property (nonatomic, weak) id<JBLineChartViewDataSource> dataSource;
-@property (nonatomic, weak) id<JBLineChartViewDelegate> delegate;
-
-/**
- *  Vertical highlight overlayed on a line graph during touch events.
- *
- *  Default: YES.
- */
-@property (nonatomic, assign) BOOL showsVerticalSelection;
-
-/**
- *  A highlight shown on a line within the graph during touch events. The highlighted line
- *  is the closest line to the touch point and corresponds to the lineIndex delegatd back via 
- *  didSelectChartAtHorizontalIndex:atLineIndex: and didUnSlectChartAtHorizontalIndex:atLineIndex:
- *
- *  Default: YES.
- */
-@property (nonatomic, assign) BOOL showsLineSelection;
-
-@end
-
-@protocol JBLineChartViewDataSource <NSObject>
+@protocol JBLineChartViewDataSource <JBChartViewDataSource>
 
 @required
 
@@ -101,7 +77,7 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
 
 @end
 
-@protocol JBLineChartViewDelegate <NSObject>
+@protocol JBLineChartViewDelegate <JBChartViewDelegate>
 
 @required
 
@@ -284,5 +260,28 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
  *  @return The line style to be used to draw a line in the chart.
  */
 - (JBLineChartViewLineStyle)lineChartView:(JBLineChartView *)lineChartView lineStyleForLineAtLineIndex:(NSUInteger)lineIndex;
+
+@end
+
+@interface JBLineChartView : JBChartView
+
+@property (nonatomic, weak) id<JBLineChartViewDataSource> dataSource;
+@property (nonatomic, weak) id<JBLineChartViewDelegate> delegate;
+
+/**
+ *  Vertical highlight overlayed on a line graph during touch events.
+ *
+ *  Default: YES.
+ */
+@property (nonatomic, assign) BOOL showsVerticalSelection;
+
+/**
+ *  A highlight shown on a line within the graph during touch events. The highlighted line
+ *  is the closest line to the touch point and corresponds to the lineIndex delegatd back via 
+ *  didSelectChartAtHorizontalIndex:atLineIndex: and didUnSlectChartAtHorizontalIndex:atLineIndex:
+ *
+ *  Default: YES.
+ */
+@property (nonatomic, assign) BOOL showsLineSelection;
 
 @end

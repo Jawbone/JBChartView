@@ -24,7 +24,25 @@ typedef NS_ENUM(NSInteger, JBChartViewState){
     JBChartViewStateCollapsed
 };
 
+@protocol JBChartViewDataSource <NSObject>
+
+// Extend (via subclass) to add custom functionality
+
+@end
+
+@protocol JBChartViewDelegate <NSObject>
+
+// Extend (via subclass) to add custom functionality
+
+@end
+
 @interface JBChartView : UIView
+
+/*
+ * Base dataSource and delegate protocols. 
+ */
+@property (nonatomic, weak) id<JBChartViewDataSource> dataSource;
+@property (nonatomic, weak) id<JBChartViewDelegate> delegate;
 
 /**
  *  Header and footer views are shown above and below the chart respectively.
