@@ -42,6 +42,7 @@
 		9BE0B0CE182B162E00232023 /* JBBarChartFooterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BE0B0CD182B162E00232023 /* JBBarChartFooterView.m */; };
 		9BEBE9D2183167050046E4A8 /* JBChartInformationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BEBE9D1183167050046E4A8 /* JBChartInformationView.m */; };
 		9BEE694618D2789E005D9BA7 /* JBBaseChartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BEE694518D2789E005D9BA7 /* JBBaseChartViewController.m */; };
+		ABD65C2C198EE28000F24073 /* JBBlockChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD65C2B198EE28000F24073 /* JBBlockChartView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -108,6 +109,8 @@
 		9BEBE9D1183167050046E4A8 /* JBChartInformationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBChartInformationView.m; sourceTree = "<group>"; };
 		9BEE694418D2789E005D9BA7 /* JBBaseChartViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBBaseChartViewController.h; sourceTree = "<group>"; };
 		9BEE694518D2789E005D9BA7 /* JBBaseChartViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBBaseChartViewController.m; sourceTree = "<group>"; };
+		ABD65C2A198EE28000F24073 /* JBBlockChartView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JBBlockChartView.h; path = ../../Classes/JBBlockChartView.h; sourceTree = "<group>"; };
+		ABD65C2B198EE28000F24073 /* JBBlockChartView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JBBlockChartView.m; path = ../../Classes/JBBlockChartView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -268,6 +271,8 @@
 			children = (
 				9B6A68D91829ADE1006DB3BF /* JBBarChartView.h */,
 				9B6A68DA1829ADE1006DB3BF /* JBBarChartView.m */,
+				ABD65C2A198EE28000F24073 /* JBBlockChartView.h */,
+				ABD65C2B198EE28000F24073 /* JBBlockChartView.m */,
 				9B6A68D11829AB9F006DB3BF /* JBChartView.h */,
 				9B6A68D21829AB9F006DB3BF /* JBChartView.m */,
 				9BE0B0AB182AD26400232023 /* JBLineChartView.h */,
@@ -397,6 +402,7 @@
 			files = (
 				9BE0B0CE182B162E00232023 /* JBBarChartFooterView.m in Sources */,
 				9B6A68D31829AB9F006DB3BF /* JBChartView.m in Sources */,
+				ABD65C2C198EE28000F24073 /* JBBlockChartView.m in Sources */,
 				9BEBE9D2183167050046E4A8 /* JBChartInformationView.m in Sources */,
 				9B603D3E182C6E79000A76D0 /* JBBaseNavigationController.m in Sources */,
 				9B698F11182D7BCF003C135F /* JBChartTableCell.m in Sources */,
