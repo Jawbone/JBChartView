@@ -11,7 +11,8 @@
 typedef NS_ENUM(NSInteger, JBChartTableCellType){
 	JBChartTableCellTypeLineChart,
     JBChartTableCellTypeBarChart,
-    JBChartTableCellTypeAreaChart
+    JBChartTableCellTypeAreaChart,
+	JBChartTableCellTypeBlockChart
 };
 
 @interface JBChartTableCell : UITableViewCell

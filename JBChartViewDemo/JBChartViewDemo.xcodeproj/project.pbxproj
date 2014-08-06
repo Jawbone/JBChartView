@@ -43,6 +43,9 @@
 		9BEBE9D2183167050046E4A8 /* JBChartInformationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BEBE9D1183167050046E4A8 /* JBChartInformationView.m */; };
 		9BEE694618D2789E005D9BA7 /* JBBaseChartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BEE694518D2789E005D9BA7 /* JBBaseChartViewController.m */; };
 		ABD65C2C198EE28000F24073 /* JBBlockChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD65C2B198EE28000F24073 /* JBBlockChartView.m */; };
+		ABD65C2F198EF74400F24073 /* JBBlockChartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD65C2E198EF74400F24073 /* JBBlockChartViewController.m */; };
+		ABD65C32198F044400F24073 /* icon-block-chart.png in Resources */ = {isa = PBXBuildFile; fileRef = ABD65C30198F044400F24073 /* icon-block-chart.png */; };
+		ABD65C33198F044400F24073 /* icon-block-chart@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = ABD65C31198F044400F24073 /* icon-block-chart@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -111,6 +114,10 @@
 		9BEE694518D2789E005D9BA7 /* JBBaseChartViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBBaseChartViewController.m; sourceTree = "<group>"; };
 		ABD65C2A198EE28000F24073 /* JBBlockChartView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JBBlockChartView.h; path = ../../Classes/JBBlockChartView.h; sourceTree = "<group>"; };
 		ABD65C2B198EE28000F24073 /* JBBlockChartView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JBBlockChartView.m; path = ../../Classes/JBBlockChartView.m; sourceTree = "<group>"; };
+		ABD65C2D198EF74400F24073 /* JBBlockChartViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBBlockChartViewController.h; sourceTree = "<group>"; };
+		ABD65C2E198EF74400F24073 /* JBBlockChartViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBBlockChartViewController.m; sourceTree = "<group>"; };
+		ABD65C30198F044400F24073 /* icon-block-chart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-block-chart.png"; sourceTree = "<group>"; };
+		ABD65C31198F044400F24073 /* icon-block-chart@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-block-chart@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -197,6 +204,8 @@
 				9B7967EB198313E30003A2B0 /* JBAreaChartViewController.m */,
 				9B6A68DC1829BE63006DB3BF /* JBBarChartViewController.h */,
 				9B6A68DD1829BE63006DB3BF /* JBBarChartViewController.m */,
+				ABD65C2D198EF74400F24073 /* JBBlockChartViewController.h */,
+				ABD65C2E198EF74400F24073 /* JBBlockChartViewController.m */,
 				9B07251F1829822A0052109B /* JBChartListViewController.h */,
 				9B0725201829822A0052109B /* JBChartListViewController.m */,
 				9B6A68DF1829BED5006DB3BF /* JBLineChartViewController.h */,
@@ -237,6 +246,8 @@
 				9B698F08182D720E003C135F /* icon-arrow@2x.png */,
 				9B698F12182D7DAE003C135F /* icon-bar-chart.png */,
 				9B698F13182D7DAE003C135F /* icon-bar-chart@2x.png */,
+				ABD65C30198F044400F24073 /* icon-block-chart.png */,
+				ABD65C31198F044400F24073 /* icon-block-chart@2x.png */,
 				9B698F14182D7DAE003C135F /* icon-line-chart.png */,
 				9B698F15182D7DAE003C135F /* icon-line-chart@2x.png */,
 				9B603D45182C7002000A76D0 /* icon-jawbone-logo.png */,
@@ -378,12 +389,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ABD65C33198F044400F24073 /* icon-block-chart@2x.png in Resources */,
 				9B2E532018218CF30079B9D2 /* Images.xcassets in Resources */,
 				9B698F09182D720E003C135F /* icon-arrow.png in Resources */,
 				9B698F16182D7DAE003C135F /* icon-bar-chart.png in Resources */,
 				9B698F18182D7DAE003C135F /* icon-line-chart.png in Resources */,
 				9B2E530F18218CF20079B9D2 /* InfoPlist.strings in Resources */,
 				9B698F17182D7DAE003C135F /* icon-bar-chart@2x.png in Resources */,
+				ABD65C32198F044400F24073 /* icon-block-chart.png in Resources */,
 				9B7967EF198317540003A2B0 /* icon-area-chart.png in Resources */,
 				9B603D47182C7002000A76D0 /* icon-jawbone-logo.png in Resources */,
 				9B603D48182C7002000A76D0 /* icon-jawbone-logo@2x.png in Resources */,
@@ -415,6 +428,7 @@
 				9B4437AD18D7686800682EF0 /* JBChartTooltipTipView.m in Sources */,
 				9BE0B0AD182AD26400232023 /* JBLineChartView.m in Sources */,
 				9BEE694618D2789E005D9BA7 /* JBBaseChartViewController.m in Sources */,
+				ABD65C2F198EF74400F24073 /* JBBlockChartViewController.m in Sources */,
 				9B6A68E11829BED5006DB3BF /* JBLineChartViewController.m in Sources */,
 				9B2E533F18218D310079B9D2 /* AppDelegate.m in Sources */,
 				9B7967EC198313E30003A2B0 /* JBAreaChartViewController.m in Sources */,
