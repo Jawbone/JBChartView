@@ -47,8 +47,8 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 // Touch helpers
 - (NSInteger)barViewIndexForPoint:(CGPoint)point;
 - (UIView *)barViewForForPoint:(CGPoint)point;
-- (void)touchesBeganOrMovedWithTouches:(NSSet *)touches;
-- (void)touchesEndedOrCancelledWithTouches:(NSSet *)touches;
+- (void)touchesBeganOrMovedWithTouches:(NSSet *)touches withEvent:(UIEvent *)event;
+- (void)touchesEndedOrCancelledWithTouches:(NSSet *)touches withEvent:(UIEvent *)event;
 
 // Setters
 - (void)setVerticalSelectionViewVisible:(BOOL)verticalSelectionViewVisible animated:(BOOL)animated;
@@ -199,6 +199,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
             CGFloat height = [self normalizedHeightForRawHeight:[self.chartDataDictionary objectForKey:key]];
             CGFloat extensionHeight = height > 0.0 ? kJBBarChartViewPopOffset : 0.0;
             barView.frame = CGRectMake(xOffset, self.bounds.size.height - height - self.footerView.frame.size.height, [self barWidth], height + extensionHeight);
+            
             [mutableBarViews addObject:barView];
 			
             // Add new bar
@@ -454,39 +455,79 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     return barView;
 }
 
-- (void)touchesBeganOrMovedWithTouches:(NSSet *)touches
+- (void)touchesBeganOrMovedWithTouches:(NSSet *)touches withEvent:(UIEvent *)event
 {
     if (self.state == JBChartViewStateCollapsed || [[self.chartDataDictionary allKeys] count] <= 0)
     {
         return;
     }
     
-    UITouch *touch = [touches anyObject];
-    CGPoint touchPoint = [touch locationInView:self];
-    UIView *barView = [self barViewForForPoint:touchPoint];
-    if (barView == nil)
-    {
-        [self setVerticalSelectionViewVisible:NO animated:YES];
-        return;
+    if ([[event allTouches]count] > 1 && self.multipleTouchEnabled){
+        
+        float minHorizonalTouch = MAXFLOAT;
+        float maxHorizonalTouch = 0;
+        
+        UITouch *leftTouch , *rightTouch;
+        CGPoint leftTouchPoint, rightTouchPoint;
+        for (UITouch *touch in [event allTouches]) {
+            CGPoint touchPoint = [touch locationInView:self];
+            if (touchPoint.x < minHorizonalTouch) {
+                minHorizonalTouch = touchPoint.x;
+                leftTouch = touch;
+                leftTouchPoint = touchPoint;
+            }
+            if (touchPoint.x > maxHorizonalTouch) {
+                maxHorizonalTouch = touchPoint.x;
+                rightTouch = touch;
+                rightTouchPoint = touchPoint;
+            }
+        }
+        
+        UIView *leftBarView = [self barViewForForPoint:leftTouchPoint];
+        UIView *rightBarView = [self barViewForForPoint:rightTouchPoint];
+        
+        if (leftBarView == nil || rightBarView == nil) {
+            [self setVerticalSelectionViewVisible:NO animated:YES];
+            return;
+        }
+        
+        CGRect leftBarViewFrame = leftBarView.frame;
+        CGRect rightBarViewFrame = rightBarView.frame;
+        
+        CGRect selectionViewFrame = self.verticalSelectionView.frame;
+        selectionViewFrame.origin.x = leftBarViewFrame.origin.x;
+        selectionViewFrame.size.width = rightBarViewFrame.origin.x - leftBarViewFrame.origin.x + rightBarViewFrame.size.width;
+        self.verticalSelectionView.frame = selectionViewFrame;
     }
-    CGRect barViewFrame = barView.frame;
-    CGRect selectionViewFrame = self.verticalSelectionView.frame;
-    selectionViewFrame.origin.x = barViewFrame.origin.x;
-    self.verticalSelectionView.frame = selectionViewFrame;
-    [self setVerticalSelectionViewVisible:YES animated:YES];
+    else{
+        UITouch *touch = [touches anyObject];
+        CGPoint touchPoint = [touch locationInView:self];
+        UIView *barView = [self barViewForForPoint:touchPoint];
+        if (barView == nil)
+        {
+            [self setVerticalSelectionViewVisible:NO animated:YES];
+            return;
+        }
+        CGRect barViewFrame = barView.frame;
+        CGRect selectionViewFrame = self.verticalSelectionView.frame;
+        selectionViewFrame.origin.x = barViewFrame.origin.x;
+        self.verticalSelectionView.frame = selectionViewFrame;
+        [self setVerticalSelectionViewVisible:YES animated:YES];
+        
+        if ([self.delegate respondsToSelector:@selector(barChartView:didSelectBarAtIndex:touchPoint:)])
+        {
+            [self.delegate barChartView:self didSelectBarAtIndex:[self barViewIndexForPoint:touchPoint] touchPoint:touchPoint];
+        }
+        
+        if ([self.delegate respondsToSelector:@selector(barChartView:didSelectBarAtIndex:)])
+        {
+            [self.delegate barChartView:self didSelectBarAtIndex:[self barViewIndexForPoint:touchPoint]];
+        }
+    }
     
-    if ([self.delegate respondsToSelector:@selector(barChartView:didSelectBarAtIndex:touchPoint:)])
-    {
-        [self.delegate barChartView:self didSelectBarAtIndex:[self barViewIndexForPoint:touchPoint] touchPoint:touchPoint];
-    }
-    
-    if ([self.delegate respondsToSelector:@selector(barChartView:didSelectBarAtIndex:)])
-    {
-        [self.delegate barChartView:self didSelectBarAtIndex:[self barViewIndexForPoint:touchPoint]];
-    }
 }
 
-- (void)touchesEndedOrCancelledWithTouches:(NSSet *)touches
+- (void)touchesEndedOrCancelledWithTouches:(NSSet *)touches withEvent:(UIEvent *)event
 {
     if (self.state == JBChartViewStateCollapsed || [[self.chartDataDictionary allKeys] count] <= 0)
     {
@@ -534,22 +575,22 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    [self touchesBeganOrMovedWithTouches:touches];
+    [self touchesBeganOrMovedWithTouches:touches withEvent:event];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    [self touchesBeganOrMovedWithTouches:touches];
+    [self touchesBeganOrMovedWithTouches:touches withEvent:event];
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    [self touchesEndedOrCancelledWithTouches:touches];
+    [self touchesEndedOrCancelledWithTouches:touches withEvent:event];
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    [self touchesEndedOrCancelledWithTouches:touches];
+    [self touchesEndedOrCancelledWithTouches:touches withEvent:event];
 }
 
 @end

@@ -110,6 +110,8 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
     self.barChartView.minimumValue = 0.0f;
     self.barChartView.backgroundColor = kJBColorBarChartBackground;
     
+    self.barChartView.multipleTouchEnabled = YES;
+    
     JBChartHeaderView *headerView = [[JBChartHeaderView alloc] initWithFrame:CGRectMake(kJBBarChartViewControllerChartPadding, ceil(self.view.bounds.size.height * 0.5) - ceil(kJBBarChartViewControllerChartHeaderHeight * 0.5), self.view.bounds.size.width - (kJBBarChartViewControllerChartPadding * 2), kJBBarChartViewControllerChartHeaderHeight)];
     headerView.titleLabel.text = [kJBStringLabelAverageMonthlyTemperature uppercaseString];
     headerView.subtitleLabel.text = kJBStringLabel2012;
