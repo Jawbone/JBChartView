@@ -111,11 +111,26 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
 - (void)lineChartView:(JBLineChartView *)lineChartView didSelectLineAtIndex:(NSUInteger)lineIndex horizontalIndex:(NSUInteger)horizontalIndex;
 
 /**
+ *  to comment
+ */
+- (void)lineChartView:(JBLineChartView *)lineChartView didSelectRangeAtIndex:(NSUInteger)lineIndex leftHorizontalIndex:(NSUInteger)leftHorizontalIndex rightHorizontalIndex:(NSUInteger)rightHorizontalIndex;
+
+- (void)lineChartView:(JBLineChartView *)lineChartView didSelectRangeAtIndex:(NSUInteger)lineIndex
+  leftHorizontalIndex:(NSUInteger)leftHorizontalIndex rightHorizontalIndex:(NSUInteger)rightHorizontalIndex
+       leftTouchPoint:(CGPoint)leftTouchPoint rightTouchPoint:(CGPoint)rightTouchPoint;
+
+/**
  *  Occurs when selection ends by ending a touch event. For selection start events, see: didSelectChartAtIndex:
  *
  *  @param lineChartView    A line chart object informing the delegate about the deselection.
  */
 - (void)didDeselectLineInLineChartView:(JBLineChartView *)lineChartView;
+
+/**
+ *  to comment
+ */
+- (void)didDeselectRangeInLineChartView:(JBLineChartView *)lineChartView remainingIndex:(NSUInteger)remainingIndex
+                         remainingPoint:(CGPoint)remainingPoint;
 
 /**
  *  Returns the color of particular line at lineIndex within the chart.
