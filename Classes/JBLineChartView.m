@@ -437,12 +437,16 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
             lineWidth = [self.delegate lineChartView:self widthForLineAtLineIndex:lineIndex];
         }
         
-        CGFloat dotRadius = lineWidth * kJBLineChartDotsViewDefaultRadiusFactor; // default
+        CGFloat dotRadius = 0;
         if (showsDots)
         {
             if ([self.delegate respondsToSelector:@selector(lineChartView:dotRadiusForLineAtLineIndex:)])
             {
                 dotRadius = [self.delegate lineChartView:self dotRadiusForLineAtLineIndex:lineIndex];
+            }
+            else
+            {
+                dotRadius = lineWidth * kJBLineChartDotsViewDefaultRadiusFactor; // default
             }
         }
         
