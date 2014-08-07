@@ -299,4 +299,5 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
  */
 @property (nonatomic, assign) BOOL showsLineSelection;
 
+
 @end

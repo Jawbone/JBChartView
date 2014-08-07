@@ -308,6 +308,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         self.linesView = [[JBLineChartLinesView alloc] initWithFrame:CGRectOffset(mainViewRect, 0, self.headerView.frame.size.height + self.headerPadding)];
         
         self.linesView.delegate = self;
+        self.linesView.multipleTouchEnabled = self.multipleTouchEnabled;
         
         // Add new lines view
         if (self.footerView)
@@ -335,6 +336,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         // Create new line and overlay subviews
         self.dotsView = [[JBLineChartDotsView alloc] initWithFrame:CGRectOffset(mainViewRect, 0, self.headerView.frame.size.height + self.headerPadding)];
         self.dotsView.delegate = self;
+        self.dotsView.multipleTouchEnabled = self.multipleTouchEnabled;
         
         // Add new dots view
         if (self.footerView)
@@ -925,9 +927,8 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         return;
     }
     
-    
-    if ([[event allTouches]count] == 2 && [touches count] == 1 && self.multipleTouchEnabled){
-    
+    if ([[event allTouches]count] == 2 && [touches count] == 1){
+        
         UITouch *touch = [touches anyObject];
         CGPoint deselectedPoint = [self clampPoint:[touch locationInView:self.linesView] toBounds:self.linesView.bounds padding:[self padding]];
         
