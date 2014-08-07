@@ -111,10 +111,16 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
 - (void)lineChartView:(JBLineChartView *)lineChartView didSelectLineAtIndex:(NSUInteger)lineIndex horizontalIndex:(NSUInteger)horizontalIndex;
 
 /**
- *  to comment
+ *  Occurs whenever there are two touch gestures on the chart (chart must be expanded).
+ *
+ *  @param lineChartView        A line chart object informing the delegate about the new selection.
+ *  @param lineIndex            An index number identifying the closest line in the chart to the current touch
+ *  @param leftHorizontalIndex  The 0-based horizontal index of a selection point that is closer to the left of the chart
+ *  @param rightHorizontalIndex The 0-based horizontal index of a selection point that is closer to the right of the chart
+ *  @param leftTouchPoint       The left touch point in relation to the chart's bounds (excludes footer and header).
+ *  @param rightTouchPoint      The right touch point in relation to the chart's bounds (excludes footer and header).
  */
 - (void)lineChartView:(JBLineChartView *)lineChartView didSelectRangeAtIndex:(NSUInteger)lineIndex leftHorizontalIndex:(NSUInteger)leftHorizontalIndex rightHorizontalIndex:(NSUInteger)rightHorizontalIndex;
-
 - (void)lineChartView:(JBLineChartView *)lineChartView didSelectRangeAtIndex:(NSUInteger)lineIndex
   leftHorizontalIndex:(NSUInteger)leftHorizontalIndex rightHorizontalIndex:(NSUInteger)rightHorizontalIndex
        leftTouchPoint:(CGPoint)leftTouchPoint rightTouchPoint:(CGPoint)rightTouchPoint;
@@ -125,12 +131,6 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
  *  @param lineChartView    A line chart object informing the delegate about the deselection.
  */
 - (void)didDeselectLineInLineChartView:(JBLineChartView *)lineChartView;
-
-/**
- *  to comment
- */
-- (void)didDeselectRangeInLineChartView:(JBLineChartView *)lineChartView remainingIndex:(NSUInteger)remainingIndex
-                         remainingPoint:(CGPoint)remainingPoint;
 
 /**
  *  Returns the color of particular line at lineIndex within the chart.

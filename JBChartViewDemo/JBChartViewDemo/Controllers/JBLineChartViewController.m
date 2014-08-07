@@ -153,6 +153,8 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
     footerView.sectionCount = [[self largestLineData] count];
     self.lineChartView.footerView = footerView;
     
+    self.lineChartView.multipleTouchEnabled = YES;
+    
     [self.view addSubview:self.lineChartView];
     
     self.informationView = [[JBChartInformationView alloc] initWithFrame:CGRectMake(self.view.bounds.origin.x, CGRectGetMaxY(self.lineChartView.frame), self.view.bounds.size.width, self.view.bounds.size.height - CGRectGetMaxY(self.lineChartView.frame) - CGRectGetMaxY(self.navigationController.navigationBar.frame))];
@@ -239,11 +241,7 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
     [self setTooltipVisible:NO animated:YES];
 }
 
--(void)didDeselectRangeInLineChartView:(JBLineChartView *)lineChartView remainingIndex:(NSUInteger)remainingIndex remainingPoint:(CGPoint)remainingPoint{
-    
-    [self setTooltipVisible:YES animated:YES atTouchPoint:remainingPoint];
-    [self.tooltipView setText:[[self.daysOfWeek objectAtIndex:remainingIndex] uppercaseString]];
-}
+
 
 - (UIColor *)lineChartView:(JBLineChartView *)lineChartView colorForLineAtLineIndex:(NSUInteger)lineIndex
 {

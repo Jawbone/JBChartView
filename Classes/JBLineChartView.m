@@ -847,8 +847,8 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
     }
     
     
-    if ([[event allTouches]count] > 1) {
-
+    if ([[event allTouches]count] > 1 && self.multipleTouchEnabled) {
+        
         float minHorizonalTouch = MAXFLOAT;
         float maxHorizonalTouch = 0;
         
@@ -893,7 +893,6 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         
     }
     
-    
     else{
         UITouch *touch = [touches anyObject];
         CGPoint touchPoint = [self clampPoint:[touch locationInView:self.linesView] toBounds:self.linesView.bounds padding:[self padding]];
@@ -927,28 +926,36 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
     }
     
     
-    if ([[event allTouches]count] == 2 && [touches count] == 1){
+    if ([[event allTouches]count] == 2 && [touches count] == 1 && self.multipleTouchEnabled){
     
         UITouch *touch = [touches anyObject];
         CGPoint deselectedPoint = [self clampPoint:[touch locationInView:self.linesView] toBounds:self.linesView.bounds padding:[self padding]];
         
+        UITouch *remainingTouch;
         CGPoint remainingPoint;
         for (UITouch *touch in [event allTouches]) {
             CGPoint touchPoint = [self clampPoint:[touch locationInView:self.linesView] toBounds:self.linesView.bounds padding:[self padding]];
             if (touchPoint.x != deselectedPoint.x) {
                 remainingPoint = touchPoint;
+                remainingTouch = touch;
             }
         }
-
+        
         CGFloat xOffset = fmin(self.bounds.size.width - kJBLineSelectionViewWidth, fmax(0, remainingPoint.x - (ceil(kJBLineSelectionViewWidth * 0.5))));
         
         self.verticalSelectionView.frame = CGRectMake(xOffset, self.verticalSelectionView.frame.origin.y, kJBLineSelectionViewWidth, self.verticalSelectionView.frame.size.height);
         
-        if ([self.delegate respondsToSelector:@selector(didDeselectRangeInLineChartView:remainingIndex:remainingPoint:)])
+        if ([self.delegate respondsToSelector:@selector(lineChartView:didSelectLineAtIndex:horizontalIndex:touchPoint:)])
         {
             NSUInteger lineIndex = self.linesView.selectedLineIndex != kJBLineChartLinesViewUnselectedLineIndex ? self.linesView.selectedLineIndex : [self lineIndexForPoint:remainingPoint];
-            NSUInteger remainingIndex = [self horizontalIndexForPoint:remainingPoint indexClamp:JBLineChartHorizontalIndexClampNone lineData:[self.chartData objectAtIndex:lineIndex]];
-            [self.delegate didDeselectRangeInLineChartView:self remainingIndex:remainingIndex remainingPoint:remainingPoint];
+            NSUInteger horizontalIndex = [self horizontalIndexForPoint:remainingPoint indexClamp:JBLineChartHorizontalIndexClampNone lineData:[self.chartData objectAtIndex:lineIndex]];
+            [self.delegate lineChartView:self didSelectLineAtIndex:lineIndex horizontalIndex:horizontalIndex touchPoint:[remainingTouch locationInView:self]];
+        }
+        
+        if ([self.delegate respondsToSelector:@selector(lineChartView:didSelectLineAtIndex:horizontalIndex:)])
+        {
+            NSUInteger lineIndex = self.linesView.selectedLineIndex != kJBLineChartLinesViewUnselectedLineIndex ? self.linesView.selectedLineIndex : [self lineIndexForPoint:remainingPoint];
+            [self.delegate lineChartView:self didSelectLineAtIndex:lineIndex horizontalIndex:[self horizontalIndexForPoint:remainingPoint indexClamp:JBLineChartHorizontalIndexClampNone lineData:[self.chartData objectAtIndex:lineIndex]]];
         }
     }
     
@@ -1004,11 +1011,10 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    
     UITouch *touch = [touches anyObject];
     
     CGPoint touchPoint = [self clampPoint:[touch locationInView:self.linesView] toBounds:self.linesView.bounds padding:[self padding]];
-    if (self.showsLineSelection)
+    if (self.showsLineSelection && [[event allTouches]count] < 2 )
     {
         [self.linesView setSelectedLineIndex:[self lineIndexForPoint:touchPoint] animated:YES];
         [self.dotsView setSelectedLineIndex:[self lineIndexForPoint:touchPoint] animated:YES];
@@ -1128,7 +1134,6 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
     if (self)
     {
         self.backgroundColor = [UIColor clearColor];
-        self.multipleTouchEnabled = YES;
     }
     return self;
 }
@@ -1399,7 +1404,6 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
     if (self)
     {
         self.backgroundColor = [UIColor clearColor];
-        self.multipleTouchEnabled = YES;
     }
     return self;
 }
