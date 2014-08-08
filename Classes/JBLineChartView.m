@@ -893,6 +893,8 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         
         self.verticalSelectionView.frame = CGRectMake(leftOffset, self.verticalSelectionView.frame.origin.y, rightOffset - leftOffset, self.verticalSelectionView.frame.size.height);
         
+        [self setVerticalSelectionViewVisible:YES animated:NO];
+        
     }
     
     else{
@@ -915,9 +917,11 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         CGFloat xOffset = fmin(self.bounds.size.width - kJBLineSelectionViewWidth, fmax(0, touchPoint.x - (ceil(kJBLineSelectionViewWidth * 0.5))));
         
         self.verticalSelectionView.frame = CGRectMake(xOffset, self.verticalSelectionView.frame.origin.y, kJBLineSelectionViewWidth, self.verticalSelectionView.frame.size.height);
+        
+        [self setVerticalSelectionViewVisible:YES animated:YES];
     }
     
-    [self setVerticalSelectionViewVisible:YES animated:YES];
+    
 }
 
 - (void)touchesEndedOrCancelledWithTouches:(NSSet *)touches withEvent:(UIEvent *)event

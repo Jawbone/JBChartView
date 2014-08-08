@@ -156,6 +156,22 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
     [self.tooltipView setText:[[self.monthlySymbols objectAtIndex:index] uppercaseString]];
 }
 
+-(void)barChartView:(JBBarChartView *)barChartView didSelectRangeAtLeftIndex:(NSUInteger)leftIndex rightIndex:(NSUInteger)rightIndex LeftTouchPoint:(CGPoint)leftTouchPoint RightTouchPoint:(CGPoint)rightTouchPoint
+{
+    CGPoint midPoint = CGPointMake((leftTouchPoint.x + rightTouchPoint.x)/2, (leftTouchPoint.y + rightTouchPoint.y)/2);
+    
+    NSNumber *leftValueNumber = [self.chartData objectAtIndex:leftIndex];
+    NSNumber *rightValueNumber = [self.chartData objectAtIndex:rightIndex];
+    float percentChange = ([rightValueNumber floatValue] - [leftValueNumber floatValue])/[leftValueNumber floatValue] * 100;
+    
+    [self.informationView setValueText:[NSString stringWithFormat:@"%0.1f", percentChange] unitText:@"%"];
+    [self.informationView setTitleText:@"Temperature Change"];
+    [self.informationView setHidden:NO animated:YES];
+    
+    [self setTooltipVisible:YES animated:NO atTouchPoint:midPoint];
+    [self.tooltipView setText:[NSString stringWithFormat:@"%@-%@",[[self.monthlySymbols objectAtIndex:leftIndex] uppercaseString],[[self.monthlySymbols objectAtIndex:rightIndex] uppercaseString]]];
+}
+
 - (void)didDeselectBarChartView:(JBBarChartView *)barChartView
 {
     [self.informationView setHidden:YES animated:YES];

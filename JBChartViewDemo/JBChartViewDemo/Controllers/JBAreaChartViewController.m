@@ -131,6 +131,8 @@ NSString * const kJBAreaChartViewControllerNavButtonViewKey = @"view";
     self.lineChartView.headerPadding =kJBAreaChartViewControllerChartHeaderPadding;
     self.lineChartView.backgroundColor = kJBColorLineChartBackground;
     
+    self.lineChartView.multipleTouchEnabled = YES;
+    
     JBChartHeaderView *headerView = [[JBChartHeaderView alloc] initWithFrame:CGRectMake(kJBAreaChartViewControllerChartPadding, ceil(self.view.bounds.size.height * 0.5) - ceil(kJBAreaChartViewControllerChartHeaderHeight * 0.5), self.view.bounds.size.width - (kJBAreaChartViewControllerChartPadding * 2), kJBAreaChartViewControllerChartHeaderHeight)];
     headerView.titleLabel.text = [kJBStringLabelAverageShineHoursOfSunMoon uppercaseString];
     headerView.titleLabel.textColor = kJBColorLineChartHeader;
@@ -208,6 +210,29 @@ NSString * const kJBAreaChartViewControllerNavButtonViewKey = @"view";
     [self setTooltipVisible:YES animated:YES atTouchPoint:touchPoint];
     [self.tooltipView setText:[[self.monthlySymbols objectAtIndex:horizontalIndex] uppercaseString]];
 }
+
+- (void)lineChartView:(JBLineChartView *)lineChartView didSelectRangeAtIndex:(NSUInteger)lineIndex
+  leftHorizontalIndex:(NSUInteger)leftHorizontalIndex rightHorizontalIndex:(NSUInteger)rightHorizontalIndex
+       leftTouchPoint:(CGPoint)leftTouchPoint rightTouchPoint:(CGPoint)rightTouchPoint{
+    
+    [self setTooltipVisible:NO animated:NO];
+    
+    NSNumber *leftValue = [[self.chartData objectAtIndex:lineIndex] objectAtIndex:leftHorizontalIndex];
+    NSNumber *rightValue = [[self.chartData objectAtIndex:lineIndex] objectAtIndex:rightHorizontalIndex];
+    
+    [self.informationView setValueText:[NSString stringWithFormat:@"%.0f ", ([rightValue floatValue]-[leftValue floatValue]) * 100] unitText:@"%"];
+    
+    CGPoint midPoint = CGPointMake((leftTouchPoint.x + rightTouchPoint.x)/2, (leftTouchPoint.y + rightTouchPoint.y)/2);
+    
+    [self setTooltipVisible:YES animated:NO atTouchPoint:midPoint];
+    [self.tooltipView setText:[NSString stringWithFormat:@"%@ - %@",
+                               [[self.monthlySymbols objectAtIndex:leftHorizontalIndex] uppercaseString],
+                               [[self.monthlySymbols objectAtIndex:rightHorizontalIndex] uppercaseString]]];
+    
+    [self.informationView setTitleText:lineIndex == JBLineChartLineSun ? kJBStringLabelSun : kJBStringLabelMoon];
+    [self.informationView setHidden:NO animated:YES];
+}
+
 
 - (void)didDeselectLineInLineChartView:(JBLineChartView *)lineChartView
 {

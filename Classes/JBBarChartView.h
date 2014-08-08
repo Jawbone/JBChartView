@@ -69,6 +69,20 @@
 - (void)barChartView:(JBBarChartView *)barChartView didSelectBarAtIndex:(NSUInteger)index;
 
 /**
+ *  Occurs whenever there are two touch gestures on the bar chart
+ *  The vertical selection view will expand to cover the range of the two selections
+ *
+ *  @param barChartView A bar chart object informing the delegate about the new selection.
+ *  @param leftIndex    The 0-based index of a bar closer to the left of the chart
+ *  @param rightIndex   The 0-based index of a bar closer to the right of the chart
+ *  @param leftTouchPoint  The touch point closer to the left in relation to the chart's bounds (excludes footer and header).
+ *  @param rightTouchPoint The touch point closer to the right in relation to the chart's bounds (excludes footer and header).
+ */
+- (void)barChartView:(JBBarChartView *)barChartView didSelectRangeAtLeftIndex:(NSUInteger)leftIndex rightIndex:(NSUInteger)rightIndex LeftTouchPoint:(CGPoint)leftTouchPoint RightTouchPoint:(CGPoint)rightTouchPoint;
+
+- (void)barChartView:(JBBarChartView *)barChartView didSelectRangeAtLeftIndex:(NSUInteger)leftIndex rightIndex:(NSUInteger)rightIndex;
+
+/**
  *  Occurs when selection ends by either ending a touch event or selecting an area that is outside the view's bounds.
  *  For selection start events, see: didSelectBarAtIndex...
  *

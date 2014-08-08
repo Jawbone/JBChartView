@@ -201,7 +201,8 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
             barView.frame = CGRectMake(xOffset, self.bounds.size.height - height - self.footerView.frame.size.height, [self barWidth], height + extensionHeight);
             
             [mutableBarViews addObject:barView];
-			
+			barView.multipleTouchEnabled = self.multipleTouchEnabled;
+            
             // Add new bar
             if (self.footerView)
 			{
@@ -491,6 +492,8 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
             return;
         }
         
+        [self setVerticalSelectionViewVisible:YES animated:NO];
+        
         CGRect leftBarViewFrame = leftBarView.frame;
         CGRect rightBarViewFrame = rightBarView.frame;
         
@@ -498,7 +501,15 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
         selectionViewFrame.origin.x = leftBarViewFrame.origin.x;
         selectionViewFrame.size.width = rightBarViewFrame.origin.x - leftBarViewFrame.origin.x + rightBarViewFrame.size.width;
         self.verticalSelectionView.frame = selectionViewFrame;
+        
+        if ([self.delegate respondsToSelector:@selector(barChartView:didSelectRangeAtLeftIndex:rightIndex:LeftTouchPoint:RightTouchPoint:)]) {
+            [self.delegate barChartView:self didSelectRangeAtLeftIndex:[self barViewIndexForPoint:leftTouchPoint] rightIndex:[self barViewIndexForPoint:rightTouchPoint] LeftTouchPoint:leftTouchPoint RightTouchPoint:rightTouchPoint];
+        }
+        if ([self.delegate respondsToSelector:@selector(barChartView:didSelectRangeAtLeftIndex:rightIndex:)]) {
+            [self.delegate barChartView:self didSelectRangeAtLeftIndex:[self barViewIndexForPoint:leftTouchPoint] rightIndex:[self barViewIndexForPoint:rightTouchPoint]];
+        }
     }
+    
     else{
         UITouch *touch = [touches anyObject];
         CGPoint touchPoint = [touch locationInView:self];
@@ -511,7 +522,9 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
         CGRect barViewFrame = barView.frame;
         CGRect selectionViewFrame = self.verticalSelectionView.frame;
         selectionViewFrame.origin.x = barViewFrame.origin.x;
+        selectionViewFrame.size.width = [self barWidth];
         self.verticalSelectionView.frame = selectionViewFrame;
+
         [self setVerticalSelectionViewVisible:YES animated:YES];
         
         if ([self.delegate respondsToSelector:@selector(barChartView:didSelectBarAtIndex:touchPoint:)])
@@ -534,11 +547,51 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
         return;
     }
     
-    [self setVerticalSelectionViewVisible:NO animated:YES];
-    
-    if ([self.delegate respondsToSelector:@selector(didDeselectBarChartView:)])
-    {
-        [self.delegate didDeselectBarChartView:self];
+    if ([[event allTouches]count] == 2 && [touches count] == 1){
+        
+        UITouch *touch = [touches anyObject];
+        CGPoint deselectedPoint = [touch locationInView:self];
+        UITouch *remainingTouch;
+        CGPoint remainingPoint;
+        for (UITouch *touch in [event allTouches]) {
+            CGPoint touchPoint = [touch locationInView:self];
+            if (touchPoint.x != deselectedPoint.x) {
+                remainingPoint = touchPoint;
+                remainingTouch = touch;
+            }
+        }
+        
+        UIView *barView = [self barViewForForPoint:remainingPoint];
+        if (barView == nil)
+        {
+            [self setVerticalSelectionViewVisible:NO animated:YES];
+            return;
+        }
+        
+        CGRect barViewFrame = barView.frame;
+        CGRect selectionViewFrame = self.verticalSelectionView.frame;
+        selectionViewFrame.origin.x = barViewFrame.origin.x;
+        selectionViewFrame.size.width = [self barWidth];
+        self.verticalSelectionView.frame = selectionViewFrame;
+        
+        if ([self.delegate respondsToSelector:@selector(barChartView:didSelectBarAtIndex:touchPoint:)])
+        {
+            [self.delegate barChartView:self didSelectBarAtIndex:[self barViewIndexForPoint:remainingPoint] touchPoint:remainingPoint];
+        }
+        
+        if ([self.delegate respondsToSelector:@selector(barChartView:didSelectBarAtIndex:)])
+        {
+            [self.delegate barChartView:self didSelectBarAtIndex:[self barViewIndexForPoint:remainingPoint]];
+        }
+
+    }
+    else{
+        [self setVerticalSelectionViewVisible:NO animated:YES];
+        
+        if ([self.delegate respondsToSelector:@selector(didDeselectBarChartView:)])
+        {
+            [self.delegate didDeselectBarChartView:self];
+        }
     }
 }
 
