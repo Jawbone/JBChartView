@@ -463,8 +463,10 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
         return;
     }
     
+    // Handle multi touch
     if ([[event allTouches]count] > 1 && self.multipleTouchEnabled){
         
+        // Find the left and right touch points
         float minHorizonalTouch = MAXFLOAT;
         float maxHorizonalTouch = 0;
         
@@ -484,6 +486,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
             }
         }
         
+        // Get the frame of the cooresponding bar views
         UIView *leftBarView = [self barViewForForPoint:leftTouchPoint];
         UIView *rightBarView = [self barViewForForPoint:rightTouchPoint];
         
@@ -494,6 +497,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
         
         [self setVerticalSelectionViewVisible:YES animated:NO];
         
+        // Set the selection view frame accordingly
         CGRect leftBarViewFrame = leftBarView.frame;
         CGRect rightBarViewFrame = rightBarView.frame;
         
@@ -502,6 +506,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
         selectionViewFrame.size.width = rightBarViewFrame.origin.x - leftBarViewFrame.origin.x + rightBarViewFrame.size.width;
         self.verticalSelectionView.frame = selectionViewFrame;
         
+        // Trigger call back functions
         if ([self.delegate respondsToSelector:@selector(barChartView:didSelectRangeAtLeftIndex:rightIndex:LeftTouchPoint:RightTouchPoint:)]) {
             [self.delegate barChartView:self didSelectRangeAtLeftIndex:[self barViewIndexForPoint:leftTouchPoint] rightIndex:[self barViewIndexForPoint:rightTouchPoint] LeftTouchPoint:leftTouchPoint RightTouchPoint:rightTouchPoint];
         }
@@ -547,7 +552,10 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
         return;
     }
     
-    if ([[event allTouches]count] == 2 && [touches count] == 1){
+    // Handle releasing one finger from range selection
+    // Reset the selection view width and position to behave like single selection
+    
+    if ([[event allTouches]count] == 2 && [touches count] == 1 && self.verticalSelectionView.frame.size.width != [self barWidth]){
         
         UITouch *touch = [touches anyObject];
         CGPoint deselectedPoint = [touch locationInView:self];

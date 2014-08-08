@@ -848,9 +848,10 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         return;
     }
     
-    
+    // Handle multi touch
     if ([[event allTouches]count] > 1 && self.multipleTouchEnabled) {
         
+        // Find the left and right touch points
         float minHorizonalTouch = MAXFLOAT;
         float maxHorizonalTouch = 0;
         
@@ -870,6 +871,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
             }
         }
         
+        // Trigger call back functions
         if ([self.delegate respondsToSelector:@selector(lineChartView:didSelectRangeAtIndex:leftHorizontalIndex:rightHorizontalIndex:leftTouchPoint:rightTouchPoint:)])
         {
             NSUInteger lineIndex = self.linesView.selectedLineIndex != kJBLineChartLinesViewUnselectedLineIndex ? self.linesView.selectedLineIndex : [self lineIndexForPoint:leftTouchPoint];
@@ -888,6 +890,8 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
             [self.delegate lineChartView:self didSelectRangeAtIndex:lineIndex leftHorizontalIndex:leftIndex rightHorizontalIndex:rightIndex];
         }
 
+        // Set the selection view frame accordingly
+        
         CGFloat leftOffset = fmin(self.bounds.size.width - kJBLineSelectionViewWidth, fmax(0, leftTouchPoint.x - (ceil(kJBLineSelectionViewWidth * 0.5))));
         CGFloat rightOffset = fmin(self.bounds.size.width + kJBLineSelectionViewWidth, fmax(0, rightTouchPoint.x + (ceil(kJBLineSelectionViewWidth * 0.5))));
         
@@ -930,6 +934,9 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
     {
         return;
     }
+    
+    // Handle releasing one finger from range selection
+    // Reset the selection view width and position to behave like single selection
     
     if ([[event allTouches]count] == 2 && [touches count] == 1){
         
