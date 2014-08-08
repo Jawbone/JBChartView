@@ -110,6 +110,8 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
     self.barChartView.minimumValue = 0.0f;
     self.barChartView.backgroundColor = kJBColorBarChartBackground;
     
+    self.barChartView.multipleTouchEnabled = YES;
+    
     JBChartHeaderView *headerView = [[JBChartHeaderView alloc] initWithFrame:CGRectMake(kJBBarChartViewControllerChartPadding, ceil(self.view.bounds.size.height * 0.5) - ceil(kJBBarChartViewControllerChartHeaderHeight * 0.5), self.view.bounds.size.width - (kJBBarChartViewControllerChartPadding * 2), kJBBarChartViewControllerChartHeaderHeight)];
     headerView.titleLabel.text = [kJBStringLabelAverageMonthlyTemperature uppercaseString];
     headerView.subtitleLabel.text = kJBStringLabel2012;
@@ -152,6 +154,22 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
     [self.informationView setHidden:NO animated:YES];
     [self setTooltipVisible:YES animated:YES atTouchPoint:touchPoint];
     [self.tooltipView setText:[[self.monthlySymbols objectAtIndex:index] uppercaseString]];
+}
+
+-(void)barChartView:(JBBarChartView *)barChartView didSelectRangeAtLeftIndex:(NSUInteger)leftIndex rightIndex:(NSUInteger)rightIndex LeftTouchPoint:(CGPoint)leftTouchPoint RightTouchPoint:(CGPoint)rightTouchPoint
+{
+    CGPoint midPoint = CGPointMake((leftTouchPoint.x + rightTouchPoint.x)/2, (leftTouchPoint.y + rightTouchPoint.y)/2);
+    
+    NSNumber *leftValueNumber = [self.chartData objectAtIndex:leftIndex];
+    NSNumber *rightValueNumber = [self.chartData objectAtIndex:rightIndex];
+    float percentChange = ([rightValueNumber floatValue] - [leftValueNumber floatValue])/[leftValueNumber floatValue] * 100;
+    
+    [self.informationView setValueText:[NSString stringWithFormat:@"%0.1f", percentChange] unitText:@"%"];
+    [self.informationView setTitleText:@"Temperature Change"];
+    [self.informationView setHidden:NO animated:YES];
+    
+    [self setTooltipVisible:YES animated:NO atTouchPoint:midPoint];
+    [self.tooltipView setText:[NSString stringWithFormat:@"%@-%@",[[self.monthlySymbols objectAtIndex:leftIndex] uppercaseString],[[self.monthlySymbols objectAtIndex:rightIndex] uppercaseString]]];
 }
 
 - (void)didDeselectBarChartView:(JBBarChartView *)barChartView

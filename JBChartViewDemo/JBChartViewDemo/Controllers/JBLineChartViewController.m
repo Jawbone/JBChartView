@@ -153,6 +153,8 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
     footerView.sectionCount = [[self largestLineData] count];
     self.lineChartView.footerView = footerView;
     
+    self.lineChartView.multipleTouchEnabled = YES;
+    
     [self.view addSubview:self.lineChartView];
     
     self.informationView = [[JBChartInformationView alloc] initWithFrame:CGRectMake(self.view.bounds.origin.x, CGRectGetMaxY(self.lineChartView.frame), self.view.bounds.size.width, self.view.bounds.size.height - CGRectGetMaxY(self.lineChartView.frame) - CGRectGetMaxY(self.navigationController.navigationBar.frame))];
@@ -206,8 +208,31 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
     [self.informationView setValueText:[NSString stringWithFormat:@"%.2f", [valueNumber floatValue]] unitText:kJBStringLabelMm];
     [self.informationView setTitleText:lineIndex == JBLineChartLineSolid ? kJBStringLabelMetropolitanAverage : kJBStringLabelNationalAverage];
     [self.informationView setHidden:NO animated:YES];
+    
     [self setTooltipVisible:YES animated:YES atTouchPoint:touchPoint];
     [self.tooltipView setText:[[self.daysOfWeek objectAtIndex:horizontalIndex] uppercaseString]];
+}
+
+- (void)lineChartView:(JBLineChartView *)lineChartView didSelectRangeAtIndex:(NSUInteger)lineIndex
+  leftHorizontalIndex:(NSUInteger)leftHorizontalIndex rightHorizontalIndex:(NSUInteger)rightHorizontalIndex
+       leftTouchPoint:(CGPoint)leftTouchPoint rightTouchPoint:(CGPoint)rightTouchPoint{
+    
+    [self setTooltipVisible:NO animated:NO];
+    
+    NSNumber *leftValue = [[self.chartData objectAtIndex:lineIndex] objectAtIndex:leftHorizontalIndex];
+    NSNumber *rightValue = [[self.chartData objectAtIndex:lineIndex] objectAtIndex:rightHorizontalIndex];
+    
+    [self.informationView setValueText:[NSString stringWithFormat:@"%.0f ", ([rightValue floatValue]-[leftValue floatValue]) * 100] unitText:@"%"];
+    
+    CGPoint midPoint = CGPointMake((leftTouchPoint.x + rightTouchPoint.x)/2, (leftTouchPoint.y + rightTouchPoint.y)/2);
+    
+    [self setTooltipVisible:YES animated:NO atTouchPoint:midPoint];
+    [self.tooltipView setText:[NSString stringWithFormat:@"%@ - %@",
+                                [[self.daysOfWeek objectAtIndex:leftHorizontalIndex] uppercaseString],
+                                [[self.daysOfWeek objectAtIndex:rightHorizontalIndex] uppercaseString]]];
+    
+    [self.informationView setTitleText:lineIndex == JBLineChartLineSolid ? kJBStringLabelMetropolitanAverage : kJBStringLabelNationalAverage];
+    [self.informationView setHidden:NO animated:YES];
 }
 
 - (void)didDeselectLineInLineChartView:(JBLineChartView *)lineChartView
@@ -215,6 +240,8 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
     [self.informationView setHidden:YES animated:YES];
     [self setTooltipVisible:NO animated:YES];
 }
+
+
 
 - (UIColor *)lineChartView:(JBLineChartView *)lineChartView colorForLineAtLineIndex:(NSUInteger)lineIndex
 {
