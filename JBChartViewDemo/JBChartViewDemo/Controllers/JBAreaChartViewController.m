@@ -235,7 +235,7 @@ NSString * const kJBAreaChartViewControllerNavButtonViewKey = @"view";
     return kJBAreaChartViewControllerChartLineWidth;
 }
 
-- (UIColor *)verticalSelectionColorForLineChartView:(JBLineChartView *)lineChartView
+- (UIColor *)lineChartView:(JBLineChartView *)lineChartView verticalSelectionColorForLineAtLineIndex:(NSUInteger)lineIndex
 {
     return [UIColor whiteColor];
 }

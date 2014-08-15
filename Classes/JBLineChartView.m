@@ -363,13 +363,6 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         self.verticalSelectionView = [[JBChartVerticalSelectionView alloc] initWithFrame:CGRectMake(0, 0, selectionViewWidth, self.bounds.size.height - self.footerView.frame.size.height)];
         self.verticalSelectionView.alpha = 0.0;
         self.verticalSelectionView.hidden = !self.showsVerticalSelection;
-        
-        if ([self.delegate respondsToSelector:@selector(verticalSelectionColorForLineChartView:)])
-        {
-            UIColor *selectionViewBackgroundColor = [self.delegate verticalSelectionColorForLineChartView:self];
-            NSAssert(selectionViewBackgroundColor != nil, @"JBLineChartView // delegate function - (UIColor *)verticalSelectionColorForLineChartView:(JBLineChartView *)lineChartView must return a non-nil UIColor");
-            self.verticalSelectionView.bgColor = selectionViewBackgroundColor;
-        }
 
         // Add new selection bar
         if (self.footerView)
@@ -867,8 +860,8 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
     
     if ([self.delegate respondsToSelector:@selector(lineChartView:verticalSelectionColorForLineAtLineIndex:)])
     {
-        UIColor* verticalSelectionColor = [self.delegate lineChartView: self verticalSelectionColorForLineAtLineIndex: lineIndex];
-        NSAssert(verticalSelectionColor != nil, @"JBLineChartView // delegate function - (UIColor *)lineChartView: (JBLineChartView*) lineChartView verticalSelectionColorForLineAtLineIndex: (NSUInteger) lineIndex must return a non-nil UIColor");
+        UIColor *verticalSelectionColor = [self.delegate lineChartView:self verticalSelectionColorForLineAtLineIndex:lineIndex];
+        NSAssert(verticalSelectionColor != nil, @"JBLineChartView // delegate function - (UIColor *)lineChartView:(JBLineChartView *)lineChartView verticalSelectionColorForLineAtLineIndex:(NSUInteger)lineIndex must return a non-nil UIColor");
         self.verticalSelectionView.bgColor = verticalSelectionColor;
     }
     
