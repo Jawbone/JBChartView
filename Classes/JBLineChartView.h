@@ -215,12 +215,10 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
  *
  *  If this method is implemented, it takes precedence over verticalSelectionColorForLineChartView.
  *
- *  Default: white color (faded to transparent).
- *
  *  @param lineChartView    The line chart object requesting this information.
  *  @param lineIndex        An index number identifying a line in the chart.
  *
- *  @return The color of the selection view used during chart selections.
+ *  @return The color of the selection view used during chart selections of the given line.
  */
 - (UIColor *)lineChartView:(JBLineChartView *)lineChartView verticalSelectionColorForLineAtLineIndex:(NSUInteger)lineIndex;
 
