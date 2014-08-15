@@ -896,8 +896,6 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 {
     _verticalSelectionViewVisible = verticalSelectionViewVisible;
 
-    [self bringSubviewToFront:self.verticalSelectionView];
-
     if (animated)
     {
         [UIView animateWithDuration:kJBChartViewDefaultAnimationDuration delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
