@@ -43,7 +43,7 @@ Simply add the following line to your <code>Podfile</code>:
 Your Podfile should look something like:
 
 	platform :ios, '6.0'
-	pod 'JBChartView', '~> 2.7.4'
+	pod 'JBChartView', '~> 2.8.0'
 	
 ### The Old School Way
 
@@ -208,7 +208,7 @@ The color, width and style of each line in the chart can be customized via the <
 	
 Furthermore, the color and width of the selection view along with the color of the selected line can be customized via the <i>optional</i> protocols:
 
-	- (UIColor *)verticalSelectionColorForLineChartView:(JBLineChartView *)lineChartView
+	- (UIColor *)lineChartView:(JBLineChartView *)lineChartView verticalSelectionColorForLineAtLineIndex:(NSUInteger)lineIndex
 	{
 		return ...; // color of selection view
 	}
