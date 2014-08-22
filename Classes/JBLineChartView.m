@@ -449,42 +449,76 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
             {
                 NSAssert([self.dataSource respondsToSelector:@selector(lineChartView:numberOfVerticalValuesAtLineIndex:)], @"JBLineChartView // dataSource must implement - (NSUInteger)lineChartView:(JBLineChartView *)lineChartView numberOfVerticalValuesAtLineIndex:(NSUInteger)lineIndex");
                 NSUInteger dataCount = [self.dataSource lineChartView:self numberOfVerticalValuesAtLineIndex:lineIndex];
+                
                 for (NSUInteger horizontalIndex=0; horizontalIndex<dataCount; horizontalIndex++)
                 {
-                    if ([self.dataSource respondsToSelector:@selector(lineChartView:dotViewAtHorizontalIndex:atLineIndex:)] || [self.dataSource respondsToSelector:@selector(lineChartView:selectedDotViewAtHorizontalIndex:atLineIndex:)])
+                    BOOL shouldEvaluateDotSize = NO;
+                    
+                    // Left dot
+                    if (horizontalIndex == 0)
                     {
-                        if ([self.dataSource respondsToSelector:@selector(lineChartView:dotViewAtHorizontalIndex:atLineIndex:)])
-                        {
-                            UIView *customDotView = [self.dataSource lineChartView:self dotViewAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
-                            if (customDotView.frame.size.width > maxDotLength || customDotView.frame.size.height > maxDotLength)
-                            {
-                                maxDotLength = fmaxf(customDotView.frame.size.width, customDotView.frame.size.height);
-                            }
-                        }
-                        
-                        if ([self.dataSource respondsToSelector:@selector(lineChartView:selectedDotViewAtHorizontalIndex:atLineIndex:)])
-                        {
-                            UIView *customSelectedDotView = [self.dataSource lineChartView:self selectedDotViewAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
-                            if (customSelectedDotView.frame.size.width > maxDotLength || customSelectedDotView.frame.size.height > maxDotLength)
-                            {
-                                maxDotLength = fmaxf(customSelectedDotView.frame.size.width, customSelectedDotView.frame.size.height);
-                            }
-                        }
+                        shouldEvaluateDotSize = YES;
                     }
-                    else if ([self.delegate respondsToSelector:@selector(lineChartView:dotRadiusForDotAtHorizontalIndex:atLineIndex:)])
+                    // Right dot
+                    else if (horizontalIndex == (dataCount - 1))
                     {
-                        CGFloat dotRadius = [self.delegate lineChartView:self dotRadiusForDotAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
-                        if (dotRadius > maxDotLength)
-                        {
-                            maxDotLength = dotRadius;
-                        }
+                        shouldEvaluateDotSize = YES;
                     }
                     else
                     {
-                        CGFloat defaultDotRadius = lineWidth * kJBLineChartDotsViewDefaultRadiusFactor;
-                        if (defaultDotRadius > maxDotLength)
+                        NSAssert([self.delegate respondsToSelector:@selector(lineChartView:verticalValueForHorizontalIndex:atLineIndex:)], @"JBLineChartView // delegate must implement - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
+                        CGFloat height = [self.delegate lineChartView:self verticalValueForHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
+                                                
+                        // Top
+                        if (height == [self cachedMaxHeight])
                         {
-                            maxDotLength = defaultDotRadius;
+                            shouldEvaluateDotSize = YES;
+                        }
+                        
+                        // Bottom
+                        else if (height == [self cachedMinHeight])
+                        {
+                            shouldEvaluateDotSize = YES;
+                        }
+                    }
+                    
+                    if (shouldEvaluateDotSize)
+                    {
+                        if ([self.dataSource respondsToSelector:@selector(lineChartView:dotViewAtHorizontalIndex:atLineIndex:)] || [self.dataSource respondsToSelector:@selector(lineChartView:selectedDotViewAtHorizontalIndex:atLineIndex:)])
+                        {
+                            if ([self.dataSource respondsToSelector:@selector(lineChartView:dotViewAtHorizontalIndex:atLineIndex:)])
+                            {
+                                UIView *customDotView = [self.dataSource lineChartView:self dotViewAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
+                                if (customDotView.frame.size.width > maxDotLength || customDotView.frame.size.height > maxDotLength)
+                                {
+                                    maxDotLength = fmaxf(customDotView.frame.size.width, customDotView.frame.size.height);
+                                }
+                            }
+                            
+                            if ([self.dataSource respondsToSelector:@selector(lineChartView:selectedDotViewAtHorizontalIndex:atLineIndex:)])
+                            {
+                                UIView *customSelectedDotView = [self.dataSource lineChartView:self selectedDotViewAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
+                                if (customSelectedDotView.frame.size.width > maxDotLength || customSelectedDotView.frame.size.height > maxDotLength)
+                                {
+                                    maxDotLength = fmaxf(customSelectedDotView.frame.size.width, customSelectedDotView.frame.size.height);
+                                }
+                            }
+                        }
+                        else if ([self.delegate respondsToSelector:@selector(lineChartView:dotRadiusForDotAtHorizontalIndex:atLineIndex:)])
+                        {
+                            CGFloat dotRadius = [self.delegate lineChartView:self dotRadiusForDotAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
+                            if (dotRadius > maxDotLength)
+                            {
+                                maxDotLength = dotRadius;
+                            }
+                        }
+                        else
+                        {
+                            CGFloat defaultDotRadius = lineWidth * kJBLineChartDotsViewDefaultRadiusFactor;
+                            if (defaultDotRadius > maxDotLength)
+                            {
+                                maxDotLength = defaultDotRadius;
+                            }
                         }
                     }
                 }
