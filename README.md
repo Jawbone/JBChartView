@@ -234,7 +234,7 @@ By default, each line will not show dots for each point. To enable this on a per
 
 To customize the size of each dot (default 3x the line width), implement:
 
-	- (CGFloat)lineChartView:(JBLineChartView *)lineChartView dotRadiusForLineAtLineIndex:(NSUInteger)lineIndex;
+	- (CGFloat)lineChartView:(JBLineChartView *)lineChartView dotRadiusForDotAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
 	
 To customize the color of each dot during selection and non-selection events (default is white and black respectively), implement:
 

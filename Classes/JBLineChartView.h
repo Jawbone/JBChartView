@@ -104,7 +104,7 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
  *
  *  @param lineChartView    A line chart object informing the delegate about the new selection.
  *  @param lineIndex        An index number identifying the closest line in the chart to the current touch
- *  @param horizontalIndex  The 0-based horizontal index of a selection point (left to right, x-axis).point.
+ *  @param horizontalIndex  The 0-based horizontal index of a selection point (left to right, x-axis).
  *  @param touchPoint       The touch point in relation to the chart's bounds (excludes footer and header).
  */
 - (void)lineChartView:(JBLineChartView *)lineChartView didSelectLineAtIndex:(NSUInteger)lineIndex horizontalIndex:(NSUInteger)horizontalIndex touchPoint:(CGPoint)touchPoint;
@@ -149,7 +149,7 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
  *  Default: black color.
  *
  *  @param lineChartView    The line chart object requesting this information.
- *  @param horizontalIndex  The 0-based horizontal index of a selection point (left to right, x-axis).point.
+ *  @param horizontalIndex  The 0-based horizontal index of a selection point (left to right, x-axis)
  *  @param lineIndex        An index number identifying a line in the chart.
  *
  *  @return The color to be used to color a dot within a dotted line in the chart.
@@ -176,11 +176,12 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
  *  Default: line width x 3.
  *
  *  @param lineChartView    The line chart object requesting this information.
+ *  @param horizontalIndex  The 0-based horizontal index of a selection point (left to right, x-axis).
  *  @param lineIndex        An index number identifying a line in the chart.
  *
  *  @return The radius of the dots within a dotted line in the chart.
  */
-- (CGFloat)lineChartView:(JBLineChartView *)lineChartView dotRadiusForLineAtLineIndex:(NSUInteger)lineIndex;
+- (CGFloat)lineChartView:(JBLineChartView *)lineChartView dotRadiusForDotAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
 
 /**
  *  Returns the width of the (vertical) selection view to be overlayed on the chart during touch events.
@@ -240,7 +241,7 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
  *  Default: white color.
  *
  *  @param lineChartView    The line chart object requesting this information.
- *  @param horizontalIndex  The 0-based horizontal index of a selection point (left to right, x-axis).point.
+ *  @param horizontalIndex  The 0-based horizontal index of a selection point (left to right, x-axis).
  *  @param lineIndex        An index number identifying a line in the chart.
  *
  *  @return The color to be used to highlight a dot within a dotted line during chart selections.
