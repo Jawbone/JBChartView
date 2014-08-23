@@ -242,7 +242,7 @@ To customize the color of each dot during selection and non-selection events (de
 
 	- (UIColor *)lineChartView:(JBLineChartView *)lineChartView selectionColorForDotAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
 	
-Alternatively, you can supply a custom dot view instead of using the default circular impelmentation (note: custom dot views are automatically hidden when selected):
+Alternatively, you can supply your own UIView instead of using the default impelmentation (note: custom dot views are automatically hidden when selected):
 
 	- (UIView *)lineChartView:(JBLineChartView *)lineChartView dotViewAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
 		
