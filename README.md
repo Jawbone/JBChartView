@@ -43,7 +43,7 @@ Simply add the following line to your <code>Podfile</code>:
 Your Podfile should look something like:
 
 	platform :ios, '6.0'
-	pod 'JBChartView', '~> 2.8.0'
+	pod 'JBChartView', '~> 2.8.1'
 	
 ### The Old School Way
 
@@ -242,11 +242,9 @@ To customize the color of each dot during selection and non-selection events (de
 
 	- (UIColor *)lineChartView:(JBLineChartView *)lineChartView selectionColorForDotAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
 	
-Alternatively, you can supply a custom dot view (along with a selected instance) instead of using the default circular impelmentation:
+Alternatively, you can supply a custom dot view instead of using the default circular impelmentation (note: custom dot views are automatically hidden when selected):
 
 	- (UIView *)lineChartView:(JBLineChartView *)lineChartView dotViewAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
-
-	- (UIView *)lineChartView:(JBLineChartView *)lineChartView selectedDotViewAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
 		
 As well, by default, each line will have squared off end caps and connection points. To enable rounded connections and end caps:
 
