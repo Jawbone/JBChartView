@@ -139,7 +139,6 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 - (CGFloat)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView widthForLineAtLineIndex:(NSUInteger)lineIndex;
 - (CGFloat)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView dotRadiusForLineAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
 - (UIView *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView dotViewAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
-- (UIView *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView selectedDotViewAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
 - (CGFloat)paddingForLineChartDotsView:(JBLineChartDotsView *)lineChartDotsView;
 - (BOOL)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView showsDotsForLineAtLineIndex:(NSUInteger)lineIndex;
 
@@ -148,14 +147,6 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 @interface JBLineChartDotView : UIView
 
 - (id)initWithRadius:(CGFloat)radius;
-
-@end
-
-@interface JBLineChartCustomDotView : UIView
-
-@property (nonatomic, strong) UIView *dotView;
-@property (nonatomic, strong) UIView *selectedDotView;
-@property (nonatomic, assign) BOOL selected;
 
 @end
 
@@ -484,7 +475,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
                     
                     if (shouldEvaluateDotSize)
                     {
-                        if ([self.dataSource respondsToSelector:@selector(lineChartView:dotViewAtHorizontalIndex:atLineIndex:)] || [self.dataSource respondsToSelector:@selector(lineChartView:selectedDotViewAtHorizontalIndex:atLineIndex:)])
+                        if ([self.dataSource respondsToSelector:@selector(lineChartView:dotViewAtHorizontalIndex:atLineIndex:)])
                         {
                             if ([self.dataSource respondsToSelector:@selector(lineChartView:dotViewAtHorizontalIndex:atLineIndex:)])
                             {
@@ -492,15 +483,6 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
                                 if (customDotView.frame.size.width > maxDotLength || customDotView.frame.size.height > maxDotLength)
                                 {
                                     maxDotLength = fmaxf(customDotView.frame.size.width, customDotView.frame.size.height);
-                                }
-                            }
-                            
-                            if ([self.dataSource respondsToSelector:@selector(lineChartView:selectedDotViewAtHorizontalIndex:atLineIndex:)])
-                            {
-                                UIView *customSelectedDotView = [self.dataSource lineChartView:self selectedDotViewAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
-                                if (customSelectedDotView.frame.size.width > maxDotLength || customSelectedDotView.frame.size.height > maxDotLength)
-                                {
-                                    maxDotLength = fmaxf(customSelectedDotView.frame.size.width, customSelectedDotView.frame.size.height);
                                 }
                             }
                         }
@@ -673,15 +655,6 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
     if ([self.dataSource respondsToSelector:@selector(lineChartView:dotViewAtHorizontalIndex:atLineIndex:)])
     {
         return [self.dataSource lineChartView:self dotViewAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
-    }
-    return nil;
-}
-
-- (UIView *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView selectedDotViewAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex
-{
-    if ([self.dataSource respondsToSelector:@selector(lineChartView:selectedDotViewAtHorizontalIndex:atLineIndex:)])
-    {
-        return [self.dataSource lineChartView:self selectedDotViewAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
     }
     return nil;
 }
@@ -1446,24 +1419,10 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
             for (JBLineChartPoint *lineChartPoint in [lineData sortedArrayUsingSelector:@selector(compare:)])
             {
                 NSAssert([self.delegate respondsToSelector:@selector(lineChartDotsView:dotViewAtHorizontalIndex:atLineIndex:)], @"JBLineChartDotsView // delegate must implement - (UIView *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView dotViewAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
-                UIView *customDotView = [self.delegate lineChartDotsView:self dotViewAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
-                
-                NSAssert([self.delegate respondsToSelector:@selector(lineChartDotsView:selectedDotViewAtHorizontalIndex:atLineIndex:)], @"JBLineChartDotsView // delegate must implement - (UIView *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView selectedDotViewAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
-                UIView *selectedCustomDotView = [self.delegate lineChartDotsView:self selectedDotViewAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
-                
-                UIView *currentDotView;
-                
-                // Custom dot
-                if (customDotView != nil || selectedCustomDotView != nil)
-                {
-                    currentDotView = [[JBLineChartCustomDotView alloc] init];
-                    ((JBLineChartCustomDotView *)currentDotView).dotView = customDotView;
-                    ((JBLineChartCustomDotView *)currentDotView).selectedDotView = selectedCustomDotView;
-                    [currentDotView sizeToFit];
-                }
+                UIView *currentDotView = [self.delegate lineChartDotsView:self dotViewAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
                 
                 // System dot
-                else
+                if (currentDotView == nil)
                 {
                     NSAssert([self.delegate respondsToSelector:@selector(lineChartDotsView:dotRadiusForLineAtHorizontalIndex:atLineIndex:)], @"JBLineChartDotsView // delegate must implement - (CGFloat)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView dotRadiusForLineAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
                     CGFloat dotRadius = [self.delegate lineChartDotsView:self dotRadiusForLineAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
@@ -1522,7 +1481,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
                     // Custom dot
                     else
                     {
-                        ((JBLineChartCustomDotView *)dotView).selected = (weakSelf.selectedLineIndex == lineIndex);
+                        dotView.alpha = (weakSelf.selectedLineIndex == lineIndex) ? 0.0f : 1.0f; // hide custom dots on selection
                     }
                 }
                 horizontalIndex++;
@@ -1562,57 +1521,6 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         self.layer.cornerRadius = (radius * 0.5f);
     }
     return self;
-}
-
-@end
-
-@implementation JBLineChartCustomDotView
-
-#pragma mark - Layout
-
-- (void)layoutSubviews
-{
-    [super layoutSubviews];
-    
-    self.dotView.frame = CGRectMake(ceil(self.bounds.size.height * 0.5f) - ceil(self.dotView.frame.size.height * 0.5f), ceil(self.bounds.size.width * 0.5f) - ceil(self.dotView.frame.size.width * 0.5f), self.dotView.frame.size.width, self.dotView.frame.size.height);
-    self.selectedDotView.frame = CGRectMake(ceil(self.bounds.size.height * 0.5f) - ceil(self.selectedDotView.frame.size.height * 0.5), ceil(self.bounds.size.width * 0.5f) - ceil(self.selectedDotView.frame.size.width * 0.5f), self.selectedDotView.frame.size.width, self.selectedDotView.frame.size.height);
-}
-
-#pragma mark - Sizing
-
-- (CGSize)sizeThatFits:(CGSize)size
-{
-    return CGSizeMake(fmaxf(self.dotView.frame.size.width, self.dotView.frame.size.height), fmaxf(self.dotView.frame.size.width, self.dotView.frame.size.height));
-}
-
-#pragma mark - Setters
-
-- (void)setDotView:(UIView *)dotView
-{
-    if (_dotView != nil)
-    {
-        [_dotView removeFromSuperview];
-    }
-    _dotView = dotView;
-    [self addSubview:_dotView];
-}
-
-- (void)setSelectedDotView:(UIView *)selectedDotView
-{
-    if (_selectedDotView != nil)
-    {
-        [_selectedDotView removeFromSuperview];
-    }
-    _selectedDotView = selectedDotView;
-    [self addSubview:_selectedDotView];
-}
-
-- (void)setSelected:(BOOL)selected
-{
-    _selected = selected;
-    
-    self.dotView.alpha = self.selected ? 0.0f : 1.0f;
-    self.selectedDotView.alpha = self.selected ? 1.0f : 0.0f;
 }
 
 @end

@@ -242,6 +242,12 @@ To customize the color of each dot during selection and non-selection events (de
 
 	- (UIColor *)lineChartView:(JBLineChartView *)lineChartView selectionColorForDotAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
 	
+Alternatively, you can supply a custom dot view (along with a selected instance) instead of using the default circular impelmentation:
+
+	- (UIView *)lineChartView:(JBLineChartView *)lineChartView dotViewAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
+
+	- (UIView *)lineChartView:(JBLineChartView *)lineChartView selectedDotViewAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
+		
 As well, by default, each line will have squared off end caps and connection points. To enable rounded connections and end caps:
 
 	- (BOOL)lineChartView:(JBLineChartView *)lineChartView smoothLineAtLineIndex:(NSUInteger)lineIndex;
