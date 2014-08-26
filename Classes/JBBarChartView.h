@@ -111,7 +111,7 @@
  *
  *  @return Horizontal width (in pixels) between each bar.
  */
-- (NSUInteger)barPaddingForBarChartView:(JBBarChartView *)barChartView;
+- (CGFloat)barPaddingForBarChartView:(JBBarChartView *)barChartView;
 
 @end
 
