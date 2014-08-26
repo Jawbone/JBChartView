@@ -472,6 +472,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     CGRect barViewFrame = barView.frame;
     CGRect selectionViewFrame = self.verticalSelectionView.frame;
     selectionViewFrame.origin.x = barViewFrame.origin.x;
+    selectionViewFrame.size.width = barViewFrame.size.width;
     self.verticalSelectionView.frame = selectionViewFrame;
     [self setVerticalSelectionViewVisible:YES animated:YES];
     
