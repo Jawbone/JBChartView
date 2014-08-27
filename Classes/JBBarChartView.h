@@ -128,8 +128,9 @@
 @property (nonatomic, assign) BOOL showsVerticalSelection;
 
 /*
- *  Bar charts can be inverted (top->bottom).
- *  For the inverted orientation to take place, reloadData must be called.
+ *  Bars can be (vertically) positoned top to bottom instead of bottom up.
+ *  If this property is set to YES, both the bar and the selection view will be inverted.
+ *  For the inverted orientation to take effect, reloadData must be called.
  *
  *  Default: NO.
  */
