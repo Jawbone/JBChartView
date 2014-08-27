@@ -150,7 +150,7 @@ Lastly, any JBChartView subclass can be collapsed or expanded programmatically v
 
 #### JBBarChartView
 
-By default, a bar chart will orient all bars from the bottom up. Setting the following invert proprery to YES will cause both the selection view and bars to orient themselves top down. 
+A bar chart can be inverted such that it's orientation is top->down (including the selection view) by setting the following property:
 
 	@property (nonatomic, assign, getter=isInverted) BOOL inverted;
 
