@@ -12,6 +12,7 @@
 CGFloat static const kJBBarChartViewBarBasePaddingMutliplier = 50.0f;
 CGFloat static const kJBBarChartViewUndefinedCachedHeight = -1.0f;
 CGFloat static const kJBBarChartViewStateAnimationDuration = 0.05f;
+CGFloat static const kJBBarChartViewStatePopOffset = 10.0f;
 NSInteger static const kJBBarChartViewUndefinedBarIndex = -1;
 
 // Colors (JBChartView)
@@ -310,30 +311,58 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     [super setState:state animated:animated force:force callback:callback];
     
     __weak JBBarChartView* weakSelf = self;
-
-    void (^updateBarView)(UIView *barView);
-
-    updateBarView = ^(UIView *barView) {
+    
+    void (^updateBarView)(UIView *barView, BOOL popBar);
+    
+    updateBarView = ^(UIView *barView, BOOL popBar) {
         if (weakSelf.inverted)
         {
             if (weakSelf.state == JBChartViewStateExpanded)
             {
-                barView.frame = CGRectMake(barView.frame.origin.x, weakSelf.headerView.frame.size.height + weakSelf.headerPadding, barView.frame.size.width, [[weakSelf.cachedBarViewHeights objectAtIndex:barView.tag] floatValue]);
+                if (popBar)
+                {
+                    barView.frame = CGRectMake(barView.frame.origin.x, weakSelf.headerView.frame.size.height + weakSelf.headerPadding, barView.frame.size.width, [[weakSelf.cachedBarViewHeights objectAtIndex:barView.tag] floatValue] + kJBBarChartViewStatePopOffset);
+                }
+                else
+                {
+                    barView.frame = CGRectMake(barView.frame.origin.x, weakSelf.headerView.frame.size.height + weakSelf.headerPadding, barView.frame.size.width, [[weakSelf.cachedBarViewHeights objectAtIndex:barView.tag] floatValue]);
+                }
             }
             else if (weakSelf.state == JBChartViewStateCollapsed)
             {
-                barView.frame = CGRectMake(barView.frame.origin.x, weakSelf.headerView.frame.size.height + weakSelf.headerPadding, barView.frame.size.width, 0.0f);
+                if (popBar)
+                {
+                    barView.frame = CGRectMake(barView.frame.origin.x, weakSelf.headerView.frame.size.height + weakSelf.headerPadding, barView.frame.size.width, [[weakSelf.cachedBarViewHeights objectAtIndex:barView.tag] floatValue] + kJBBarChartViewStatePopOffset);
+                }
+                else
+                {
+                    barView.frame = CGRectMake(barView.frame.origin.x, weakSelf.headerView.frame.size.height + weakSelf.headerPadding, barView.frame.size.width, 0.0f);
+                }
             }
         }
         else
         {
             if (weakSelf.state == JBChartViewStateExpanded)
             {
-                barView.frame = CGRectMake(barView.frame.origin.x, weakSelf.bounds.size.height - weakSelf.footerView.frame.size.height - [[weakSelf.cachedBarViewHeights objectAtIndex:barView.tag] floatValue], barView.frame.size.width, [[weakSelf.cachedBarViewHeights objectAtIndex:barView.tag] floatValue]);
+                if (popBar)
+                {
+                    barView.frame = CGRectMake(barView.frame.origin.x, weakSelf.bounds.size.height - weakSelf.footerView.frame.size.height - [[weakSelf.cachedBarViewHeights objectAtIndex:barView.tag] floatValue] - kJBBarChartViewStatePopOffset, barView.frame.size.width, [[weakSelf.cachedBarViewHeights objectAtIndex:barView.tag] floatValue] + kJBBarChartViewStatePopOffset);
+                }
+                else
+                {
+                    barView.frame = CGRectMake(barView.frame.origin.x, weakSelf.bounds.size.height - weakSelf.footerView.frame.size.height - [[weakSelf.cachedBarViewHeights objectAtIndex:barView.tag] floatValue], barView.frame.size.width, [[weakSelf.cachedBarViewHeights objectAtIndex:barView.tag] floatValue]);
+                }
             }
             else if (weakSelf.state == JBChartViewStateCollapsed)
             {
-                barView.frame = CGRectMake(barView.frame.origin.x, weakSelf.bounds.size.height, barView.frame.size.width, 0.0f);
+                if (popBar)
+                {
+                    barView.frame = CGRectMake(barView.frame.origin.x, weakSelf.bounds.size.height - weakSelf.footerView.frame.size.height - [[weakSelf.cachedBarViewHeights objectAtIndex:barView.tag] floatValue] - kJBBarChartViewStatePopOffset, barView.frame.size.width, [[weakSelf.cachedBarViewHeights objectAtIndex:barView.tag] floatValue] + kJBBarChartViewStatePopOffset);
+                }
+                else
+                {
+                    barView.frame = CGRectMake(barView.frame.origin.x, weakSelf.bounds.size.height, barView.frame.size.width, 0.0f);
+                }
             }
         }
     };
@@ -344,26 +373,32 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     {
         if (animated)
         {
+            NSUInteger index = 0;
             for (UIView *barView in self.barViews)
             {
-                [UIView animateWithDuration:kJBBarChartViewStateAnimationDuration delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
-                    updateBarView(barView);
-                } completion:^(BOOL lastBarFinished) {
-                    if (barView.tag == [self.barViews count] - 1)
-                    {
-                        if (callbackCopy)
+                [UIView animateWithDuration:kJBBarChartViewStateAnimationDuration delay:(kJBBarChartViewStateAnimationDuration * 0.5) * index options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+                    updateBarView(barView, YES);
+                } completion:^(BOOL finished) {
+                    [UIView animateWithDuration:kJBBarChartViewStateAnimationDuration delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+                        updateBarView(barView, NO);
+                    } completion:^(BOOL lastBarFinished) {
+                        if (barView.tag == [self.barViews count] - 1)
                         {
-                            callbackCopy();
+                            if (callbackCopy)
+                            {
+                                callbackCopy();
+                            }
                         }
-                    }
+                    }];
                 }];
+                index++;
             }
         }
         else
         {
             for (UIView *barView in self.barViews)
             {
-                updateBarView(barView);
+                updateBarView(barView, NO);
             }
             if (callbackCopy)
             {
