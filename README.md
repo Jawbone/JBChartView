@@ -43,7 +43,7 @@ Simply add the following line to your <code>Podfile</code>:
 Your Podfile should look something like:
 
 	platform :ios, '6.0'
-	pod 'JBChartView', '~> 2.8.3'
+	pod 'JBChartView', '~> 2.8.4'
 	
 ### The Old School Way
 
@@ -149,6 +149,10 @@ Lastly, any JBChartView subclass can be collapsed or expanded programmatically v
 	- (void)setState:(JBChartViewState)state animated:(BOOL)animated callback:(void (^)())callback;
 
 #### JBBarChartView
+
+By default, a bar chart will orient all bars from the bottom up. Setting the following invert proprery to YES will cause both the selection view and bars to orient themselves top down. 
+
+	@property (nonatomic, assign, getter=isInverted) BOOL inverted;
 
 By default, a chart's bars will be black and flat. They can be customized by supplying a UIView subclass through the <i>optional</i> protocol:
 
