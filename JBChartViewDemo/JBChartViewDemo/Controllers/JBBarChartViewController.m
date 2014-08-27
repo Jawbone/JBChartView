@@ -18,7 +18,7 @@
 CGFloat const kJBBarChartViewControllerChartHeight = 250.0f;
 CGFloat const kJBBarChartViewControllerChartPadding = 10.0f;
 CGFloat const kJBBarChartViewControllerChartHeaderHeight = 80.0f;
-CGFloat const kJBBarChartViewControllerChartHeaderPadding = 10.0f;
+CGFloat const kJBBarChartViewControllerChartHeaderPadding = 20.0f;
 CGFloat const kJBBarChartViewControllerChartFooterHeight = 25.0f;
 CGFloat const kJBBarChartViewControllerChartFooterPadding = 5.0f;
 CGFloat const kJBBarChartViewControllerBarPadding = 1.0f;

@@ -361,7 +361,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         {
             selectionViewWidth = MIN([self.delegate verticalSelectionWidthForLineChartView:self], self.bounds.size.width);
         }
-        self.verticalSelectionView = [[JBChartVerticalSelectionView alloc] initWithFrame:CGRectMake(0, 0, selectionViewWidth, self.bounds.size.height - self.footerView.frame.size.height)];
+        self.verticalSelectionView = [[JBChartVerticalSelectionView alloc] initWithFrame:CGRectMake(0, 0, selectionViewWidth, self.bounds.size.height - self.footerView.frame.size.height - self.headerView.frame.size.height - self.headerPadding)];
         self.verticalSelectionView.alpha = 0.0;
         self.verticalSelectionView.hidden = !self.showsVerticalSelection;
 
@@ -935,7 +935,8 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
     }
     
     CGFloat xOffset = fmin(self.bounds.size.width - self.verticalSelectionView.frame.size.width, fmax(0, touchPoint.x - (ceil(self.verticalSelectionView.frame.size.width * 0.5))));
-    self.verticalSelectionView.frame = CGRectMake(xOffset, self.verticalSelectionView.frame.origin.y, self.verticalSelectionView.frame.size.width, self.verticalSelectionView.frame.size.height);
+    CGFloat yOffset = self.headerView.frame.size.height + self.headerPadding;
+    self.verticalSelectionView.frame = CGRectMake(xOffset, yOffset, self.verticalSelectionView.frame.size.width, self.verticalSelectionView.frame.size.height);
     [self setVerticalSelectionViewVisible:YES animated:YES];
 }
 
