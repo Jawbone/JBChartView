@@ -127,4 +127,12 @@
  */
 @property (nonatomic, assign) BOOL showsVerticalSelection;
 
+/*
+ *  Bar charts can be inverted (top->bottom).
+ *  For the inverted orientation to take place, reloadData must be called.
+ *
+ *  Default: NO.
+ */
+@property (nonatomic, assign, getter=isInverted) BOOL inverted;
+
 @end
