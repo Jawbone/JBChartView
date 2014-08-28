@@ -361,7 +361,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         {
             selectionViewWidth = MIN([self.delegate verticalSelectionWidthForLineChartView:self], self.bounds.size.width);
         }
-        self.verticalSelectionView = [[JBChartVerticalSelectionView alloc] initWithFrame:CGRectMake(0, 0, selectionViewWidth, self.bounds.size.height - self.footerView.frame.size.height - self.headerView.frame.size.height - self.headerPadding)];
+        self.verticalSelectionView = [[JBChartVerticalSelectionView alloc] initWithFrame:CGRectMake(0, 0, selectionViewWidth, self.bounds.size.height - self.footerView.frame.size.height - self.headerView.frame.size.height - self.headerPadding - self.footerPadding)];
         self.verticalSelectionView.alpha = 0.0;
         self.verticalSelectionView.hidden = !self.showsVerticalSelection;
 
@@ -410,7 +410,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 
 - (CGFloat)availableHeight
 {
-    return self.bounds.size.height - self.headerView.frame.size.height - self.footerView.frame.size.height - self.headerPadding;
+    return self.bounds.size.height - self.headerView.frame.size.height - self.footerView.frame.size.height - self.headerPadding - self.footerPadding;
 }
 
 - (CGFloat)padding
