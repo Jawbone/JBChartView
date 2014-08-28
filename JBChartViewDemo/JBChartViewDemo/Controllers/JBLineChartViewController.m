@@ -171,6 +171,18 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
     [self.lineChartView setState:JBChartViewStateExpanded];
 }
 
+#pragma mark - JBChartViewDataSource
+
+- (BOOL)shouldExtendSelectionViewIntoHeaderPaddingForChartView:(JBChartView *)chartView
+{
+    return YES;
+}
+
+- (BOOL)shouldExtendSelectionViewIntoFooterPaddingForChartView:(JBChartView *)chartView
+{
+    return NO;
+}
+
 #pragma mark - JBLineChartViewDataSource
 
 - (NSUInteger)numberOfLinesInLineChartView:(JBLineChartView *)lineChartView
