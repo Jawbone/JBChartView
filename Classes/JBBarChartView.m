@@ -235,15 +235,8 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
             self.verticalSelectionView = nil;
         }
         
-        if (self.inverted)
-        {
-            self.verticalSelectionView = [[JBChartVerticalSelectionView alloc] initWithFrame:CGRectMake(0, 0, [self barWidth], self.bounds.size.height - self.headerView.frame.size.height - self.footerView.frame.size.height - self.headerPadding)];
-        }
-        else
-        {
-            self.verticalSelectionView = [[JBChartVerticalSelectionView alloc] initWithFrame:CGRectMake(0, 0, [self barWidth], self.bounds.size.height - self.headerView.frame.size.height - self.footerView.frame.size.height - self.footerPadding)];
-        }
-        
+
+        self.verticalSelectionView = [[JBChartVerticalSelectionView alloc] initWithFrame:CGRectMake(0, 0, [self barWidth], self.bounds.size.height - self.headerView.frame.size.height - self.footerView.frame.size.height)];
         self.verticalSelectionView.alpha = 0.0;
         self.verticalSelectionView.hidden = !self.showsVerticalSelection;
         if ([self.delegate respondsToSelector:@selector(barSelectionColorForBarChartView:)])
@@ -525,17 +518,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     CGRect selectionViewFrame = self.verticalSelectionView.frame;
     selectionViewFrame.origin.x = barViewFrame.origin.x;
     selectionViewFrame.size.width = barViewFrame.size.width;
-    
-    if (self.inverted)
-    {
-        selectionViewFrame.origin.y = self.headerView.frame.size.height + self.headerPadding;
-    }
-    else
-    {
-        
-        selectionViewFrame.origin.y = self.headerView.frame.size.height;
-    }
-    
+    selectionViewFrame.origin.y = self.headerView.frame.size.height;
     self.verticalSelectionView.frame = selectionViewFrame;
     [self setVerticalSelectionViewVisible:YES animated:YES];
     
