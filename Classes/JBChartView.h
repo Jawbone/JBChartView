@@ -10,6 +10,8 @@
 
 extern CGFloat const kJBChartViewDefaultAnimationDuration;
 
+@class JBChartView;
+
 /**
  * At a minimum, a chart can support two states, along with animations to-and-from.
  */
@@ -26,7 +28,29 @@ typedef NS_ENUM(NSInteger, JBChartViewState){
 
 @protocol JBChartViewDataSource <NSObject>
 
-// Extend (via subclass) to add custom functionality
+@optional
+
+/**
+ *  Returns whether or not the chart's selection view should extend into the header padding.
+ *
+ *  Default: NO
+ *
+ *  @param chartView        The chart object requesting this information.
+ *
+ *  @return Whether or not a chart's selection view should extend into the header padding.
+ */
+- (BOOL)extendSelectionViewIntoHeaderPaddingForChartView:(JBChartView *)chartView;
+
+/**
+ *  Returns whether or not the chart's selection view should extend into the footer padding.
+ *
+ *  Default: NO
+ *
+ *  @param chartView        The chart object requesting this information.
+ *
+ *  @return Whether or not a chart's selection view should extend into the footer padding.
+ */
+- (BOOL)extendSelectionViewIntoFooterPaddingForChartView:(JBChartView *)chartView;
 
 @end
 
@@ -53,14 +77,18 @@ typedef NS_ENUM(NSInteger, JBChartViewState){
 @property (nonatomic, strong) UIView *headerView;
 
 /**
- *  The vertical padding between the footer and lowest chart point (bar, line, etc).
- */
-@property (nonatomic, assign) CGFloat footerPadding;
-
-/**
  *  The vertical padding between the header and highest chart point (bar, line, etc).
+ *  By default, the selection view will extend into the header padding area. To modify this behaviour,
+ *  implement the dataSource protocol - (BOOL)extendSelectionViewIntoHeaderPaddingForChartView:(JBChartView *)chartView.
  */
 @property (nonatomic, assign) CGFloat headerPadding;
+
+/**
+ *  The vertical padding between the footer and lowest chart point (bar, line, etc).
+ *  By default, the selection view will extend into the footer padding area. To modify this behaviour,
+ *  implement the dataSource protocol - (BOOL)extendSelectionViewIntoFooterPaddingForChartView:(JBChartView *)chartView.
+ */
+@property (nonatomic, assign) CGFloat footerPadding;
 
 /**
  *  The minimum and maxmimum values of the chart. 
