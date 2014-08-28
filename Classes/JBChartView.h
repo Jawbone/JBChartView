@@ -53,6 +53,11 @@ typedef NS_ENUM(NSInteger, JBChartViewState){
 @property (nonatomic, strong) UIView *headerView;
 
 /**
+ *  The vertical padding between the footer and lowest chart point (bar, line, etc).
+ */
+@property (nonatomic, assign) CGFloat footerPadding;
+
+/**
  *  The vertical padding between the header and highest chart point (bar, line, etc).
  */
 @property (nonatomic, assign) CGFloat headerPadding;
