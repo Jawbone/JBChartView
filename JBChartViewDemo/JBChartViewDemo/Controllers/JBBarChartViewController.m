@@ -138,6 +138,18 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
     [self.barChartView setState:JBChartViewStateExpanded];
 }
 
+#pragma mark - JBChartViewDataSource
+
+- (BOOL)shouldExtendSelectionViewIntoHeaderPaddingForChartView:(JBChartView *)chartView
+{
+    return YES;
+}
+
+- (BOOL)shouldExtendSelectionViewIntoFooterPaddingForChartView:(JBChartView *)chartView
+{
+    return NO;
+}
+
 #pragma mark - JBBarChartViewDataSource
 
 - (NSUInteger)numberOfBarsInBarChartView:(JBBarChartView *)barChartView

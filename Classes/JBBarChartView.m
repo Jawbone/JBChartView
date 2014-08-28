@@ -235,8 +235,25 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
             self.verticalSelectionView = nil;
         }
         
+        CGFloat verticalSelectionViewHeight = self.bounds.size.height - self.headerView.frame.size.height - self.footerView.frame.size.height - self.headerPadding - self.footerPadding;
+        
+        if ([self.dataSource respondsToSelector:@selector(shouldExtendSelectionViewIntoHeaderPaddingForChartView:)])
+        {
+            if ([self.dataSource shouldExtendSelectionViewIntoHeaderPaddingForChartView:self])
+            {
+                verticalSelectionViewHeight += self.headerPadding;
+            }
+        }
+        
+        if ([self.dataSource respondsToSelector:@selector(shouldExtendSelectionViewIntoFooterPaddingForChartView:)])
+        {
+            if ([self.dataSource shouldExtendSelectionViewIntoFooterPaddingForChartView:self])
+            {
+                verticalSelectionViewHeight += self.footerPadding;
+            }
+        }
 
-        self.verticalSelectionView = [[JBChartVerticalSelectionView alloc] initWithFrame:CGRectMake(0, 0, [self barWidth], self.bounds.size.height - self.headerView.frame.size.height - self.footerView.frame.size.height)];
+        self.verticalSelectionView = [[JBChartVerticalSelectionView alloc] initWithFrame:CGRectMake(0, 0, [self barWidth], verticalSelectionViewHeight)];
         self.verticalSelectionView.alpha = 0.0;
         self.verticalSelectionView.hidden = !self.showsVerticalSelection;
         if ([self.delegate respondsToSelector:@selector(barSelectionColorForBarChartView:)])
@@ -518,7 +535,23 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     CGRect selectionViewFrame = self.verticalSelectionView.frame;
     selectionViewFrame.origin.x = barViewFrame.origin.x;
     selectionViewFrame.size.width = barViewFrame.size.width;
-    selectionViewFrame.origin.y = self.headerView.frame.size.height;
+    
+    if ([self.dataSource respondsToSelector:@selector(shouldExtendSelectionViewIntoHeaderPaddingForChartView:)])
+    {
+        if ([self.dataSource shouldExtendSelectionViewIntoHeaderPaddingForChartView:self])
+        {
+            selectionViewFrame.origin.y = self.headerView.frame.size.height;
+        }
+        else
+        {
+            selectionViewFrame.origin.y = self.headerView.frame.size.height + self.headerPadding;
+        }
+    }
+    else
+    {
+        selectionViewFrame.origin.y = self.headerView.frame.size.height + self.headerPadding;
+    }
+    
     self.verticalSelectionView.frame = selectionViewFrame;
     [self setVerticalSelectionViewVisible:YES animated:YES];
     

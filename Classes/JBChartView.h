@@ -39,7 +39,7 @@ typedef NS_ENUM(NSInteger, JBChartViewState){
  *
  *  @return Whether or not a chart's selection view should extend into the header padding.
  */
-- (BOOL)extendSelectionViewIntoHeaderPaddingForChartView:(JBChartView *)chartView;
+- (BOOL)shouldExtendSelectionViewIntoHeaderPaddingForChartView:(JBChartView *)chartView;
 
 /**
  *  Returns whether or not the chart's selection view should extend into the footer padding.
@@ -50,7 +50,7 @@ typedef NS_ENUM(NSInteger, JBChartViewState){
  *
  *  @return Whether or not a chart's selection view should extend into the footer padding.
  */
-- (BOOL)extendSelectionViewIntoFooterPaddingForChartView:(JBChartView *)chartView;
+- (BOOL)shouldExtendSelectionViewIntoFooterPaddingForChartView:(JBChartView *)chartView;
 
 @end
 
@@ -79,14 +79,14 @@ typedef NS_ENUM(NSInteger, JBChartViewState){
 /**
  *  The vertical padding between the header and highest chart point (bar, line, etc).
  *  By default, the selection view will extend into the header padding area. To modify this behaviour,
- *  implement the dataSource protocol - (BOOL)extendSelectionViewIntoHeaderPaddingForChartView:(JBChartView *)chartView.
+ *  implement the dataSource protocol - (BOOL)shouldExtendSelectionViewIntoHeaderPaddingForChartView:(JBChartView *)chartView.
  */
 @property (nonatomic, assign) CGFloat headerPadding;
 
 /**
  *  The vertical padding between the footer and lowest chart point (bar, line, etc).
  *  By default, the selection view will extend into the footer padding area. To modify this behaviour,
- *  implement the dataSource protocol - (BOOL)extendSelectionViewIntoFooterPaddingForChartView:(JBChartView *)chartView.
+ *  implement the dataSource protocol - (BOOL)shouldExtendSelectionViewIntoFooterPaddingForChartView:(JBChartView *)chartView.
  */
 @property (nonatomic, assign) CGFloat footerPadding;
 
