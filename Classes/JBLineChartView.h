@@ -80,7 +80,8 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
  *  For this value to apply, showsDotsForLineAtLineIndex: must return YES for the line at lineIndex.
  *  This protocol supercedes colorForDotAtHorizontalIndex: and dotRadiusForDotAtHorizontalIndex:.
  *  If nil is returned. the original dot protocols will take precedence. During selection events, a custom
- *  dot view is automatically hidden.
+ *  dot view will not be hidden unless lineChartView:shouldHideDotViewOnSelectionAtHorizontalIndex:atLineIndex: 
+ *  is implemented.
  *
  *  Default: nil.
  *
@@ -91,6 +92,19 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
  *  @return A custom UIView instance representing a dot at a particular horizontal index within a dotted line.
  */
 - (UIView *)lineChartView:(JBLineChartView *)lineChartView dotViewAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
+
+/**
+ *  Returns whether or not a (custom) dot view should be hidden on selection events. 
+ *
+ *  Default: NO
+ *
+ *  @param lineChartView    The line chart object requesting this information.
+ *  @param horizontalIndex  The 0-based horizontal index of a selection point (left to right, x-axis).
+ *  @param lineIndex        An index number identifying a line in the chart.
+ *
+ *  @return Whether or not a (custom) dot view should be hidden on selection events. 
+ */
+- (BOOL)lineChartView:(JBLineChartView *)lineChartView shouldHideDotViewOnSelectionAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
 
 @end
 
