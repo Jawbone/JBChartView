@@ -135,7 +135,6 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
         for (NSUInteger index=0; index<dataCount; index++)
         {
             CGFloat height = [self.delegate barChartView:self heightForBarViewAtIndex:index];
-            NSAssert(height >= 0, @"JBBarChartView // datasource function - (CGFloat)barChartView:(JBBarChartView *)barChartView heightForBarViewAtIndex:(NSUInteger)index must return a CGFloat >= 0");
             [dataDictionary setObject:[NSNumber numberWithFloat:height] forKey:[NSNumber numberWithInt:(int)index]];
         }
         self.chartDataDictionary = [NSDictionary dictionaryWithDictionary:dataDictionary];
