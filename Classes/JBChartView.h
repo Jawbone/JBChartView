@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-@import UIKit;
+#import <UIKit/UIKit.h>
 
 extern CGFloat const kJBChartViewDefaultAnimationDuration;
 
