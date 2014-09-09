@@ -38,3 +38,10 @@
 #define kJBStringLabelHours localize(@"label.hours", @"h")
 #define kJBStringLabelMoon localize(@"label.moon", @"Moon")
 #define kJBStringLabelSun localize(@"label.sun", @"Sun")
+
+#pragma mark - Labels (Block Chart)
+
+#define kJBStringLabel2014 localize(@"label.2014", @"2014")
+#define kJBStringLabelMonthlyLightningStrikes localize(@"label.monthly.lightning.strikes", @"Monthly Lightning Strikes")
+#define kJBStringLabelWorldwide2014 localize(@"label.worldwide.2014", @"Worldwide - 2014")
+#define kJBStringLabelNumberOfLightningStrikes localize(@"label.number.of.lightning.strikes", @" Strikes")

@@ -12,6 +12,7 @@
 #import "JBBarChartViewController.h"
 #import "JBLineChartViewController.h"
 #import "JBAreaChartViewController.h"
+#import "JBBlockChartViewController.h"
 
 // Views
 #import "JBChartTableCell.h"
@@ -20,6 +21,7 @@ typedef NS_ENUM(NSInteger, JBChartListViewControllerRow){
 	JBChartListViewControllerRowLineChart,
     JBChartListViewControllerRowBarChart,
     JBChartListViewControllerRowAreaChart,
+    JBChartListViewControllerRowBlockChart,
     JBChartListViewControllerRowCount
 };
 
@@ -73,6 +75,11 @@ NSInteger const kJBChartListViewControllerCellHeight = 100;
             detailText = kJBStringLabelWorldwide2011;
             type = JBChartTableCellTypeAreaChart;
             break;
+		case JBChartListViewControllerRowBlockChart:
+            text = kJBStringLabelMonthlyLightningStrikes;
+            detailText = kJBStringLabelWorldwide2014;
+            type = JBChartTableCellTypeBlockChart;
+            break;
         default:
             break;
     }
@@ -108,6 +115,11 @@ NSInteger const kJBChartListViewControllerCellHeight = 100;
     {
         JBAreaChartViewController *areaChartController = [[JBAreaChartViewController alloc] init];
         [self.navigationController pushViewController:areaChartController animated:YES];
+    }
+    else if (indexPath.row == JBChartListViewControllerRowBlockChart)
+    {
+        JBBlockChartViewController *blockChartController = [[JBBlockChartViewController alloc] init];
+        [self.navigationController pushViewController:blockChartController animated:YES];
     }
 }
 

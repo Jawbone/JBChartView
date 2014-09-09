@@ -33,6 +33,9 @@
         case JBChartTableCellTypeAreaChart:
             image = [UIImage imageNamed:kJBImageIconAreaChart];
             break;
+        case JBChartTableCellTypeBlockChart:
+            image = [UIImage imageNamed:kJBImageIconBlockChart];
+            break;
         default:
             break;
     }
