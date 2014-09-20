@@ -400,7 +400,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
                     [UIView animateWithDuration:kJBBarChartViewStateAnimationDuration delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
                         updateBarView(barView, NO);
                     } completion:^(BOOL lastBarFinished) {
-                        if (barView.tag == [self.barViews count] - 1)
+                        if ((NSUInteger)barView.tag == [self.barViews count] - 1)
                         {
                             if (callbackCopy)
                             {
