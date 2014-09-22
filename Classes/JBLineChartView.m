@@ -267,13 +267,13 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 
         NSMutableArray *mutableChartData = [NSMutableArray array];
         NSAssert([self.dataSource respondsToSelector:@selector(numberOfLinesInLineChartView:)], @"JBLineChartView // dataSource must implement - (NSUInteger)numberOfLinesInLineChartView:(JBLineChartView *)lineChartView");
-        NSInteger numberOfLines = [self.dataSource numberOfLinesInLineChartView:self];
-        for (NSInteger lineIndex=0; lineIndex<numberOfLines; lineIndex++)
+        NSUInteger numberOfLines = [self.dataSource numberOfLinesInLineChartView:self];
+        for (NSUInteger lineIndex=0; lineIndex<numberOfLines; lineIndex++)
         {
             NSAssert([self.dataSource respondsToSelector:@selector(lineChartView:numberOfVerticalValuesAtLineIndex:)], @"JBLineChartView // dataSource must implement - (NSUInteger)lineChartView:(JBLineChartView *)lineChartView numberOfVerticalValuesAtLineIndex:(NSUInteger)lineIndex");
             NSUInteger dataCount = [self.dataSource lineChartView:self numberOfVerticalValuesAtLineIndex:lineIndex];
             NSMutableArray *chartPointData = [NSMutableArray array];
-            for (NSInteger horizontalIndex=0; horizontalIndex<dataCount; horizontalIndex++)
+            for (NSUInteger horizontalIndex=0; horizontalIndex<dataCount; horizontalIndex++)
             {               
                 NSAssert([self.delegate respondsToSelector:@selector(lineChartView:verticalValueForHorizontalIndex:atLineIndex:)], @"JBLineChartView // delegate must implement - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
                 CGFloat rawHeight =  [self.delegate lineChartView:self verticalValueForHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
@@ -457,71 +457,68 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         CGFloat maxDotLength = 0;
         if (showsDots)
         {
-            for (NSInteger lineIndex=0; lineIndex<numberOfLines; lineIndex++)
+            NSAssert([self.dataSource respondsToSelector:@selector(lineChartView:numberOfVerticalValuesAtLineIndex:)], @"JBLineChartView // dataSource must implement - (NSUInteger)lineChartView:(JBLineChartView *)lineChartView numberOfVerticalValuesAtLineIndex:(NSUInteger)lineIndex");
+            NSUInteger dataCount = [self.dataSource lineChartView:self numberOfVerticalValuesAtLineIndex:lineIndex];
+            
+            for (NSUInteger horizontalIndex=0; horizontalIndex<dataCount; horizontalIndex++)
             {
-                NSAssert([self.dataSource respondsToSelector:@selector(lineChartView:numberOfVerticalValuesAtLineIndex:)], @"JBLineChartView // dataSource must implement - (NSUInteger)lineChartView:(JBLineChartView *)lineChartView numberOfVerticalValuesAtLineIndex:(NSUInteger)lineIndex");
-                NSUInteger dataCount = [self.dataSource lineChartView:self numberOfVerticalValuesAtLineIndex:lineIndex];
+                BOOL shouldEvaluateDotSize = NO;
                 
-                for (NSInteger horizontalIndex=0; horizontalIndex<dataCount; horizontalIndex++)
+                // Left dot
+                if (horizontalIndex == 0)
                 {
-                    BOOL shouldEvaluateDotSize = NO;
+                    shouldEvaluateDotSize = YES;
+                }
+                // Right dot
+                else if (horizontalIndex == (dataCount - 1))
+                {
+                    shouldEvaluateDotSize = YES;
+                }
+                else
+                {
+                    NSAssert([self.delegate respondsToSelector:@selector(lineChartView:verticalValueForHorizontalIndex:atLineIndex:)], @"JBLineChartView // delegate must implement - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
+                    CGFloat height = [self.delegate lineChartView:self verticalValueForHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
                     
-                    // Left dot
-                    if (horizontalIndex == 0)
+                    // Top
+                    if (height == [self cachedMaxHeight])
                     {
                         shouldEvaluateDotSize = YES;
                     }
-                    // Right dot
-                    else if (horizontalIndex == (dataCount - 1))
+                    
+                    // Bottom
+                    else if (height == [self cachedMinHeight])
                     {
                         shouldEvaluateDotSize = YES;
                     }
-                    else
-                    {
-                        NSAssert([self.delegate respondsToSelector:@selector(lineChartView:verticalValueForHorizontalIndex:atLineIndex:)], @"JBLineChartView // delegate must implement - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
-                        CGFloat height = [self.delegate lineChartView:self verticalValueForHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
-                                                
-                        // Top
-                        if (height == [self cachedMaxHeight])
-                        {
-                            shouldEvaluateDotSize = YES;
-                        }
-                        
-                        // Bottom
-                        else if (height == [self cachedMinHeight])
-                        {
-                            shouldEvaluateDotSize = YES;
-                        }
-                    }
-                    
-                    if (shouldEvaluateDotSize)
+                }
+                
+                if (shouldEvaluateDotSize)
+                {
+                    if ([self.dataSource respondsToSelector:@selector(lineChartView:dotViewAtHorizontalIndex:atLineIndex:)])
                     {
                         if ([self.dataSource respondsToSelector:@selector(lineChartView:dotViewAtHorizontalIndex:atLineIndex:)])
                         {
-                            if ([self.dataSource respondsToSelector:@selector(lineChartView:dotViewAtHorizontalIndex:atLineIndex:)])
+                            UIView *customDotView = [self.dataSource lineChartView:self dotViewAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
+                            if (customDotView.frame.size.width > maxDotLength || customDotView.frame.size.height > maxDotLength)
                             {
-                                UIView *customDotView = [self.dataSource lineChartView:self dotViewAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
-                                if (customDotView.frame.size.width > maxDotLength || customDotView.frame.size.height > maxDotLength)
-                                {
-                                    maxDotLength = fmaxf(customDotView.frame.size.width, customDotView.frame.size.height);
-                                }
+                                maxDotLength = fmaxf(customDotView.frame.size.width, customDotView.frame.size.height);
                             }
                         }
-                        else if ([self.delegate respondsToSelector:@selector(lineChartView:dotRadiusForDotAtHorizontalIndex:atLineIndex:)])
+                    }
+                    else if ([self.delegate respondsToSelector:@selector(lineChartView:dotRadiusForDotAtHorizontalIndex:atLineIndex:)])
+                    {
+                        CGFloat dotRadius = [self.delegate lineChartView:self dotRadiusForDotAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
+                        if (dotRadius > maxDotLength)
                         {
-                            CGFloat dotRadius = [self.delegate lineChartView:self dotRadiusForDotAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
-                            if (dotRadius > maxDotLength)
-                            {
-                                maxDotLength = dotRadius;
-                            }
+                            maxDotLength = dotRadius;
                         }
-                        else
+                    }
+                    else
+                    {
+                        CGFloat defaultDotRadius = lineWidth * kJBLineChartDotsViewDefaultRadiusFactor;
+                        if (defaultDotRadius > maxDotLength)
                         {
-                            CGFloat defaultDotRadius = lineWidth * kJBLineChartDotsViewDefaultRadiusFactor;
-                            if (defaultDotRadius > maxDotLength)
-                            {
-                                maxDotLength = defaultDotRadius;
-                            }
+                            maxDotLength = defaultDotRadius;
                         }
                     }
                 }
@@ -776,12 +773,12 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
     {
         CGFloat minHeight = FLT_MAX;
         NSAssert([self.dataSource respondsToSelector:@selector(numberOfLinesInLineChartView:)], @"JBLineChartView // dataSource must implement - (NSUInteger)numberOfLinesInLineChartView:(JBLineChartView *)lineChartView");
-        NSInteger numberOfLines = [self.dataSource numberOfLinesInLineChartView:self];
-        for (NSInteger lineIndex=0; lineIndex<numberOfLines; lineIndex++)
+        NSUInteger numberOfLines = [self.dataSource numberOfLinesInLineChartView:self];
+        for (NSUInteger lineIndex=0; lineIndex<numberOfLines; lineIndex++)
         {
             NSAssert([self.dataSource respondsToSelector:@selector(lineChartView:numberOfVerticalValuesAtLineIndex:)], @"JBLineChartView // dataSource must implement - (NSUInteger)lineChartView:(JBLineChartView *)lineChartView numberOfVerticalValuesAtLineIndex:(NSUInteger)lineIndex");
             NSUInteger dataCount = [self.dataSource lineChartView:self numberOfVerticalValuesAtLineIndex:lineIndex];
-            for (NSInteger horizontalIndex=0; horizontalIndex<dataCount; horizontalIndex++)
+            for (NSUInteger horizontalIndex=0; horizontalIndex<dataCount; horizontalIndex++)
             {
                 NSAssert([self.delegate respondsToSelector:@selector(lineChartView:verticalValueForHorizontalIndex:atLineIndex:)], @"JBLineChartView // delegate must implement - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
                 CGFloat height = [self.delegate lineChartView:self verticalValueForHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
@@ -803,12 +800,12 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
     {
         CGFloat maxHeight = 0;
         NSAssert([self.dataSource respondsToSelector:@selector(numberOfLinesInLineChartView:)], @"JBLineChartView // dataSource must implement - (NSUInteger)numberOfLinesInLineChartView:(JBLineChartView *)lineChartView");
-        NSInteger numberOfLines = [self.dataSource numberOfLinesInLineChartView:self];
-        for (NSInteger lineIndex=0; lineIndex<numberOfLines; lineIndex++)
+        NSUInteger numberOfLines = [self.dataSource numberOfLinesInLineChartView:self];
+        for (NSUInteger lineIndex=0; lineIndex<numberOfLines; lineIndex++)
         {
             NSAssert([self.dataSource respondsToSelector:@selector(lineChartView:numberOfVerticalValuesAtLineIndex:)], @"JBLineChartView // dataSource must implement - (NSUInteger)lineChartView:(JBLineChartView *)lineChartView numberOfVerticalValuesAtLineIndex:(NSUInteger)lineIndex");
             NSUInteger dataCount = [self.dataSource lineChartView:self numberOfVerticalValuesAtLineIndex:lineIndex];
-            for (NSInteger horizontalIndex=0; horizontalIndex<dataCount; horizontalIndex++)
+            for (NSUInteger horizontalIndex=0; horizontalIndex<dataCount; horizontalIndex++)
             {
                 NSAssert([self.delegate respondsToSelector:@selector(lineChartView:verticalValueForHorizontalIndex:atLineIndex:)], @"JBLineChartView // delegate must implement - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
                 CGFloat height = [self.delegate lineChartView:self verticalValueForHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
@@ -900,10 +897,10 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
     NSUInteger shortestDistance = INT_MAX;
     NSInteger selectedIndex = kJBLineChartUnselectedLineIndex;
     NSAssert([self.dataSource respondsToSelector:@selector(numberOfLinesInLineChartView:)], @"JBLineChartView // dataSource must implement - (NSUInteger)numberOfLinesInLineChartView:(JBLineChartView *)lineChartView");
-    NSInteger numberOfLines = [self.dataSource numberOfLinesInLineChartView:self];
+    NSUInteger numberOfLines = [self.dataSource numberOfLinesInLineChartView:self];
     
     // Iterate all lines
-    for (NSInteger lineIndex=0; lineIndex<numberOfLines; lineIndex++)
+    for (NSUInteger lineIndex=0; lineIndex<numberOfLines; lineIndex++)
     {
         NSAssert([self.dataSource respondsToSelector:@selector(lineChartView:numberOfVerticalValuesAtLineIndex:)], @"JBLineChartView // dataSource must implement - (NSUInteger)lineChartView:(JBLineChartView *)lineChartView numberOfVerticalValuesAtLineIndex:(NSUInteger)lineIndex");
         if ([self.dataSource lineChartView:self numberOfVerticalValuesAtLineIndex:lineIndex] > rightHorizontalIndex)
