@@ -95,6 +95,8 @@ Lastly, ensure you have set the *frame* of your barChartView & call *reloadData*
 
 	barChartView.frame = CGRectMake( ... );
 	[barChartView reloadData];
+	
+**Note**: subsequent changes to the chart's frame will not invoke *reloadData*; it must be called directly afterwards for any changes to take effect. 
     
 #### JBLineChartView
 
@@ -129,6 +131,7 @@ Lastly, ensure you have set the *frame* of your lineChartView & call *reloadData
 	lineChartView.frame = CGRectMake( ... );
 	[lineChartView reloadData];
 
+**Note**: subsequent changes to the chart's frame will not invoke *reloadData*; it must be called directly afterwards for any changes to take effect. 
 	
 ## Customization
 
