@@ -162,17 +162,6 @@ static UIColor *kJBChartVerticalSelectionViewDefaultBgColor = nil;
     _hasMaximumValue = NO; // clears max
 }
 
-- (void)setFrame:(CGRect)frame
-{
-    [super setFrame:frame];
-    
-    // because frame is set early, we may not have sources
-    if (self.delegate != nil && self.dataSource != nil)
-    {
-        [self reloadData]; // reload all subviews on frame change
-    }
-}
-
 @end
 
 @implementation JBChartVerticalSelectionView
