@@ -120,6 +120,7 @@ typedef NS_ENUM(NSInteger, JBChartViewState){
 /**
  *  Acts similiar to a UITableView's reloadData function.
  *  The entire chart will be torn down and re-constructed via datasource and delegate protocls.
+ *  If a chart's frame changes, reloadData must be called directly afterwards for the changes to take effect.
  */
 - (void)reloadData;
 

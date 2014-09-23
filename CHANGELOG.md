@@ -1,5 +1,9 @@
 # Changelog
 
+## <a href="https://github.com/Jawbone/JBChartView/tree/v2.8.10">2.8.10</a>
+#### 09/22/14
+- Reverted fix for issue <a href="https://github.com/Jawbone/JBChartView/issues/111">#111</a>.
+
 ## <a href="https://github.com/Jawbone/JBChartView/tree/v2.8.9">2.8.9</a>
 #### 09/22/14
 - Fixes issue <a href="https://github.com/Jawbone/JBChartView/issues/111">#111</a>.
