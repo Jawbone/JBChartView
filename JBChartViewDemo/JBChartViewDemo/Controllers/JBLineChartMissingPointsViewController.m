@@ -95,7 +95,11 @@ NSString * const kJBLineChartMissingPointsViewControllerNavButtonViewKey = @"vie
         NSMutableArray *mutableChartData = [NSMutableArray array];
         for (int i=0; i<kJBLineChartMissingPointsViewControllerMaxNumChartPoints; i++)
         {
-            [mutableChartData addObject:[NSNumber numberWithFloat:((double)arc4random() / ARC4RANDOM_MAX)]]; // random number between 0 and 1
+            if(i < 2 || i > 5 || i == 3) {
+                [mutableChartData addObject:[NSNumber numberWithFloat:NAN]];
+            } else {
+                [mutableChartData addObject:[NSNumber numberWithFloat:((double)arc4random() / ARC4RANDOM_MAX)]]; // random number between 0 and 1
+            }
         }
         [mutableLineCharts addObject:mutableChartData];
     }
@@ -215,9 +219,13 @@ NSString * const kJBLineChartMissingPointsViewControllerNavButtonViewKey = @"vie
 - (void)lineChartView:(JBLineChartView *)lineChartView didSelectLineAtIndex:(NSUInteger)lineIndex horizontalIndex:(NSUInteger)horizontalIndex touchPoint:(CGPoint)touchPoint
 {
     NSNumber *valueNumber = [[self.chartData objectAtIndex:lineIndex] objectAtIndex:horizontalIndex];
-    [self.informationView setValueText:[NSString stringWithFormat:@"%.2f", [valueNumber floatValue]] unitText:kJBStringLabelMm];
-    [self.informationView setTitleText:lineIndex == JBLineChartLineSolid ? kJBStringLabelMetropolitanAverage : kJBStringLabelNationalAverage];
-    [self.informationView setHidden:NO animated:YES];
+    if(isnan([valueNumber floatValue])) {
+        [self.informationView setHidden:YES animated:YES];
+    } else {
+        [self.informationView setValueText:[NSString stringWithFormat:@"%.2f", [valueNumber floatValue]] unitText:kJBStringLabelKm2014];
+        [self.informationView setTitleText:lineIndex == JBLineChartLineSolid ? kJBStringLabelLastYear2014 : kJBStringLabelCurrentYear2014];
+        [self.informationView setHidden:NO animated:YES];
+    }
     [self setTooltipVisible:YES animated:YES atTouchPoint:touchPoint];
     [self.tooltipView setText:[[self.daysOfWeek objectAtIndex:horizontalIndex] uppercaseString]];
 }
