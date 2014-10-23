@@ -12,6 +12,7 @@
 #import "JBBarChartViewController.h"
 #import "JBLineChartViewController.h"
 #import "JBAreaChartViewController.h"
+#import "JBLineChartMissingPointsViewController.h"
 
 // Views
 #import "JBChartTableCell.h"
@@ -20,6 +21,7 @@ typedef NS_ENUM(NSInteger, JBChartListViewControllerRow){
 	JBChartListViewControllerRowLineChart,
     JBChartListViewControllerRowBarChart,
     JBChartListViewControllerRowAreaChart,
+    JBChartListViewControllerRowLineChartMissingPoints,
     JBChartListViewControllerRowCount
 };
 
@@ -73,6 +75,11 @@ NSInteger const kJBChartListViewControllerCellHeight = 100;
             detailText = kJBStringLabelWorldwide2011;
             type = JBChartTableCellTypeAreaChart;
             break;
+        case JBChartListViewControllerRowLineChartMissingPoints:
+            text = kJBStringLabelCyclingCurrentWeek2014;
+            detailText = kJBStringLabelCyclingCurrentWeekLastWeek2014;
+            type = JBChartTableCellTypeLineChart;
+            break;
         default:
             break;
     }
@@ -108,6 +115,11 @@ NSInteger const kJBChartListViewControllerCellHeight = 100;
     {
         JBAreaChartViewController *areaChartController = [[JBAreaChartViewController alloc] init];
         [self.navigationController pushViewController:areaChartController animated:YES];
+    }
+    else if (indexPath.row == JBChartListViewControllerRowLineChartMissingPoints)
+    {
+        JBLineChartMissingPointsViewController *lineChartController = [[JBLineChartMissingPointsViewController alloc] init];
+        [self.navigationController pushViewController:lineChartController animated:YES];
     }
 }
 
