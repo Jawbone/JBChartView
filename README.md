@@ -86,7 +86,7 @@ At a minimum, you need to inform the data source how many bars are in the chart:
 
 Secondly, you need to inform the delegate the height of each bar (automatically normalized across the entire chart):
     
-    - (CGFloat)barChartView:(JBBarChartView *)barChartView heightForBarViewAtAtIndex:(NSUInteger)index
+    - (CGFloat)barChartView:(JBBarChartView *)barChartView heightForBarViewAtIndex:(NSUInteger)index
     {
 		return ...; // height of bar at index
 	}
