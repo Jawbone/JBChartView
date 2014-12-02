@@ -70,6 +70,15 @@ static UIColor *kJBChartVerticalSelectionViewDefaultBgColor = nil;
     // Override
 }
 
+#pragma mark - View
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    
+    if(self.dataSource)
+        [self reloadData];
+}
+
 #pragma mark - Validation
 
 - (void)validateHeaderAndFooterHeights
