@@ -107,6 +107,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView colorForLineAtLineIndex:(NSUInteger)lineIndex;
 - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView selectedColorForLineAtLineIndex:(NSUInteger)lineIndex;
 - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView fillColorForLineAtLineIndex:(NSUInteger)lineIndex;
+- (NSArray *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView fillGradientColorsForLineAtLineIndex:(NSUInteger)lineIndex;
 - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView selectedFillColorForLineAtLineIndex:(NSUInteger)lineIndex;
 - (CGFloat)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView widthForLineAtLineIndex:(NSUInteger)lineIndex;
 - (CGFloat)paddingForLineChartLinesView:(JBLineChartLinesView *)lineChartLinesView;
@@ -583,6 +584,15 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         return [self.delegate lineChartView:self fillColorForLineAtLineIndex:lineIndex];
     }
     return kJBLineChartViewDefaultLineFillColor;
+}
+
+- (NSArray *)lineChartLinesView:(JBLineChartLinesView *)lineChartView fillGradientColorsForLineAtLineIndex:(NSUInteger)lineIndex
+{
+    if ([self.delegate respondsToSelector:@selector(lineChartView:fillGradientColorsForLineAtLineIndex:)])
+    {
+        return [self.delegate lineChartView:self fillGradientColorsForLineAtLineIndex:lineIndex];
+    }
+    return nil;
 }
 
 - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView selectedFillColorForLineAtLineIndex:(NSUInteger)lineIndex
@@ -1290,9 +1300,33 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         [fillPath addLineToPoint:CGPointMake(firstXPosition, self.bounds.size.height - padding)];
         
         shapeFillLayer.path = fillPath.CGPath;
-        shapeFillLayer.frame = self.bounds;
         
-        [self.layer addSublayer:shapeFillLayer];
+        NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:fillGradientColorsForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (NSArray *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView fillGradientColorsForLineAtLineIndex:(NSUInteger)lineIndex");
+        
+        NSArray *gradientColors = [self.delegate lineChartLinesView:self fillGradientColorsForLineAtLineIndex:lineIndex];
+        if (gradientColors) {
+            
+            CAGradientLayer *gradientLayer = [CAGradientLayer layer];
+            gradientLayer.frame = self.bounds;
+            gradientLayer.startPoint = CGPointMake(0.5,1.0);
+            gradientLayer.endPoint = CGPointMake(0.5,0.0);
+            
+            NSMutableArray *colorRefs = [NSMutableArray arrayWithCapacity:gradientColors.count];
+            for (UIColor *color in gradientColors)
+                [colorRefs addObject:(id)color.CGColor];
+            gradientLayer.colors = colorRefs;
+            
+            [shapeFillLayer setFillColor:[UIColor blackColor].CGColor];
+            shapeFillLayer.frame = gradientLayer.bounds;
+            [gradientLayer setMask:shapeFillLayer];
+            [self.layer addSublayer:gradientLayer];
+        }
+        else {
+            
+            shapeFillLayer.frame = self.bounds;
+            [self.layer addSublayer:shapeFillLayer];
+        }
+        
         [self.layer addSublayer:shapeLayer];
 
         lineIndex++;
