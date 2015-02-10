@@ -173,6 +173,18 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
 - (UIColor *)lineChartView:(JBLineChartView *)lineChartView fillColorForLineAtLineIndex:(NSUInteger)lineIndex;
 
 /**
+ *  Returns the gradient colors of particular line at lineIndex within the chart.
+ *
+ *  Default: nil.
+ *
+ *  @param lineChartView    The line chart object requesting this information.
+ *  @param lineIndex        An index number identifying a line in the chart.
+ *
+ *  @return The colors used to create a gradient under a line in the chart.
+ */
+- (NSArray *)lineChartView:(JBLineChartView *)lineChartView fillGradientColorsForLineAtLineIndex:(NSUInteger)lineIndex;
+
+/**
  *  Returns the color of a particular dot in a line at lineIndex within the chart.
  *  For this value to apply, showsDotsForLineAtLineIndex: must return YES for the line at lineIndex.
  *  Any value can be returned for lineIndex's that don't support dots, as it will never be called.
