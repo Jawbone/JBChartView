@@ -937,7 +937,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 
 - (void)touchesBeganOrMovedWithTouches:(NSSet *)touches
 {
-    if (self.state == JBChartViewStateCollapsed || [self.chartData count] <= 0)
+    if (self.state == JBChartViewStateCollapsed || [self.chartData count] <= 0 || [self.chartData[0] count] == 0)
     {
         return;
     }
@@ -1182,6 +1182,11 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
     NSUInteger lineIndex = 0;
     for (NSArray *lineData in chartData)
     {
+        if (lineData.count == 0)
+        {
+            continue;
+        }
+
         UIBezierPath *path = [UIBezierPath bezierPath];
         path.miterLimit = kJBLineChartLinesViewMiterLimit;
         
