@@ -307,6 +307,20 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
 @property (nonatomic, assign) BOOL showsVerticalSelection;
 
 /**
+ *  Vertical highlight overlayed on the graph at all times, not just during touch events.
+ *
+ *  Default: NO.
+ */
+@property (nonatomic, assign) BOOL alwaysShowSelection;
+
+/**
+ *  Sets the index of the initially selected data point
+ *
+ *  Default: 0.
+ */
+@property (nonatomic, assign) NSInteger selectedIndex;
+
+/**
  *  A highlight shown on a line within the graph during touch events. The highlighted line
  *  is the closest line to the touch point and corresponds to the lineIndex delegatd back via 
  *  didSelectChartAtHorizontalIndex:atLineIndex: and didUnSlectChartAtHorizontalIndex:atLineIndex:
