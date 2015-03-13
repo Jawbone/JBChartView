@@ -154,7 +154,10 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
         else
         {
             NSUInteger totalBars = [[self.chartDataDictionary allKeys] count];
-            self.barPadding = (1/(float)totalBars) * kJBBarChartViewBarBasePaddingMutliplier;
+            self.barPadding = 0;
+            if (totalBars > 0) {
+                self.barPadding = (1/(float)totalBars) * kJBBarChartViewBarBasePaddingMutliplier;
+            }
         }
     };
     
