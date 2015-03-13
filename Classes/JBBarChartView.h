@@ -127,6 +127,20 @@
  */
 @property (nonatomic, assign) BOOL showsVerticalSelection;
 
+/**
+ *  Vertical highlight overlayed on the graph at all times, not just during touch events.
+ *
+ *  Default: NO.
+ */
+@property (nonatomic, assign) BOOL alwaysShowSelection;
+
+/**
+ *  Sets the index of the initially selected data point
+ *
+ *  Default: 0.
+ */
+@property (nonatomic, assign) NSInteger selectedIndex;
+
 /*
  *  Bars can be (vertically) positoned top to bottom instead of bottom up.
  *  If this property is set to YES, both the bar and the selection view will be inverted.
