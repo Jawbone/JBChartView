@@ -120,8 +120,6 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     // reset cached max height
     self.cachedMinHeight = kJBBarChartViewUndefinedCachedHeight;
     self.cachedMaxHeight = kJBBarChartViewUndefinedCachedHeight;
-
-    CGRect mainViewRect = CGRectMake(self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.width, [self availableHeight]);
     
     /*
      * The data collection holds all position information:
