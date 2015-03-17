@@ -1197,7 +1197,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:smoothLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (BOOL)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView smoothLineAtLineIndex:(NSUInteger)lineIndex");
         BOOL smoothLine = [self.delegate lineChartLinesView:self smoothLineAtLineIndex:lineIndex];
         
-        BOOL firstVisiblePoint = YES;
+        BOOL visiblePointFound = NO;
         NSArray *sortedLineData = [lineData sortedArrayUsingSelector:@selector(compare:)];
         CGFloat firstXPosition = 0.0f;
         CGFloat lastXPosition = 0.0f;
@@ -1208,11 +1208,11 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
                 continue;
             }
 
-            if (firstVisiblePoint)
+            if (!visiblePointFound)
             {
                 [path moveToPoint:CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - padding, fmax(padding, lineChartPoint.position.y)))];
                 firstXPosition = lineChartPoint.position.x;
-                firstVisiblePoint = NO;
+                visiblePointFound = YES;
             }
             else
             {
@@ -1297,9 +1297,12 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         // Continue the path for the fill layer (close and fill)
         UIBezierPath *fillPath = [path copy];
         
-        [fillPath addLineToPoint:CGPointMake(lastXPosition, self.bounds.size.height - padding)];
-        [fillPath addLineToPoint:CGPointMake(firstXPosition, self.bounds.size.height - padding)];
-        
+        if(visiblePointFound)
+        {
+            [fillPath addLineToPoint:CGPointMake(lastXPosition, self.bounds.size.height - padding)];
+            [fillPath addLineToPoint:CGPointMake(firstXPosition, self.bounds.size.height - padding)];
+        }
+
         shapeFillLayer.path = fillPath.CGPath;
         shapeFillLayer.frame = self.bounds;
         
