@@ -281,7 +281,8 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
                 NSAssert(isnan(rawHeight) || (rawHeight >= 0), @"JBLineChartView // delegate function - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex must return a CGFloat >= 0 OR NAN");
 
                 JBLineChartPoint *chartPoint = [[JBLineChartPoint alloc] init];
-                if(isnan(rawHeight)) {
+                if(isnan(rawHeight))
+                {
                     chartPoint.hidden = YES;
                     rawHeight = 0; //set to 0 so we can calculate the x position
                 }
@@ -1475,7 +1476,8 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
             for (NSUInteger horizontalIndex = 0; horizontalIndex < [sortedLineData count]; horizontalIndex++)
             {
                 JBLineChartPoint *lineChartPoint = [sortedLineData objectAtIndex:horizontalIndex];
-                if(lineChartPoint.hidden) {
+                if(lineChartPoint.hidden)
+                {
                     continue;
                 }
 

@@ -95,7 +95,8 @@ NSString * const kJBLineChartMissingPointsViewControllerNavButtonViewKey = @"vie
         NSMutableArray *mutableChartData = [NSMutableArray array];
         for (int i=0; i<kJBLineChartMissingPointsViewControllerMaxNumChartPoints; i++)
         {
-            if(i < 2 || i > 5 || i == 3) {
+            if(i < 2 || i > 5 || i == 3)
+            {
                 [mutableChartData addObject:[NSNumber numberWithFloat:NAN]];
             } else {
                 [mutableChartData addObject:[NSNumber numberWithFloat:((double)arc4random() / ARC4RANDOM_MAX)]]; // random number between 0 and 1
