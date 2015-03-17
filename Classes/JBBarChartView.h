@@ -136,4 +136,6 @@
  */
 @property (nonatomic, assign, getter=isInverted) BOOL inverted;
 
+@property (nonatomic, assign, getter=isHorizontal) BOOL horizontal;
+
 @end

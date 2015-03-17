@@ -93,6 +93,7 @@ static UIColor *kJBChartVerticalSelectionViewDefaultBgColor = nil;
     
     [self addSubview:_headerView];
     [self reloadData];
+    
 }
 
 - (void)setFooterView:(UIView *)footerView

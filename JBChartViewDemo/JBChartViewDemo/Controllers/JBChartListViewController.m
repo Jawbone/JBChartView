@@ -43,6 +43,12 @@ NSInteger const kJBChartListViewControllerCellHeight = 100;
     [self.tableView registerClass:[JBChartTableCell class] forCellReuseIdentifier:kJBChartListViewControllerCellIdentifier];
 }
 
+-(void)viewDidLoad {
+    // TODO: remove this
+    [super viewDidLoad];
+    [self tableView:self.tableView didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
+}
+
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
