@@ -315,55 +315,56 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     /*
      * Creates a vertical selection view for touch events
      */
-    // TODO: update this for horizontal
     dispatch_block_t createSelectionView = ^{
-        
-        // Remove old selection bar
-        if (self.verticalSelectionView)
+        if(!self.isHorizontal)
         {
-            [self.verticalSelectionView removeFromSuperview];
-            self.verticalSelectionView = nil;
-        }
-        
-        CGFloat verticalSelectionViewHeight = self.bounds.size.height - self.headerView.frame.size.height - self.footerView.frame.size.height - self.headerPadding - self.footerPadding;
-        
-        if ([self.dataSource respondsToSelector:@selector(shouldExtendSelectionViewIntoHeaderPaddingForChartView:)])
-        {
-            if ([self.dataSource shouldExtendSelectionViewIntoHeaderPaddingForChartView:self])
+            // Remove old selection bar
+            if (self.verticalSelectionView)
             {
-                verticalSelectionViewHeight += self.headerPadding;
+                [self.verticalSelectionView removeFromSuperview];
+                self.verticalSelectionView = nil;
             }
-        }
-        
-        if ([self.dataSource respondsToSelector:@selector(shouldExtendSelectionViewIntoFooterPaddingForChartView:)])
-        {
-            if ([self.dataSource shouldExtendSelectionViewIntoFooterPaddingForChartView:self])
+            
+            CGFloat verticalSelectionViewHeight = self.bounds.size.height - self.headerView.frame.size.height - self.footerView.frame.size.height - self.headerPadding - self.footerPadding;
+            
+            if ([self.dataSource respondsToSelector:@selector(shouldExtendSelectionViewIntoHeaderPaddingForChartView:)])
             {
-                verticalSelectionViewHeight += self.footerPadding;
+                if ([self.dataSource shouldExtendSelectionViewIntoHeaderPaddingForChartView:self])
+                {
+                    verticalSelectionViewHeight += self.headerPadding;
+                }
             }
+            
+            if ([self.dataSource respondsToSelector:@selector(shouldExtendSelectionViewIntoFooterPaddingForChartView:)])
+            {
+                if ([self.dataSource shouldExtendSelectionViewIntoFooterPaddingForChartView:self])
+                {
+                    verticalSelectionViewHeight += self.footerPadding;
+                }
+            }
+            
+            self.verticalSelectionView = [[JBChartVerticalSelectionView alloc] initWithFrame:CGRectMake(0, 0, [self barWidth], verticalSelectionViewHeight)];
+            self.verticalSelectionView.alpha = 0.0;
+            self.verticalSelectionView.hidden = !self.showsVerticalSelection;
+            if ([self.delegate respondsToSelector:@selector(barSelectionColorForBarChartView:)])
+            {
+                UIColor *selectionViewBackgroundColor = [self.delegate barSelectionColorForBarChartView:self];
+                NSAssert(selectionViewBackgroundColor != nil, @"JBBarChartView // delegate function - (UIColor *)barSelectionColorForBarChartView:(JBBarChartView *)barChartView must return a non-nil UIColor");
+                self.verticalSelectionView.bgColor = selectionViewBackgroundColor;
+            }
+            
+            // Add new selection bar
+            if (self.footerView)
+            {
+                [self insertSubview:self.verticalSelectionView belowSubview:self.footerView];
+            }
+            else
+            {
+                [self addSubview:self.verticalSelectionView];
+            }
+            
+            self.verticalSelectionView.transform = self.inverted ? CGAffineTransformMakeScale(1.0, -1.0) : CGAffineTransformIdentity;
         }
-
-        self.verticalSelectionView = [[JBChartVerticalSelectionView alloc] initWithFrame:CGRectMake(0, 0, [self barWidth], verticalSelectionViewHeight)];
-        self.verticalSelectionView.alpha = 0.0;
-        self.verticalSelectionView.hidden = !self.showsVerticalSelection;
-        if ([self.delegate respondsToSelector:@selector(barSelectionColorForBarChartView:)])
-        {
-            UIColor *selectionViewBackgroundColor = [self.delegate barSelectionColorForBarChartView:self];
-            NSAssert(selectionViewBackgroundColor != nil, @"JBBarChartView // delegate function - (UIColor *)barSelectionColorForBarChartView:(JBBarChartView *)barChartView must return a non-nil UIColor");
-            self.verticalSelectionView.bgColor = selectionViewBackgroundColor;
-        }
-        
-        // Add new selection bar
-        if (self.footerView)
-        {
-            [self insertSubview:self.verticalSelectionView belowSubview:self.footerView];
-        }
-        else
-        {
-            [self addSubview:self.verticalSelectionView];
-        }
-        
-        self.verticalSelectionView.transform = self.inverted ? CGAffineTransformMakeScale(1.0, -1.0) : CGAffineTransformIdentity;
     };
     
     createDataDictionaries();
@@ -371,8 +372,6 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     createBars();
     createSelectionView();
     
-#pragma mark Position header and footer
-
     // Position header and footer
     self.headerView.frame = CGRectMake(self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.width, self.headerView.frame.size.height);
 
@@ -713,26 +712,41 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 - (NSInteger)barViewIndexForPoint:(CGPoint)point
 {
-    NSUInteger index = 0;
-    NSUInteger selectedIndex = kJBBarChartViewUndefinedBarIndex;
-    
+    __block NSUInteger selectedIndex = kJBBarChartViewUndefinedBarIndex;
     if (point.x < 0 || point.x > self.bounds.size.width)
     {
         return selectedIndex;
     }
     
-    CGFloat padding = ceil(self.barPadding * 0.5);
-    for (UIView *barView in self.barViews)
-    {
-        CGFloat minX = CGRectGetMinX(barView.frame) - padding;
-        CGFloat maxX = CGRectGetMaxX(barView.frame) + padding;
-        if ((point.x >= minX) && (point.x <= maxX))
-        {
-            selectedIndex = index;
-            break;
-        }
-        index++;
+    if(self.isHorizontal) {
+        CGFloat padding = ceil(self.barPadding * 0.5);
+        [self.barViews enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            
+            UIView *barView = (UIView *)obj;
+            CGFloat minY = CGRectGetMinY(barView.frame) - padding;
+            CGFloat maxY = CGRectGetMaxY(barView.frame) + padding;
+            if((point.y >= minY) && (point.y <= maxY))
+            {
+                selectedIndex = idx;
+                *stop = YES;
+            }
+        }];
     }
+    else
+    {
+        CGFloat padding = ceil(self.barPadding * 0.5);
+        [self.barViews enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            UIView *barView = (UIView *)obj;
+            CGFloat minX = CGRectGetMinX(barView.frame) - padding;
+            CGFloat maxX = CGRectGetMaxX(barView.frame) + padding;
+            if ((point.x >= minX) && (point.x <= maxX))
+            {
+                selectedIndex = idx;
+                *stop = YES;
+            }
+        }];
+    }
+    NSLog(@"selectedIndex: %li",selectedIndex);
     return selectedIndex;
 }
 
@@ -744,6 +758,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     {
         return [self.barViews objectAtIndex:[self barViewIndexForPoint:point]];
     }
+    NSLog(@"barView.tag %i",barView.tag);
     return barView;
 }
 
