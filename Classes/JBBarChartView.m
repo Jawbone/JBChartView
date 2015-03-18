@@ -381,12 +381,10 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
         if(CGSizeEqualToSize(_cachedFooterViewSize, CGSizeZero) && !CGSizeEqualToSize(self.footerView.frame.size, CGSizeZero)) {
             _cachedFooterViewSize = self.footerView.frame.size;
         }
-        NSLog(@"frame b4: %@",NSStringFromCGRect(self.footerView.frame));
         self.footerView.frame = CGRectMake(self.bounds.origin.x,
                                            self.bounds.origin.y + self.headerView.frame.size.height,
                                            _cachedFooterViewSize.height,
                                            self.bounds.size.height - self.headerView.frame.size.height);
-        NSLog(@"frame af: %@",NSStringFromCGRect(self.footerView.frame));
 
     }
     else
@@ -415,7 +413,6 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 -(CGFloat)availableWidth {
     if(self.isHorizontal)
     {
-        //NSLog(@"availWidth: %@",NSStringFromCGSize(self.footerView.frame.size));
         return (self.bounds.size.width - self.footerView.frame.size.width - self.footerPadding) *.9f;
     }
     else
@@ -756,7 +753,6 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
             }
         }];
     }
-    NSLog(@"selectedIndex: %li",selectedIndex);
     return selectedIndex;
 }
 
