@@ -486,7 +486,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 -(UIView *) barViewForIndex:(NSUInteger)index
 {
     UIView *barView = nil;
-    if(_barViews && index > 0 && index < _barViews.count)
+    if(_barViews && (index < _barViews.count))
     {
         barView = [_barViews objectAtIndex:index];
     }
