@@ -10,4 +10,6 @@
 
 @interface JBBarChartViewController : JBBaseChartViewController
 
+@property (nonatomic, getter=isHorizontal) BOOL horizontal;
+
 @end
