@@ -128,6 +128,8 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
     footerView.rightLabel.textColor = [UIColor whiteColor];
     self.barChartView.footerView = footerView;
     
+    if(self.isHorizontal) self.barChartView.footerView.backgroundColor = [UIColor clearColor];
+    
     self.informationView = [[JBChartInformationView alloc] initWithFrame:CGRectMake(self.view.bounds.origin.x, CGRectGetMaxY(self.barChartView.frame), self.view.bounds.size.width, self.view.bounds.size.height - CGRectGetMaxY(self.barChartView.frame) - CGRectGetMaxY(self.navigationController.navigationBar.frame))];
     [self.view addSubview:self.informationView];
 
