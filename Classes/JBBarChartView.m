@@ -483,6 +483,16 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     return returnvalue;
 }
 
+-(UIView *) barViewForIndex:(NSUInteger)index
+{
+    UIView *barView = nil;
+    if(_barViews && index > 0 && index < _barViews.count)
+    {
+        barView = [_barViews objectAtIndex:index];
+    }
+    return barView;
+}
+
 #pragma mark - Setters
 
 - (void)setState:(JBChartViewState)state animated:(BOOL)animated force:(BOOL)force callback:(void (^)())callback
@@ -758,7 +768,6 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     {
         return [self.barViews objectAtIndex:[self barViewIndexForPoint:point]];
     }
-    NSLog(@"barView.tag %i",barView.tag);
     return barView;
 }
 
