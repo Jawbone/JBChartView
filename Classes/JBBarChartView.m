@@ -28,6 +28,8 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 @interface JBBarChartView ()
 
+
+
 @property (nonatomic, strong) NSDictionary *chartDataDictionary; // key = column, value = height
 @property (nonatomic, strong) NSArray *barViews;
 @property (nonatomic, strong) NSArray *cachedBarViewHeights;
@@ -36,6 +38,8 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 @property (nonatomic, assign) CGFloat cachedMinHeight;
 @property (nonatomic, strong) JBChartVerticalSelectionView *verticalSelectionView;
 @property (nonatomic, assign) BOOL verticalSelectionViewVisible;
+
+@property (nonatomic) CGSize cachedFooterViewSize;
 
 // Initialization
 - (void)construct;
@@ -103,6 +107,9 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     _showsVerticalSelection = YES;
     _cachedMinHeight = kJBBarChartViewUndefinedCachedHeight;
     _cachedMaxHeight = kJBBarChartViewUndefinedCachedHeight;
+    
+    _cachedFooterViewSize = CGSizeZero;
+
 }
 
 #pragma mark - Memory Management
@@ -111,6 +118,21 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 {
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
 }
+
+#pragma mark - Footer View for horizontal bar chart
+
+- (void)setFooterView:(UIView *)aFooterView
+{
+    [super setFooterView:aFooterView];
+
+    if(self.isHorizontal)
+    {
+        CGAffineTransform rotate = CGAffineTransformMakeRotation(M_PI_2);
+        [self.footerView setTransform:rotate];
+        [self reloadData];
+    }
+}
+
 
 #pragma mark - Data
 
@@ -163,7 +185,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     
     dispatch_block_t createBars = ^{ // Horizontal
         
-        if(self.horizontal) {
+        if(self.isHorizontal) {
             
             // Remove old bars
             for (UIView *barView in self.barViews) {
@@ -179,10 +201,13 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
             
             for(NSNumber *key in [[self.chartDataDictionary allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
                 UIView *barView = nil;
-                if ([self.dataSource respondsToSelector:@selector(barChartView:barViewAtIndex:)]) {
+                if ([self.dataSource respondsToSelector:@selector(barChartView:barViewAtIndex:)])
+                {
                     barView = [self.dataSource barChartView:self barViewAtIndex:index];
                     NSAssert(barView != nil, @"JBBarChartView // datasource function - (UIView *)barChartView:(JBBarChartView *)barChartView barViewAtIndex:(NSUInteger)index must return a non-nil UIView subclass");
-                } else {
+                }
+                else
+                {
                     barView = [[UIView alloc] init];
                     UIColor *backgroundColor = nil;
                     
@@ -202,7 +227,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
                 barView.tag = index;
                 
                 CGFloat width = [self normalizedWidthForRawWidth:[self.chartDataDictionary objectForKey:key]];
-                barView.frame = CGRectMake(0.f, yOffset, width, [self barHeight]);
+                barView.frame = CGRectMake(self.footerView.frame.size.width + self.footerPadding, yOffset, width, [self barHeight]);
                 [mutableBarViews addObject:barView];
                 [mutableCachedBarViewWidths addObject:[NSNumber numberWithFloat:width]];
                 
@@ -266,7 +291,6 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
                 
                 CGFloat height = [self normalizedHeightForRawHeight:[self.chartDataDictionary objectForKey:key]];
                 barView.frame = CGRectMake(xOffset, self.bounds.size.height - height - self.footerView.frame.size.height, [self barWidth], height);
-                //NSLog(@"frame:%i %@",index,NSStringFromCGRect(barView.frame));
                 [mutableBarViews addObject:barView];
                 [mutableCachedBarViewHeights addObject:[NSNumber numberWithFloat:height]];
                 
@@ -347,9 +371,29 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     createBars();
     createSelectionView();
     
+#pragma mark Position header and footer
+
     // Position header and footer
     self.headerView.frame = CGRectMake(self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.width, self.headerView.frame.size.height);
-    self.footerView.frame = CGRectMake(self.bounds.origin.x, self.bounds.size.height - self.footerView.frame.size.height, self.bounds.size.width, self.footerView.frame.size.height);
+
+    if(self.isHorizontal)
+    {
+        // if we haven't yet cached and the frame size is non-zero, cache it
+        if(CGSizeEqualToSize(_cachedFooterViewSize, CGSizeZero) && !CGSizeEqualToSize(self.footerView.frame.size, CGSizeZero)) {
+            _cachedFooterViewSize = self.footerView.frame.size;
+        }
+        NSLog(@"frame b4: %@",NSStringFromCGRect(self.footerView.frame));
+        self.footerView.frame = CGRectMake(self.bounds.origin.x,
+                                           self.bounds.origin.y + self.headerView.frame.size.height,
+                                           _cachedFooterViewSize.height,
+                                           self.bounds.size.height - self.headerView.frame.size.height);
+        NSLog(@"frame af: %@",NSStringFromCGRect(self.footerView.frame));
+
+    }
+    else
+    {
+        self.footerView.frame = CGRectMake(self.bounds.origin.x, self.bounds.size.height - self.footerView.frame.size.height, self.bounds.size.width, self.footerView.frame.size.height);
+    }
 
     // Refresh state
     [self setState:self.state animated:NO force:YES callback:nil];
@@ -359,11 +403,26 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 - (CGFloat)availableHeight
 {
+    if (self.isHorizontal)
+    {
+        return self.bounds.size.height - self.headerView.frame.size.height - self.headerPadding;
+    }
+    else
+    {
     return self.bounds.size.height - self.headerView.frame.size.height - self.footerView.frame.size.height - self.headerPadding - self.footerPadding;
+    }
 }
 
 -(CGFloat)availableWidth {
-    return self.bounds.size.width *.9f;
+    if(self.isHorizontal)
+    {
+        //NSLog(@"availWidth: %@",NSStringFromCGSize(self.footerView.frame.size));
+        return (self.bounds.size.width - self.footerView.frame.size.width - self.footerPadding) *.9f;
+    }
+    else
+    {
+        return self.bounds.size.width;
+    }
 }
 
 - (CGFloat)normalizedWidthForRawWidth:(NSNumber *)rawWidth {
@@ -407,10 +466,20 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 -(CGFloat)barHeight {
     NSUInteger barCount = [[self.chartDataDictionary allKeys] count];
     CGFloat returnvalue = 0.f;
-    if(barCount > 0) {
-        CGFloat totalPadding = (barCount) * self.barPadding;
-        CGFloat availableHeight = self.bounds.size.height - totalPadding - self.headerView.frame.size.height - self.footerView.frame.size.height;
-        returnvalue = availableHeight / barCount;
+    if(barCount > 0)
+    {
+        if(self.isHorizontal)
+        {
+            CGFloat totalPadding = barCount * self.barPadding;
+            CGFloat availableHeight = self.bounds.size.height - totalPadding - self.headerView.frame.size.height;
+            returnvalue = availableHeight / barCount;
+        }
+        else
+        {
+            CGFloat totalPadding = (barCount) * self.barPadding;
+            CGFloat availableHeight = self.bounds.size.height - totalPadding - self.headerView.frame.size.height - self.footerView.frame.size.height;
+            returnvalue = availableHeight / barCount;
+        }
     }
     return returnvalue;
 }
@@ -469,7 +538,10 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
                 else
                 {
                     
-                    barView.frame = CGRectMake(barView.frame.origin.x, barView.frame.origin.y, 0.f, barView.frame.size.height);
+                    barView.frame = CGRectMake(barView.frame.origin.x,
+                                               barView.frame.origin.y,
+                                               0.f,
+                                               barView.frame.size.height);
                 }
             }
         };
