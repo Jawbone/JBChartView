@@ -111,7 +111,7 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
     self.barChartView.inverted = NO;
     self.barChartView.backgroundColor = kJBColorBarChartBackground;
     
-    self.barChartView.horizontal = YES;
+    self.barChartView.horizontal = self.isHorizontal;
         
     
     JBChartHeaderView *headerView = [[JBChartHeaderView alloc] initWithFrame:CGRectMake(kJBBarChartViewControllerChartPadding, ceil(self.view.bounds.size.height * 0.5) - ceil(kJBBarChartViewControllerChartHeaderHeight * 0.5), self.view.bounds.size.width - (kJBBarChartViewControllerChartPadding * 2), kJBBarChartViewControllerChartHeaderHeight)];
