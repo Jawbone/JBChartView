@@ -19,6 +19,7 @@
 typedef NS_ENUM(NSInteger, JBChartListViewControllerRow){
 	JBChartListViewControllerRowLineChart,
     JBChartListViewControllerRowBarChart,
+    JBChartListViewControllerRowHorizontalBarChart,
     JBChartListViewControllerRowAreaChart,
     JBChartListViewControllerRowCount
 };
@@ -41,12 +42,6 @@ NSInteger const kJBChartListViewControllerCellHeight = 100;
 {
     [super loadView];
     [self.tableView registerClass:[JBChartTableCell class] forCellReuseIdentifier:kJBChartListViewControllerCellIdentifier];
-}
-
--(void)viewDidLoad {
-    // TODO: remove this
-    [super viewDidLoad];
-    [self tableView:self.tableView didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
 }
 
 #pragma mark - UITableViewDataSource
@@ -73,6 +68,11 @@ NSInteger const kJBChartListViewControllerCellHeight = 100;
             text = kJBStringLabelAverageMonthlyTemperature;
             detailText = kJBStringLabelWorldwide2012;
             type = JBChartTableCellTypeBarChart;
+            break;
+        case JBChartListViewControllerRowHorizontalBarChart:
+            text = kJBStringLabelAverageMonthlyTemperature;
+            detailText = kJBStringLabelWorldwide2012;
+            type = JBChartTableCellTypeHorizontalBarChart;
             break;
         case JBChartListViewControllerRowAreaChart:
             text = kJBStringLabelAverageShineHours;
@@ -108,6 +108,13 @@ NSInteger const kJBChartListViewControllerCellHeight = 100;
     else if (indexPath.row == JBChartListViewControllerRowBarChart)
     {
         JBBarChartViewController *barChartController = [[JBBarChartViewController alloc] init];
+        barChartController.horizontal = NO;
+        [self.navigationController pushViewController:barChartController animated:YES];
+    }
+    else if (indexPath.row == JBChartListViewControllerRowHorizontalBarChart)
+    {
+        JBBarChartViewController *barChartController = [[JBBarChartViewController alloc] init];
+        barChartController.horizontal = YES;
         [self.navigationController pushViewController:barChartController animated:YES];
     }
     else if (indexPath.row == JBChartListViewControllerRowAreaChart)
