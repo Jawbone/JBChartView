@@ -27,6 +27,10 @@
         case JBChartTableCellTypeBarChart:
             image = [UIImage imageNamed:kJBImageIconBarChart];
             break;
+        case JBChartTableCellTypeHorizontalBarChart:
+            image = [UIImage imageNamed:kJBImageIconBarChart];
+            image = [UIImage imageWithCGImage:image.CGImage scale:image.scale orientation:UIImageOrientationRight];
+            break;
         case JBChartTableCellTypeLineChart:
             image = [UIImage imageNamed:kJBImageIconLineChart];
             break;
