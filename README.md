@@ -239,7 +239,7 @@ By default, each line will not show dots for each point. To enable this on a per
 
 	- (BOOL)lineChartView:(JBLineChartView *)lineChartView showsDotsForLineAtLineIndex:(NSUInteger)lineIndex;
 
-To customize the size of each dot (default 3x the line width), implement:
+To the radius of each dot (default is 6x the line width, or 3x the diameter), implement:
 
 	- (CGFloat)lineChartView:(JBLineChartView *)lineChartView dotRadiusForDotAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
 	

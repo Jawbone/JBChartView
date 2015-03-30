@@ -206,7 +206,7 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
  *  For this value to apply, showsDotsForLineAtLineIndex: must return YES for the line at lineIndex.
  *  Any value can be returned for lineIndex's that don't support dots, as it will never be called.
  *
- *  Default: line width x 3.
+ *  Default: line width x 6.
  *
  *  @param lineChartView    The line chart object requesting this information.
  *  @param horizontalIndex  The 0-based horizontal index of a selection point (left to right, x-axis).
