@@ -944,15 +944,20 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 
 - (void)touchesBeganOrMovedWithTouches:(NSSet *)touches
 {
-    if (self.state == JBChartViewStateCollapsed || [self.chartData count] <= 0 || [self.chartData[0] count] == 0)
+    if (self.state == JBChartViewStateCollapsed || [self.chartData count] <= 0)
     {
-        return;
+        return; // no touch for no data or collapsed
     }
     
     UITouch *touch = [touches anyObject];
     CGPoint touchPoint = [self clampPoint:[touch locationInView:self.linesView] toBounds:self.linesView.bounds padding:[self padding]];
     
     NSUInteger lineIndex = self.linesView.selectedLineIndex != kJBLineChartLinesViewUnselectedLineIndex ? self.linesView.selectedLineIndex : [self lineIndexForPoint:touchPoint];
+	
+	if ([[self.chartData objectAtIndex:lineIndex] count] <= 0)
+	{
+		return; // no touch for line without data
+	}
 
     if ([self.delegate respondsToSelector:@selector(lineChartView:didSelectLineAtIndex:horizontalIndex:touchPoint:)])
     {
