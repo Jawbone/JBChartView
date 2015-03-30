@@ -19,9 +19,9 @@
 
 typedef NS_ENUM(NSInteger, JBChartListViewControllerRow){
 	JBChartListViewControllerRowLineChart,
-    JBChartListViewControllerRowBarChart,
+	JBChartListViewControllerRowLineChartMissingPoints,
+	JBChartListViewControllerRowBarChart,
     JBChartListViewControllerRowAreaChart,
-    JBChartListViewControllerRowLineChartMissingPoints,
     JBChartListViewControllerRowCount
 };
 
@@ -65,6 +65,11 @@ NSInteger const kJBChartListViewControllerCellHeight = 100;
             detailText = kJBStringLabelSanFrancisco2013;
             type = JBChartTableCellTypeLineChart;
             break;
+		case JBChartListViewControllerRowLineChartMissingPoints:
+			text = kJBStringLabelCyclingDistances;
+			detailText = kJBStringLabelCyclingCurrentLastWeek2014;
+			type = JBChartTableCellTypeLineChart;
+			break;
         case JBChartListViewControllerRowBarChart:
             text = kJBStringLabelAverageMonthlyTemperature;
             detailText = kJBStringLabelWorldwide2012;
@@ -74,11 +79,6 @@ NSInteger const kJBChartListViewControllerCellHeight = 100;
             text = kJBStringLabelAverageShineHours;
             detailText = kJBStringLabelWorldwide2011;
             type = JBChartTableCellTypeAreaChart;
-            break;
-        case JBChartListViewControllerRowLineChartMissingPoints:
-            text = kJBStringLabelCyclingDistances;
-            detailText = kJBStringLabelCyclingCurrentLastWeek2014;
-            type = JBChartTableCellTypeLineChart;
             break;
         default:
             break;
@@ -106,6 +106,11 @@ NSInteger const kJBChartListViewControllerCellHeight = 100;
         JBLineChartViewController *lineChartController = [[JBLineChartViewController alloc] init];
         [self.navigationController pushViewController:lineChartController animated:YES];
     }
+	else if (indexPath.row == JBChartListViewControllerRowLineChartMissingPoints)
+	{
+		JBLineChartMissingPointsViewController *lineChartController = [[JBLineChartMissingPointsViewController alloc] init];
+		[self.navigationController pushViewController:lineChartController animated:YES];
+	}
     else if (indexPath.row == JBChartListViewControllerRowBarChart)
     {
         JBBarChartViewController *barChartController = [[JBBarChartViewController alloc] init];
@@ -115,11 +120,6 @@ NSInteger const kJBChartListViewControllerCellHeight = 100;
     {
         JBAreaChartViewController *areaChartController = [[JBAreaChartViewController alloc] init];
         [self.navigationController pushViewController:areaChartController animated:YES];
-    }
-    else if (indexPath.row == JBChartListViewControllerRowLineChartMissingPoints)
-    {
-        JBLineChartMissingPointsViewController *lineChartController = [[JBLineChartMissingPointsViewController alloc] init];
-        [self.navigationController pushViewController:lineChartController animated:YES];
     }
 }
 
