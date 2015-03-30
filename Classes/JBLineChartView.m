@@ -75,6 +75,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 @interface JBLineChartPoint : NSObject
 
 @property (nonatomic, assign) CGPoint position;
+@property (nonatomic, assign) BOOL hidden;
 
 @end
 
@@ -277,14 +278,20 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
             {               
                 NSAssert([self.delegate respondsToSelector:@selector(lineChartView:verticalValueForHorizontalIndex:atLineIndex:)], @"JBLineChartView // delegate must implement - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
                 CGFloat rawHeight =  [self.delegate lineChartView:self verticalValueForHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
-                NSAssert(rawHeight >= 0, @"JBLineChartView // delegate function - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex must return a CGFloat >= 0");
+                NSAssert(isnan(rawHeight) || (rawHeight >= 0), @"JBLineChartView // delegate function - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex must return a CGFloat >= 0 OR NAN");
+
+                JBLineChartPoint *chartPoint = [[JBLineChartPoint alloc] init];
+                if(isnan(rawHeight))
+                {
+                    chartPoint.hidden = YES;
+                    rawHeight = 0; //set to 0 so we can calculate the x position
+                }
 
                 CGFloat normalizedHeight = [self normalizedHeightForRawHeight:rawHeight];
                 yOffset = mainViewRect.size.height - normalizedHeight;
                 
-                JBLineChartPoint *chartPoint = [[JBLineChartPoint alloc] init];
                 chartPoint.position = CGPointMake(xOffset, yOffset);
-                
+
                 [chartPointData addObject:chartPoint];
                 xOffset += pointSpace;
             }
@@ -782,8 +789,8 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
             {
                 NSAssert([self.delegate respondsToSelector:@selector(lineChartView:verticalValueForHorizontalIndex:atLineIndex:)], @"JBLineChartView // delegate must implement - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
                 CGFloat height = [self.delegate lineChartView:self verticalValueForHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
-                NSAssert(height >= 0, @"JBLineChartView // delegate function - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex must return a CGFloat >= 0");
-                if (height < minHeight)
+                NSAssert(isnan(height) || (height >= 0), @"JBLineChartView // delegate function - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex must return a CGFloat >= 0 OR NAN");
+                if (!isnan(height) && height < minHeight)
                 {
                     minHeight = height;
                 }
@@ -809,8 +816,8 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
             {
                 NSAssert([self.delegate respondsToSelector:@selector(lineChartView:verticalValueForHorizontalIndex:atLineIndex:)], @"JBLineChartView // delegate must implement - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
                 CGFloat height = [self.delegate lineChartView:self verticalValueForHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
-                NSAssert(height >= 0, @"JBLineChartView // delegate function - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex must return a CGFloat >= 0");
-                if (height > maxHeight)
+                NSAssert(isnan(height) || (height >= 0), @"JBLineChartView // delegate function - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex must return a CGFloat >= 0 OR NAN");
+                if (!isnan(height) && height > maxHeight)
                 {
                     maxHeight = height;
                 }
@@ -1191,16 +1198,22 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:smoothLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (BOOL)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView smoothLineAtLineIndex:(NSUInteger)lineIndex");
         BOOL smoothLine = [self.delegate lineChartLinesView:self smoothLineAtLineIndex:lineIndex];
         
-        NSUInteger index = 0;
+        BOOL visiblePointFound = NO;
         NSArray *sortedLineData = [lineData sortedArrayUsingSelector:@selector(compare:)];
         CGFloat firstXPosition = 0.0f;
         CGFloat lastXPosition = 0.0f;
-        for (JBLineChartPoint *lineChartPoint in sortedLineData)
+        for (NSUInteger index = 0; index < [sortedLineData count]; index++)
         {
-            if (index == 0)
+            JBLineChartPoint *lineChartPoint = [sortedLineData objectAtIndex:index];
+            if(lineChartPoint.hidden) {
+                continue;
+            }
+
+            if (!visiblePointFound)
             {
                 [path moveToPoint:CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - padding, fmax(padding, lineChartPoint.position.y)))];
                 firstXPosition = lineChartPoint.position.x;
+                visiblePointFound = YES;
             }
             else
             {
@@ -1236,7 +1249,6 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
                 previousSlope = currentSlope;
             }
             previousLineChartPoint = lineChartPoint;
-            index++;
         }
         
         JBLineLayer *shapeLayer = [self lineLayerForLineIndex:lineIndex];
@@ -1286,9 +1298,12 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         // Continue the path for the fill layer (close and fill)
         UIBezierPath *fillPath = [path copy];
         
-        [fillPath addLineToPoint:CGPointMake(lastXPosition, self.bounds.size.height - padding)];
-        [fillPath addLineToPoint:CGPointMake(firstXPosition, self.bounds.size.height - padding)];
-        
+        if(visiblePointFound)
+        {
+            [fillPath addLineToPoint:CGPointMake(lastXPosition, self.bounds.size.height - padding)];
+            [fillPath addLineToPoint:CGPointMake(firstXPosition, self.bounds.size.height - padding)];
+        }
+
         shapeFillLayer.path = fillPath.CGPath;
         shapeFillLayer.frame = self.bounds;
         
@@ -1457,9 +1472,15 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         if ([self.delegate lineChartDotsView:self showsDotsForLineAtLineIndex:lineIndex]) // line at index contains dots
         {
             NSMutableArray *mutableDotViews = [NSMutableArray array];
-            NSUInteger horizontalIndex = 0;
-            for (JBLineChartPoint *lineChartPoint in [lineData sortedArrayUsingSelector:@selector(compare:)])
+            NSArray *sortedLineData = [lineData sortedArrayUsingSelector:@selector(compare:)];
+            for (NSUInteger horizontalIndex = 0; horizontalIndex < [sortedLineData count]; horizontalIndex++)
             {
+                JBLineChartPoint *lineChartPoint = [sortedLineData objectAtIndex:horizontalIndex];
+                if(lineChartPoint.hidden)
+                {
+                    continue;
+                }
+
                 NSAssert([self.delegate respondsToSelector:@selector(lineChartDotsView:dotViewAtHorizontalIndex:atLineIndex:)], @"JBLineChartDotsView // delegate must implement - (UIView *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView dotViewAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
                 UIView *currentDotView = [self.delegate lineChartDotsView:self dotViewAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
                 
@@ -1479,7 +1500,6 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
                 [mutableDotViews addObject:currentDotView];
                 [self addSubview:currentDotView];
 
-                horizontalIndex++;
             }
             [mutableDotViewsDict setObject:[NSArray arrayWithArray:mutableDotViews] forKey:[NSNumber numberWithInteger:lineIndex]];
         }

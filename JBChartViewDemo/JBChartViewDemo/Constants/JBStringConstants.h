@@ -38,3 +38,12 @@
 #define kJBStringLabelHours localize(@"label.hours", @"h")
 #define kJBStringLabelMoon localize(@"label.moon", @"Moon")
 #define kJBStringLabelSun localize(@"label.sun", @"Sun")
+
+#pragma mark - Labels (Missing Points Line Chart)
+
+#define kJBStringLabel2014 localize(@"label.2014", @"2014")
+#define kJBStringLabelCyclingCurrentWeek2014 localize(@"label.cycling.2014", @"Cycling - 2014")
+#define kJBStringLabelCyclingCurrentWeekLastWeek2014 localize(@"label.current.last.week.cycling", @"Cycling Current Week and Last Year Week")
+#define kJBStringLabelKm2014 localize(@"label.km", @"Km")
+#define kJBStringLabelLastYear2014 localize(@"label.last.average", @"Last Year")
+#define kJBStringLabelCurrentYear2014 localize(@"label.current.average", @"Current Year")

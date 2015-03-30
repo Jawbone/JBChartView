@@ -126,6 +126,8 @@ Secondly, you need to inform the delegate of the y-position of each point (autom
 		return ...; // y-position (y-axis) of point at horizontalIndex (x-axis)
 	}
 
+**Note**: You can return NAN instead of CGFloat to indicate missing values. The chartline will then start at the first non-NAN value and end at the last non-NAN value. NAN values in between will not interrupt the chartline, instead the chartline will look as if the value was interpolated.
+
 Lastly, ensure you have set the *frame* of your lineChartView & call *reloadData* at least once:
 
 	lineChartView.frame = CGRectMake( ... );
