@@ -235,6 +235,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 - (void)construct
 {
     _showsVerticalSelection = YES;
+    _alwaysShowSelection = NO;
     _showsLineSelection = YES;
     _cachedMinHeight = kJBBarChartViewUndefinedCachedHeight;
     _cachedMaxHeight = kJBBarChartViewUndefinedCachedHeight;
@@ -389,9 +390,13 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
             }
         }
 
-        self.verticalSelectionView = [[JBChartVerticalSelectionView alloc] initWithFrame:CGRectMake(0, 0, selectionViewWidth, verticalSelectionViewHeight)];
-        self.verticalSelectionView.alpha = 0.0;
-        self.verticalSelectionView.hidden = !self.showsVerticalSelection;
+        CGFloat xLoc = 0;
+        if (self.selectedIndex >= 0) {
+            xLoc = self.selectedIndex * mainViewRect.size.width / self.dataCount - (selectionViewWidth / 4);
+        }
+        self.verticalSelectionView = [[JBChartVerticalSelectionView alloc] initWithFrame:CGRectMake(xLoc, 0, selectionViewWidth, verticalSelectionViewHeight)];
+        self.verticalSelectionView.alpha = (self.alwaysShowSelection || self.selectedIndex >= 0) ? 1.0 : 0.0;
+        self.verticalSelectionView.hidden = (self.alwaysShowSelection || self.selectedIndex >= 0) ? NO : !self.showsVerticalSelection;
 
         // Add new selection bar
         if (self.footerView)
@@ -1018,7 +1023,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 
 - (void)setVerticalSelectionViewVisible:(BOOL)verticalSelectionViewVisible animated:(BOOL)animated
 {
-    _verticalSelectionViewVisible = verticalSelectionViewVisible;
+    _verticalSelectionViewVisible = (_alwaysShowSelection) ? YES : verticalSelectionViewVisible;
 
     if (animated)
     {
@@ -1040,7 +1045,13 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 - (void)setShowsVerticalSelection:(BOOL)showsVerticalSelection
 {
     _showsVerticalSelection = showsVerticalSelection;
-    self.verticalSelectionView.hidden = _showsVerticalSelection ? NO : YES;
+    self.verticalSelectionView.hidden = (_alwaysShowSelection) ? NO : !_showsVerticalSelection;
+}
+
+- (void)setAlwaysShowSelection:(BOOL)alwaysShowSelection {
+
+    _alwaysShowSelection = alwaysShowSelection;
+    self.verticalSelectionView.hidden = (_alwaysShowSelection) ? NO : !_showsVerticalSelection;
 }
 
 #pragma mark - Gestures

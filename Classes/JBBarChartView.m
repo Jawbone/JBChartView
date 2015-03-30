@@ -43,6 +43,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 - (CGFloat)availableHeight;
 - (CGFloat)normalizedHeightForRawHeight:(NSNumber*)rawHeight;
 - (CGFloat)barWidth;
+- (NSUInteger)dataCount;
 
 // Touch helpers
 - (NSInteger)barViewIndexForPoint:(CGPoint)point;
@@ -99,6 +100,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 - (void)construct
 {
+    _alwaysShowSelection = NO;
     _showsVerticalSelection = YES;
     _cachedMinHeight = kJBBarChartViewUndefinedCachedHeight;
     _cachedMaxHeight = kJBBarChartViewUndefinedCachedHeight;
@@ -152,7 +154,10 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
         else
         {
             NSUInteger totalBars = [[self.chartDataDictionary allKeys] count];
-            self.barPadding = (1/(float)totalBars) * kJBBarChartViewBarBasePaddingMutliplier;
+            self.barPadding = 0;
+            if (totalBars > 0) {
+                self.barPadding = (1/(float)totalBars) * kJBBarChartViewBarBasePaddingMutliplier;
+            }
         }
     };
     
@@ -253,9 +258,15 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
             }
         }
 
-        self.verticalSelectionView = [[JBChartVerticalSelectionView alloc] initWithFrame:CGRectMake(0, 0, [self barWidth], verticalSelectionViewHeight)];
-        self.verticalSelectionView.alpha = 0.0;
-        self.verticalSelectionView.hidden = !self.showsVerticalSelection;
+        // place the selection view, allow the caller to set this ahead of time in addition to responding to touch events
+        CGFloat xLoc = 0;
+        if (self.selectedIndex >= 0) {
+            xLoc = self.selectedIndex * ([self barWidth] + self.barPadding);
+        }
+        self.verticalSelectionView = [[JBChartVerticalSelectionView alloc] initWithFrame:CGRectMake(xLoc, 0, [self barWidth], verticalSelectionViewHeight)];
+        self.verticalSelectionView.alpha = (self.alwaysShowSelection || self.selectedIndex >= 0) ? 1.0 : 0.0;
+        self.verticalSelectionView.hidden = (self.alwaysShowSelection || self.selectedIndex >= 0) ? NO : !self.showsVerticalSelection;
+
         if ([self.delegate respondsToSelector:@selector(barSelectionColorForBarChartView:)])
         {
             UIColor *selectionViewBackgroundColor = [self.delegate barSelectionColorForBarChartView:self];
@@ -478,6 +489,14 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     return self.cachedMaxHeight;    
 }
 
+- (NSUInteger)dataCount
+{
+    NSUInteger dataCount = 0;
+    NSAssert([self.dataSource respondsToSelector:@selector(numberOfBarsInBarChartView:)], @"JBBarChartView // dataSource must implement - (NSUInteger)numberOfBarsInBarChartView:(JBBarChartView *)barChartView");
+    dataCount= [self.dataSource numberOfBarsInBarChartView:self];
+    return dataCount;
+}
+
 #pragma mark - Touch Helpers
 
 - (NSInteger)barViewIndexForPoint:(CGPoint)point
@@ -586,6 +605,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 - (void)setVerticalSelectionViewVisible:(BOOL)verticalSelectionViewVisible animated:(BOOL)animated
 {
     _verticalSelectionViewVisible = verticalSelectionViewVisible;
+    _verticalSelectionViewVisible = (_alwaysShowSelection) ? YES : verticalSelectionViewVisible;
     
     if (animated)
     {
@@ -607,7 +627,13 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 - (void)setShowsVerticalSelection:(BOOL)showsVerticalSelection
 {
     _showsVerticalSelection = showsVerticalSelection;
-    self.verticalSelectionView.hidden = _showsVerticalSelection ? NO : YES;
+    self.verticalSelectionView.hidden = (_alwaysShowSelection) ? NO : !_showsVerticalSelection;
+}
+
+- (void)setAlwaysShowSelection:(BOOL)alwaysShowSelection {
+    
+    _alwaysShowSelection = alwaysShowSelection;
+    self.verticalSelectionView.hidden = (_alwaysShowSelection) ? NO : !_showsVerticalSelection;
 }
 
 #pragma mark - Touches
