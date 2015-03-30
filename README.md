@@ -43,7 +43,7 @@ Simply add the following line to your <code>Podfile</code>:
 Your Podfile should look something like:
 
 	platform :ios, '6.0'
-	pod 'JBChartView', '~> 2.8.9'
+	pod 'JBChartView'
 	
 ### The Old School Way
 
@@ -126,7 +126,9 @@ Secondly, you need to inform the delegate of the y-position of each point (autom
 		return ...; // y-position (y-axis) of point at horizontalIndex (x-axis)
 	}
 
-**Note**: You can return NAN instead of CGFloat to indicate missing values. The chartline will then start at the first non-NAN value and end at the last non-NAN value. NAN values in between will not interrupt the chartline, instead the chartline will look as if the value was interpolated.
+**Note**: You can return NAN instead of CGFloat to indicate missing values. The chart's line will begin at the first non-NAN value and end at the last non-NAN value. The line will interopolate any NAN values in between (ie. the line will not be interrupted).
+
+	return [NSNumber numberWithFloat:NAN]
 
 Lastly, ensure you have set the *frame* of your lineChartView & call *reloadData* at least once:
 
