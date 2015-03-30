@@ -514,7 +514,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
                     }
                     else if ([self.delegate respondsToSelector:@selector(lineChartView:dotRadiusForDotAtHorizontalIndex:atLineIndex:)])
                     {
-                        CGFloat dotRadius = [self.delegate lineChartView:self dotRadiusForDotAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
+						CGFloat dotRadius = ([self.delegate lineChartView:self dotRadiusForDotAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex] * 2.0f);
                         if (dotRadius > maxDotLength)
                         {
                             maxDotLength = dotRadius;
@@ -522,7 +522,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
                     }
                     else
                     {
-                        CGFloat defaultDotRadius = lineWidth * kJBLineChartDotsViewDefaultRadiusFactor;
+						CGFloat defaultDotRadius = ((lineWidth * kJBLineChartDotsViewDefaultRadiusFactor) * 2.0f);
                         if (defaultDotRadius > maxDotLength)
                         {
                             maxDotLength = defaultDotRadius;
@@ -1595,11 +1595,11 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 
 - (id)initWithRadius:(CGFloat)radius
 {
-    self = [super initWithFrame:CGRectMake(0, 0, radius, radius)];
+    self = [super initWithFrame:CGRectMake(0, 0, (radius * 2.0f), (radius * 2.0f))];
     if (self)
     {
         self.clipsToBounds = YES;
-        self.layer.cornerRadius = (radius * 0.5f);
+        self.layer.cornerRadius = ((radius * 2.0f) * 0.5f);
     }
     return self;
 }
