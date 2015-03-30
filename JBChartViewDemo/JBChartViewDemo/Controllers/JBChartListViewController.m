@@ -76,8 +76,8 @@ NSInteger const kJBChartListViewControllerCellHeight = 100;
             type = JBChartTableCellTypeAreaChart;
             break;
         case JBChartListViewControllerRowLineChartMissingPoints:
-            text = kJBStringLabelCyclingCurrentWeek2014;
-            detailText = kJBStringLabelCyclingCurrentWeekLastWeek2014;
+            text = kJBStringLabelCyclingDistances;
+            detailText = kJBStringLabelCyclingCurrentLastWeek2014;
             type = JBChartTableCellTypeLineChart;
             break;
         default:

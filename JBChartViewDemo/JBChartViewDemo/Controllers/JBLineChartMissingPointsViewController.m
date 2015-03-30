@@ -138,7 +138,7 @@ NSString * const kJBLineChartMissingPointsViewControllerNavButtonViewKey = @"vie
     self.lineChartView.backgroundColor = kJBColorLineChartBackground;
     
     JBChartHeaderView *headerView = [[JBChartHeaderView alloc] initWithFrame:CGRectMake(kJBLineChartMissingPointsViewControllerChartPadding, ceil(self.view.bounds.size.height * 0.5) - ceil(kJBLineChartMissingPointsViewControllerChartHeaderHeight * 0.5), self.view.bounds.size.width - (kJBLineChartMissingPointsViewControllerChartPadding * 2), kJBLineChartMissingPointsViewControllerChartHeaderHeight)];
-    headerView.titleLabel.text = [kJBStringLabelCyclingCurrentWeek2014 uppercaseString];
+    headerView.titleLabel.text = [kJBStringLabelCyclingDistances uppercaseString];
     headerView.titleLabel.textColor = kJBColorLineChartHeader;
     headerView.titleLabel.shadowColor = [UIColor colorWithWhite:1.0 alpha:0.25];
     headerView.titleLabel.shadowOffset = CGSizeMake(0, 1);
@@ -224,7 +224,7 @@ NSString * const kJBLineChartMissingPointsViewControllerNavButtonViewKey = @"vie
         [self.informationView setHidden:YES animated:YES];
     } else {
         [self.informationView setValueText:[NSString stringWithFormat:@"%.2f", [valueNumber floatValue]] unitText:kJBStringLabelKm2014];
-        [self.informationView setTitleText:lineIndex == JBLineChartLineSolid ? kJBStringLabelLastYear2014 : kJBStringLabelCurrentYear2014];
+        [self.informationView setTitleText:lineIndex == JBLineChartLineSolid ? kJBStringLabelLastWeek : kJBStringLabelCurrentWeek];
         [self.informationView setHidden:NO animated:YES];
     }
     [self setTooltipVisible:YES animated:YES atTouchPoint:touchPoint];

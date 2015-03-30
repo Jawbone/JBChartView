@@ -42,8 +42,8 @@
 #pragma mark - Labels (Missing Points Line Chart)
 
 #define kJBStringLabel2014 localize(@"label.2014", @"2014")
-#define kJBStringLabelCyclingCurrentWeek2014 localize(@"label.cycling.2014", @"Cycling - 2014")
-#define kJBStringLabelCyclingCurrentWeekLastWeek2014 localize(@"label.current.last.week.cycling", @"Cycling Current Week and Last Year Week")
+#define kJBStringLabelCyclingDistances localize(@"label.cycling.distances", @"Cycling Distances")
+#define kJBStringLabelCyclingCurrentLastWeek2014 localize(@"label.cycling.current.last.week.2014", @"Current/Last Week - 2014")
 #define kJBStringLabelKm2014 localize(@"label.km", @"Km")
-#define kJBStringLabelLastYear2014 localize(@"label.last.average", @"Last Year")
-#define kJBStringLabelCurrentYear2014 localize(@"label.current.average", @"Current Year")
+#define kJBStringLabelLastWeek localize(@"label.last.week", @"Last Week")
+#define kJBStringLabelCurrentWeek localize(@"label.current.week", @"Current Week")

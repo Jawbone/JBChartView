@@ -199,10 +199,10 @@
 				9B6A68DD1829BE63006DB3BF /* JBBarChartViewController.m */,
 				9B07251F1829822A0052109B /* JBChartListViewController.h */,
 				9B0725201829822A0052109B /* JBChartListViewController.m */,
-				9B6A68DF1829BED5006DB3BF /* JBLineChartViewController.h */,
-				9B6A68E01829BED5006DB3BF /* JBLineChartViewController.m */,
 				94BDFC3219F933B2007492F6 /* JBLineChartMissingPointsViewController.h */,
 				94BDFC3319F933B2007492F6 /* JBLineChartMissingPointsViewController.m */,
+				9B6A68DF1829BED5006DB3BF /* JBLineChartViewController.h */,
+				9B6A68E01829BED5006DB3BF /* JBLineChartViewController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
