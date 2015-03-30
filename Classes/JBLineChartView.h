@@ -115,6 +115,8 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
 /**
  *  Vertical value for a line point at a given index (left to right). There is no ceiling on the the height;
  *  the chart will automatically normalize all values between the overal min and max heights.
+ *  NAN may able be retuend to indicate missing values. The chart's line will begin at the first non-NAN value and end at the last non-NAN value. 
+ *  Furthermore, the line will interopolate any NAN values in between (ie. the line will not be interrupted).
  *
  *  @param lineChartView    The line chart object requesting this information.
  *  @param horizontalIndex  The 0-based horizontal index of a selection point (left to right, x-axis).
