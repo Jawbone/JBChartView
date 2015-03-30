@@ -20,6 +20,7 @@
 typedef NS_ENUM(NSInteger, JBChartListViewControllerRow){
 	JBChartListViewControllerRowLineChart,
     JBChartListViewControllerRowBarChart,
+    JBChartListViewControllerRowHorizontalBarChart,
     JBChartListViewControllerRowAreaChart,
     JBChartListViewControllerRowLineChartMissingPoints,
     JBChartListViewControllerRowCount
@@ -70,6 +71,11 @@ NSInteger const kJBChartListViewControllerCellHeight = 100;
             detailText = kJBStringLabelWorldwide2012;
             type = JBChartTableCellTypeBarChart;
             break;
+        case JBChartListViewControllerRowHorizontalBarChart:
+            text = kJBStringLabelAverageMonthlyTemperature;
+            detailText = kJBStringLabelWorldwide2012;
+            type = JBChartTableCellTypeHorizontalBarChart;
+            break;
         case JBChartListViewControllerRowAreaChart:
             text = kJBStringLabelAverageShineHours;
             detailText = kJBStringLabelWorldwide2011;
@@ -109,6 +115,13 @@ NSInteger const kJBChartListViewControllerCellHeight = 100;
     else if (indexPath.row == JBChartListViewControllerRowBarChart)
     {
         JBBarChartViewController *barChartController = [[JBBarChartViewController alloc] init];
+        barChartController.horizontal = NO;
+        [self.navigationController pushViewController:barChartController animated:YES];
+    }
+    else if (indexPath.row == JBChartListViewControllerRowHorizontalBarChart)
+    {
+        JBBarChartViewController *barChartController = [[JBBarChartViewController alloc] init];
+        barChartController.horizontal = YES;
         [self.navigationController pushViewController:barChartController animated:YES];
     }
     else if (indexPath.row == JBChartListViewControllerRowAreaChart)

@@ -13,6 +13,7 @@
 #import "JBChartHeaderView.h"
 #import "JBBarChartFooterView.h"
 #import "JBChartInformationView.h"
+#import "JBChartTooltipTipView.h"
 
 // Numerics
 CGFloat const kJBBarChartViewControllerChartHeight = 250.0f;
@@ -26,8 +27,18 @@ NSInteger const kJBBarChartViewControllerNumBars = 12;
 NSInteger const kJBBarChartViewControllerMaxBarHeight = 10;
 NSInteger const kJBBarChartViewControllerMinBarHeight = 5;
 
+CGFloat const kJBBarChartViewControllerAnimationDuration = 0.25f;
+
+
 // Strings
 NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
+
+@interface JBBaseChartViewController ()
+
+@property (nonatomic, strong) JBChartTooltipView *tooltipView;
+@property (nonatomic, strong) JBChartTooltipTipView *tooltipTipView;
+
+@end
 
 @interface JBBarChartViewController () <JBBarChartViewDelegate, JBBarChartViewDataSource>
 
@@ -35,6 +46,8 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
 @property (nonatomic, strong) JBChartInformationView *informationView;
 @property (nonatomic, strong) NSArray *chartData;
 @property (nonatomic, strong) NSArray *monthlySymbols;
+
+@property (nonatomic, assign) BOOL barChartTooltipVisible;
 
 // Buttons
 - (void)chartToggleButtonPressed:(id)sender;
@@ -111,6 +124,9 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
     self.barChartView.inverted = NO;
     self.barChartView.backgroundColor = kJBColorBarChartBackground;
     
+    self.barChartView.horizontal = self.isHorizontal;
+        
+    
     JBChartHeaderView *headerView = [[JBChartHeaderView alloc] initWithFrame:CGRectMake(kJBBarChartViewControllerChartPadding, ceil(self.view.bounds.size.height * 0.5) - ceil(kJBBarChartViewControllerChartHeaderHeight * 0.5), self.view.bounds.size.width - (kJBBarChartViewControllerChartPadding * 2), kJBBarChartViewControllerChartHeaderHeight)];
     headerView.titleLabel.text = [kJBStringLabelAverageMonthlyTemperature uppercaseString];
     headerView.subtitleLabel.text = kJBStringLabel2012;
@@ -124,6 +140,8 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
     footerView.rightLabel.text = [[self.monthlySymbols lastObject] uppercaseString];
     footerView.rightLabel.textColor = [UIColor whiteColor];
     self.barChartView.footerView = footerView;
+    
+    if(self.isHorizontal) self.barChartView.footerView.backgroundColor = [UIColor clearColor];
     
     self.informationView = [[JBChartInformationView alloc] initWithFrame:CGRectMake(self.view.bounds.origin.x, CGRectGetMaxY(self.barChartView.frame), self.view.bounds.size.width, self.view.bounds.size.height - CGRectGetMaxY(self.barChartView.frame) - CGRectGetMaxY(self.navigationController.navigationBar.frame))];
     [self.view addSubview:self.informationView];
@@ -163,7 +181,14 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
     [self.informationView setValueText:[NSString stringWithFormat:kJBStringLabelDegreesFahrenheit, [valueNumber intValue], kJBStringLabelDegreeSymbol] unitText:nil];
     [self.informationView setTitleText:kJBStringLabelWorldwideAverage];
     [self.informationView setHidden:NO animated:YES];
-    [self setTooltipVisible:YES animated:YES atTouchPoint:touchPoint];
+    if(self.isHorizontal)
+    {
+        [self setTooltipVisible:YES animated:YES atTouchPoint:touchPoint atBarWithIndex:index];
+    }
+    else
+    {
+        [self setTooltipVisible:YES animated:YES atTouchPoint:touchPoint];
+    }
     [self.tooltipView setText:[[self.monthlySymbols objectAtIndex:index] uppercaseString]];
 }
 
@@ -215,6 +240,107 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
 - (JBChartView *)chartView
 {
     return self.barChartView;
+}
+
+- (void)setTooltipVisible:(BOOL)tooltipVisible animated:(BOOL)animated atTouchPoint:(CGPoint)touchPoint atBarWithIndex:(NSUInteger)index
+{
+    
+    _barChartTooltipVisible = tooltipVisible;
+    
+    JBBarChartView *chartView = (JBBarChartView *)[self chartView];
+    
+    if (!chartView)
+    {
+        return;
+    }
+    
+    UIView *barView = [chartView barViewForIndex:index];
+    
+    if(!barView)
+    {
+        return;
+    }
+    
+    if (!self.tooltipView)
+    {
+        self.tooltipView = [[JBChartTooltipView alloc] init];
+        self.tooltipView.alpha = 0.0;
+        [self.view addSubview:self.tooltipView];
+    }
+    
+    if (!self.tooltipTipView)
+    {
+        self.tooltipTipView = [[JBChartTooltipTipView alloc] init];
+        self.tooltipTipView.alpha = 0.0;
+        [self.view addSubview:self.tooltipTipView];
+    }
+    
+    dispatch_block_t adjustTooltipPosition = ^{
+        CGPoint originalTouchPoint = [self.view convertPoint:touchPoint fromView:chartView];
+        CGPoint convertedTouchPoint = originalTouchPoint; // modified
+        CGRect convertedBarFrame = [self.view convertRect:barView.frame fromView:chartView];
+
+        JBChartView *chartView = [self chartView];
+        if (chartView)
+        {
+            CGFloat minChartX = (chartView.frame.origin.x + ceil(self.tooltipView.frame.size.width * 0.5));
+            if (convertedTouchPoint.x < minChartX)
+            {
+                convertedTouchPoint.x = minChartX;
+            }
+            CGFloat maxChartX = (chartView.frame.origin.x + chartView.frame.size.width - ceil(self.tooltipView.frame.size.width * 0.5));
+            if (convertedTouchPoint.x > maxChartX)
+            {
+                convertedTouchPoint.x = maxChartX;
+            }
+            self.tooltipView.frame = CGRectMake(convertedTouchPoint.x - ceil(self.tooltipView.frame.size.width * 0.5),
+                                                CGRectGetMinY(convertedBarFrame)-self.tooltipView.frame.size.height-self.tooltipTipView.frame.size.height,
+                                                self.tooltipView.frame.size.width,
+                                                self.tooltipView.frame.size.height);
+                        
+            CGFloat minTipX = (chartView.frame.origin.x + self.tooltipTipView.frame.size.width);
+            if (originalTouchPoint.x < minTipX)
+            {
+                originalTouchPoint.x = minTipX;
+            }
+            CGFloat maxTipX = (chartView.frame.origin.x + chartView.frame.size.width - self.tooltipTipView.frame.size.width);
+            if (originalTouchPoint.x > maxTipX)
+            {
+                originalTouchPoint.x = maxTipX;
+            }
+            self.tooltipTipView.frame = CGRectMake(originalTouchPoint.x - ceil(self.tooltipTipView.frame.size.width * 0.5),
+                                                   CGRectGetMaxY(self.tooltipView.frame),
+                                                   self.tooltipTipView.frame.size.width,
+                                                   self.tooltipTipView.frame.size.height);
+        }
+    };
+    
+    dispatch_block_t adjustTooltipVisibility = ^{
+        self.tooltipView.alpha = self.barChartTooltipVisible ? 1.0 : 0.0;
+        self.tooltipTipView.alpha = self.barChartTooltipVisible ? 1.0 : 0.0;
+    };
+    
+    if (self.barChartTooltipVisible)
+    {
+        adjustTooltipPosition();
+    }
+    
+    if (animated)
+    {
+        [UIView animateWithDuration:kJBBarChartViewControllerAnimationDuration animations:^{
+            adjustTooltipVisibility();
+        } completion:^(BOOL finished) {
+            if (!self.barChartTooltipVisible)
+            {
+                adjustTooltipPosition();
+            }
+        }];
+    }
+    else
+    {
+        adjustTooltipVisibility();
+    }
+    
 }
 
 @end

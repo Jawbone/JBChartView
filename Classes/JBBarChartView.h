@@ -136,4 +136,20 @@
  */
 @property (nonatomic, assign, getter=isInverted) BOOL inverted;
 
+/*
+ *  Bars can be horizontally positoned right to left instead vertically.
+ *  If this property is set to YES, the footer view will be rotated 90d and placed
+ *  on the left hand side of the graph.
+ *
+ *  Default: NO.
+ */
+@property (nonatomic, assign, getter=isHorizontal) BOOL horizontal;
+
+/*
+ * Returns the UIView for the bar that represents the data at index 
+ * (as returned by the dataSource)
+ */
+
+-(UIView *) barViewForIndex:(NSUInteger) index;
+
 @end
