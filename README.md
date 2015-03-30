@@ -38,10 +38,6 @@ Build and run the <i>JBChartViewDemo</i> project in Xcode. The demo demonstrates
 
 Simply add the following line to your <code>Podfile</code>:
 
-	pod 'JBChartView'
-	
-Your Podfile should look something like:
-
 	platform :ios, '6.0'
 	pod 'JBChartView'
 	
