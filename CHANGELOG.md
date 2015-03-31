@@ -1,10 +1,26 @@
 # Change Log
 
-## [Unreleased](https://github.com/Jawbone/JBChartView/tree/HEAD)
+## [v2.8.11](https://github.com/Jawbone/JBChartView/tree/v2.8.11) (2015-03-31)
 
-[Full Changelog](https://github.com/Jawbone/JBChartView/compare/v2.8.10...HEAD)
+[Full Changelog](https://github.com/Jawbone/JBChartView/compare/v2.8.10...v2.8.11)
+
+**Implemented enhancements:**
+
+- Pass back barView & dot instances on selection [\#118](https://github.com/Jawbone/JBChartView/issues/118)
+
+- Add ability to have the line start or end at any given point [\#115](https://github.com/Jawbone/JBChartView/issues/115)
+
+- Consolidate dot view selection/unselection/color calls [\#101](https://github.com/Jawbone/JBChartView/issues/101)
+
+- Change dot radius to dot diameter [\#99](https://github.com/Jawbone/JBChartView/issues/99)
+
+- need Swift implementation details and example [\#80](https://github.com/Jawbone/JBChartView/issues/80)
+
+- Add bar/line caching for only visible content.  [\#61](https://github.com/Jawbone/JBChartView/issues/61)
 
 **Closed issues:**
+
+- Pie Chart support [\#149](https://github.com/Jawbone/JBChartView/issues/149)
 
 - hi is it possible to have x,y value because in example there is no y value and only 2 x value [\#141](https://github.com/Jawbone/JBChartView/issues/141)
 
@@ -56,11 +72,21 @@
 
 **Merged pull requests:**
 
+- Keep tooltip subviews above line subviews [\#144](https://github.com/Jawbone/JBChartView/pull/144) ([vocaro](https://github.com/vocaro))
+
+- Fix crash and warnings that can occur when a chart line has no data [\#143](https://github.com/Jawbone/JBChartView/pull/143) ([vocaro](https://github.com/vocaro))
+
+- Add automatically generated change log file. [\#142](https://github.com/Jawbone/JBChartView/pull/142) ([skywinder](https://github.com/skywinder))
+
+- Update README.md [\#127](https://github.com/Jawbone/JBChartView/pull/127) ([paal123](https://github.com/paal123))
+
+- Add ability to have the line start or end at any given point [\#116](https://github.com/Jawbone/JBChartView/pull/116) ([sebastianreloaded](https://github.com/sebastianreloaded))
+
+- Horizontal Bar Graphs [\#148](https://github.com/Jawbone/JBChartView/pull/148) ([tomhoag](https://github.com/tomhoag))
+
 - Add optional gradient fill to line chart [\#138](https://github.com/Jawbone/JBChartView/pull/138) ([mbachrach](https://github.com/mbachrach))
 
 - fix for updating graphs on view resize [\#128](https://github.com/Jawbone/JBChartView/pull/128) ([sobakasu](https://github.com/sobakasu))
-
-- Update README.md [\#127](https://github.com/Jawbone/JBChartView/pull/127) ([paal123](https://github.com/paal123))
 
 ## [v2.8.10](https://github.com/Jawbone/JBChartView/tree/v2.8.10) (2014-09-23)
 
@@ -280,8 +306,6 @@
 
 - barWidth selector and better height normalization [\#64](https://github.com/Jawbone/JBChartView/pull/64) ([gabybarsky](https://github.com/gabybarsky))
 
-- Added area diagram functionality [\#42](https://github.com/Jawbone/JBChartView/pull/42) ([hackingotter](https://github.com/hackingotter))
-
 ## [v2.5.5](https://github.com/Jawbone/JBChartView/tree/v2.5.5) (2014-05-14)
 
 [Full Changelog](https://github.com/Jawbone/JBChartView/compare/v2.5.4...v2.5.5)
@@ -380,9 +404,9 @@
 
 **Merged pull requests:**
 
-- Allowing custom views for dots [\#40](https://github.com/Jawbone/JBChartView/pull/40) ([simonbromberg](https://github.com/simonbromberg))
-
 - smooth curve using bezierpath [\#39](https://github.com/Jawbone/JBChartView/pull/39) ([ktran03](https://github.com/ktran03))
+
+- Allowing custom views for dots [\#40](https://github.com/Jawbone/JBChartView/pull/40) ([simonbromberg](https://github.com/simonbromberg))
 
 ## [v2.3.0](https://github.com/Jawbone/JBChartView/tree/v2.3.0) (2014-04-18)
 
@@ -404,7 +428,7 @@
 
 **Merged pull requests:**
 
-- Added delegate method to configure the width of the vertical selection bar in a line chart. [\#37](https://github.com/Jawbone/JBChartView/pull/37) ([veducm](https://github.com/veducm))
+- Added delegate method to configure the width of the vertical selection bar in a line chart. [\#37](https://github.com/Jawbone/JBChartView/pull/37) ([ghost](https://github.com/ghost))
 
 - Add variable dot colors [\#34](https://github.com/Jawbone/JBChartView/pull/34) ([alexdunn](https://github.com/alexdunn))
 
