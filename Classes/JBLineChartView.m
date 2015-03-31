@@ -772,6 +772,33 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
     [self setState:state animated:animated force:NO callback:callback];
 }
 
+- (void)setVerticalSelectionViewVisible:(BOOL)verticalSelectionViewVisible animated:(BOOL)animated
+{
+	_verticalSelectionViewVisible = verticalSelectionViewVisible;
+	
+	if (animated)
+	{
+		[UIView animateWithDuration:kJBChartViewDefaultAnimationDuration delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+			self.verticalSelectionView.alpha = self.verticalSelectionViewVisible ? 1.0 : 0.0;
+		} completion:nil];
+	}
+	else
+	{
+		self.verticalSelectionView.alpha = _verticalSelectionViewVisible ? 1.0 : 0.0;
+	}
+}
+
+- (void)setVerticalSelectionViewVisible:(BOOL)verticalSelectionViewVisible
+{
+	[self setVerticalSelectionViewVisible:verticalSelectionViewVisible animated:NO];
+}
+
+- (void)setShowsVerticalSelection:(BOOL)showsVerticalSelection
+{
+	_showsVerticalSelection = showsVerticalSelection;
+	self.verticalSelectionView.hidden = _showsVerticalSelection ? NO : YES;
+}
+
 #pragma mark - Getters
 
 - (CGFloat)cachedMinHeight
@@ -844,6 +871,16 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         return fmaxf(self.cachedMaxHeight, [super maximumValue]);
     }
     return self.cachedMaxHeight;
+}
+
+- (UIView *)dotViewAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex
+{
+	NSArray *dotViews = [self.dotsView.dotViewsDict objectForKey:@(lineIndex)];
+	if (horizontalIndex < [dotViews count])
+	{
+		return [dotViews objectAtIndex:horizontalIndex];
+	}
+	return nil;
 }
 
 #pragma mark - Touch Helpers
@@ -1012,35 +1049,6 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         [self.linesView setSelectedLineIndex:kJBLineChartLinesViewUnselectedLineIndex animated:YES];
         [self.dotsView setSelectedLineIndex:kJBLineChartDotsViewUnselectedLineIndex animated:YES];
     }
-}
-
-#pragma mark - Setters
-
-- (void)setVerticalSelectionViewVisible:(BOOL)verticalSelectionViewVisible animated:(BOOL)animated
-{
-    _verticalSelectionViewVisible = verticalSelectionViewVisible;
-
-    if (animated)
-    {
-        [UIView animateWithDuration:kJBChartViewDefaultAnimationDuration delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
-            self.verticalSelectionView.alpha = self.verticalSelectionViewVisible ? 1.0 : 0.0;
-        } completion:nil];
-    }
-    else
-    {
-        self.verticalSelectionView.alpha = _verticalSelectionViewVisible ? 1.0 : 0.0;
-    }
-}
-
-- (void)setVerticalSelectionViewVisible:(BOOL)verticalSelectionViewVisible
-{
-    [self setVerticalSelectionViewVisible:verticalSelectionViewVisible animated:NO];
-}
-
-- (void)setShowsVerticalSelection:(BOOL)showsVerticalSelection
-{
-    _showsVerticalSelection = showsVerticalSelection;
-    self.verticalSelectionView.hidden = _showsVerticalSelection ? NO : YES;
 }
 
 #pragma mark - Gestures

@@ -136,4 +136,15 @@
  */
 @property (nonatomic, assign, getter=isInverted) BOOL inverted;
 
+/**
+ *  The bar view at a particular index.
+ *
+ *  Default: nil.
+ *
+ *  @param index            The 0-based index of a given bar (left to right, x-axis).
+ *
+ *  @return The UIView representing the bar view at a given index or nil if the index is out of range.
+ */
+- (UIView *)barViewAtIndex:(NSUInteger)index;
+
 @end
