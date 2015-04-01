@@ -124,7 +124,7 @@ Secondly, you need to inform the delegate of the y-position of each point (autom
 
 **Note**: You can return NAN instead of CGFloat to indicate missing values. The chart's line will begin at the first non-NAN value and end at the last non-NAN value. The line will interopolate any NAN values in between (ie. the line will not be interrupted).
 
-	return [NSNumber numberWithFloat:NAN]
+	return [[NSNumber numberWithFloat:NAN] floatValue];
 
 Lastly, ensure you have set the *frame* of your lineChartView & call *reloadData* at least once:
 
