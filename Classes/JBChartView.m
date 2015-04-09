@@ -29,6 +29,9 @@ static UIColor *kJBChartVerticalSelectionViewDefaultBgColor = nil;
 
 @implementation JBChartView
 
+@synthesize dataSource;
+@synthesize delegate;
+
 #pragma mark - Alloc/Init
 
 - (id)initWithCoder:(NSCoder *)aDecoder
