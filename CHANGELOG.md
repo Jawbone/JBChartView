@@ -1,5 +1,27 @@
 # Change Log
 
+## [v2.8.12](https://github.com/Jawbone/JBChartView/tree/v2.8.12) (2015-04-13)
+
+[Full Changelog](https://github.com/Jawbone/JBChartView/compare/v2.8.11...v2.8.12)
+
+**Fixed bugs:**
+
+- Footer and Header view Swift implementation [\#152](https://github.com/Jawbone/JBChartView/issues/152)
+
+**Closed issues:**
+
+- Problems with selection when JBLineChartView is within UITableView [\#155](https://github.com/Jawbone/JBChartView/issues/155)
+
+- Show chart selection permanently [\#151](https://github.com/Jawbone/JBChartView/issues/151)
+
+- Crash when returning NAN [\#150](https://github.com/Jawbone/JBChartView/issues/150)
+
+**Merged pull requests:**
+
+- Fix warnings when building w/ Xcode 6.3 [\#154](https://github.com/Jawbone/JBChartView/pull/154) ([amro](https://github.com/amro))
+
+- Add ability for the graphs to always show the selected data value and to pre-set which index is selected [\#147](https://github.com/Jawbone/JBChartView/pull/147) ([MobileVet](https://github.com/MobileVet))
+
 ## [v2.8.11](https://github.com/Jawbone/JBChartView/tree/v2.8.11) (2015-03-31)
 
 [Full Changelog](https://github.com/Jawbone/JBChartView/compare/v2.8.10...v2.8.11)
