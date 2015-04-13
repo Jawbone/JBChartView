@@ -29,6 +29,7 @@ CGFloat const kJBLineChartViewControllerChartHeaderHeight = 75.0f;
 CGFloat const kJBLineChartViewControllerChartHeaderPadding = 20.0f;
 CGFloat const kJBLineChartViewControllerChartFooterHeight = 20.0f;
 CGFloat const kJBLineChartViewControllerChartSolidLineWidth = 6.0f;
+CGFloat const kJBLineChartViewControllerChartSolidLineDotRadius = 5.0f;
 CGFloat const kJBLineChartViewControllerChartDashedLineWidth = 2.0f;
 NSInteger const kJBLineChartViewControllerMaxNumChartPoints = 7;
 
@@ -245,7 +246,7 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
 
 - (CGFloat)lineChartView:(JBLineChartView *)lineChartView dotRadiusForDotAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex
 {
-    return (lineIndex == JBLineChartLineSolid) ? 0.0: (kJBLineChartViewControllerChartDashedLineWidth * 4);
+    return (lineIndex == JBLineChartLineSolid) ? 0.0: kJBLineChartViewControllerChartSolidLineDotRadius;
 }
 
 - (UIColor *)lineChartView:(JBLineChartView *)lineChartView verticalSelectionColorForLineAtLineIndex:(NSUInteger)lineIndex

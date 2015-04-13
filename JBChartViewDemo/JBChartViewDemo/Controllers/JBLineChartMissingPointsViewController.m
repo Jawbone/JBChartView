@@ -29,6 +29,7 @@ CGFloat const kJBLineChartMissingPointsViewControllerChartHeaderHeight = 75.0f;
 CGFloat const kJBLineChartMissingPointsViewControllerChartHeaderPadding = 20.0f;
 CGFloat const kJBLineChartMissingPointsViewControllerChartFooterHeight = 20.0f;
 CGFloat const kJBLineChartMissingPointsViewControllerChartSolidLineWidth = 6.0f;
+CGFloat const kJBLineChartMissingPointsViewControllerChartSolidLineDotRadius = 5.0f;
 CGFloat const kJBLineChartMissingPointsViewControllerChartDashedLineWidth = 2.0f;
 NSInteger const kJBLineChartMissingPointsViewControllerMaxNumChartPoints = 7;
 
@@ -254,7 +255,7 @@ NSString * const kJBLineChartMissingPointsViewControllerNavButtonViewKey = @"vie
 
 - (CGFloat)lineChartView:(JBLineChartView *)lineChartView dotRadiusForDotAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex
 {
-    return (lineIndex == JBLineChartLineSolid) ? 0.0: (kJBLineChartMissingPointsViewControllerChartDashedLineWidth * 4);
+    return (lineIndex == JBLineChartLineSolid) ? 0.0 : kJBLineChartMissingPointsViewControllerChartSolidLineDotRadius;
 }
 
 - (UIColor *)lineChartView:(JBLineChartView *)lineChartView verticalSelectionColorForLineAtLineIndex:(NSUInteger)lineIndex
