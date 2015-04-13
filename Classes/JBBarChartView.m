@@ -57,6 +57,9 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 @implementation JBBarChartView
 
+@dynamic dataSource;
+@dynamic delegate;
+
 #pragma mark - Alloc/Init
 
 + (void)initialize
