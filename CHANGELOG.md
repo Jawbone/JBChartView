@@ -1,5 +1,17 @@
 # Change Log
 
+## [v2.8.13](https://github.com/Jawbone/JBChartView/tree/v2.8.13) (2015-04-16)
+
+[Full Changelog](https://github.com/Jawbone/JBChartView/compare/v2.8.12...v2.8.13)
+
+**Fixed bugs:**
+
+- Wrong calculation of the lineIndex  [\#157](https://github.com/Jawbone/JBChartView/issues/157)
+
+**Closed issues:**
+
+- Swift round up for respondsToSelector\(\) and sizeWithFont\(\) [\#156](https://github.com/Jawbone/JBChartView/issues/156)
+
 ## [v2.8.12](https://github.com/Jawbone/JBChartView/tree/v2.8.12) (2015-04-13)
 
 [Full Changelog](https://github.com/Jawbone/JBChartView/compare/v2.8.11...v2.8.12)
