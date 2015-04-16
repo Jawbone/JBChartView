@@ -994,7 +994,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
     
     NSUInteger lineIndex = self.linesView.selectedLineIndex != kJBLineChartLinesViewUnselectedLineIndex ? self.linesView.selectedLineIndex : [self lineIndexForPoint:touchPoint];
 	
-	if ([[self.chartData objectAtIndex:lineIndex] count] <= 0)
+	if (lineIndex == kJBLineChartLinesViewUnselectedLineIndex || [[self.chartData objectAtIndex:lineIndex] count] <= 0)
 	{
 		return; // no touch for line without data
 	}
