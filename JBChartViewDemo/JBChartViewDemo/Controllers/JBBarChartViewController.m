@@ -78,6 +78,12 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
     return self;
 }
 
+- (void)dealloc
+{
+    _barChartView.delegate = nil;
+    _barChartView.dataSource = nil;
+}
+
 #pragma mark - Date
 
 - (void)initFakeData

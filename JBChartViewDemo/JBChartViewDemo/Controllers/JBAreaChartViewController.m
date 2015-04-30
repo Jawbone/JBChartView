@@ -84,6 +84,12 @@ NSString * const kJBAreaChartViewControllerNavButtonViewKey = @"view";
     return self;
 }
 
+- (void)dealloc
+{
+    _lineChartView.delegate = nil;
+    _lineChartView.dataSource = nil;
+}
+
 #pragma mark - Data
 
 - (void)initFakeData

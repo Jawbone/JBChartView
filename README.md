@@ -72,6 +72,15 @@ To initialize a <i>JBBarChartView</i>, you only need a few lines of code (see be
     barChartView.dataSource = self;
     barChartView.delegate = self;
     [self addSubview:barChartView];
+
+Just like you would for a `UITableView`, ensure you clear these properties in your `dealloc`:
+
+	- (void)dealloc
+	{
+		JBBarChartView *barChartView = ...; // i.e. _barChartView
+		barChartView.delegate = nil;
+		barChartView.dataSource = nil;
+	}
     
 At a minimum, you need to inform the data source how many bars are in the chart:
 
@@ -99,9 +108,18 @@ Lastly, ensure you have set the *frame* of your barChartView & call *reloadData*
 Similiarily, to initialize a JBLineChartView, you only need a few lines of code (see below). Line charts can also be initialized via a <b>nib</b> or with a <b>frame</b>.
 
 	JBLineChartView *lineChartView = [[JBLineChartView alloc] init];
-    lineChartView.dataSource = self;
-    lineChartView.delegate = self;
-    [self addSubview:lineChartView];
+	lineChartView.dataSource = self;
+	lineChartView.delegate = self;
+	[self addSubview:lineChartView];
+
+Just like you would for a `UITableView`, ensure you clear these properties in your `dealloc`:
+
+	- (void)dealloc
+	{
+		JBLineChartView *lineChartView = ...; // i.e. _lineChartView
+		lineChartView.delegate = nil;
+		lineChartView.dataSource = nil;
+	}
 
 At a minimum, you need to inform the data source how many lines and vertical data points (for each line) are in the chart:
 
