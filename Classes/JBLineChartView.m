@@ -312,6 +312,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         // Remove old line view
         if (self.linesView)
         {
+            self.linesView.delegate = nil;
             [self.linesView removeFromSuperview];
             self.linesView = nil;
         }
@@ -339,6 +340,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         // Remove old dot view
         if (self.dotsView)
         {
+            self.dotsView.delegate = nil;
             [self.dotsView removeFromSuperview];
             self.dotsView = nil;
         }
