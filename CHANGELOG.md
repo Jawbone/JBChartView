@@ -1,5 +1,23 @@
 # Change Log
 
+## [v2.8.14](https://github.com/Jawbone/JBChartView/tree/v2.8.14) (2015-04-30)
+
+[Full Changelog](https://github.com/Jawbone/JBChartView/compare/v2.8.13...v2.8.14)
+
+**Closed issues:**
+
+- Will JBChartView integrated with React Native? [\#164](https://github.com/Jawbone/JBChartView/issues/164)
+
+- white dot+dotted lines sometimes does not appear when touched. [\#161](https://github.com/Jawbone/JBChartView/issues/161)
+
+- Small offset when using a footer for a x-axis [\#160](https://github.com/Jawbone/JBChartView/issues/160)
+
+- gradient for bar chart is lost / sizing problem [\#158](https://github.com/Jawbone/JBChartView/issues/158)
+
+**Merged pull requests:**
+
+- Nil out delegate and datasource on dealloc [\#165](https://github.com/Jawbone/JBChartView/pull/165) ([eventualbuddha](https://github.com/eventualbuddha))
+
 ## [v2.8.13](https://github.com/Jawbone/JBChartView/tree/v2.8.13) (2015-04-16)
 
 [Full Changelog](https://github.com/Jawbone/JBChartView/compare/v2.8.12...v2.8.13)
