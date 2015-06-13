@@ -289,7 +289,12 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     self.footerView.frame = CGRectMake(self.bounds.origin.x, self.bounds.size.height - self.footerView.frame.size.height, self.bounds.size.width, self.footerView.frame.size.height);
 
     // Refresh state
-    [self setState:self.state animated:NO force:YES callback:nil];
+    __weak JBBarChartView *wself = self;
+    [self setState:self.state animated:NO force:YES callback:^{
+        if([wself.delegate respondsToSelector:@selector(reloadEndedInBarChartView:)]) {
+            [wself.delegate reloadEndedInBarChartView:wself];
+        }
+    }];
 }
 
 #pragma mark - View Quick Accessors

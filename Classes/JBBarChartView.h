@@ -27,6 +27,13 @@
 @optional
 
 /**
+ *  Occurs when reload ends
+ *
+ *  @param barChartView     A bar chart object informing the delegate about the new selection.
+ */
+- (void) reloadEndedInBarChartView:(JBBarChartView *)barChartView;
+
+/**
  *  A UIView subclass representing the bar at a particular index.
  *
  *  Default: solid black UIView.
