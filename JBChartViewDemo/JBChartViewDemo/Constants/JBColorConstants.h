@@ -29,8 +29,12 @@
 #define kJBColorLineChartHeaderSeparatorColor UIColorFromHex(0x8eb6b7)
 #define kJBColorLineChartDefaultSolidLineColor [UIColor colorWithWhite:1.0 alpha:0.5]
 #define kJBColorLineChartDefaultSolidSelectedLineColor [UIColor colorWithWhite:1.0 alpha:1.0]
-#define kJBColorLineChartDefaultDashedLineColor [UIColor colorWithRed:1.0 green:0.0 blue:0.0 alpha:1.0]
+#define kJBColorLineChartDefaultDashedLineColor [UIColor colorWithRed:0.0 green:0.0 blue:1.0 alpha:1.0]
 #define kJBColorLineChartDefaultDashedSelectedLineColor [UIColor colorWithWhite:1.0 alpha:1.0]
+#define kJBColorLineChartDefaultSolidFillColor [UIColor clearColor]
+#define kJBColorLineChartDefaultDashedFillColor [UIColor colorWithWhite:1.0 alpha:0.3]
+#define kJBColorLineChartDefaultGradientStartColor UIColorFromHex(0x0000FF)
+#define kJBColorLineChartDefaultGradientEndColor UIColorFromHex(0x00FF00)
 
 #define mark - Area Chart
 

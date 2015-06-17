@@ -43,7 +43,7 @@ Simply add the following line to your <code>Podfile</code>:
 	
 ### The Old School Way
 
-The simpliest way to use JBChartView with your application is to drag and drop the <i>/Classes</i> folder into you're Xcode 5 project. It's also recommended you rename the <i>/Classes</i> folder to something more descriptive (ie. "<i>Jawbone - JBChartView</i>").
+The simplest way to use JBChartView with your application is to drag and drop the <i>/Classes</i> folder into you're Xcode 5 project. It's also recommended you rename the <i>/Classes</i> folder to something more descriptive (ie. "<i>Jawbone - JBChartView</i>").
 
 <center>
 	<img src="https://raw.github.com/Jawbone/JBChartView/master/Screenshots/installation.png">
@@ -230,6 +230,28 @@ The color, width and style of each line in the chart can be customized via the <
 	{
 		return ...; // style of line in chart
 	}
+
+Additionally, the line style of a line can be customzized via the <i>optional</i> protocol. If a gradient is used, the color for the line and fill of the line will control the alpha value of the gradient.
+
+    - (JBLineChartViewLineColorStyle)lineChartView:(JBLineChartView *)lineChartView lineColorStyleForLineAtLineIndex:(NSUInteger)lineIndex
+    {
+        return ...; // line style of line in chart
+    }
+
+    - (CAGradientLayer *)lineChartView:(JBLineChartView *)lineChartView gradientForLineAtLineIndex:(NSUInteger)lineIndex {
+        return ...; // gradient for line in chart
+    }
+
+    - (CAGradientLayer *)lineChartView:(JBLineChartView *)lineChartView fillGradientForLineAtLineIndex:(NSUInteger)lineIndex {
+        return ...; // gradient for area under line in chart
+    }
+
+Defining a gradient to use is simple and flexible. For example, this would be a horizontal gradient from blue to green:
+
+    CAGradientLayer *gradient = [CAGradientLayer new];
+    gradient.startPoint = CGPointMake(0.0, 0.0);
+    gradient.endPoint = CGPointMake(1.0, 0.0);
+    gradient.colors = @[(id)[UIColor blueColor].CGColor, (id)[UIColor greenColor].CGColor];
 	
 Furthermore, the color and width of the selection view along with the color of the selected line can be customized via the <i>optional</i> protocols:
 
@@ -253,6 +275,18 @@ Furthermore, the color and width of the selection view along with the color of t
 		return ...; // color of area under selected line
 	}
 	
+When using a gradient for the line or fill, a different gradient can provided for selection. If the selection gradient is not provided, it will default to the line and fill gradient provided for the line.
+    
+    - (CAGradientLayer *)lineChartView:(JBLineChartView *)lineChartView selectionGradientForLineAtLineIndex:(NSUInteger)lineIndex
+    {
+        return ...; // gradient for selected line
+    }
+
+    - (CAGradientLayer *)lineChartView:(JBLineChartView *)lineChartView selectionFillGradientForLineAtLineIndex:(NSUInteger)lineIndex
+    {
+        return ...; // gradient for area under selected line
+    }
+
 By default, each line will not show dots for each point. To enable this on a per-line basis:
 
 	- (BOOL)lineChartView:(JBLineChartView *)lineChartView showsDotsForLineAtLineIndex:(NSUInteger)lineIndex;
