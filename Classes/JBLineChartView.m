@@ -428,17 +428,18 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 
 #pragma mark - View Quick Accessors
 
-- (CGFloat)normalizedHeightForRawHeight:(CGFloat)rawHeight
+- (CGFloat)normalizedHeightForRawHeight:(NSNumber*)rawHeight
 {
     CGFloat minHeight = [self minimumValue];
     CGFloat maxHeight = [self maximumValue];
-
+    CGFloat value = [rawHeight floatValue];
+    
     if ((maxHeight - minHeight) <= 0)
     {
-        return 0;
+        return self.availableHeight; // change this line to return the max height instead of 0
     }
-
-    return ((rawHeight - minHeight) / (maxHeight - minHeight)) * [self availableHeight];
+    
+    return ((value - minHeight) / (maxHeight - minHeight)) * [self availableHeight];
 }
 
 - (CGFloat)availableHeight
