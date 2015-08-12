@@ -435,7 +435,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 
     if ((maxHeight - minHeight) <= 0)
     {
-        return 0;
+        return self.availableHeight;
     }
 
     return ((rawHeight - minHeight) / (maxHeight - minHeight)) * [self availableHeight];
