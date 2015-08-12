@@ -41,7 +41,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 // View quick accessors
 - (CGFloat)availableHeight;
-- (CGFloat)normalizedHeightForRawHeight:(NSNumber*)rawHeight;
+- (CGFloat)normalizedHeightForRawHeight:(NSNumber *)rawHeight;
 - (CGFloat)barWidth;
 
 // Touch helpers
@@ -299,7 +299,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     return self.bounds.size.height - self.headerView.frame.size.height - self.footerView.frame.size.height - self.headerPadding - self.footerPadding;
 }
 
-- (CGFloat)normalizedHeightForRawHeight:(NSNumber*)rawHeight
+- (CGFloat)normalizedHeightForRawHeight:(NSNumber *)rawHeight
 {
     CGFloat minHeight = [self minimumValue];
     CGFloat maxHeight = [self maximumValue];
@@ -307,7 +307,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     
     if ((maxHeight - minHeight) <= 0)
     {
-        return self.availableHeight;
+        return [self availableHeight];
     }
     
     return ((value - minHeight) / (maxHeight - minHeight)) * [self availableHeight];
