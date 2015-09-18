@@ -952,6 +952,15 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
     for (NSUInteger lineIndex=0; lineIndex<numberOfLines; lineIndex++)
     {
         NSAssert([self.dataSource respondsToSelector:@selector(lineChartView:numberOfVerticalValuesAtLineIndex:)], @"JBLineChartView // dataSource must implement - (NSUInteger)lineChartView:(JBLineChartView *)lineChartView numberOfVerticalValuesAtLineIndex:(NSUInteger)lineIndex");
+        
+        if ([self.delegate respondsToSelector:@selector(lineChartView:shouldIgnoreSelectionAtIndex:)])
+        {
+            if([self.delegate lineChartView:self shouldIgnoreSelectionAtIndex:lineIndex])
+            {
+                continue;
+            }
+        }
+        
         if ([self.dataSource lineChartView:self numberOfVerticalValuesAtLineIndex:lineIndex] > rightHorizontalIndex)
         {
             NSArray *lineData = [self.chartData objectAtIndex:lineIndex];

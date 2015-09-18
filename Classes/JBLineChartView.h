@@ -151,6 +151,13 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
 - (void)didDeselectLineInLineChartView:(JBLineChartView *)lineChartView;
 
 /**
+ *  Returns whether the graph should ignore this line's selection when matching the line index to touch point
+ *
+ *  @param lineIndex        An index number identifying the closest line in the chart to the current touch
+ */
+- (BOOL)lineChartView:(JBLineChartView *)lineChartView shouldIgnoreSelectionAtIndex:(NSUInteger)lineIndex;
+
+/**
  *  Returns the color of particular line at lineIndex within the chart.
  *
  *  Default: black color.
