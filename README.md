@@ -279,7 +279,7 @@ As well, by default, each line will have squared off end caps and connection poi
 
 	- (BOOL)lineChartView:(JBLineChartView *)lineChartView smoothLineAtLineIndex:(NSUInteger)lineIndex;
 		
-Lastly, a line chart's selection events are delegated back via:
+Furthermore, a line chart's selection events are delegated back via:
 
 	- (void)lineChartView:(JBLineChartView *)lineChartView didSelectLineAtIndex:(NSUInteger)lineIndex horizontalIndex:(NSUInteger)horizontalIndex touchPoint:(CGPoint)touchPoint
 	{
@@ -289,6 +289,13 @@ Lastly, a line chart's selection events are delegated back via:
 	- (void)didDeselectLineInLineChartView:(JBLineChartView *)lineChartView
 	{
 		// Update view
+	}
+	
+Lastly, if you don't want a line to be selectable:
+
+	- (BOOL)lineChartView:(JBLineChartView *)lineChartView shouldIgnoreSelectionAtIndex:(NSUInteger)lineIndex
+	{
+		return NO; // Check line index
 	}
 	
 The <b>touchPoint</b> is especially important as it allows you to add custom elements to your chart during  selection events. Refer to the demo project (<b>JBLineChartViewController</b>) to see how a tooltip can be used to display additional information during selection events.
