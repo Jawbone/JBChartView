@@ -1233,7 +1233,10 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         BOOL visiblePointFound = NO;
         NSArray *sortedLineData = [lineData sortedArrayUsingSelector:@selector(compare:)];
         CGFloat firstXPosition = 0.0f;
-        CGFloat lastXPosition = 0.0f;
+		CGFloat firstYPosition = 0.0f;
+		CGFloat lastXPosition = 0.0f;
+		CGFloat lastYPosition = 0.0f;
+		
         for (NSUInteger index = 0; index < [sortedLineData count]; index++)
         {
             JBLineChartPoint *lineChartPoint = [sortedLineData objectAtIndex:index];
@@ -1245,6 +1248,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
             {
                 [path moveToPoint:CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - padding, fmax(padding, lineChartPoint.position.y)))];
                 firstXPosition = lineChartPoint.position.x;
+				firstYPosition = lineChartPoint.position.y;
                 visiblePointFound = YES;
             }
             else
@@ -1278,6 +1282,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
                 }
                 
                 lastXPosition = lineChartPoint.position.x;
+				lastYPosition = lineChartPoint.position.y;
                 previousSlope = currentSlope;
             }
             previousLineChartPoint = lineChartPoint;
@@ -1332,8 +1337,11 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         
         if(visiblePointFound)
         {
-            [fillPath addLineToPoint:CGPointMake(lastXPosition, self.bounds.size.height - padding)];
-            [fillPath addLineToPoint:CGPointMake(firstXPosition, self.bounds.size.height - padding)];
+            [fillPath addLineToPoint:CGPointMake(lastXPosition + ceil(padding * 0.5), lastYPosition)];
+			[fillPath addLineToPoint:CGPointMake(lastXPosition + ceil(padding * 0.5), self.bounds.size.height)];
+			
+            [fillPath addLineToPoint:CGPointMake(firstXPosition - ceil(padding * 0.5), self.bounds.size.height)];
+			[fillPath addLineToPoint:CGPointMake(firstXPosition - ceil(padding * 0.5), firstYPosition)];
         }
 
         shapeFillLayer.path = fillPath.CGPath;
