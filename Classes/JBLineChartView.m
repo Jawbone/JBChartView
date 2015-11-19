@@ -1009,7 +1009,9 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
     {
         return; // no touch for no data or collapsed
     }
-    
+	
+	[self setVerticalSelectionViewVisible:YES animated:NO];
+	
     UITouch *touch = [touches anyObject];
     CGPoint touchPoint = [self clampPoint:[touch locationInView:self.linesView] toBounds:self.linesView.bounds padding:[self padding]];
     
