@@ -291,7 +291,14 @@ Furthermore, a line chart's selection events are delegated back via:
 		// Update view
 	}
 	
-Lastly, if you don't want a line to be selectable:
+Upon selection, all other lines (+ fills) will be dimmed to 20% opacity (default). To change this value, implement:
+
+    - (CGFloat)lineChartView:(JBLineChartView *)lineChartView dimmedSelectionOpacityAtLineIndex:(NSUInteger)lineIndex
+    {
+        // Return new opacity (0.0 to hide completely, and 1.0 to have no effect)
+    }
+	
+If you don't want a line to be selectable:
 
 	- (BOOL)lineChartView:(JBLineChartView *)lineChartView shouldIgnoreSelectionAtIndex:(NSUInteger)lineIndex
 	{
