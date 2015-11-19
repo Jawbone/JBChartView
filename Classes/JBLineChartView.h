@@ -76,6 +76,19 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
 - (BOOL)lineChartView:(JBLineChartView *)lineChartView smoothLineAtLineIndex:(NSUInteger)lineIndex;
 
 /**
+ *  Returns the opacity value to be used for dimming the line & fill during selection events.
+ *  This value is applied to the line or fill's opacity anytime it's not selected (but another line is).
+ *
+ *  Default: 0.2.
+ *
+ *  @param lineChartView    The line chart object requesting this information.
+ *  @param lineIndex        An index number identifying a line in the chart.
+ *
+ *  @return A value between 0.0 and 1.0 (will be clamped accordingly).
+ */
+- (CGFloat)lineChartView:(JBLineChartView *)lineChartView dimmedSelectionOpacityAtLineIndex:(NSUInteger)lineIndex;
+
+/**
  *  Returns a (custom) UIView instance representing a dot (x,y point) within the chart.
  *  For this value to apply, showsDotsForLineAtLineIndex: must return YES for the line at lineIndex.
  *  This protocol supercedes colorForDotAtHorizontalIndex: and dotRadiusForDotAtHorizontalIndex:.
@@ -132,8 +145,8 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
  *  Occurs whenever there is a touch gesture on the chart (chart must be expanded).
  *  The horizontal index is the closest index to the touch point & is clamped to it's max/min value if it moves outside of the view's bounds.
  *  The lineIndex remains constant until the line is deselected and will be highlighted using the (optional) selectionColorForLineAtLineIndex: protocol.
- *  Futhermore, all other lines that aren't selected will be dimmed to 20%% opacity throughout the duration of the touch/move. Any dotted line that isn't the
- *  primary selection will have it's dots dimmed to hidden (to avoid transparency issues).
+ *  Futhermore, all other lines that aren't selected will be dimmed to 20% opacity (default) throughout the duration of the touch/move. 
+ *  Any dotted line that isn't the primary selection will have it's dots dimmed to hidden (to avoid transparency issues).
  *
  *  @param lineChartView    A line chart object informing the delegate about the new selection.
  *  @param lineIndex        An index number identifying the closest line in the chart to the current touch

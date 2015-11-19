@@ -29,6 +29,8 @@ CGFloat const kJBAreaChartViewControllerChartHeaderHeight = 75.0f;
 CGFloat const kJBAreaChartViewControllerChartHeaderPadding = 20.0f;
 CGFloat const kJBAreaChartViewControllerChartFooterHeight = 20.0f;
 CGFloat const kJBAreaChartViewControllerChartLineWidth = 2.0f;
+CGFloat const kJBAreaChartViewControllerChartSunLineDimmedOpacity = 1.0f;
+CGFloat const kJBAreaChartViewControllerChartMoonLineDimmedOpacity = 0.0f;
 NSInteger const kJBAreaChartViewControllerMaxNumChartPoints = 12;
 
 // Strings
@@ -196,6 +198,18 @@ NSString * const kJBAreaChartViewControllerNavButtonViewKey = @"view";
 - (BOOL)lineChartView:(JBLineChartView *)lineChartView smoothLineAtLineIndex:(NSUInteger)lineIndex
 {
     return YES;
+}
+
+- (CGFloat)lineChartView:(JBLineChartView *)lineChartView dimmedSelectionOpacityAtLineIndex:(NSUInteger)lineIndex
+{
+	if (lineIndex == JBLineChartLineMoon)
+	{
+		return kJBAreaChartViewControllerChartMoonLineDimmedOpacity;
+	}
+	else
+	{
+		return kJBAreaChartViewControllerChartSunLineDimmedOpacity;
+	}
 }
 
 #pragma mark - JBLineChartViewDelegate
