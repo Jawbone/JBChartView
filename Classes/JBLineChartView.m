@@ -898,6 +898,21 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 	return nil;
 }
 
+- (void)setSelectonAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex animated:(BOOL)animated callback:(void (^)())callback
+{
+	// TODO
+}
+
+- (void)setSelectonAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex animated:(BOOL)animated
+{
+	[self setSelectonAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex animated:animated callback:nil];
+}
+
+- (void)setSelectonAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex
+{
+	[self setSelectonAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex animated:NO];
+}
+
 #pragma mark - Touch Helpers
 
 - (CGPoint)clampPoint:(CGPoint)point toBounds:(CGRect)bounds padding:(CGFloat)padding
@@ -1010,7 +1025,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         return; // no touch for no data or collapsed
     }
 	
-	[self setVerticalSelectionViewVisible:YES animated:NO];
+	[self setVerticalSelectionViewVisible:NO animated:NO];
 	
     UITouch *touch = [touches anyObject];
     CGPoint touchPoint = [self clampPoint:[touch locationInView:self.linesView] toBounds:self.linesView.bounds padding:[self padding]];

@@ -147,4 +147,33 @@
  */
 - (UIView *)barViewAtIndex:(NSUInteger)index;
 
+/**
+ *  Selects a bar at the given bar index. The selection is persisted until another tap event occurs.
+ *  The delegate function barChartView:didSelectBarAtIndex:touchPoint:
+ *  will fire with a nil touchPoint (since no touch event occurs).
+ *
+ *  @param horizontalIndex  The 0-based horizontal index of a selection point (left to right, x-axis)
+ *  @param animated			Whether or not the state should be animated or not.
+ *  @param callback			Called once the animation is completed. If animated == NO, then callback is immediate.
+ *
+ */
+- (void)setSelectonAtBarAtIndex:(NSUInteger)barIndex animated:(BOOL)animated callback:(void (^)())callback;
+
+/**
+ *  Non-callback version of setSelectonAtBarAtIndex:animated:callback:.
+ *
+ *  @param horizontalIndex  The 0-based horizontal index of a selection point (left to right, x-axis)
+ *  @param animated			Whether or not the state should be animated or not.
+ *
+ */
+- (void)setSelectonAtBarAtIndex:(NSUInteger)barIndex animated:(BOOL)animated;
+
+/**
+ *  Non-callback & non-animated version of setSelectonAtBarAtIndex:animated:callback:.
+ *
+ *  @param horizontalIndex  The 0-based horizontal index of a selection point (left to right, x-axis)
+ *
+ */
+- (void)setSelectonAtBarAtIndex:(NSUInteger)barIndex;
+
 @end

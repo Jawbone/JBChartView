@@ -517,6 +517,21 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 	return nil;
 }
 
+- (void)setSelectonAtBarAtIndex:(NSUInteger)barIndex animated:(BOOL)animated callback:(void (^)())callback
+{
+	// TODO
+}
+
+- (void)setSelectonAtBarAtIndex:(NSUInteger)barIndex animated:(BOOL)animated
+{
+	[self setSelectonAtBarAtIndex:barIndex animated:animated callback:nil];
+}
+
+- (void)setSelectonAtBarAtIndex:(NSUInteger)barIndex
+{
+	[self setSelectonAtBarAtIndex:barIndex animated:NO];
+}
+
 #pragma mark - Touch Helpers
 
 - (NSInteger)barViewIndexForPoint:(CGPoint)point
