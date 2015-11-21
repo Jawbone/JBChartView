@@ -59,7 +59,7 @@ CGFloat const kJBBaseChartViewControllerAnimationDuration = 0.1f;
         CGPoint originalTouchPoint = [self.view convertPoint:touchPoint fromView:chartView];
         CGPoint convertedTouchPoint = originalTouchPoint; // modified
         JBChartView *chartView = [self chartView];
-        if (chartView)
+		if (chartView && !CGPointEqualToPoint(touchPoint, CGPointZero))
         {
             CGFloat minChartX = (chartView.frame.origin.x + ceil(self.tooltipView.frame.size.width * 0.5));
             if (convertedTouchPoint.x < minChartX)
