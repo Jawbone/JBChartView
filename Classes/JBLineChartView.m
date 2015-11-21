@@ -1040,7 +1040,6 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         self.verticalSelectionView.bgColor = verticalSelectionColor;
     }
     
-    
     CGFloat xOffset = fmin(self.bounds.size.width - self.verticalSelectionView.frame.size.width, fmax(0, touchPoint.x - (ceil(self.verticalSelectionView.frame.size.width * 0.5))));
     CGFloat yOffset = self.headerView.frame.size.height + self.headerPadding;
     
