@@ -352,36 +352,4 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
  */
 - (UIView *)dotViewAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
 
-/**
- *  Selects the supplied line at a given horizontal index. The selection is persisted until another tap event occurs.
- *  The delegate function lineChartView:didSelectLineAtIndex:horizontalIndex:touchPoint:
- *  will fire with a nil touchPoint (since no touch event occurs).
- *
- *  @param horizontalIndex  The 0-based horizontal index of a selection point (left to right, x-axis)
- *  @param lineIndex        An index number identifying a line in the chart.
- *  @param animated			Whether or not the state should be animated or not.
- *  @param callback			Called once the animation is completed. If animated == NO, then callback is immediate.
- *
- */
-- (void)setSelectonAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex animated:(BOOL)animated callback:(void (^)())callback;
-
-/**
- *  Non-callback version of setSelectonAtHorizontalIndex:atLineIndex:animated:callback:.
- *
- *  @param horizontalIndex  The 0-based horizontal index of a selection point (left to right, x-axis)
- *  @param lineIndex        An index number identifying a line in the chart.
- *  @param animated			Whether or not the state should be animated or not.
- *
- */
-- (void)setSelectonAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex animated:(BOOL)animated;
-
-/**
- *  Non-callback & non-animated version of setSelectonAtHorizontalIndex:atLineIndex:animated:callback:.
- *
- *  @param horizontalIndex  The 0-based horizontal index of a selection point (left to right, x-axis)
- *  @param lineIndex        An index number identifying a line in the chart.
- *
- */
-- (void)setSelectonAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
-
 @end
