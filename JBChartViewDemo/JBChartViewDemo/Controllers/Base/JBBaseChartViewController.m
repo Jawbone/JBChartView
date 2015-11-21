@@ -12,7 +12,7 @@
 #import "JBChartTooltipTipView.h"
 
 // Numerics
-CGFloat const kJBBaseChartViewControllerAnimationDuration = 0.25f;
+CGFloat const kJBBaseChartViewControllerAnimationDuration = 0.1f;
 
 @interface JBBaseChartViewController ()
 
@@ -55,6 +55,7 @@ CGFloat const kJBBaseChartViewControllerAnimationDuration = 0.25f;
     [self.view bringSubviewToFront:self.tooltipTipView];
     
     dispatch_block_t adjustTooltipPosition = ^{
+		
         CGPoint originalTouchPoint = [self.view convertPoint:touchPoint fromView:chartView];
         CGPoint convertedTouchPoint = originalTouchPoint; // modified
         JBChartView *chartView = [self chartView];
@@ -70,6 +71,7 @@ CGFloat const kJBBaseChartViewControllerAnimationDuration = 0.25f;
             {
                 convertedTouchPoint.x = maxChartX;
             }
+			
             self.tooltipView.frame = CGRectMake(convertedTouchPoint.x - ceil(self.tooltipView.frame.size.width * 0.5), CGRectGetMaxY(chartView.headerView.frame), self.tooltipView.frame.size.width, self.tooltipView.frame.size.height);
             
             CGFloat minTipX = (chartView.frame.origin.x + self.tooltipTipView.frame.size.width);
@@ -83,33 +85,34 @@ CGFloat const kJBBaseChartViewControllerAnimationDuration = 0.25f;
                 originalTouchPoint.x = maxTipX;
             }
             self.tooltipTipView.frame = CGRectMake(originalTouchPoint.x - ceil(self.tooltipTipView.frame.size.width * 0.5), CGRectGetMaxY(self.tooltipView.frame), self.tooltipTipView.frame.size.width, self.tooltipTipView.frame.size.height);
-        }
+		}
     };
     
     dispatch_block_t adjustTooltipVisibility = ^{
         self.tooltipView.alpha = _tooltipVisible ? 1.0 : 0.0;
         self.tooltipTipView.alpha = _tooltipVisible ? 1.0 : 0.0;
 	};
-    
-    if (tooltipVisible)
-    {
-        adjustTooltipPosition();
-    }
-    
+	
     if (animated)
     {
-        [UIView animateWithDuration:kJBBaseChartViewControllerAnimationDuration animations:^{
-            adjustTooltipVisibility();
-        } completion:^(BOOL finished) {
-            if (!tooltipVisible)
-            {
-                adjustTooltipPosition();
-            }
-        }];
+		if (tooltipVisible)
+		{
+			adjustTooltipPosition();
+		}
+		
+		[UIView animateWithDuration:kJBBaseChartViewControllerAnimationDuration delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+			adjustTooltipVisibility();
+		} completion:^(BOOL finished) {
+			if (!tooltipVisible)
+			{
+				adjustTooltipPosition();
+			}
+		}];
     }
     else
     {
-        adjustTooltipVisibility();
+		adjustTooltipPosition();
+		adjustTooltipVisibility();
     }
 }
 
