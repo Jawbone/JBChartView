@@ -562,8 +562,6 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
         return;
     }
 	
-	[self setVerticalSelectionViewVisible:NO animated:NO];
-	
     UITouch *touch = [touches anyObject];
     CGPoint touchPoint = [touch locationInView:self];
     UIView *barView = [self barViewForForPoint:touchPoint];
@@ -626,6 +624,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
+	[self setVerticalSelectionViewVisible:NO animated:NO];
     [self touchesBeganOrMovedWithTouches:touches];
 }
 
