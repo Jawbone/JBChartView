@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		566C73A61C026858000EC785 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 566C73A51C026858000EC785 /* Default-568h@2x.png */; };
 		94BDFC3419F933B2007492F6 /* JBLineChartMissingPointsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94BDFC3319F933B2007492F6 /* JBLineChartMissingPointsViewController.m */; };
 		9B0725211829822A0052109B /* JBChartListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B0725201829822A0052109B /* JBChartListViewController.m */; };
 		9B2E530518218CF20079B9D2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B2E530418218CF20079B9D2 /* Foundation.framework */; };
@@ -46,6 +47,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		566C73A51C026858000EC785 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		94BDFC3219F933B2007492F6 /* JBLineChartMissingPointsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBLineChartMissingPointsViewController.h; sourceTree = "<group>"; };
 		94BDFC3319F933B2007492F6 /* JBLineChartMissingPointsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBLineChartMissingPointsViewController.m; sourceTree = "<group>"; };
 		9B07251F1829822A0052109B /* JBChartListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBChartListViewController.h; sourceTree = "<group>"; };
@@ -233,6 +235,7 @@
 		9B603D44182C7002000A76D0 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				566C73A51C026858000EC785 /* Default-568h@2x.png */,
 				9B7967ED198317540003A2B0 /* icon-area-chart.png */,
 				9B7967EE198317540003A2B0 /* icon-area-chart@2x.png */,
 				9B698F07182D720E003C135F /* icon-arrow.png */,
@@ -387,6 +390,7 @@
 				9B7967EF198317540003A2B0 /* icon-area-chart.png in Resources */,
 				9B603D47182C7002000A76D0 /* icon-jawbone-logo.png in Resources */,
 				9B603D48182C7002000A76D0 /* icon-jawbone-logo@2x.png in Resources */,
+				566C73A61C026858000EC785 /* Default-568h@2x.png in Resources */,
 				9B7967F0198317540003A2B0 /* icon-area-chart@2x.png in Resources */,
 				9B698F19182D7DAE003C135F /* icon-line-chart@2x.png in Resources */,
 				9B698F0A182D720E003C135F /* icon-arrow@2x.png in Resources */,
