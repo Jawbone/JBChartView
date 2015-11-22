@@ -1,5 +1,13 @@
 # Change Log
 
+## [v2.8.18](https://github.com/Jawbone/JBChartView/tree/v2.8.18) (2015-11-22)
+[Full Changelog](https://github.com/Jawbone/JBChartView/compare/v2.8.17...v2.8.18)
+
+**Implemented enhancements:**
+
+- Vertical values should be supplied by the DataSource delegate for LineCharts [\#180](https://github.com/Jawbone/JBChartView/issues/180)
+- JBLineChartDotsView reloadData performance issues [\#179](https://github.com/Jawbone/JBChartView/issues/179)
+
 ## [v2.8.17](https://github.com/Jawbone/JBChartView/tree/v2.8.17) (2015-11-21)
 [Full Changelog](https://github.com/Jawbone/JBChartView/compare/v2.8.16...v2.8.17)
 
