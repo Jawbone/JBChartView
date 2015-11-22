@@ -169,6 +169,9 @@ If value(s) are supplied, they must be >= 0, otherwise an assertion will be thro
 	
 The min/max values are clamped to the ceiling and floor of the actual min/max values of the chart's data source; for example, if a maximumValue of 20 is supplied & the chart's actual max is 100, then 100 will be used. For min/max modifications to take effect, reloadData must be called.
 
+## Performance
+
+The nature of charting is to display all available information, unlike a UITableView, which can cache rows that are offscreen. JBChartView's performance will suffer if the number of data points exceed the  resolution of the device. The same issue exists with MKMapVie, when hundreds of pins are supplied within a certain geographic area.  It's why Apple recommends clustering to avoid performance issues. As such, for large datasets, we recommend that your dataSource to supply a subset of points - perhaps 'clustering' those that are close to one another. 
 	
 ## License
 
