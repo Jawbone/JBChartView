@@ -110,7 +110,6 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView fillColorForLineAtLineIndex:(NSUInteger)lineIndex;
 - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView selectedFillColorForLineAtLineIndex:(NSUInteger)lineIndex;
 - (CGFloat)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView widthForLineAtLineIndex:(NSUInteger)lineIndex;
-- (CGFloat)paddingForLineChartLinesView:(JBLineChartLinesView *)lineChartLinesView;
 - (JBLineChartViewLineStyle)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView lineStyleForLineAtLineIndex:(NSUInteger)lineIndex;
 - (BOOL)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView smoothLineAtLineIndex:(NSUInteger)lineIndex;
 - (CGFloat)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView dimmedSelectionOpacityAtLineIndex:(NSUInteger)lineIndex;
@@ -142,7 +141,6 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 - (CGFloat)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView dotRadiusForLineAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
 - (UIView *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView dotViewAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
 - (BOOL)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView shouldHideDotViewOnSelectionAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
-- (CGFloat)paddingForLineChartDotsView:(JBLineChartDotsView *)lineChartDotsView;
 - (BOOL)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView showsDotsForLineAtLineIndex:(NSUInteger)lineIndex;
 
 @end
@@ -291,7 +289,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
                     rawHeight = 0; //set to 0 so we can calculate the x position
                 }
 
-                CGFloat normalizedHeight = [self normalizedHeightForRawHeight:rawHeight];
+                CGFloat normalizedHeight = [self padding] + [self normalizedHeightForRawHeight:rawHeight];
                 yOffset = mainViewRect.size.height - normalizedHeight;
                 
                 chartPoint.position = CGPointMake(xOffset, yOffset);
@@ -433,13 +431,15 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 {
     CGFloat minHeight = [self minimumValue];
     CGFloat maxHeight = [self maximumValue];
+	
+	CGFloat availableHeightWithPadding = [self availableHeight] - ([self padding] * 2);
 
     if ((maxHeight - minHeight) <= 0)
     {
-        return [self availableHeight];
+        return availableHeightWithPadding;
     }
 
-    return ((rawHeight - minHeight) / (maxHeight - minHeight)) * [self availableHeight];
+    return ((rawHeight - minHeight) / (maxHeight - minHeight)) * availableHeightWithPadding;
 }
 
 - (CGFloat)availableHeight
@@ -544,7 +544,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
             maxLineWidth = currentMaxLineWidth;
         }
     }
-    return ceil(maxLineWidth * 0.5);
+    return (maxLineWidth * 0.5);
 }
 
 - (NSUInteger)dataCount
@@ -614,11 +614,6 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         return [self.delegate lineChartView:self widthForLineAtLineIndex:lineIndex];
     }
     return kJBLineChartLinesViewStrokeWidth;
-}
-
-- (CGFloat)paddingForLineChartLinesView:(JBLineChartLinesView *)lineChartLinesView
-{
-    return [self padding];
 }
 
 - (JBLineChartViewLineStyle)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView lineStyleForLineAtLineIndex:(NSUInteger)lineIndex
@@ -707,11 +702,6 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         return [self.dataSource lineChartView:self shouldHideDotViewOnSelectionAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
     }
     return NO;
-}
-
-- (CGFloat)paddingForLineChartDotsView:(JBLineChartDotsView *)lineChartDotsView
-{
-    return [self padding];
 }
 
 - (BOOL)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView showsDotsForLineAtLineIndex:(NSUInteger)lineIndex
@@ -1038,7 +1028,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         self.verticalSelectionView.bgColor = verticalSelectionColor;
     }
     
-    CGFloat xOffset = fmin(self.bounds.size.width - self.verticalSelectionView.frame.size.width, fmax(0, touchPoint.x - (ceil(self.verticalSelectionView.frame.size.width * 0.5))));
+    CGFloat xOffset = fmin(self.bounds.size.width - self.verticalSelectionView.frame.size.width, fmax(0, touchPoint.x - (self.verticalSelectionView.frame.size.width * 0.5)));
     CGFloat yOffset = self.headerView.frame.size.height + self.headerPadding;
     
     if ([self.dataSource respondsToSelector:@selector(shouldExtendSelectionViewIntoHeaderPaddingForChartView:)])
@@ -1219,9 +1209,6 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 
     NSAssert([self.delegate respondsToSelector:@selector(chartDataForLineChartLinesView:)], @"JBLineChartLinesView // delegate must implement - (NSArray *)chartDataForLineChartLinesView:(JBLineChartLinesView *)lineChartLinesView");
     NSArray *chartData = [self.delegate chartDataForLineChartLinesView:self];
-
-    NSAssert([self.delegate respondsToSelector:@selector(paddingForLineChartLinesView:)], @"JBLineChartLinesView // delegate must implement - (CGFloat)paddingForLineChartLinesView:(JBLineChartLinesView *)lineChartLinesView");
-    CGFloat padding = [self.delegate paddingForLineChartLinesView:self];
     
     NSUInteger lineIndex = 0;
     for (NSArray *lineData in chartData)
@@ -1256,7 +1243,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 
             if (!visiblePointFound)
             {
-                [path moveToPoint:CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - padding, fmax(padding, lineChartPoint.position.y)))];
+                [path moveToPoint:CGPointMake(lineChartPoint.position.x, lineChartPoint.position.y)];
                 firstXPosition = lineChartPoint.position.x;
 				firstYPosition = lineChartPoint.position.y;
                 visiblePointFound = YES;
@@ -1284,11 +1271,11 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
                     CGPoint controlPoint1 = CGPointMake(controlPointX, previousLineChartPoint.position.y);
                     CGPoint controlPoint2 = CGPointMake(controlPointX, lineChartPoint.position.y);
                     
-                    [path addCurveToPoint:CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - padding, fmax(padding, lineChartPoint.position.y))) controlPoint1:controlPoint1 controlPoint2:controlPoint2];
+                    [path addCurveToPoint:CGPointMake(lineChartPoint.position.x, lineChartPoint.position.y) controlPoint1:controlPoint1 controlPoint2:controlPoint2];
                 }
                 else
                 {
-                    [path addLineToPoint:CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - padding, fmax(padding, lineChartPoint.position.y)))];
+                    [path addLineToPoint:CGPointMake(lineChartPoint.position.x, lineChartPoint.position.y)];
                 }
                 
                 lastXPosition = lineChartPoint.position.x;
@@ -1347,11 +1334,11 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
         
         if(visiblePointFound)
         {
-            [fillPath addLineToPoint:CGPointMake(lastXPosition + ceil(padding * 0.5), lastYPosition)];
-			[fillPath addLineToPoint:CGPointMake(lastXPosition + ceil(padding * 0.5), self.bounds.size.height)];
+            [fillPath addLineToPoint:CGPointMake(lastXPosition, lastYPosition)];
+			[fillPath addLineToPoint:CGPointMake(lastXPosition, self.bounds.size.height)];
 			
-            [fillPath addLineToPoint:CGPointMake(firstXPosition - ceil(padding * 0.5), self.bounds.size.height)];
-			[fillPath addLineToPoint:CGPointMake(firstXPosition - ceil(padding * 0.5), firstYPosition)];
+            [fillPath addLineToPoint:CGPointMake(firstXPosition, self.bounds.size.height)];
+			[fillPath addLineToPoint:CGPointMake(firstXPosition, firstYPosition)];
         }
 
         shapeFillLayer.path = fillPath.CGPath;
@@ -1513,10 +1500,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
     
     NSAssert([self.delegate respondsToSelector:@selector(chartDataForLineChartDotsView:)], @"JBLineChartDotsView // delegate must implement - (NSArray *)chartDataForLineChartDotsView:(JBLineChartDotsView *)lineChartDotsView");
     NSArray *chartData = [self.delegate chartDataForLineChartDotsView:self];
-
-    NSAssert([self.delegate respondsToSelector:@selector(paddingForLineChartDotsView:)], @"JBLineChartDotsView // delegate must implement - (CGFloat)paddingForLineChartDotsView:(JBLineChartDotsView *)lineChartDotsView");
-    CGFloat padding = [self.delegate paddingForLineChartDotsView:self];
-    
+	
     NSUInteger lineIndex = 0;
     NSMutableDictionary *mutableDotViewsDict = [NSMutableDictionary dictionary];
     for (NSArray *lineData in chartData)
@@ -1550,7 +1534,7 @@ static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
                     currentDotView.backgroundColor = [self.delegate lineChartDotsView:self colorForDotAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
                 }
 
-                currentDotView.center = CGPointMake(lineChartPoint.position.x, fmin(self.bounds.size.height - padding, fmax(padding, lineChartPoint.position.y)));
+                currentDotView.center = CGPointMake(lineChartPoint.position.x, lineChartPoint.position.y);
                 [mutableDotViews addObject:currentDotView];
                 [self addSubview:currentDotView];
 
