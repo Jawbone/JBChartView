@@ -1,5 +1,12 @@
 # Change Log
 
+## [v2.8.19](https://github.com/Jawbone/JBChartView/tree/v2.8.19) (2015-11-23)
+[Full Changelog](https://github.com/Jawbone/JBChartView/compare/v2.8.18...v2.8.19)
+
+**Fixed bugs:**
+
+- Straight lines [\#94](https://github.com/Jawbone/JBChartView/issues/94)
+
 ## [v2.8.18](https://github.com/Jawbone/JBChartView/tree/v2.8.18) (2015-11-22)
 [Full Changelog](https://github.com/Jawbone/JBChartView/compare/v2.8.17...v2.8.18)
 
