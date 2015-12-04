@@ -1532,7 +1532,7 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
                         unselectedGradient.frame = layer.frame;
                         unselectedGradient.mask = layer.mask;
 						NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:dimmedSelectionOpacityAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (CGFloat)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView dimmedSelectionOpacityAtLineIndex:(NSUInteger)lineIndex");
-						((JBLineLayer *)layer).opacity = (weakSelf.selectedLineIndex == kJBLineChartLinesViewUnselectedLineIndex) ? 1.0f : [self.delegate lineChartLinesView:self dimmedSelectionOpacityAtLineIndex:((JBLineLayer *)layer).tag];
+						((JBLineLayer *)layer).opacity = (weakSelf.selectedLineIndex == kJBLineChartLinesViewUnselectedLineIndex) ? 1.0f : [self.delegate lineChartLinesView:self dimmedSelectionOpacityAtLineIndex:lineLayer.tag];
                         [layersToReplace addObject:@{oldLayerKey: layer, newLayerKey: unselectedGradient}];
                     }
                 }
@@ -1555,7 +1555,7 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
                         unselectedFillGradient.frame = layer.frame;
                         unselectedFillGradient.mask = layer.mask;						
 						NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:dimmedSelectionOpacityAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (CGFloat)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView dimmedSelectionOpacityAtLineIndex:(NSUInteger)lineIndex");
-						unselectedFillGradient.opacity = (weakSelf.selectedLineIndex == kJBLineChartLinesViewUnselectedLineIndex) ? 1.0f : [self.delegate lineChartLinesView:self dimmedSelectionOpacityAtLineIndex:((JBLineLayer *)layer).tag];
+						unselectedFillGradient.opacity = (weakSelf.selectedLineIndex == kJBLineChartLinesViewUnselectedLineIndex) ? 1.0f : [self.delegate lineChartLinesView:self dimmedSelectionOpacityAtLineIndex:fillLayer.tag];
                         [layersToReplace addObject:@{oldLayerKey: layer, newLayerKey: unselectedFillGradient}];
                     }
                 }
