@@ -23,8 +23,8 @@ CGFloat static const kJBLineChartLinesViewStrokeWidth = 5.0;
 CGFloat static const kJBLineChartLinesViewMiterLimit = -5.0;
 CGFloat static const kJBLineChartLinesViewDefaultLinePhase = 1.0f;
 CGFloat static const kJBLineChartLinesViewDefaultDimmedOpacity = 0.20f;
-NSInteger static const kJBLineChartLinesViewUnselectedLineIndex = -1;
 CGFloat static const kJBLineChartLinesViewSmoothThresholdSlope = 0.01f;
+NSInteger static const kJBLineChartLinesViewUnselectedLineIndex = -1;
 NSInteger static const kJBLineChartLinesViewSmoothThresholdVertical = 1;
 
 // Numerics (JBLineChartDotsView)
@@ -35,10 +35,12 @@ NSInteger static const kJBLineChartDotsViewUnselectedLineIndex = -1;
 CGFloat static const kJBLineSelectionViewWidth = 20.0f;
 
 // Numerics (JBLineChartView)
-CGFloat static const kJBBarChartViewUndefinedCachedHeight = -1.0f;
+CGFloat static const kJBLineChartViewUndefinedCachedHeight = -1.0f;
 CGFloat static const kJBLineChartViewStateAnimationDuration = 0.25f;
 CGFloat static const kJBLineChartViewStateAnimationDelay = 0.05f;
 CGFloat static const kJBLineChartViewStateBounceOffset = 15.0f;
+CGFloat static const kJBLineChartViewDefaultStartPoint = 0.0;
+CGFloat static const kJBLineChartViewDefaultEndPoint = 1.0;
 NSInteger static const kJBLineChartUnselectedLineIndex = -1;
 
 // Collections (JBLineChartLineView)
@@ -51,10 +53,6 @@ static UIColor *kJBLineChartViewDefaultLineSelectionColor = nil;
 static UIColor *kJBLineChartViewDefaultLineSelectionFillColor = nil;
 static UIColor *kJBLineChartViewDefaultDotColor = nil;
 static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
-
-// Gradients (JBLineChartView)
-static CGFloat kJBLineChartViewDefaultStartPoint = 0.0;
-static CGFloat kJBLineChartViewDefaultEndPoint = 1.0;
 static UIColor *kJBLineChartViewDefaultGradientStartColor = nil;
 static UIColor *kJBLineChartViewDefaultGradientEndColor = nil;
 static UIColor *kJBLineChartViewDefaultGradientFillStartColor = nil;
@@ -63,6 +61,7 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionStartColor = nil;
 static UIColor *kJBLineChartViewDefaultGradientSelectionEndColor = nil;
 static UIColor *kJBLineChartViewDefaultGradientSelectionFillStartColor = nil;
 static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
+
 
 @interface JBChartView (Private)
 
@@ -264,8 +263,8 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 {
     _showsVerticalSelection = YES;
     _showsLineSelection = YES;
-    _cachedMinHeight = kJBBarChartViewUndefinedCachedHeight;
-    _cachedMaxHeight = kJBBarChartViewUndefinedCachedHeight;
+    _cachedMinHeight = kJBLineChartViewUndefinedCachedHeight;
+    _cachedMaxHeight = kJBLineChartViewUndefinedCachedHeight;
 }
 
 #pragma mark - Data
@@ -273,8 +272,8 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 - (void)reloadData
 {
     // Reset cached max height
-    self.cachedMinHeight = kJBBarChartViewUndefinedCachedHeight;
-    self.cachedMaxHeight = kJBBarChartViewUndefinedCachedHeight;
+    self.cachedMinHeight = kJBLineChartViewUndefinedCachedHeight;
+    self.cachedMaxHeight = kJBLineChartViewUndefinedCachedHeight;
     
     // Padding
     CGFloat chartPadding = [self padding];
@@ -617,17 +616,23 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 
 - (CAGradientLayer *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView gradientForLineAtLineIndex:(NSUInteger)lineIndex
 {
-    if ([self.delegate respondsToSelector:@selector(lineChartView:gradientForLineAtLineIndex:)]) {
+    if ([self.delegate respondsToSelector:@selector(lineChartView:gradientForLineAtLineIndex:)])
+	{
         return [self.delegate lineChartView:self gradientForLineAtLineIndex:lineIndex];
     }
-    CAGradientLayer *gradient = [self defaultGradientLayer];
+	
+	// Default gradient
+    CAGradientLayer *gradient = [CAGradientLayer new];
+	gradient.startPoint = CGPointMake(kJBLineChartViewDefaultStartPoint, kJBLineChartViewDefaultStartPoint);
+	gradient.endPoint = CGPointMake(kJBLineChartViewDefaultEndPoint, kJBLineChartViewDefaultEndPoint);
     gradient.colors = @[(id)kJBLineChartViewDefaultGradientStartColor.CGColor, (id)kJBLineChartViewDefaultGradientEndColor.CGColor];
     return gradient;
 }
 
 - (CAGradientLayer *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView selectionGradientForLineAtLineIndex:(NSUInteger)lineIndex
 {
-    if ([self.delegate respondsToSelector:@selector(lineChartView:selectionGradientForLineAtLineIndex:)]) {
+    if ([self.delegate respondsToSelector:@selector(lineChartView:selectionGradientForLineAtLineIndex:)])
+	{
         return [self.delegate lineChartView:self selectionGradientForLineAtLineIndex:lineIndex];
     }
     return [self.delegate lineChartView:self gradientForLineAtLineIndex:lineIndex];
@@ -653,26 +658,26 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 
 - (CAGradientLayer *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView fillGradientForLineAtLineIndex:(NSUInteger)lineIndex
 {
-    if ([self.delegate respondsToSelector:@selector(lineChartView:fillGradientForLineAtLineIndex:)]) {
+    if ([self.delegate respondsToSelector:@selector(lineChartView:fillGradientForLineAtLineIndex:)])
+	{
         return [self.delegate lineChartView:self fillGradientForLineAtLineIndex:lineIndex];
     }
-    CAGradientLayer *gradient = [self defaultGradientLayer];
+	
+	// Default gradient
+	CAGradientLayer *gradient = [CAGradientLayer new];
+	gradient.startPoint = CGPointMake(kJBLineChartViewDefaultStartPoint, kJBLineChartViewDefaultStartPoint);
+	gradient.endPoint = CGPointMake(kJBLineChartViewDefaultEndPoint, kJBLineChartViewDefaultEndPoint);
     gradient.colors = @[(id)kJBLineChartViewDefaultGradientFillStartColor.CGColor, (id)kJBLineChartViewDefaultGradientFillEndColor.CGColor];
     return gradient;
 }
 
-- (CAGradientLayer *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView selectionFillGradientForLineAtLineIndex:(NSUInteger)lineIndex {
-    if ([self.delegate respondsToSelector:@selector(lineChartView:selectionFillGradientForLineAtLineIndex:)]) {
+- (CAGradientLayer *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView selectionFillGradientForLineAtLineIndex:(NSUInteger)lineIndex
+{
+    if ([self.delegate respondsToSelector:@selector(lineChartView:selectionFillGradientForLineAtLineIndex:)])
+	{
         return [self.delegate lineChartView:self selectionFillGradientForLineAtLineIndex:lineIndex];
     }
     return [self.delegate lineChartView:self fillGradientForLineAtLineIndex:lineIndex];
-}
-
-- (CAGradientLayer *)defaultGradientLayer {
-    CAGradientLayer *gradient = [CAGradientLayer new];
-    gradient.startPoint = CGPointMake(kJBLineChartViewDefaultStartPoint, kJBLineChartViewDefaultStartPoint);
-    gradient.endPoint = CGPointMake(kJBLineChartViewDefaultEndPoint, kJBLineChartViewDefaultEndPoint);
-    return gradient;
 }
 
 - (CGFloat)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView widthForLineAtLineIndex:(NSUInteger)lineIndex
@@ -885,7 +890,7 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 
 - (CGFloat)cachedMinHeight
 {
-    if (_cachedMinHeight == kJBBarChartViewUndefinedCachedHeight)
+    if (_cachedMinHeight == kJBLineChartViewUndefinedCachedHeight)
     {
         CGFloat minHeight = FLT_MAX;
         NSAssert([self.dataSource respondsToSelector:@selector(numberOfLinesInLineChartView:)], @"JBLineChartView // dataSource must implement - (NSUInteger)numberOfLinesInLineChartView:(JBLineChartView *)lineChartView");
@@ -912,7 +917,7 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 
 - (CGFloat)cachedMaxHeight
 {
-    if (_cachedMaxHeight == kJBBarChartViewUndefinedCachedHeight)
+    if (_cachedMaxHeight == kJBLineChartViewUndefinedCachedHeight)
     {
         CGFloat maxHeight = 0;
         NSAssert([self.dataSource respondsToSelector:@selector(numberOfLinesInLineChartView:)], @"JBLineChartView // dataSource must implement - (NSUInteger)numberOfLinesInLineChartView:(JBLineChartView *)lineChartView");
@@ -1526,7 +1531,8 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
                         CAGradientLayer *unselectedGradient = [self.delegate lineChartLinesView:self gradientForLineAtLineIndex:lineLayer.tag];
                         unselectedGradient.frame = layer.frame;
                         unselectedGradient.mask = layer.mask;
-                        unselectedGradient.opacity = (weakSelf.selectedLineIndex == kJBLineChartLinesViewUnselectedLineIndex) ? 1.0f : kJBLineChartLinesViewDefaultDimmedOpacity;
+						NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:dimmedSelectionOpacityAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (CGFloat)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView dimmedSelectionOpacityAtLineIndex:(NSUInteger)lineIndex");
+						((JBLineLayer *)layer).opacity = (weakSelf.selectedLineIndex == kJBLineChartLinesViewUnselectedLineIndex) ? 1.0f : [self.delegate lineChartLinesView:self dimmedSelectionOpacityAtLineIndex:((JBLineLayer *)layer).tag];
                         [layersToReplace addObject:@{oldLayerKey: layer, newLayerKey: unselectedGradient}];
                     }
                 }
@@ -1547,14 +1553,17 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
                         NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:fillGradientForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (CAGradientLayer *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView fillGradientForLineAtLineIndex:(NSUInteger)lineIndex");
                         CAGradientLayer *unselectedFillGradient = [self.delegate lineChartLinesView:self fillGradientForLineAtLineIndex:fillLayer.tag];
                         unselectedFillGradient.frame = layer.frame;
-                        unselectedFillGradient.mask = layer.mask;
-                        unselectedFillGradient.opacity = (weakSelf.selectedLineIndex == kJBLineChartLinesViewUnselectedLineIndex) ? 1.0f : kJBLineChartLinesViewDefaultDimmedOpacity;
+                        unselectedFillGradient.mask = layer.mask;						
+						NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:dimmedSelectionOpacityAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (CGFloat)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView dimmedSelectionOpacityAtLineIndex:(NSUInteger)lineIndex");
+						unselectedFillGradient.opacity = (weakSelf.selectedLineIndex == kJBLineChartLinesViewUnselectedLineIndex) ? 1.0f : [self.delegate lineChartLinesView:self dimmedSelectionOpacityAtLineIndex:((JBLineLayer *)layer).tag];
                         [layersToReplace addObject:@{oldLayerKey: layer, newLayerKey: unselectedFillGradient}];
                     }
                 }
             }
         }
-        for (NSDictionary *layerPair in layersToReplace) {
+		
+		for (NSDictionary *layerPair in layersToReplace)
+		{
             [weakSelf.layer replaceSublayer:layerPair[oldLayerKey] with:layerPair[newLayerKey]];
         }
     };

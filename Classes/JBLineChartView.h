@@ -92,6 +92,7 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineColorStyle){
 /**
  *  Returns the opacity value to be used for dimming the line & fill during selection events.
  *  This value is applied to the line or fill's opacity anytime it's not selected (but another line is).
+ *  This applies to both solid and gradient line styles.
  *
  *  Default: 0.2.
  *
@@ -189,7 +190,6 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineColorStyle){
 
 /**
  *  Returns the color of particular line at lineIndex within the chart.
- *  When used together with lineChartView:gradientForLineAtIndex: the line color controls the alpha of the gradient.
  *
  *  Default: black color.
  *
@@ -202,7 +202,6 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineColorStyle){
 
 /**
  *  Returns the gradient layer to be used for a particular line at lineIndex within the chart.
- *  Alpha of gradient is controlled by the color returned from lineChartView:colorForLineAtLineIndex:
  *
  *  Default: black to light gray.
  *
@@ -215,7 +214,6 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineColorStyle){
 
 /**
  *  Returns the fill color of particular line at lineIndex within the chart.
- *  When used together with lineChartView:fillGradientForLineAtIndex: the fill color controls the alpha of the gradient.
  *
  *  Default: clear color.
  *
@@ -228,7 +226,6 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineColorStyle){
 
 /**
  *  Returns the gradient layer to be used for a fill of a particular line at lineIndex within the chart.
- *  Alpha of gradient is controlled by the color returned from lineChartView:fillColorForLineAtLineIndex:
  *
  *  Default: white to light gray.
  *

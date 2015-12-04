@@ -240,24 +240,41 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
     return (lineIndex == JBLineChartLineSolid) ? kJBColorLineChartDefaultSolidLineColor: kJBColorLineChartDefaultDashedLineColor;
 }
 
-- (UIColor *)lineChartView:(JBLineChartView *)lineChartView fillColorForLineAtLineIndex:(NSUInteger)lineIndex {
+- (UIColor *)lineChartView:(JBLineChartView *)lineChartView fillColorForLineAtLineIndex:(NSUInteger)lineIndex
+{
     return (lineIndex == JBLineChartLineSolid) ? kJBColorLineChartDefaultSolidFillColor : kJBColorLineChartDefaultDashedFillColor;
 }
 
-- (CAGradientLayer *)lineChartView:(JBLineChartView *)lineChartView gradientForLineAtLineIndex:(NSUInteger)lineIndex {
-    return (lineIndex == JBLineChartLineSolid) ? nil : [self exampleGradient];
+- (CAGradientLayer *)lineChartView:(JBLineChartView *)lineChartView gradientForLineAtLineIndex:(NSUInteger)lineIndex
+{
+	if (lineIndex == JBLineChartLineSolid)
+	{
+		return nil;
+	}
+	else
+	{
+		CAGradientLayer *gradient = [CAGradientLayer new];
+		gradient.startPoint = CGPointMake(0.0, 0.0);
+		gradient.endPoint = CGPointMake(1.0, 0.0);
+		gradient.colors = @[(id)kJBColorLineChartDefaultGradientStartColor.CGColor, (id)kJBColorLineChartDefaultGradientEndColor.CGColor];
+		return gradient;
+	}
 }
 
-- (CAGradientLayer *)lineChartView:(JBLineChartView *)lineChartView fillGradientForLineAtLineIndex:(NSUInteger)lineIndex {
-    return (lineIndex == JBLineChartLineSolid) ? nil : [self exampleGradient];
-}
-
-- (CAGradientLayer *)exampleGradient {
-    CAGradientLayer *gradient = [CAGradientLayer new];
-    gradient.startPoint = CGPointMake(0.0, 0.0);
-    gradient.endPoint = CGPointMake(1.0, 0.0);
-    gradient.colors = @[(id)kJBColorLineChartDefaultGradientStartColor.CGColor, (id)kJBColorLineChartDefaultGradientEndColor.CGColor];
-    return gradient;
+- (CAGradientLayer *)lineChartView:(JBLineChartView *)lineChartView fillGradientForLineAtLineIndex:(NSUInteger)lineIndex
+{
+	if (lineIndex == JBLineChartLineSolid)
+	{
+		return nil;
+	}
+	else
+	{
+		CAGradientLayer *gradient = [CAGradientLayer new];
+		gradient.startPoint = CGPointMake(0.0, 0.0);
+		gradient.endPoint = CGPointMake(1.0, 0.0);
+		gradient.colors = @[(id)kJBColorLineChartDefaultFillGradientStartColor.CGColor, (id)kJBColorLineChartDefaultFillGradientEndColor.CGColor];
+		return gradient;
+	}	
 }
 
 - (UIColor *)lineChartView:(JBLineChartView *)lineChartView colorForDotAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex

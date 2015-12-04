@@ -35,6 +35,8 @@
 #define kJBColorLineChartDefaultDashedFillColor [UIColor colorWithWhite:1.0 alpha:0.3]
 #define kJBColorLineChartDefaultGradientStartColor UIColorFromHex(0x0000FF)
 #define kJBColorLineChartDefaultGradientEndColor UIColorFromHex(0x00FF00)
+#define kJBColorLineChartDefaultFillGradientStartColor UIColorFromHex(0xFFFFFF)
+#define kJBColorLineChartDefaultFillGradientEndColor UIColorFromHex(0xbe0000)
 
 #define mark - Area Chart
 
