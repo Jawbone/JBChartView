@@ -198,38 +198,48 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
         NSMutableArray *mutableCachedBarViewHeights = [NSMutableArray array];
         for (NSNumber *key in [[self.chartDataDictionary allKeys] sortedArrayUsingSelector:@selector(compare:)])
         {
-            UIView *barView = nil; // since all bars are visible at once, no need to cache this view
-            if ([self.dataSource respondsToSelector:@selector(barChartView:barViewAtIndex:)])
-            {
-                barView = [self.dataSource barChartView:self barViewAtIndex:index];
-                NSAssert(barView != nil, @"JBBarChartView // datasource function - (UIView *)barChartView:(JBBarChartView *)barChartView barViewAtIndex:(NSUInteger)index must return a non-nil UIView subclass");
-            }
-            else
-            {
-                if ([self.delegate respondsToSelector:@selector(barChartView:colorForBarViewAtIndex:)])
-                {
-					barView = [[UIView alloc] init];
-                    UIColor *backgroundColor = [self.delegate barChartView:self colorForBarViewAtIndex:index];
-                    NSAssert(backgroundColor != nil, @"JBBarChartView // delegate function - (UIColor *)barChartView:(JBBarChartView *)barChartView colorForBarViewAtIndex:(NSUInteger)index must return a non-nil UIColor");
-					barView.backgroundColor = backgroundColor;
-
-                }
-				else if ([self.delegate respondsToSelector:@selector(barGradientForBarChartView:)])
+			UIView *barView = nil;
+			{
+				// Custom bar
+				if ([self.dataSource respondsToSelector:@selector(barChartView:barViewAtIndex:)])
 				{
-					barView = [[JBGradientBarView alloc] init];
-					((JBGradientBarView *)barView).delegate = self;
-					CAGradientLayer *gradientLayer = [self.delegate barGradientForBarChartView:self];
-					NSAssert(gradientLayer != nil, @"JBBarChartView // delegate function- (CAGradientLayer *)barGradientForBarChartView:(JBBarChartView *)barChartView must return a non-nil CAGradientLayer");
-					((JBGradientBarView *)barView).gradientLayer = gradientLayer;
-					
+					UIView *customBarView = [self.dataSource barChartView:self barViewAtIndex:index];
+					if (customBarView != nil)
+					{
+						barView = customBarView;
+					}
 				}
-                else
-                {
+				
+				// Color bar
+				if ([self.delegate respondsToSelector:@selector(barChartView:colorForBarViewAtIndex:)] && barView == nil)
+				{
+					UIColor *backgroundColor = [self.delegate barChartView:self colorForBarViewAtIndex:index];
+					if (backgroundColor != nil)
+					{
+						barView = [[UIView alloc] init];
+						barView.backgroundColor = backgroundColor;
+					}
+				}
+				
+				// Gradient
+				if ([self.delegate respondsToSelector:@selector(barGradientForBarChartView:)] && barView == nil)
+				{
+					CAGradientLayer *gradientLayer = [self.delegate barGradientForBarChartView:self];
+					if (gradientLayer != nil)
+					{
+						barView = [[JBGradientBarView alloc] init];
+						((JBGradientBarView *)barView).delegate = self;
+						((JBGradientBarView *)barView).gradientLayer = gradientLayer;
+					}
+				}
+				
+				// Default
+				if (barView == nil)
+				{
 					barView = [[UIView alloc] init];
 					barView.backgroundColor = kJBBarChartViewDefaultBarColor;
-                }
-            }
-            
+				}
+			}
             barView.tag = index;
 			
             // Add new bar
