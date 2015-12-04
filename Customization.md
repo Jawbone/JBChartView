@@ -32,6 +32,10 @@ By default, a chart's bars will be black and flat. They can be customized by sup
 If you don't require a custom UIView, simply supply a color for the bar instead:
 
 	- (UIColor *)barChartView:(JBBarChartView *)barChartView colorForBarViewAtIndex:(NSUInteger)index;
+	
+If a solid color isn't your cup of tea, you can expose a gradient to be applied across the entire chart:
+
+	- (CAGradientLayer *)barGradientForBarChartView:(JBBarChartView *)barChartView;
 
 Furthermore, the color of the selection bar (on touch events) can be customized via the <i>optional</i> protocol:
 
@@ -39,6 +43,8 @@ Furthermore, the color of the selection bar (on touch events) can be customized 
 	{
 		return ...; // color of selection view
 	}
+	
+<b>Note</b>: The delegate will request a custom UIView, followed by a color and lastly a gradient. If nothing is supplied, a plain black bar will be used.
 	
 Lastly, a bar chart's selection events are delegated back via:
 
