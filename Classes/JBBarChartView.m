@@ -25,7 +25,27 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 @end
 
-@interface JBBarChartView ()
+@protocol JBGradientBarViewDelegate;
+
+@interface JBGradientBarView: UIView
+
+@property (nonatomic, strong) CAGradientLayer *gradientLayer;
+@property (nonatomic, weak) id<JBGradientBarViewDelegate> delegate;
+
+// Initialization
+- (void)construct;
+
+@end
+
+@protocol JBGradientBarViewDelegate <NSObject>
+
+@optional
+
+- (CGRect)chartViewBoundsForGradientBarView:(JBGradientBarView *)gradientBarView;
+
+@end
+
+@interface JBBarChartView () <JBGradientBarViewDelegate>
 
 @property (nonatomic, strong) NSDictionary *chartDataDictionary; // key = column, value = height
 @property (nonatomic, strong) NSArray *barViews;
@@ -178,36 +198,49 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
         NSMutableArray *mutableCachedBarViewHeights = [NSMutableArray array];
         for (NSNumber *key in [[self.chartDataDictionary allKeys] sortedArrayUsingSelector:@selector(compare:)])
         {
-            UIView *barView = nil; // since all bars are visible at once, no need to cache this view
-            if ([self.dataSource respondsToSelector:@selector(barChartView:barViewAtIndex:)])
-            {
-                barView = [self.dataSource barChartView:self barViewAtIndex:index];
-                NSAssert(barView != nil, @"JBBarChartView // datasource function - (UIView *)barChartView:(JBBarChartView *)barChartView barViewAtIndex:(NSUInteger)index must return a non-nil UIView subclass");
-            }
-            else
-            {
-                barView = [[UIView alloc] init];
-                UIColor *backgroundColor = nil;
-
-                if ([self.delegate respondsToSelector:@selector(barChartView:colorForBarViewAtIndex:)])
-                {
-                    backgroundColor = [self.delegate barChartView:self colorForBarViewAtIndex:index];
-                    NSAssert(backgroundColor != nil, @"JBBarChartView // delegate function - (UIColor *)barChartView:(JBBarChartView *)barChartView colorForBarViewAtIndex:(NSUInteger)index must return a non-nil UIColor");
-                }
-                else
-                {
-                    backgroundColor = kJBBarChartViewDefaultBarColor;
-                }
-
-                barView.backgroundColor = backgroundColor;
-            }
-            
+			UIView *barView = nil;
+			{
+				// Custom bar
+				if ([self.dataSource respondsToSelector:@selector(barChartView:barViewAtIndex:)])
+				{
+					UIView *customBarView = [self.dataSource barChartView:self barViewAtIndex:index];
+					if (customBarView != nil)
+					{
+						barView = customBarView;
+					}
+				}
+				
+				// Color bar
+				if ([self.delegate respondsToSelector:@selector(barChartView:colorForBarViewAtIndex:)] && barView == nil)
+				{
+					UIColor *backgroundColor = [self.delegate barChartView:self colorForBarViewAtIndex:index];
+					if (backgroundColor != nil)
+					{
+						barView = [[UIView alloc] init];
+						barView.backgroundColor = backgroundColor;
+					}
+				}
+				
+				// Gradient
+				if ([self.delegate respondsToSelector:@selector(barGradientForBarChartView:)] && barView == nil)
+				{
+					CAGradientLayer *gradientLayer = [self.delegate barGradientForBarChartView:self];
+					if (gradientLayer != nil)
+					{
+						barView = [[JBGradientBarView alloc] init];
+						((JBGradientBarView *)barView).delegate = self;
+						((JBGradientBarView *)barView).gradientLayer = gradientLayer;
+					}
+				}
+				
+				// Default
+				if (barView == nil)
+				{
+					barView = [[UIView alloc] init];
+					barView.backgroundColor = kJBBarChartViewDefaultBarColor;
+				}
+			}
             barView.tag = index;
-
-            CGFloat height = [self normalizedHeightForRawHeight:[self.chartDataDictionary objectForKey:key]];
-            barView.frame = CGRectMake(xOffset, self.bounds.size.height - height - self.footerView.frame.size.height, [self barWidth], height);
-            [mutableBarViews addObject:barView];
-            [mutableCachedBarViewHeights addObject:[NSNumber numberWithFloat:height]];
 			
             // Add new bar
             if (self.footerView)
@@ -218,7 +251,12 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 			{
 				[self addSubview:barView];
 			}
-            
+			
+			CGFloat height = [self normalizedHeightForRawHeight:[self.chartDataDictionary objectForKey:key]];
+			barView.frame = CGRectMake(xOffset, self.bounds.size.height - height - self.footerView.frame.size.height, [self barWidth], height);
+			[mutableBarViews addObject:barView];
+			[mutableCachedBarViewHeights addObject:[NSNumber numberWithFloat:height]];
+			
             xOffset += ([self barWidth] + self.barPadding);
             index++;
         }
@@ -641,6 +679,78 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [self touchesEndedOrCancelledWithTouches:touches];
+}
+
+#pragma mark - JBGradientBarViewDelegate
+
+- (CGRect)chartViewBoundsForGradientBarView:(JBGradientBarView *)gradientBarView
+{
+	return self.bounds;
+}
+
+@end
+
+@implementation JBGradientBarView
+
+#pragma mark - Alloc/Init
+
+- (instancetype)init
+{
+	self = [super init];
+	if (self)
+	{
+		[self construct];
+	}
+	return self;
+}
+
+- (instancetype)initWithFrame:(CGRect)frame
+{
+	self = [super initWithFrame:frame];
+	if (self)
+	{
+		[self construct];
+	}
+	return self;
+}
+
+#pragma mark - Setters
+
+- (void)setGradientLayer:(CAGradientLayer *)gradientLayer
+{
+	if (_gradientLayer != nil)
+	{
+		[_gradientLayer removeFromSuperlayer];
+		_gradientLayer = nil;
+	}
+	
+	_gradientLayer = gradientLayer;
+	_gradientLayer.masksToBounds = YES;
+	[self.layer insertSublayer:_gradientLayer atIndex:0];
+}
+
+#pragma mark - Construction
+
+- (void)construct
+{
+	self.clipsToBounds = YES;
+}
+
+#pragma mark - Setters
+
+- (void)setFrame:(CGRect)frame
+{
+	[super setFrame:frame];
+	
+	if ([self.delegate respondsToSelector:@selector(chartViewBoundsForGradientBarView:)])
+	{
+		_gradientLayer.frame = [self.delegate chartViewBoundsForGradientBarView:self]; // gradient is as large as the chart
+		_gradientLayer.frame = CGRectOffset(_gradientLayer.frame, -CGRectGetMinX(frame), 0);
+	}
+	else
+	{
+		_gradientLayer.frame = self.bounds;
+	}
 }
 
 @end

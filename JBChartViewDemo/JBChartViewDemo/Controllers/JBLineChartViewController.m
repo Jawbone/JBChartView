@@ -240,6 +240,43 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
     return (lineIndex == JBLineChartLineSolid) ? kJBColorLineChartDefaultSolidLineColor: kJBColorLineChartDefaultDashedLineColor;
 }
 
+- (UIColor *)lineChartView:(JBLineChartView *)lineChartView fillColorForLineAtLineIndex:(NSUInteger)lineIndex
+{
+    return (lineIndex == JBLineChartLineSolid) ? kJBColorLineChartDefaultSolidFillColor : kJBColorLineChartDefaultDashedFillColor;
+}
+
+- (CAGradientLayer *)lineChartView:(JBLineChartView *)lineChartView gradientForLineAtLineIndex:(NSUInteger)lineIndex
+{
+	if (lineIndex == JBLineChartLineSolid)
+	{
+		return nil;
+	}
+	else
+	{
+		CAGradientLayer *gradient = [CAGradientLayer new];
+		gradient.startPoint = CGPointMake(0.0, 0.0);
+		gradient.endPoint = CGPointMake(1.0, 0.0);
+		gradient.colors = @[(id)kJBColorLineChartDefaultGradientStartColor.CGColor, (id)kJBColorLineChartDefaultGradientEndColor.CGColor];
+		return gradient;
+	}
+}
+
+- (CAGradientLayer *)lineChartView:(JBLineChartView *)lineChartView fillGradientForLineAtLineIndex:(NSUInteger)lineIndex
+{
+	if (lineIndex == JBLineChartLineSolid)
+	{
+		return nil;
+	}
+	else
+	{
+		CAGradientLayer *gradient = [CAGradientLayer new];
+		gradient.startPoint = CGPointMake(0.0, 0.0);
+		gradient.endPoint = CGPointMake(1.0, 0.0);
+		gradient.colors = @[(id)kJBColorLineChartDefaultFillGradientStartColor.CGColor, (id)kJBColorLineChartDefaultFillGradientEndColor.CGColor];
+		return gradient;
+	}	
+}
+
 - (UIColor *)lineChartView:(JBLineChartView *)lineChartView colorForDotAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex
 {
     return (lineIndex == JBLineChartLineSolid) ? kJBColorLineChartDefaultSolidLineColor: kJBColorLineChartDefaultDashedLineColor;
@@ -273,6 +310,11 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
 - (JBLineChartViewLineStyle)lineChartView:(JBLineChartView *)lineChartView lineStyleForLineAtLineIndex:(NSUInteger)lineIndex
 {
     return (lineIndex == JBLineChartLineSolid) ? JBLineChartViewLineStyleSolid : JBLineChartViewLineStyleDashed;
+}
+
+- (JBLineChartViewLineColorStyle)lineChartView:(JBLineChartView *)lineChartView lineColorStyleForLineAtLineIndex:(NSUInteger)lineIndex
+{
+    return (lineIndex == JBLineChartLineSolid) ? JBLineChartViewLineColorStyleSolid : JBLineChartViewLineColorStyleGradient;
 }
 
 #pragma mark - Buttons

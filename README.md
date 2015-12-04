@@ -43,7 +43,7 @@ Simply add the following line to your <code>Podfile</code>:
 	
 ### The Old School Way
 
-The simpliest way to use JBChartView with your application is to drag and drop the <i>/Classes</i> folder into you're Xcode 5 project. It's also recommended you rename the <i>/Classes</i> folder to something more descriptive (ie. "<i>Jawbone - JBChartView</i>").
+The simplest way to use JBChartView with your application is to drag and drop the <i>/Classes</i> folder into you're Xcode 5 project. It's also recommended you rename the <i>/Classes</i> folder to something more descriptive (ie. "<i>Jawbone - JBChartView</i>").
 
 <center>
 	<img src="https://raw.github.com/Jawbone/JBChartView/master/Screenshots/installation.png">
@@ -153,7 +153,7 @@ Lastly, ensure you have set the *frame* of your lineChartView & call *reloadData
 	
 ## Customization
 
-Both the line and bar charts support a robust set of customization options. Read more about them <a href="Customization.md">here</a>.  
+Both the line and bar charts support a robust set of customization options. Read more about them <a href="Customization.md">here</a>. 
 
 ## Minimum & Maximum Values
 
