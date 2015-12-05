@@ -1,5 +1,8 @@
 # Change Log
 
+## [v2.9.0](https://github.com/Jawbone/JBChartView/tree/v2.9.0) (2015-12-04)
+[Full Changelog](https://github.com/Jawbone/JBChartView/compare/v2.8.19...v2.9.0)
+
 ## [v2.8.19](https://github.com/Jawbone/JBChartView/tree/v2.8.19) (2015-11-23)
 [Full Changelog](https://github.com/Jawbone/JBChartView/compare/v2.8.18...v2.8.19)
 
@@ -69,6 +72,7 @@
 **Merged pull requests:**
 
 - Return the available height instead of 0 [\#183](https://github.com/Jawbone/JBChartView/pull/183) ([0xPr0xy](https://github.com/0xPr0xy))
+- Adds support for gradients to line charts [\#175](https://github.com/Jawbone/JBChartView/pull/175) ([benjaminsnorris](https://github.com/benjaminsnorris))
 
 ## [v2.8.14](https://github.com/Jawbone/JBChartView/tree/v2.8.14) (2015-04-30)
 [Full Changelog](https://github.com/Jawbone/JBChartView/compare/v2.8.13...v2.8.14)
