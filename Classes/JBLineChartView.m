@@ -165,8 +165,8 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 // Setters
 - (void)setSelectedLineIndex:(NSInteger)selectedLineIndex animated:(BOOL)animated;
 
-// Generators
-- (UIView *)createDotViewForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
+// Getters
+- (UIView *)dotViewForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
 
 @end
 
@@ -1575,7 +1575,7 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
             lineGradient.mask = shapeLayer;
             [self.layer addSublayer:lineGradient];
         }
-        else // shapeLayer.lineColorStyle == JBLineChartViewLineColorStyleSolid (default)
+		else if (shapeLayer.lineColorStyle == JBLineChartViewLineColorStyleSolid)
         {
             [self.layer addSublayer:shapeFillLayer];
             [self.layer addSublayer:shapeLayer];
@@ -1941,7 +1941,7 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 						continue;
 					}
 					
-					UIView *dotView = [self createDotViewForHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
+					UIView *dotView = [self dotViewForHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
 					dotView.center = CGPointMake(lineChartPoint.position.x, lineChartPoint.position.y);
 					[mutableDotViews addObject:dotView];
 					[self addSubview:dotView];
@@ -2037,9 +2037,9 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
     [self setSelectedLineIndex:selectedLineIndex animated:NO];
 }
 
-#pragma mark - Generators
+#pragma mark - Getters
 
-- (UIView *)createDotViewForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex
+- (UIView *)dotViewForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
 {
 	NSAssert([self.delegate respondsToSelector:@selector(lineChartDotsView:dotViewAtHorizontalIndex:atLineIndex:)], @"JBLineChartDotsView // delegate must implement - (UIView *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView dotViewAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
 	UIView *dotView = [self.delegate lineChartDotsView:self dotViewAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
