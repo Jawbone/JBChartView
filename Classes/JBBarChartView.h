@@ -143,20 +143,21 @@
 @property (nonatomic, assign, getter=isInverted) BOOL inverted;
 
 /*
- *  Reloads the chart with a custom animation.
- *  Reloading animated data is thread safe and can be executed any number of times in succession.
+ *  Reloads the bar chart with a custom animation.
+ *  Adding, removing or modifying existing bars will be animated (collapsing, expanding, etc) if animated = YES.
+ *  Reloading (animated) data is thread safe and can be executed any number of times in succession.
  *
  *  Default: a non-animated reload (via reloadData).
  */
 - (void)reloadDataAnimated:(BOOL)animated;
 
 /*
- *  When reloadDataAnimated: is called, the reloading bit is turned on.
- *  State changes during a reload will be ignored.
- *  Subsequent calls to reloadData: before a previous reload is complete, will also be ignored.
- *  Lastly, all touch events will be ignored until a reload has compelete. 
+ *  When reloadData or reloadDataAnimated: is called, the reloading bit is turned on.
+ *  State changes during a reload will be ignored. As well, subsequent calls to reloadData:
+ *  or reloadDataAnimated: before any previous reloads are complete, will also be ignored.
+ *  Lastly, all touch events will be ignored until a reload has compeleted.
  *
- *  Note: the above restrictions apply only to animated reloads, as non-animated reloads are synchronous. 
+ *  Note: the above restrictions apply only to animated reloads, as non-animated reloads are synchronous.
  *
  *  Default: NO.
  */

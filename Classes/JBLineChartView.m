@@ -24,10 +24,12 @@ CGFloat static const kJBLineChartLinesViewMiterLimit = -5.0;
 CGFloat static const kJBLineChartLinesViewDefaultLinePhase = 1.0f;
 CGFloat static const kJBLineChartLinesViewDefaultDimmedOpacity = 0.20f;
 CGFloat static const kJBLineChartLinesViewSmoothThresholdSlope = 0.01f;
-NSInteger static const kJBLineChartLinesViewUnselectedLineIndex = -1;
+CGFloat static const kJBLineChartLinesViewReloadDataAnimationDuration = 0.15f;
 NSInteger static const kJBLineChartLinesViewSmoothThresholdVertical = 1;
+NSInteger static const kJBLineChartLinesViewUnselectedLineIndex = -1;
 
 // Numerics (JBLineChartDotsView)
+CGFloat static const kJBLineChartDotsViewReloadDataAnimationDuration = 0.15f;
 NSInteger static const kJBLineChartDotsViewDefaultRadiusFactor = 3; // 3x size of line width
 NSInteger static const kJBLineChartDotsViewUnselectedLineIndex = -1;
 
@@ -41,6 +43,7 @@ CGFloat static const kJBLineChartViewStateAnimationDelay = 0.05f;
 CGFloat static const kJBLineChartViewStateBounceOffset = 15.0f;
 CGFloat static const kJBLineChartViewDefaultStartPoint = 0.0;
 CGFloat static const kJBLineChartViewDefaultEndPoint = 1.0;
+CGFloat static const kJBLineChartViewReloadAnimationDuration = 0.1;
 NSInteger static const kJBLineChartUnselectedLineIndex = -1;
 
 // Collections (JBLineChartLineView)
@@ -62,6 +65,12 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionEndColor = nil;
 static UIColor *kJBLineChartViewDefaultGradientSelectionFillStartColor = nil;
 static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 
+@interface NSMutableArray (Stack)
+
+// Operations
+- (id)pop;
+
+@end
 
 @interface JBChartView (Private)
 
@@ -70,7 +79,14 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 
 @end
 
-@interface JBLineLayer : CAShapeLayer
+@interface JBShapeLayer : CAShapeLayer
+
+@property (nonatomic, strong) UIBezierPath *currentPath;
+@property (nonatomic, assign) BOOL animated;
+
+@end
+
+@interface JBLineLayer : JBShapeLayer
 
 @property (nonatomic, assign) NSUInteger tag;
 @property (nonatomic, assign) JBLineChartViewLineStyle lineStyle;
@@ -78,7 +94,7 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 
 @end
 
-@interface JBFillLayer : CAShapeLayer
+@interface JBFillLayer : JBShapeLayer
 
 @property (nonatomic, assign) NSUInteger tag;
 
@@ -100,6 +116,8 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 @property (nonatomic, assign) BOOL animated;
 
 // Data
+- (void)reloadDataAnimated:(BOOL)animated callback:(void (^)())callback;
+- (void)reloadDataAnimated:(BOOL)animated;
 - (void)reloadData;
 
 // Setters
@@ -142,10 +160,15 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 @property (nonatomic, strong) NSDictionary *dotViewsDict;
 
 // Data
+- (void)reloadDataAnimated:(BOOL)animated callback:(void (^)())callback;
+- (void)reloadDataAnimated:(BOOL)animated;
 - (void)reloadData;
 
 // Setters
 - (void)setSelectedLineIndex:(NSInteger)selectedLineIndex animated:(BOOL)animated;
+
+// Generators
+- (UIView *)createDotViewForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
 
 @end
 
@@ -177,6 +200,7 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 @property (nonatomic, assign) CGFloat cachedMaxHeight;
 @property (nonatomic, assign) CGFloat cachedMinHeight;
 @property (nonatomic, assign) BOOL verticalSelectionViewVisible;
+@property (nonatomic, assign) BOOL reloading;
 
 // Initialization
 - (void)construct;
@@ -269,185 +293,258 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 
 #pragma mark - Data
 
+- (void)reloadDataAnimated:(BOOL)animated
+{
+	if (self.reloading)
+	{
+		return;
+	}
+	
+	self.reloading = YES;
+	
+	// Reset cached max height
+	self.cachedMinHeight = kJBLineChartViewUndefinedCachedHeight;
+	self.cachedMaxHeight = kJBLineChartViewUndefinedCachedHeight;
+	
+	// Animation check
+	BOOL shouldAnimate = (animated && self.state == JBChartViewStateExpanded);
+	
+	// Padding
+	CGFloat chartPadding = [self padding];
+	
+	/*
+	 * Subview rectangle calculations
+	 */
+	CGRect mainViewRect = CGRectMake(self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.width, [self availableHeight]);
+	
+	/*
+	 * Final block to refresh state and turn off reloading bit
+	 */
+	dispatch_block_t completionBlock = ^{
+		self.reloading = NO;
+		[self setState:self.state animated:NO force:YES callback:nil];
+	};
+	
+	/*
+	 * The data collection holds all position and marker information:
+	 * constructed via datasource and delegate functions
+	 */
+	dispatch_block_t createChartDataBlock = ^{
+		
+		CGFloat pointSpace = (self.bounds.size.width - (chartPadding * 2)) / ([self dataCount] - 1); // Space in between points
+		CGFloat xOffset = chartPadding;
+		CGFloat yOffset = 0;
+		
+		NSMutableArray *mutableChartData = [NSMutableArray array];
+		NSAssert([self.dataSource respondsToSelector:@selector(numberOfLinesInLineChartView:)], @"JBLineChartView // dataSource must implement - (NSUInteger)numberOfLinesInLineChartView:(JBLineChartView *)lineChartView");
+		NSUInteger numberOfLines = [self.dataSource numberOfLinesInLineChartView:self];
+		for (NSUInteger lineIndex=0; lineIndex<numberOfLines; lineIndex++)
+		{
+			NSAssert([self.dataSource respondsToSelector:@selector(lineChartView:numberOfVerticalValuesAtLineIndex:)], @"JBLineChartView // dataSource must implement - (NSUInteger)lineChartView:(JBLineChartView *)lineChartView numberOfVerticalValuesAtLineIndex:(NSUInteger)lineIndex");
+			NSUInteger dataCount = [self.dataSource lineChartView:self numberOfVerticalValuesAtLineIndex:lineIndex];
+			NSMutableArray *chartPointData = [NSMutableArray array];
+			for (NSUInteger horizontalIndex=0; horizontalIndex<dataCount; horizontalIndex++)
+			{
+				NSAssert([self.delegate respondsToSelector:@selector(lineChartView:verticalValueForHorizontalIndex:atLineIndex:)], @"JBLineChartView // delegate must implement - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
+				CGFloat rawHeight =  [self.delegate lineChartView:self verticalValueForHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
+				NSAssert(isnan(rawHeight) || (rawHeight >= 0), @"JBLineChartView // delegate function - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex must return a CGFloat >= 0 OR NAN");
+				
+				JBLineChartPoint *chartPoint = [[JBLineChartPoint alloc] init];
+				if(isnan(rawHeight))
+				{
+					chartPoint.hidden = YES;
+					rawHeight = 0; //set to 0 so we can calculate the x position
+				}
+				
+				CGFloat normalizedHeight = [self padding] + [self normalizedHeightForRawHeight:rawHeight];
+				yOffset = mainViewRect.size.height - normalizedHeight;
+				
+				chartPoint.position = CGPointMake(xOffset, yOffset);
+				
+				[chartPointData addObject:chartPoint];
+				xOffset += pointSpace;
+			}
+			[mutableChartData addObject:chartPointData];
+			xOffset = chartPadding;
+		}
+		self.chartData = [NSArray arrayWithArray:mutableChartData];
+	};
+	
+	/*
+	 * Creates a new line graph view using the previously calculated data model
+	 */
+	dispatch_block_t createLineGraphViewBlock = ^{
+		
+		CGRect linesViewRect = CGRectOffset(mainViewRect, 0, self.headerView.frame.size.height + self.headerPadding);
+		if (self.linesView == nil)
+		{
+			self.linesView = [[JBLineChartLinesView alloc] initWithFrame:linesViewRect];
+			self.linesView.delegate = self;
+		}
+		else
+		{
+			self.linesView.frame = linesViewRect;
+			[self.linesView removeFromSuperview];
+		}
+		
+		// Add new lines view
+		if (self.footerView)
+		{
+			[self insertSubview:self.linesView belowSubview:self.footerView];
+		}
+		else
+		{
+			[self addSubview:self.linesView];
+		}
+	};
+	
+	/*
+	 * Creates a new dot graph view using the previously calculated data model
+	 */
+	dispatch_block_t createDotGraphViewBlock = ^{
+		
+		CGRect dotViewRect = CGRectOffset(mainViewRect, 0, self.headerView.frame.size.height + self.headerPadding);
+		if (self.dotsView == nil)
+		{
+			self.dotsView = [[JBLineChartDotsView alloc] initWithFrame:dotViewRect];
+			self.dotsView.delegate = self;
+		}
+		else
+		{
+			self.dotsView.frame = dotViewRect;
+			[self.dotsView removeFromSuperview];
+		}
+		
+		// Add new lines view
+		if (self.footerView)
+		{
+			[self insertSubview:self.dotsView belowSubview:self.footerView];
+		}
+		else
+		{
+			[self addSubview:self.dotsView];
+		}
+	};
+	
+	/*
+	 * Creates a vertical selection view for touch events
+	 */
+	dispatch_block_t createSelectionViewBlock = ^{
+		if (self.verticalSelectionView)
+		{
+			[self.verticalSelectionView removeFromSuperview];
+			self.verticalSelectionView = nil;
+		}
+		
+		CGFloat selectionViewWidth = kJBLineSelectionViewWidth;
+		if ([self.delegate respondsToSelector:@selector(verticalSelectionWidthForLineChartView:)])
+		{
+			selectionViewWidth = MIN([self.delegate verticalSelectionWidthForLineChartView:self], self.bounds.size.width);
+		}
+		
+		CGFloat verticalSelectionViewHeight = self.bounds.size.height - self.headerView.frame.size.height - self.footerView.frame.size.height - self.headerPadding - self.footerPadding;
+		
+		if ([self.dataSource respondsToSelector:@selector(shouldExtendSelectionViewIntoHeaderPaddingForChartView:)])
+		{
+			if ([self.dataSource shouldExtendSelectionViewIntoHeaderPaddingForChartView:self])
+			{
+				verticalSelectionViewHeight += self.headerPadding;
+			}
+		}
+		
+		if ([self.dataSource respondsToSelector:@selector(shouldExtendSelectionViewIntoFooterPaddingForChartView:)])
+		{
+			if ([self.dataSource shouldExtendSelectionViewIntoFooterPaddingForChartView:self])
+			{
+				verticalSelectionViewHeight += self.footerPadding;
+			}
+		}
+		
+		self.verticalSelectionView = [[JBChartVerticalSelectionView alloc] initWithFrame:CGRectMake(0, 0, selectionViewWidth, verticalSelectionViewHeight)];
+		self.verticalSelectionView.alpha = 0.0;
+		self.verticalSelectionView.hidden = !self.showsVerticalSelection;
+		
+		// Add new selection bar
+		if (self.footerView)
+		{
+			[self insertSubview:self.verticalSelectionView belowSubview:self.footerView];
+		}
+		else
+		{
+			[self addSubview:self.verticalSelectionView];
+		}
+	};
+	
+	dispatch_block_t layoutHeaderAndFooterBlock = ^{
+		self.headerView.frame = CGRectMake(self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.width, self.headerView.frame.size.height);
+		self.footerView.frame = CGRectMake(self.bounds.origin.x, self.bounds.size.height - self.footerView.frame.size.height, self.bounds.size.width, self.footerView.frame.size.height);
+	};
+	
+	/*
+	 * Reload data is broken down into various smaller units of work:
+	 *
+	 * 1. Create a data model
+	 * 2. Create line view
+	 * 3. Create dot view
+	 * 4. Create a (vertical) selection view
+	 * 5. Layout header & footer
+	 * 6. Refresh chart state
+	 *
+	 */
+	createChartDataBlock();
+	createLineGraphViewBlock();
+	createDotGraphViewBlock();
+	createSelectionViewBlock();
+	layoutHeaderAndFooterBlock();
+	
+	if (!shouldAnimate)
+	{
+		[self.linesView reloadData];
+		[self.dotsView reloadData];
+		completionBlock();
+	}
+	else
+	{
+		__weak JBLineChartView* weakSelf = self;
+		[self.linesView reloadDataAnimated:YES callback:^{
+			[weakSelf.dotsView reloadDataAnimated:YES callback:^{
+
+				JBLineChartDotsView *updatedDotsView = [[JBLineChartDotsView alloc] initWithFrame:weakSelf.dotsView.frame];
+				updatedDotsView.delegate = self;
+				updatedDotsView.alpha = 0.0f;
+
+				// Add updated dots view (hidden)
+				if (self.footerView)
+				{
+					[self insertSubview:updatedDotsView belowSubview:self.footerView];
+				}
+				else
+				{
+					[self addSubview:updatedDotsView];
+				}
+				[updatedDotsView reloadData];
+				
+				// Fade in updated dots view
+				[UIView animateWithDuration:kJBLineChartViewReloadAnimationDuration animations:^{
+					updatedDotsView.alpha = 1.0f;
+				} completion:nil];
+				
+				// Fade out old dots view
+				[UIView animateWithDuration:(kJBLineChartViewReloadAnimationDuration * 2) delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+					weakSelf.dotsView.alpha = 0.0f;
+				} completion:^(BOOL finished) {
+					[weakSelf.dotsView removeFromSuperview]; // swap views
+					weakSelf.dotsView = updatedDotsView;
+					completionBlock();
+				}];
+			}];
+		}];
+	}
+}
+
 - (void)reloadData
 {
-    // Reset cached max height
-    self.cachedMinHeight = kJBLineChartViewUndefinedCachedHeight;
-    self.cachedMaxHeight = kJBLineChartViewUndefinedCachedHeight;
-    
-    // Padding
-    CGFloat chartPadding = [self padding];
-
-    /*
-     * Subview rectangle calculations
-     */
-    CGRect mainViewRect = CGRectMake(self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.width, [self availableHeight]);
-
-    /*
-     * The data collection holds all position and marker information:
-     * constructed via datasource and delegate functions
-     */
-    dispatch_block_t createChartData = ^{
-
-        CGFloat pointSpace = (self.bounds.size.width - (chartPadding * 2)) / ([self dataCount] - 1); // Space in between points
-        CGFloat xOffset = chartPadding;
-        CGFloat yOffset = 0;
-
-        NSMutableArray *mutableChartData = [NSMutableArray array];
-        NSAssert([self.dataSource respondsToSelector:@selector(numberOfLinesInLineChartView:)], @"JBLineChartView // dataSource must implement - (NSUInteger)numberOfLinesInLineChartView:(JBLineChartView *)lineChartView");
-        NSUInteger numberOfLines = [self.dataSource numberOfLinesInLineChartView:self];
-        for (NSUInteger lineIndex=0; lineIndex<numberOfLines; lineIndex++)
-        {
-            NSAssert([self.dataSource respondsToSelector:@selector(lineChartView:numberOfVerticalValuesAtLineIndex:)], @"JBLineChartView // dataSource must implement - (NSUInteger)lineChartView:(JBLineChartView *)lineChartView numberOfVerticalValuesAtLineIndex:(NSUInteger)lineIndex");
-            NSUInteger dataCount = [self.dataSource lineChartView:self numberOfVerticalValuesAtLineIndex:lineIndex];
-            NSMutableArray *chartPointData = [NSMutableArray array];
-            for (NSUInteger horizontalIndex=0; horizontalIndex<dataCount; horizontalIndex++)
-            {               
-                NSAssert([self.delegate respondsToSelector:@selector(lineChartView:verticalValueForHorizontalIndex:atLineIndex:)], @"JBLineChartView // delegate must implement - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
-                CGFloat rawHeight =  [self.delegate lineChartView:self verticalValueForHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
-                NSAssert(isnan(rawHeight) || (rawHeight >= 0), @"JBLineChartView // delegate function - (CGFloat)lineChartView:(JBLineChartView *)lineChartView verticalValueForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex must return a CGFloat >= 0 OR NAN");
-
-                JBLineChartPoint *chartPoint = [[JBLineChartPoint alloc] init];
-                if(isnan(rawHeight))
-                {
-                    chartPoint.hidden = YES;
-                    rawHeight = 0; //set to 0 so we can calculate the x position
-                }
-
-                CGFloat normalizedHeight = [self padding] + [self normalizedHeightForRawHeight:rawHeight];
-                yOffset = mainViewRect.size.height - normalizedHeight;
-                
-                chartPoint.position = CGPointMake(xOffset, yOffset);
-
-                [chartPointData addObject:chartPoint];
-                xOffset += pointSpace;
-            }
-            [mutableChartData addObject:chartPointData];
-            xOffset = chartPadding;
-        }
-        self.chartData = [NSArray arrayWithArray:mutableChartData];
-	};
-
-    /*
-     * Creates a new line graph view using the previously calculated data model
-     */
-    dispatch_block_t createLineGraphView = ^{
-
-        // Remove old line view
-        if (self.linesView)
-        {
-            self.linesView.delegate = nil;
-            [self.linesView removeFromSuperview];
-            self.linesView = nil;
-        }
-
-        // Create new line and overlay subviews
-        self.linesView = [[JBLineChartLinesView alloc] initWithFrame:CGRectOffset(mainViewRect, 0, self.headerView.frame.size.height + self.headerPadding)];
-        self.linesView.delegate = self;
-
-        // Add new lines view
-        if (self.footerView)
-        {
-            [self insertSubview:self.linesView belowSubview:self.footerView];
-        }
-        else
-        {
-            [self addSubview:self.linesView];
-        }
-    };
-
-    /*
-     * Creates a new dot graph view using the previously calculated data model
-     */
-    dispatch_block_t createDotGraphView = ^{
-        
-        // Remove old dot view
-        if (self.dotsView)
-        {
-            self.dotsView.delegate = nil;
-            [self.dotsView removeFromSuperview];
-            self.dotsView = nil;
-        }
-        
-        // Create new line and overlay subviews
-        self.dotsView = [[JBLineChartDotsView alloc] initWithFrame:CGRectOffset(mainViewRect, 0, self.headerView.frame.size.height + self.headerPadding)];
-        self.dotsView.delegate = self;
-        
-        // Add new dots view
-        if (self.footerView)
-        {
-            [self insertSubview:self.dotsView belowSubview:self.footerView];
-        }
-        else
-        {
-            [self addSubview:self.dotsView];
-        }
-    };
-    
-    /*
-     * Creates a vertical selection view for touch events
-     */
-    dispatch_block_t createSelectionView = ^{
-        if (self.verticalSelectionView)
-        {
-            [self.verticalSelectionView removeFromSuperview];
-            self.verticalSelectionView = nil;
-        }
-
-        CGFloat selectionViewWidth = kJBLineSelectionViewWidth;
-        if ([self.delegate respondsToSelector:@selector(verticalSelectionWidthForLineChartView:)])
-        {
-            selectionViewWidth = MIN([self.delegate verticalSelectionWidthForLineChartView:self], self.bounds.size.width);
-        }
-        
-        CGFloat verticalSelectionViewHeight = self.bounds.size.height - self.headerView.frame.size.height - self.footerView.frame.size.height - self.headerPadding - self.footerPadding;
-        
-        if ([self.dataSource respondsToSelector:@selector(shouldExtendSelectionViewIntoHeaderPaddingForChartView:)])
-        {
-            if ([self.dataSource shouldExtendSelectionViewIntoHeaderPaddingForChartView:self])
-            {
-                verticalSelectionViewHeight += self.headerPadding;
-            }
-        }
-        
-        if ([self.dataSource respondsToSelector:@selector(shouldExtendSelectionViewIntoFooterPaddingForChartView:)])
-        {
-            if ([self.dataSource shouldExtendSelectionViewIntoFooterPaddingForChartView:self])
-            {
-                verticalSelectionViewHeight += self.footerPadding;
-            }
-        }
-
-        self.verticalSelectionView = [[JBChartVerticalSelectionView alloc] initWithFrame:CGRectMake(0, 0, selectionViewWidth, verticalSelectionViewHeight)];
-        self.verticalSelectionView.alpha = 0.0;
-        self.verticalSelectionView.hidden = !self.showsVerticalSelection;
-
-        // Add new selection bar
-        if (self.footerView)
-        {
-            [self insertSubview:self.verticalSelectionView belowSubview:self.footerView];
-        }
-        else
-        {
-            [self addSubview:self.verticalSelectionView];
-        }
-    };
-
-    createChartData();
-    createLineGraphView();
-    createDotGraphView();
-    createSelectionView();
-
-    // Reload views
-    [self.linesView reloadData];
-    [self.dotsView reloadData];
-
-    // Position header and footer
-    self.headerView.frame = CGRectMake(self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.width, self.headerView.frame.size.height);
-    self.footerView.frame = CGRectMake(self.bounds.origin.x, self.bounds.size.height - self.footerView.frame.size.height, self.bounds.size.width, self.footerView.frame.size.height);
-
-    // Refresh state
-    [self setState:self.state animated:NO force:YES callback:nil];
+	[self reloadDataAnimated:NO];
 }
 
 #pragma mark - View Quick Accessors
@@ -1178,6 +1275,34 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 
 @end
 
+@implementation NSMutableArray (Stack)
+
+#pragma mark - Operations
+
+- (id)pop
+{
+	id object = [self firstObject];
+	if (object != nil)
+	{
+		[self removeObjectAtIndex:0];
+		return object;
+	}
+	return nil;
+}
+
+@end
+
+@implementation JBShapeLayer
+
+#pragma mark - Setters
+
+- (void)setAnimated:(BOOL)animated
+{
+	_animated = animated && self.currentPath != nil;
+}
+
+@end
+
 @implementation JBLineLayer
 
 #pragma mark - Alloc/Init
@@ -1457,10 +1582,96 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 
 #pragma mark - Data
 
+- (void)reloadDataAnimated:(BOOL)animated callback:(void (^)())callback
+{
+	NSAssert([self.delegate respondsToSelector:@selector(chartDataForLineChartLinesView:)], @"JBLineChartLinesView // delegate must implement - (NSArray *)chartDataForLineChartLinesView:(JBLineChartLinesView *)lineChartLinesView");
+	NSArray *chartData = [self.delegate chartDataForLineChartLinesView:self];
+	NSUInteger lineCount = [chartData count];
+	
+	__weak JBLineChartLinesView* weakSelf = self;
+	
+	dispatch_block_t completionBlock = ^{
+		[weakSelf setNeedsDisplay]; // re-draw layers
+		if (callback)
+		{
+			callback();
+		}
+	};
+	
+	// Mark layers for animation or removal
+	NSMutableArray *mutableRemovedLayers = [NSMutableArray array];
+	for (CALayer *layer in [self.layer sublayers])
+	{
+		BOOL removeLayer = NO;
+		
+		if ([layer isKindOfClass:[JBShapeLayer class]])
+		{
+			((JBShapeLayer *)layer).animated = animated;
+			removeLayer = (((JBLineLayer *)layer).tag >= lineCount);
+		}
+		
+		if (removeLayer)
+		{
+			[mutableRemovedLayers addObject:layer];
+		}
+	}
+	
+	// Remove legacy layers
+	NSArray *removedLayers = [NSArray arrayWithArray:mutableRemovedLayers];
+	if ([removedLayers count] > 0)
+	{
+		for (int index=0; index<[removedLayers count]; index++)
+		{
+			CALayer *removedLayer = [removedLayers objectAtIndex:index];
+			
+			if (animated)
+			{
+				[CATransaction begin];
+				{
+					CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"opacity"];
+					animation.fromValue = [NSNumber numberWithFloat:1.0f];
+					animation.toValue = [NSNumber numberWithFloat:0.0f];
+					animation.duration = kJBLineChartLinesViewReloadDataAnimationDuration;
+					animation.timingFunction = [CAMediaTimingFunction functionWithName:@"easeInEaseOut"];
+					animation.fillMode = kCAFillModeBoth;
+					animation.removedOnCompletion = NO;
+					
+					[CATransaction setCompletionBlock:^{
+						[removedLayer removeFromSuperlayer];
+						if (index == [removedLayers count]-1)
+						{
+							completionBlock();
+						}
+					}];
+					
+					[removedLayer addAnimation:animation forKey:@"removeShapeLayerAnimation"];
+				}
+				[CATransaction commit];
+			}
+			else
+			{
+				[removedLayer removeFromSuperlayer];
+				if (index == [removedLayers count]-1)
+				{
+					completionBlock();
+				}
+			}
+		}
+	}
+	else
+	{
+		completionBlock();
+	}
+}
+
+- (void)reloadDataAnimated:(BOOL)animated
+{
+	[self reloadDataAnimated:animated callback:nil];
+}
+
 - (void)reloadData
 {
-    // Drawing is all done with CG (no subviews here)
-    [self setNeedsDisplay];
+	[self reloadDataAnimated:NO];
 }
 
 #pragma mark - Setters
@@ -1647,62 +1858,107 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 
 #pragma mark - Data
 
+- (void)reloadDataAnimated:(BOOL)animated callback:(void (^)())callback
+{
+	NSAssert([self.delegate respondsToSelector:@selector(chartDataForLineChartDotsView:)], @"JBLineChartDotsView // delegate must implement - (NSArray *)chartDataForLineChartDotsView:(JBLineChartDotsView *)lineChartDotsView");
+	NSArray *chartData = [self.delegate chartDataForLineChartDotsView:self];
+	
+	if (animated)
+	{
+		// Reusable dot views
+		__block NSMutableArray *mutableReusableDotViews = [NSMutableArray array];
+		for (id key in [[self.dotViewsDict allKeys] sortedArrayUsingSelector:@selector(compare:)])
+		{
+			NSArray *dotViews = [self.dotViewsDict objectForKey:key];
+			[mutableReusableDotViews addObjectsFromArray:dotViews];
+		}
+		
+		NSUInteger lineIndex = 0;
+		for (NSArray *lineData in chartData)
+		{
+			NSAssert([self.delegate respondsToSelector:@selector(lineChartDotsView:showsDotsForLineAtLineIndex:)], @"JBLineChartDotsView // delegate must implement - (BOOL)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView showsDotsForLineAtLineIndex:(NSUInteger)lineIndex");
+			if ([self.delegate lineChartDotsView:self showsDotsForLineAtLineIndex:lineIndex]) // line at index contains dots
+			{
+				NSArray *sortedLineData = [lineData sortedArrayUsingSelector:@selector(compare:)];
+				for (NSUInteger horizontalIndex = 0; horizontalIndex < [sortedLineData count]; horizontalIndex++)
+				{
+					JBLineChartPoint *lineChartPoint = [sortedLineData objectAtIndex:horizontalIndex];
+					if(lineChartPoint.hidden)
+					{
+						continue;
+					}
+					
+					__block UIView *dotView = [mutableReusableDotViews pop];
+					if (dotView != nil)
+					{
+						[UIView animateWithDuration:kJBLineChartDotsViewReloadDataAnimationDuration animations:^{
+							dotView.center = CGPointMake(lineChartPoint.position.x, lineChartPoint.position.y); // animate move
+						} completion:nil];
+					}
+					
+				}
+			}
+			lineIndex++;
+		}
+		
+		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, kJBLineChartDotsViewReloadDataAnimationDuration * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+			if (callback)
+			{
+				callback();
+			}
+		});
+	}
+	else
+	{
+		// Remove legacy dots
+		for (JBLineChartDotView *dotView in self.subviews)
+		{
+			[dotView removeFromSuperview];
+		}
+		
+		// Create new dots
+		NSUInteger lineIndex = 0;
+		NSMutableDictionary *mutableDotViewsDict = [NSMutableDictionary dictionary];
+		for (NSArray *lineData in chartData)
+		{
+			NSAssert([self.delegate respondsToSelector:@selector(lineChartDotsView:showsDotsForLineAtLineIndex:)], @"JBLineChartDotsView // delegate must implement - (BOOL)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView showsDotsForLineAtLineIndex:(NSUInteger)lineIndex");
+			if ([self.delegate lineChartDotsView:self showsDotsForLineAtLineIndex:lineIndex]) // line at index contains dots
+			{
+				NSMutableArray *mutableDotViews = [NSMutableArray array];
+				NSArray *sortedLineData = [lineData sortedArrayUsingSelector:@selector(compare:)];
+				for (NSUInteger horizontalIndex = 0; horizontalIndex < [sortedLineData count]; horizontalIndex++)
+				{
+					JBLineChartPoint *lineChartPoint = [sortedLineData objectAtIndex:horizontalIndex];
+					if(lineChartPoint.hidden)
+					{
+						continue;
+					}
+					
+					UIView *dotView = [self createDotViewForHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
+					dotView.center = CGPointMake(lineChartPoint.position.x, lineChartPoint.position.y);
+					[mutableDotViews addObject:dotView];
+					[self addSubview:dotView];
+				}
+				[mutableDotViewsDict setObject:[NSArray arrayWithArray:mutableDotViews] forKey:[NSNumber numberWithInteger:lineIndex]];
+			}
+			lineIndex++;
+		}
+		self.dotViewsDict = [NSDictionary dictionaryWithDictionary:mutableDotViewsDict];
+		if (callback)
+		{
+			callback();
+		}
+	}
+}
+
+- (void)reloadDataAnimated:(BOOL)animated
+{
+	[self reloadDataAnimated:animated callback:nil];
+}
+
 - (void)reloadData
 {
-    for (NSArray *dotViews in [self.dotViewsDict allValues])
-    {
-        for (JBLineChartDotView *dotView in dotViews)
-        {
-            [dotView removeFromSuperview];
-        }
-    }
-    
-    NSAssert([self.delegate respondsToSelector:@selector(chartDataForLineChartDotsView:)], @"JBLineChartDotsView // delegate must implement - (NSArray *)chartDataForLineChartDotsView:(JBLineChartDotsView *)lineChartDotsView");
-    NSArray *chartData = [self.delegate chartDataForLineChartDotsView:self];
-	
-    NSUInteger lineIndex = 0;
-    NSMutableDictionary *mutableDotViewsDict = [NSMutableDictionary dictionary];
-    for (NSArray *lineData in chartData)
-    {
-        NSAssert([self.delegate respondsToSelector:@selector(lineChartDotsView:showsDotsForLineAtLineIndex:)], @"JBLineChartDotsView // delegate must implement - (BOOL)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView showsDotsForLineAtLineIndex:(NSUInteger)lineIndex");
-        
-        if ([self.delegate lineChartDotsView:self showsDotsForLineAtLineIndex:lineIndex]) // line at index contains dots
-        {
-            NSMutableArray *mutableDotViews = [NSMutableArray array];
-            NSArray *sortedLineData = [lineData sortedArrayUsingSelector:@selector(compare:)];
-            for (NSUInteger horizontalIndex = 0; horizontalIndex < [sortedLineData count]; horizontalIndex++)
-            {
-                JBLineChartPoint *lineChartPoint = [sortedLineData objectAtIndex:horizontalIndex];
-                if(lineChartPoint.hidden)
-                {
-                    continue;
-                }
-
-                NSAssert([self.delegate respondsToSelector:@selector(lineChartDotsView:dotViewAtHorizontalIndex:atLineIndex:)], @"JBLineChartDotsView // delegate must implement - (UIView *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView dotViewAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
-                UIView *currentDotView = [self.delegate lineChartDotsView:self dotViewAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
-                
-                // System dot
-                if (currentDotView == nil)
-                {
-                    NSAssert([self.delegate respondsToSelector:@selector(lineChartDotsView:dotRadiusForLineAtHorizontalIndex:atLineIndex:)], @"JBLineChartDotsView // delegate must implement - (CGFloat)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView dotRadiusForLineAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
-                    CGFloat dotRadius = [self.delegate lineChartDotsView:self dotRadiusForLineAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
-                    
-                    currentDotView = [[JBLineChartDotView alloc] initWithRadius:dotRadius];
-                    
-                    NSAssert([self.delegate respondsToSelector:@selector(lineChartDotsView:colorForDotAtHorizontalIndex:atLineIndex:)], @"JBLineChartDotsView // delegate must implement - (UIColor *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView colorForDotAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
-                    currentDotView.backgroundColor = [self.delegate lineChartDotsView:self colorForDotAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
-                }
-
-                currentDotView.center = CGPointMake(lineChartPoint.position.x, lineChartPoint.position.y);
-                [mutableDotViews addObject:currentDotView];
-                [self addSubview:currentDotView];
-
-            }
-            [mutableDotViewsDict setObject:[NSArray arrayWithArray:mutableDotViews] forKey:[NSNumber numberWithInteger:lineIndex]];
-        }
-        lineIndex++;
-    }
-    self.dotViewsDict = [NSDictionary dictionaryWithDictionary:mutableDotViewsDict];
+	[self reloadDataAnimated:NO];
 }
 
 #pragma mark - Setters
@@ -1772,6 +2028,28 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 - (void)setSelectedLineIndex:(NSInteger)selectedLineIndex
 {
     [self setSelectedLineIndex:selectedLineIndex animated:NO];
+}
+
+#pragma mark - Generators
+
+- (UIView *)createDotViewForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex
+{
+	NSAssert([self.delegate respondsToSelector:@selector(lineChartDotsView:dotViewAtHorizontalIndex:atLineIndex:)], @"JBLineChartDotsView // delegate must implement - (UIView *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView dotViewAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
+	UIView *dotView = [self.delegate lineChartDotsView:self dotViewAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
+	
+	// System dot
+	if (dotView == nil)
+	{
+		NSAssert([self.delegate respondsToSelector:@selector(lineChartDotsView:dotRadiusForLineAtHorizontalIndex:atLineIndex:)], @"JBLineChartDotsView // delegate must implement - (CGFloat)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView dotRadiusForLineAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
+		CGFloat dotRadius = [self.delegate lineChartDotsView:self dotRadiusForLineAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
+		
+		dotView = [[JBLineChartDotView alloc] initWithRadius:dotRadius];
+		
+		NSAssert([self.delegate respondsToSelector:@selector(lineChartDotsView:colorForDotAtHorizontalIndex:atLineIndex:)], @"JBLineChartDotsView // delegate must implement - (UIColor *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView colorForDotAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
+		dotView.backgroundColor = [self.delegate lineChartDotsView:self colorForDotAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
+	}
+	
+	return dotView;
 }
 
 @end

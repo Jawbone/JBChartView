@@ -402,6 +402,27 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineColorStyle){
 @property (nonatomic, weak) id<JBLineChartViewDataSource> dataSource;
 @property (nonatomic, weak) id<JBLineChartViewDelegate> delegate;
 
+/*
+ *  Reloads the line chart with a custom animation.
+ *  Adding, removing or modifying existing lines or dot views (via growing/shrinking & fading) if animated = YES;
+ *  Reloading (animated) data is thread safe and can be executed any number of times in succession.
+ *
+ *  Default: a non-animated reload (via reloadData).
+ */
+- (void)reloadDataAnimated:(BOOL)animated;
+
+/*
+ *  When reloadData or reloadDataAnimated: is called, the reloading bit is turned on.
+ *  State changes during a reload will be ignored. As well, subsequent calls to reloadData: 
+ *  or reloadDataAnimated: before any previous reloads are complete, will also be ignored.
+ *  Lastly, all touch events will be ignored until a reload has compeleted.
+ *
+ *  Note: the above restrictions apply only to animated reloads, as non-animated reloads are synchronous.
+ *
+ *  Default: NO.
+ */
+@property (nonatomic, readonly) BOOL reloading;
+
 /**
  *  Vertical highlight overlayed on a line graph during touch events.
  *
