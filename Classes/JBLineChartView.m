@@ -58,8 +58,6 @@ static UIColor *kJBLineChartViewDefaultDotColor = nil;
 static UIColor *kJBLineChartViewDefaultDotSelectionColor = nil;
 static UIColor *kJBLineChartViewDefaultGradientStartColor = nil;
 static UIColor *kJBLineChartViewDefaultGradientEndColor = nil;
-static UIColor *kJBLineChartViewDefaultGradientFillStartColor = nil;
-static UIColor *kJBLineChartViewDefaultGradientFillEndColor = nil;
 static UIColor *kJBLineChartViewDefaultGradientSelectionStartColor = nil;
 static UIColor *kJBLineChartViewDefaultGradientSelectionEndColor = nil;
 static UIColor *kJBLineChartViewDefaultGradientSelectionFillStartColor = nil;
@@ -223,6 +221,9 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 // Setters
 - (void)setVerticalSelectionViewVisible:(BOOL)verticalSelectionViewVisible animated:(BOOL)animated;
 
+// Getters
+- (CAGradientLayer *)defaultGradientLayer;
+
 @end
 
 @implementation JBLineChartView
@@ -244,8 +245,6 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
         kJBLineChartViewDefaultDotSelectionColor = [UIColor whiteColor];
         kJBLineChartViewDefaultGradientStartColor = [UIColor blackColor];
         kJBLineChartViewDefaultGradientEndColor = [UIColor lightGrayColor];
-        kJBLineChartViewDefaultGradientFillStartColor = [UIColor whiteColor];
-        kJBLineChartViewDefaultGradientFillEndColor = [UIColor lightGrayColor];
         kJBLineChartViewDefaultGradientSelectionStartColor = [UIColor whiteColor];
         kJBLineChartViewDefaultGradientSelectionEndColor = [UIColor darkGrayColor];
         kJBLineChartViewDefaultGradientSelectionFillStartColor = [UIColor clearColor];
@@ -717,13 +716,7 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 	{
         return [self.delegate lineChartView:self gradientForLineAtLineIndex:lineIndex];
     }
-	
-	// Default gradient
-    CAGradientLayer *gradient = [CAGradientLayer new];
-	gradient.startPoint = CGPointMake(kJBLineChartViewDefaultStartPoint, kJBLineChartViewDefaultStartPoint);
-	gradient.endPoint = CGPointMake(kJBLineChartViewDefaultEndPoint, kJBLineChartViewDefaultEndPoint);
-    gradient.colors = @[(id)kJBLineChartViewDefaultGradientStartColor.CGColor, (id)kJBLineChartViewDefaultGradientEndColor.CGColor];
-    return gradient;
+	return [self defaultGradientLayer];
 }
 
 - (CAGradientLayer *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView selectionGradientForLineAtLineIndex:(NSUInteger)lineIndex
@@ -759,13 +752,7 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 	{
         return [self.delegate lineChartView:self fillGradientForLineAtLineIndex:lineIndex];
     }
-	
-	// Default gradient
-	CAGradientLayer *gradient = [CAGradientLayer new];
-	gradient.startPoint = CGPointMake(kJBLineChartViewDefaultStartPoint, kJBLineChartViewDefaultStartPoint);
-	gradient.endPoint = CGPointMake(kJBLineChartViewDefaultEndPoint, kJBLineChartViewDefaultEndPoint);
-    gradient.colors = @[(id)kJBLineChartViewDefaultGradientFillStartColor.CGColor, (id)kJBLineChartViewDefaultGradientFillEndColor.CGColor];
-    return gradient;
+	return [self defaultGradientLayer];
 }
 
 - (CAGradientLayer *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView selectionFillGradientForLineAtLineIndex:(NSUInteger)lineIndex
@@ -1074,6 +1061,15 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 		return [dotViews objectAtIndex:horizontalIndex];
 	}
 	return nil;
+}
+
+- (CAGradientLayer *)defaultGradientLayer
+{
+	CAGradientLayer *customGradientLayer = [CAGradientLayer new];
+	customGradientLayer.startPoint = CGPointMake(kJBLineChartViewDefaultStartPoint, kJBLineChartViewDefaultStartPoint);
+	customGradientLayer.endPoint = CGPointMake(kJBLineChartViewDefaultEndPoint, kJBLineChartViewDefaultEndPoint);
+	customGradientLayer.colors = @[(id)kJBLineChartViewDefaultGradientStartColor.CGColor, (id)kJBLineChartViewDefaultGradientEndColor.CGColor];
+	return customGradientLayer;
 }
 
 #pragma mark - Touch Helpers
@@ -1453,7 +1449,9 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
         for (NSUInteger index = 0; index < [sortedLineData count]; index++)
         {
             JBLineChartPoint *lineChartPoint = [sortedLineData objectAtIndex:index];
-            if(lineChartPoint.hidden) {
+			
+			if(lineChartPoint.hidden)
+			{
                 continue;
             }
 
