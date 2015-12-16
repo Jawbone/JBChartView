@@ -529,8 +529,17 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 - (void)setState:(JBChartViewState)state animated:(BOOL)animated force:(BOOL)force callback:(void (^)())callback
 {
+	if (self.reloading)
+	{
+		if (callback)
+		{
+			callback();
+		}
+		return; // ignore state changes when reloading
+	}
+	
     [super setState:state animated:animated force:force callback:callback];
-    
+
     __weak JBBarChartView* weakSelf = self;
     
     void (^updateBarView)(UIView *barView, BOOL popBar);

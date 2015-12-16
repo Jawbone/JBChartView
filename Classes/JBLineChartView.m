@@ -896,6 +896,15 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 
 - (void)setState:(JBChartViewState)state animated:(BOOL)animated force:(BOOL)force callback:(void (^)())callback
 {
+	if (self.reloading)
+	{
+		if (callback)
+		{
+			callback();
+		}
+		return; // ignore state changes when reloading
+	}
+	
     [super setState:state animated:animated force:force callback:callback];
     
     if ([self.chartData count] > 0)
@@ -1174,7 +1183,7 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 
 - (void)touchesBeganOrMovedWithTouches:(NSSet *)touches
 {
-    if (self.state == JBChartViewStateCollapsed || [self.chartData count] <= 0)
+    if (self.state == JBChartViewStateCollapsed || [self.chartData count] <= 0 || self.reloading)
     {
         return; // no touch for no data or collapsed
     }
@@ -1224,7 +1233,7 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 
 - (void)touchesEndedOrCancelledWithTouches:(NSSet *)touches
 {
-    if (self.state == JBChartViewStateCollapsed || [self.chartData count] <= 0)
+    if (self.state == JBChartViewStateCollapsed || [self.chartData count] <= 0 || self.reloading)
     {
         return;
     }
