@@ -432,27 +432,39 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     {
         if (animated)
         {
-            NSUInteger index = 0;
+			dispatch_block_t animationCompletionBlock = ^{
+				if (callbackCopy)
+				{
+					callbackCopy();
+				}
+			};
+			
+            NSUInteger animationDelayIndex = 0;
             for (UIView *barView in self.barViews)
             {
-                [UIView animateWithDuration:kJBBarChartViewStateAnimationDuration delay:(kJBBarChartViewStateAnimationDuration * 0.5) * index options:UIViewAnimationOptionBeginFromCurrentState animations:^{
-                    updateBarView(barView, YES);
-                } completion:^(BOOL finished) {
-                    [UIView animateWithDuration:kJBBarChartViewStateAnimationDuration delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
-                        updateBarView(barView, NO);
-                    } completion:^(BOOL lastBarFinished) {
-                        if ((NSUInteger)barView.tag == [self.barViews count] - 1)
-                        {
-                            if (callbackCopy)
-                            {
-                                callbackCopy();
-                            }
-                        }
-                    }];
-                }];
-                index++;
-            }
-        }
+				BOOL lastIndex = ((NSUInteger)barView.tag == [self.barViews count] - 1);
+				if ([[weakSelf.cachedBarViewHeights objectAtIndex:barView.tag] floatValue] > [self minimumValue])
+				{
+					[UIView animateWithDuration:kJBBarChartViewStateAnimationDuration delay:(kJBBarChartViewStateAnimationDuration * 0.5) * animationDelayIndex options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+						updateBarView(barView, YES);
+					} completion:^(BOOL finished) {
+						[UIView animateWithDuration:kJBBarChartViewStateAnimationDuration delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+							updateBarView(barView, NO);
+						} completion:^(BOOL lastBarFinished) {
+							if (lastIndex)
+							{
+								animationCompletionBlock();
+							}
+						}];
+					}];
+					animationDelayIndex++;
+				}
+				else if (lastIndex)
+				{
+					animationCompletionBlock();
+				}
+			}
+		}
         else
         {
             for (UIView *barView in self.barViews)
