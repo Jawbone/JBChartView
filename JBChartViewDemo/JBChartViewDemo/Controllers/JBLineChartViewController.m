@@ -321,15 +321,13 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
 
 - (void)chartToggleButtonPressed:(id)sender
 {
-	UIView *buttonImageView = [self.navigationItem.rightBarButtonItem valueForKey:kJBLineChartViewControllerNavButtonViewKey];
-    buttonImageView.userInteractionEnabled = NO;
-    
-    CGAffineTransform transform = self.lineChartView.state == JBChartViewStateExpanded ? CGAffineTransformMakeRotation(M_PI) : CGAffineTransformMakeRotation(0);
-    buttonImageView.transform = transform;
-
-    [self.lineChartView setState:self.lineChartView.state == JBChartViewStateExpanded ? JBChartViewStateCollapsed : JBChartViewStateExpanded animated:YES callback:^{
-        buttonImageView.userInteractionEnabled = YES;
-    }];
+	NSMutableArray *mutableChartData = [NSMutableArray arrayWithArray:self.chartData];
+	[[mutableChartData objectAtIndex:0] addObject:[NSNumber numberWithFloat:((double)arc4random() / ARC4RANDOM_MAX)]];
+	[[mutableChartData objectAtIndex:1] addObject:[NSNumber numberWithFloat:((double)arc4random() / ARC4RANDOM_MAX)]];
+	
+	self.chartData = [NSArray arrayWithArray:mutableChartData];
+	
+	[self.lineChartView reloadDataAnimated:YES];
 }
 
 #pragma mark - Overrides

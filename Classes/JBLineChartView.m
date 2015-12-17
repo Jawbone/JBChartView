@@ -1563,22 +1563,103 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 
         if (shapeLayer.lineColorStyle == JBLineChartViewLineColorStyleGradient)
         {
-            NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:fillGradientForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (CAGradientLayer *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView fillGradientForLineAtLineIndex:(NSUInteger)lineIndex");
-            CAGradientLayer *fillGradient = [self.delegate lineChartLinesView:self fillGradientForLineAtLineIndex:lineIndex];
-            fillGradient.frame = shapeFillLayer.frame;
-            fillGradient.mask = shapeFillLayer;
-            [self.layer addSublayer:fillGradient];
+			/*
+			NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:gradientForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (CAGradientLayer *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView gradientForLineAtLineIndex:(NSUInteger)lineIndex");
+			CAGradientLayer *lineGradient = [self.delegate lineChartLinesView:self gradientForLineAtLineIndex:lineIndex];
+			lineGradient.frame = shapeLayer.frame;
+			[self.layer addSublayer:lineGradient];
+			
+			CABasicAnimation *maskAnimation = [CABasicAnimation animationWithKeyPath:@"mask"];
+			maskAnimation.toValue = (id)shapeLayer;
+			maskAnimation.duration = kJBLineChartLinesViewReloadDataAnimationDuration;
+			maskAnimation.timingFunction = [CAMediaTimingFunction functionWithName:@"easeInEaseOut"];
+			maskAnimation.fillMode = kCAFillModeBoth;
+			maskAnimation.removedOnCompletion = NO;
+			[shapeLayer addAnimation:maskAnimation forKey:@"shapeLayerPathAnimation"];
+			
+			NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:fillGradientForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (CAGradientLayer *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView fillGradientForLineAtLineIndex:(NSUInteger)lineIndex");
+			CAGradientLayer *fillGradient = [self.delegate lineChartLinesView:self fillGradientForLineAtLineIndex:lineIndex];
+			fillGradient.frame = shapeFillLayer.frame;
+			[self.layer addSublayer:fillGradient];
+			
+			CABasicAnimation *maskAnimation2 = [CABasicAnimation animationWithKeyPath:@"mask"];
+			maskAnimation2.toValue = (id)shapeLayer;
+			maskAnimation2.duration = kJBLineChartLinesViewReloadDataAnimationDuration;
+			maskAnimation2.timingFunction = [CAMediaTimingFunction functionWithName:@"easeInEaseOut"];
+			maskAnimation2.fillMode = kCAFillModeBoth;
+			maskAnimation2.removedOnCompletion = NO;
+			[fillGradient addAnimation:maskAnimation2 forKey:@"shapeLayerPathAnimation"];
+			 */
+			
+			NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:fillGradientForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (CAGradientLayer *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView fillGradientForLineAtLineIndex:(NSUInteger)lineIndex");
+			CAGradientLayer *fillGradient = nil;
+			
+			for (CALayer *layer in [self.layer sublayers])
+			{
+				if ([layer isKindOfClass:[CAGradientLayer class]])
+				{
+					fillGradient = (CAGradientLayer *)layer;
+				}
+			}
+			
+			if (!fillGradient)
+			{
+				fillGradient = [self.delegate lineChartLinesView:self fillGradientForLineAtLineIndex:lineIndex];
+				[self.layer addSublayer:fillGradient];
+			}
 
-            NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:gradientForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (CAGradientLayer *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView gradientForLineAtLineIndex:(NSUInteger)lineIndex");
-            CAGradientLayer *lineGradient = [self.delegate lineChartLinesView:self gradientForLineAtLineIndex:lineIndex];
-            lineGradient.frame = shapeLayer.frame;
-            lineGradient.mask = shapeLayer;
-            [self.layer addSublayer:lineGradient];
+			
+			fillGradient.frame = shapeFillLayer.frame;
+			fillGradient.mask = shapeFillLayer;
+			
+			NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:gradientForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (CAGradientLayer *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView gradientForLineAtLineIndex:(NSUInteger)lineIndex");
+			CAGradientLayer *lineGradient = [self.delegate lineChartLinesView:self gradientForLineAtLineIndex:lineIndex];
+			lineGradient.frame = shapeLayer.frame;
+			lineGradient.mask = shapeLayer;
+			[self.layer addSublayer:lineGradient];
+
+
         }
 		else if (shapeLayer.lineColorStyle == JBLineChartViewLineColorStyleSolid)
         {
             [self.layer addSublayer:shapeFillLayer];
             [self.layer addSublayer:shapeLayer];
+			
+			if (shapeLayer.animated)
+			{
+				CABasicAnimation *pathAnimation = [CABasicAnimation animationWithKeyPath:@"path"];
+				pathAnimation.fromValue = (id)shapeLayer.currentPath.CGPath;
+				pathAnimation.toValue = (id)path.CGPath;
+				pathAnimation.duration = kJBLineChartLinesViewReloadDataAnimationDuration;
+				pathAnimation.timingFunction = [CAMediaTimingFunction functionWithName:@"easeInEaseOut"];
+				pathAnimation.fillMode = kCAFillModeBoth;
+				pathAnimation.removedOnCompletion = NO;
+				[shapeLayer addAnimation:pathAnimation forKey:@"shapeLayerPathAnimation"];
+				shapeLayer.animated = NO;
+			}
+			else
+			{
+				shapeLayer.path = path.CGPath;
+			}
+			shapeLayer.currentPath = [path copy];
+			
+			if (shapeFillLayer.animated)
+			{
+				CABasicAnimation *pathAnimation = [CABasicAnimation animationWithKeyPath:@"path"];
+				pathAnimation.fromValue = (id)shapeFillLayer.currentPath.CGPath;
+				pathAnimation.toValue = (id)fillPath.CGPath;
+				pathAnimation.duration = kJBLineChartLinesViewReloadDataAnimationDuration;
+				pathAnimation.timingFunction = [CAMediaTimingFunction functionWithName:@"easeInEaseOut"];
+				pathAnimation.fillMode = kCAFillModeBoth;
+				pathAnimation.removedOnCompletion = NO;
+				[shapeFillLayer addAnimation:pathAnimation forKey:@"shapeFillLayerPathAnimation"];
+				shapeFillLayer.animated = NO;
+			}
+			else
+			{
+				shapeFillLayer.path = fillPath.CGPath;
+			}
+			shapeFillLayer.currentPath = [fillPath copy];
         }
 
         lineIndex++;
