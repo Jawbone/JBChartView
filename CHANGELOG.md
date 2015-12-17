@@ -1,5 +1,12 @@
 # Change Log
 
+## [v2.9.1](https://github.com/Jawbone/JBChartView/tree/v2.9.1) (2015-12-17)
+[Full Changelog](https://github.com/Jawbone/JBChartView/compare/v2.9.0...v2.9.1)
+
+**Implemented enhancements:**
+
+- Min bars shouldn't animate bars when animating setState [\#192](https://github.com/Jawbone/JBChartView/issues/192)
+
 ## [v2.9.0](https://github.com/Jawbone/JBChartView/tree/v2.9.0) (2015-12-04)
 [Full Changelog](https://github.com/Jawbone/JBChartView/compare/v2.8.19...v2.9.0)
 
