@@ -123,8 +123,8 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 
 // Getters
 - (UIBezierPath *)bezierPathForLineIndex:(NSUInteger)lineIndex filled:(BOOL)filled;
-- (JBLineLayer *)lineLayerForLineIndex:(NSUInteger)lineIndex;
-- (JBFillLayer *)fillLayerForLineIndex:(NSUInteger)lineIndex;
+- (JBLineLayer *)lineLayerForLineIndex:(NSUInteger)lineIndex withPath:(UIBezierPath *)path;
+- (JBFillLayer *)fillLayerForLineIndex:(NSUInteger)lineIndex withPath:(UIBezierPath *)path;
 
 // Callback helpers
 - (void)fireCallback:(void (^)())callback;
@@ -1432,129 +1432,19 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
     
 	for (int lineIndex=0; lineIndex<lineCount; lineIndex++)
 	{
-		UIBezierPath *shapeLayerPath = [self bezierPathForLineIndex:lineIndex filled:NO];
-		UIBezierPath *filledShapeLayerPath = [self bezierPathForLineIndex:lineIndex filled:YES];
+		UIBezierPath *linePath = [self bezierPathForLineIndex:lineIndex filled:NO];
+		UIBezierPath *fillPath = [self bezierPathForLineIndex:lineIndex filled:YES];
 
-		if (shapeLayerPath == nil || filledShapeLayerPath == nil)
+		if (linePath == nil || fillPath == nil)
 		{
 			continue;
 		}
 		
-        JBLineLayer *shapeLayer = [self lineLayerForLineIndex:lineIndex];
-        JBFillLayer *shapeFillLayer = [self fillLayerForLineIndex:lineIndex];
-		
-		shapeFillLayer.path = filledShapeLayerPath.CGPath;
-		shapeFillLayer.frame = self.bounds;
-		[self.layer addSublayer:shapeFillLayer];
-		
-		shapeLayer.path = shapeLayerPath.CGPath;
-        shapeLayer.frame = self.bounds;
-		[self.layer addSublayer:shapeLayer];
+        JBLineLayer *lineLayer = [self lineLayerForLineIndex:lineIndex withPath:linePath];
+		[self.layer addSublayer:lineLayer];
 
-		/*
-
-        if (shapeLayer.lineColorStyle == JBLineChartViewLineColorStyleGradient)
-        {
-	
-			NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:gradientForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (CAGradientLayer *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView gradientForLineAtLineIndex:(NSUInteger)lineIndex");
-			CAGradientLayer *lineGradient = [self.delegate lineChartLinesView:self gradientForLineAtLineIndex:lineIndex];
-			lineGradient.frame = shapeLayer.frame;
-			[self.layer addSublayer:lineGradient];
-			
-			CABasicAnimation *maskAnimation = [CABasicAnimation animationWithKeyPath:@"mask"];
-			maskAnimation.toValue = (id)shapeLayer;
-			maskAnimation.duration = kJBLineChartLinesViewReloadDataAnimationDuration;
-			maskAnimation.timingFunction = [CAMediaTimingFunction functionWithName:@"easeInEaseOut"];
-			maskAnimation.fillMode = kCAFillModeBoth;
-			maskAnimation.removedOnCompletion = NO;
-			[shapeLayer addAnimation:maskAnimation forKey:@"shapeLayerPathAnimation"];
-			
-			NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:fillGradientForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (CAGradientLayer *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView fillGradientForLineAtLineIndex:(NSUInteger)lineIndex");
-			CAGradientLayer *fillGradient = [self.delegate lineChartLinesView:self fillGradientForLineAtLineIndex:lineIndex];
-			fillGradient.frame = shapeFillLayer.frame;
-			[self.layer addSublayer:fillGradient];
-			
-			CABasicAnimation *maskAnimation2 = [CABasicAnimation animationWithKeyPath:@"mask"];
-			maskAnimation2.toValue = (id)shapeLayer;
-			maskAnimation2.duration = kJBLineChartLinesViewReloadDataAnimationDuration;
-			maskAnimation2.timingFunction = [CAMediaTimingFunction functionWithName:@"easeInEaseOut"];
-			maskAnimation2.fillMode = kCAFillModeBoth;
-			maskAnimation2.removedOnCompletion = NO;
-			[fillGradient addAnimation:maskAnimation2 forKey:@"shapeLayerPathAnimation"];
-		
-			
-			NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:fillGradientForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (CAGradientLayer *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView fillGradientForLineAtLineIndex:(NSUInteger)lineIndex");
-			CAGradientLayer *fillGradient = nil;
-			
-			for (CALayer *layer in [self.layer sublayers])
-			{
-				if ([layer isKindOfClass:[CAGradientLayer class]])
-				{
-					fillGradient = (CAGradientLayer *)layer;
-				}
-			}
-			
-			if (!fillGradient)
-			{
-				fillGradient = [self.delegate lineChartLinesView:self fillGradientForLineAtLineIndex:lineIndex];
-				[self.layer addSublayer:fillGradient];
-			}
-
-			
-			fillGradient.frame = shapeFillLayer.frame;
-			fillGradient.mask = shapeFillLayer;
-			
-			NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:gradientForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (CAGradientLayer *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView gradientForLineAtLineIndex:(NSUInteger)lineIndex");
-			CAGradientLayer *lineGradient = [self.delegate lineChartLinesView:self gradientForLineAtLineIndex:lineIndex];
-			lineGradient.frame = shapeLayer.frame;
-			lineGradient.mask = shapeLayer;
-			[self.layer addSublayer:lineGradient];
-
-
-        }
-		else if (shapeLayer.lineColorStyle == JBLineChartViewLineColorStyleSolid)
-        {
-            [self.layer addSublayer:shapeFillLayer];
-            [self.layer addSublayer:shapeLayer];
-			
-			if (shapeLayer.animated)
-			{
-				CABasicAnimation *pathAnimation = [CABasicAnimation animationWithKeyPath:@"path"];
-				pathAnimation.fromValue = (id)shapeLayer.currentPath.CGPath;
-				pathAnimation.toValue = (id)path.CGPath;
-				pathAnimation.duration = kJBLineChartLinesViewReloadDataAnimationDuration;
-				pathAnimation.timingFunction = [CAMediaTimingFunction functionWithName:@"easeInEaseOut"];
-				pathAnimation.fillMode = kCAFillModeBoth;
-				pathAnimation.removedOnCompletion = NO;
-				[shapeLayer addAnimation:pathAnimation forKey:@"shapeLayerPathAnimation"];
-				shapeLayer.animated = NO;
-			}
-			else
-			{
-				shapeLayer.path = path.CGPath;
-			}
-			shapeLayer.currentPath = [path copy];
-			
-			if (shapeFillLayer.animated)
-			{
-				CABasicAnimation *pathAnimation = [CABasicAnimation animationWithKeyPath:@"path"];
-				pathAnimation.fromValue = (id)shapeFillLayer.currentPath.CGPath;
-				pathAnimation.toValue = (id)fillPath.CGPath;
-				pathAnimation.duration = kJBLineChartLinesViewReloadDataAnimationDuration;
-				pathAnimation.timingFunction = [CAMediaTimingFunction functionWithName:@"easeInEaseOut"];
-				pathAnimation.fillMode = kCAFillModeBoth;
-				pathAnimation.removedOnCompletion = NO;
-				[shapeFillLayer addAnimation:pathAnimation forKey:@"shapeFillLayerPathAnimation"];
-				shapeFillLayer.animated = NO;
-			}
-			else
-			{
-				shapeFillLayer.path = fillPath.CGPath;
-			}
-			shapeFillLayer.currentPath = [fillPath copy];
-        }
-
-		*/
+		JBFillLayer *fillLayer = [self fillLayerForLineIndex:lineIndex withPath:fillPath];
+		[self.layer addSublayer:fillLayer];
     }
     self.animated = NO;
 }
@@ -1777,8 +1667,6 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 
 #pragma mark - Getters
 
-#pragma mark - View Helpers
-
 - (UIBezierPath *)bezierPathForLineIndex:(NSUInteger)lineIndex filled:(BOOL)filled
 {
 	UIBezierPath *path = [UIBezierPath bezierPath];
@@ -1786,105 +1674,107 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 		NSAssert([self.delegate respondsToSelector:@selector(chartDataForLineChartLinesView:)], @"JBLineChartLinesView // delegate must implement - (NSArray *)chartDataForLineChartLinesView:(JBLineChartLinesView *)lineChartLinesView");
 		NSArray *chartData = [self.delegate chartDataForLineChartLinesView:self];
 
-		if (lineIndex < [chartData count])
+		if (lineIndex >= [chartData count])
 		{
-			NSArray *lineData = [chartData objectAtIndex:lineIndex];
+			return nil;
+		}
+		
+		NSArray *lineData = [chartData objectAtIndex:lineIndex];
+		
+		if (lineData.count == 0)
+		{
+			return nil;
+		}
+		
+		path.miterLimit = kJBLineChartLinesViewMiterLimit;
+		
+		JBLineChartPoint *previousLineChartPoint = nil;
+		CGFloat previousSlope = 0.0f;
+		
+		NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:smoothLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (BOOL)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView smoothLineAtLineIndex:(NSUInteger)lineIndex");
+		BOOL smoothLine = [self.delegate lineChartLinesView:self smoothLineAtLineIndex:lineIndex];
+		
+		BOOL visiblePointFound = NO;
+		NSArray *sortedLineData = [lineData sortedArrayUsingSelector:@selector(compare:)];
+		CGFloat firstXPosition = 0.0f;
+		CGFloat firstYPosition = 0.0f;
+		CGFloat lastXPosition = 0.0f;
+		CGFloat lastYPosition = 0.0f;
+		
+		for (NSUInteger index=0; index<[sortedLineData count]; index++)
+		{
+			JBLineChartPoint *lineChartPoint = [sortedLineData objectAtIndex:index];
 			
-			if (lineData.count == 0)
+			if(lineChartPoint.hidden)
 			{
-				return nil;
+				continue;
 			}
 			
-			path.miterLimit = kJBLineChartLinesViewMiterLimit;
-			
-			JBLineChartPoint *previousLineChartPoint = nil;
-			CGFloat previousSlope = 0.0f;
-			
-			NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:smoothLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (BOOL)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView smoothLineAtLineIndex:(NSUInteger)lineIndex");
-			BOOL smoothLine = [self.delegate lineChartLinesView:self smoothLineAtLineIndex:lineIndex];
-			
-			BOOL visiblePointFound = NO;
-			NSArray *sortedLineData = [lineData sortedArrayUsingSelector:@selector(compare:)];
-			CGFloat firstXPosition = 0.0f;
-			CGFloat firstYPosition = 0.0f;
-			CGFloat lastXPosition = 0.0f;
-			CGFloat lastYPosition = 0.0f;
-			
-			for (NSUInteger index = 0; index < [sortedLineData count]; index++)
+			if (!visiblePointFound)
 			{
-				JBLineChartPoint *lineChartPoint = [sortedLineData objectAtIndex:index];
-				
-				if(lineChartPoint.hidden)
+				[path moveToPoint:CGPointMake(lineChartPoint.position.x, lineChartPoint.position.y)];
+				firstXPosition = lineChartPoint.position.x;
+				firstYPosition = lineChartPoint.position.y;
+				visiblePointFound = YES;
+			}
+			else
+			{
+				JBLineChartPoint *nextLineChartPoint = nil;
+				if (index != ([lineData count] - 1))
 				{
-					continue;
+					nextLineChartPoint = [sortedLineData objectAtIndex:(index + 1)];
 				}
 				
-				if (!visiblePointFound)
+				CGFloat nextSlope = (nextLineChartPoint != nil) ? ((nextLineChartPoint.position.y - lineChartPoint.position.y)) / ((nextLineChartPoint.position.x - lineChartPoint.position.x)) : previousSlope;
+				CGFloat currentSlope = ((lineChartPoint.position.y - previousLineChartPoint.position.y)) / (lineChartPoint.position.x-previousLineChartPoint.position.x);
+				
+				BOOL deltaFromNextSlope = ((currentSlope >= (nextSlope + kJBLineChartLinesViewSmoothThresholdSlope)) || (currentSlope <= (nextSlope - kJBLineChartLinesViewSmoothThresholdSlope)));
+				BOOL deltaFromPreviousSlope = ((currentSlope >= (previousSlope + kJBLineChartLinesViewSmoothThresholdSlope)) || (currentSlope <= (previousSlope - kJBLineChartLinesViewSmoothThresholdSlope)));
+				BOOL deltaFromPreviousY = (lineChartPoint.position.y >= previousLineChartPoint.position.y + kJBLineChartLinesViewSmoothThresholdVertical) || (lineChartPoint.position.y <= previousLineChartPoint.position.y - kJBLineChartLinesViewSmoothThresholdVertical);
+				
+				if (smoothLine && deltaFromNextSlope && deltaFromPreviousSlope && deltaFromPreviousY)
 				{
-					[path moveToPoint:CGPointMake(lineChartPoint.position.x, lineChartPoint.position.y)];
-					firstXPosition = lineChartPoint.position.x;
-					firstYPosition = lineChartPoint.position.y;
-					visiblePointFound = YES;
+					CGFloat deltaX = lineChartPoint.position.x - previousLineChartPoint.position.x;
+					CGFloat controlPointX = previousLineChartPoint.position.x + (deltaX / 2);
+					
+					CGPoint controlPoint1 = CGPointMake(controlPointX, previousLineChartPoint.position.y);
+					CGPoint controlPoint2 = CGPointMake(controlPointX, lineChartPoint.position.y);
+					
+					[path addCurveToPoint:CGPointMake(lineChartPoint.position.x, lineChartPoint.position.y) controlPoint1:controlPoint1 controlPoint2:controlPoint2];
 				}
 				else
 				{
-					JBLineChartPoint *nextLineChartPoint = nil;
-					if (index != ([lineData count] - 1))
-					{
-						nextLineChartPoint = [sortedLineData objectAtIndex:(index + 1)];
-					}
-					
-					CGFloat nextSlope = (nextLineChartPoint != nil) ? ((nextLineChartPoint.position.y - lineChartPoint.position.y)) / ((nextLineChartPoint.position.x - lineChartPoint.position.x)) : previousSlope;
-					CGFloat currentSlope = ((lineChartPoint.position.y - previousLineChartPoint.position.y)) / (lineChartPoint.position.x-previousLineChartPoint.position.x);
-					
-					BOOL deltaFromNextSlope = ((currentSlope >= (nextSlope + kJBLineChartLinesViewSmoothThresholdSlope)) || (currentSlope <= (nextSlope - kJBLineChartLinesViewSmoothThresholdSlope)));
-					BOOL deltaFromPreviousSlope = ((currentSlope >= (previousSlope + kJBLineChartLinesViewSmoothThresholdSlope)) || (currentSlope <= (previousSlope - kJBLineChartLinesViewSmoothThresholdSlope)));
-					BOOL deltaFromPreviousY = (lineChartPoint.position.y >= previousLineChartPoint.position.y + kJBLineChartLinesViewSmoothThresholdVertical) || (lineChartPoint.position.y <= previousLineChartPoint.position.y - kJBLineChartLinesViewSmoothThresholdVertical);
-					
-					if (smoothLine && deltaFromNextSlope && deltaFromPreviousSlope && deltaFromPreviousY)
-					{
-						CGFloat deltaX = lineChartPoint.position.x - previousLineChartPoint.position.x;
-						CGFloat controlPointX = previousLineChartPoint.position.x + (deltaX / 2);
-						
-						CGPoint controlPoint1 = CGPointMake(controlPointX, previousLineChartPoint.position.y);
-						CGPoint controlPoint2 = CGPointMake(controlPointX, lineChartPoint.position.y);
-						
-						[path addCurveToPoint:CGPointMake(lineChartPoint.position.x, lineChartPoint.position.y) controlPoint1:controlPoint1 controlPoint2:controlPoint2];
-					}
-					else
-					{
-						[path addLineToPoint:CGPointMake(lineChartPoint.position.x, lineChartPoint.position.y)];
-					}
-					
-					lastXPosition = lineChartPoint.position.x;
-					lastYPosition = lineChartPoint.position.y;
-					previousSlope = currentSlope;
+					[path addLineToPoint:CGPointMake(lineChartPoint.position.x, lineChartPoint.position.y)];
 				}
-				previousLineChartPoint = lineChartPoint;
+				
+				lastXPosition = lineChartPoint.position.x;
+				lastYPosition = lineChartPoint.position.y;
+				previousSlope = currentSlope;
 			}
-
-			if (filled)
+			previousLineChartPoint = lineChartPoint;
+		}
+		
+		if (filled)
+		{
+			UIBezierPath *fillPath = [path copy];
+			
+			if(visiblePointFound)
 			{
-				UIBezierPath *fillPath = [path copy];
+				[fillPath addLineToPoint:CGPointMake(lastXPosition, lastYPosition)];
+				[fillPath addLineToPoint:CGPointMake(lastXPosition, self.bounds.size.height)];
 				
-				if(visiblePointFound)
-				{
-					[fillPath addLineToPoint:CGPointMake(lastXPosition, lastYPosition)];
-					[fillPath addLineToPoint:CGPointMake(lastXPosition, self.bounds.size.height)];
-					
-					[fillPath addLineToPoint:CGPointMake(firstXPosition, self.bounds.size.height)];
-					[fillPath addLineToPoint:CGPointMake(firstXPosition, firstYPosition)];
-				}
-				
-				return fillPath;
+				[fillPath addLineToPoint:CGPointMake(firstXPosition, self.bounds.size.height)];
+				[fillPath addLineToPoint:CGPointMake(firstXPosition, firstYPosition)];
 			}
+			
+			return fillPath;
 		}
 	}
 
 	return path;
 }
 
-- (JBLineLayer *)lineLayerForLineIndex:(NSUInteger)lineIndex
+- (JBLineLayer *)lineLayerForLineIndex:(NSUInteger)lineIndex withPath:(UIBezierPath *)path
 {
 	JBLineLayer *lineLayer = nil;
 	for (CALayer *layer in [self.layer sublayers])
@@ -1932,10 +1822,13 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 	NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:widthForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (CGFloat)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView widthForLineAtLineIndex:(NSUInteger)lineIndex");
 	lineLayer.lineWidth = [self.delegate lineChartLinesView:self widthForLineAtLineIndex:lineIndex];
 	
+	lineLayer.path = path.CGPath;
+	lineLayer.frame = self.bounds;
+	
 	return lineLayer;
 }
 
-- (JBFillLayer *)fillLayerForLineIndex:(NSUInteger)lineIndex
+- (JBFillLayer *)fillLayerForLineIndex:(NSUInteger)lineIndex withPath:(UIBezierPath *)path
 {
 	JBFillLayer *fillLayer = nil;
 	for (CALayer *layer in [self.layer sublayers])
@@ -1972,6 +1865,9 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 		fillLayer.lineCap = kCALineCapButt;
 		fillLayer.lineJoin = kCALineJoinMiter;
 	}
+	
+	fillLayer.path = path.CGPath;
+	fillLayer.frame = self.bounds;
 	
 	return fillLayer;
 }
