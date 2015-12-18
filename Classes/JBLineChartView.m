@@ -123,6 +123,8 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 
 // Getters
 - (UIBezierPath *)bezierPathForLineIndex:(NSUInteger)lineIndex filled:(BOOL)filled;
+
+// Generators
 - (JBLineLayer *)lineLayerForLineIndex:(NSUInteger)lineIndex withPath:(UIBezierPath *)path;
 - (JBFillLayer *)fillLayerForLineIndex:(NSUInteger)lineIndex withPath:(UIBezierPath *)path;
 
@@ -1669,109 +1671,109 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 
 - (UIBezierPath *)bezierPathForLineIndex:(NSUInteger)lineIndex filled:(BOOL)filled
 {
-	UIBezierPath *path = [UIBezierPath bezierPath];
-	{
-		NSAssert([self.delegate respondsToSelector:@selector(chartDataForLineChartLinesView:)], @"JBLineChartLinesView // delegate must implement - (NSArray *)chartDataForLineChartLinesView:(JBLineChartLinesView *)lineChartLinesView");
-		NSArray *chartData = [self.delegate chartDataForLineChartLinesView:self];
+	NSAssert([self.delegate respondsToSelector:@selector(chartDataForLineChartLinesView:)], @"JBLineChartLinesView // delegate must implement - (NSArray *)chartDataForLineChartLinesView:(JBLineChartLinesView *)lineChartLinesView");
+	NSArray *chartData = [self.delegate chartDataForLineChartLinesView:self];
 
-		if (lineIndex >= [chartData count])
+	if ([chartData count] > 0)
+	{
+		if (lineIndex < [chartData count])
 		{
-			return nil;
-		}
-		
-		NSArray *lineData = [chartData objectAtIndex:lineIndex];
-		
-		if (lineData.count == 0)
-		{
-			return nil;
-		}
-		
-		path.miterLimit = kJBLineChartLinesViewMiterLimit;
-		
-		JBLineChartPoint *previousLineChartPoint = nil;
-		CGFloat previousSlope = 0.0f;
-		
-		NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:smoothLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (BOOL)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView smoothLineAtLineIndex:(NSUInteger)lineIndex");
-		BOOL smoothLine = [self.delegate lineChartLinesView:self smoothLineAtLineIndex:lineIndex];
-		
-		BOOL visiblePointFound = NO;
-		NSArray *sortedLineData = [lineData sortedArrayUsingSelector:@selector(compare:)];
-		CGFloat firstXPosition = 0.0f;
-		CGFloat firstYPosition = 0.0f;
-		CGFloat lastXPosition = 0.0f;
-		CGFloat lastYPosition = 0.0f;
-		
-		for (NSUInteger index=0; index<[sortedLineData count]; index++)
-		{
-			JBLineChartPoint *lineChartPoint = [sortedLineData objectAtIndex:index];
-			
-			if(lineChartPoint.hidden)
+			NSArray *lineData = [chartData objectAtIndex:lineIndex];
+			if ([lineData count] > 0)
 			{
-				continue;
-			}
-			
-			if (!visiblePointFound)
-			{
-				[path moveToPoint:CGPointMake(lineChartPoint.position.x, lineChartPoint.position.y)];
-				firstXPosition = lineChartPoint.position.x;
-				firstYPosition = lineChartPoint.position.y;
-				visiblePointFound = YES;
-			}
-			else
-			{
-				JBLineChartPoint *nextLineChartPoint = nil;
-				if (index != ([lineData count] - 1))
+				UIBezierPath *bezierPath = [UIBezierPath bezierPath];
+
+				bezierPath.miterLimit = kJBLineChartLinesViewMiterLimit;
+				
+				JBLineChartPoint *previousLineChartPoint = nil;
+				CGFloat previousSlope = 0.0f;
+				
+				NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:smoothLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (BOOL)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView smoothLineAtLineIndex:(NSUInteger)lineIndex");
+				BOOL smoothLine = [self.delegate lineChartLinesView:self smoothLineAtLineIndex:lineIndex];
+				
+				BOOL visiblePointFound = NO;
+				NSArray *sortedLineData = [lineData sortedArrayUsingSelector:@selector(compare:)];
+				CGFloat firstXPosition = 0.0f;
+				CGFloat firstYPosition = 0.0f;
+				CGFloat lastXPosition = 0.0f;
+				CGFloat lastYPosition = 0.0f;
+				
+				for (NSUInteger index=0; index<[sortedLineData count]; index++)
 				{
-					nextLineChartPoint = [sortedLineData objectAtIndex:(index + 1)];
+					JBLineChartPoint *lineChartPoint = [sortedLineData objectAtIndex:index];
+					
+					if(lineChartPoint.hidden)
+					{
+						continue;
+					}
+					
+					if (!visiblePointFound)
+					{
+						[bezierPath moveToPoint:CGPointMake(lineChartPoint.position.x, lineChartPoint.position.y)];
+						firstXPosition = lineChartPoint.position.x;
+						firstYPosition = lineChartPoint.position.y;
+						visiblePointFound = YES;
+					}
+					else
+					{
+						JBLineChartPoint *nextLineChartPoint = nil;
+						if (index != ([lineData count] - 1))
+						{
+							nextLineChartPoint = [sortedLineData objectAtIndex:(index + 1)];
+						}
+						
+						CGFloat nextSlope = (nextLineChartPoint != nil) ? ((nextLineChartPoint.position.y - lineChartPoint.position.y)) / ((nextLineChartPoint.position.x - lineChartPoint.position.x)) : previousSlope;
+						CGFloat currentSlope = ((lineChartPoint.position.y - previousLineChartPoint.position.y)) / (lineChartPoint.position.x-previousLineChartPoint.position.x);
+						
+						BOOL deltaFromNextSlope = ((currentSlope >= (nextSlope + kJBLineChartLinesViewSmoothThresholdSlope)) || (currentSlope <= (nextSlope - kJBLineChartLinesViewSmoothThresholdSlope)));
+						BOOL deltaFromPreviousSlope = ((currentSlope >= (previousSlope + kJBLineChartLinesViewSmoothThresholdSlope)) || (currentSlope <= (previousSlope - kJBLineChartLinesViewSmoothThresholdSlope)));
+						BOOL deltaFromPreviousY = (lineChartPoint.position.y >= previousLineChartPoint.position.y + kJBLineChartLinesViewSmoothThresholdVertical) || (lineChartPoint.position.y <= previousLineChartPoint.position.y - kJBLineChartLinesViewSmoothThresholdVertical);
+						
+						if (smoothLine && deltaFromNextSlope && deltaFromPreviousSlope && deltaFromPreviousY)
+						{
+							CGFloat deltaX = lineChartPoint.position.x - previousLineChartPoint.position.x;
+							CGFloat controlPointX = previousLineChartPoint.position.x + (deltaX / 2);
+							
+							CGPoint controlPoint1 = CGPointMake(controlPointX, previousLineChartPoint.position.y);
+							CGPoint controlPoint2 = CGPointMake(controlPointX, lineChartPoint.position.y);
+							
+							[bezierPath addCurveToPoint:CGPointMake(lineChartPoint.position.x, lineChartPoint.position.y) controlPoint1:controlPoint1 controlPoint2:controlPoint2];
+						}
+						else
+						{
+							[bezierPath addLineToPoint:CGPointMake(lineChartPoint.position.x, lineChartPoint.position.y)];
+						}
+						
+						lastXPosition = lineChartPoint.position.x;
+						lastYPosition = lineChartPoint.position.y;
+						previousSlope = currentSlope;
+					}
+					previousLineChartPoint = lineChartPoint;
 				}
 				
-				CGFloat nextSlope = (nextLineChartPoint != nil) ? ((nextLineChartPoint.position.y - lineChartPoint.position.y)) / ((nextLineChartPoint.position.x - lineChartPoint.position.x)) : previousSlope;
-				CGFloat currentSlope = ((lineChartPoint.position.y - previousLineChartPoint.position.y)) / (lineChartPoint.position.x-previousLineChartPoint.position.x);
-				
-				BOOL deltaFromNextSlope = ((currentSlope >= (nextSlope + kJBLineChartLinesViewSmoothThresholdSlope)) || (currentSlope <= (nextSlope - kJBLineChartLinesViewSmoothThresholdSlope)));
-				BOOL deltaFromPreviousSlope = ((currentSlope >= (previousSlope + kJBLineChartLinesViewSmoothThresholdSlope)) || (currentSlope <= (previousSlope - kJBLineChartLinesViewSmoothThresholdSlope)));
-				BOOL deltaFromPreviousY = (lineChartPoint.position.y >= previousLineChartPoint.position.y + kJBLineChartLinesViewSmoothThresholdVertical) || (lineChartPoint.position.y <= previousLineChartPoint.position.y - kJBLineChartLinesViewSmoothThresholdVertical);
-				
-				if (smoothLine && deltaFromNextSlope && deltaFromPreviousSlope && deltaFromPreviousY)
+				if (filled)
 				{
-					CGFloat deltaX = lineChartPoint.position.x - previousLineChartPoint.position.x;
-					CGFloat controlPointX = previousLineChartPoint.position.x + (deltaX / 2);
+					UIBezierPath *filledBezierPath = [bezierPath copy];
 					
-					CGPoint controlPoint1 = CGPointMake(controlPointX, previousLineChartPoint.position.y);
-					CGPoint controlPoint2 = CGPointMake(controlPointX, lineChartPoint.position.y);
+					if(visiblePointFound)
+					{
+						[filledBezierPath addLineToPoint:CGPointMake(lastXPosition, lastYPosition)];
+						[filledBezierPath addLineToPoint:CGPointMake(lastXPosition, self.bounds.size.height)];
+						
+						[filledBezierPath addLineToPoint:CGPointMake(firstXPosition, self.bounds.size.height)];
+						[filledBezierPath addLineToPoint:CGPointMake(firstXPosition, firstYPosition)];
+					}
 					
-					[path addCurveToPoint:CGPointMake(lineChartPoint.position.x, lineChartPoint.position.y) controlPoint1:controlPoint1 controlPoint2:controlPoint2];
+					return filledBezierPath;
 				}
 				else
 				{
-					[path addLineToPoint:CGPointMake(lineChartPoint.position.x, lineChartPoint.position.y)];
+					return bezierPath;
 				}
-				
-				lastXPosition = lineChartPoint.position.x;
-				lastYPosition = lineChartPoint.position.y;
-				previousSlope = currentSlope;
 			}
-			previousLineChartPoint = lineChartPoint;
-		}
-		
-		if (filled)
-		{
-			UIBezierPath *fillPath = [path copy];
-			
-			if(visiblePointFound)
-			{
-				[fillPath addLineToPoint:CGPointMake(lastXPosition, lastYPosition)];
-				[fillPath addLineToPoint:CGPointMake(lastXPosition, self.bounds.size.height)];
-				
-				[fillPath addLineToPoint:CGPointMake(firstXPosition, self.bounds.size.height)];
-				[fillPath addLineToPoint:CGPointMake(firstXPosition, firstYPosition)];
-			}
-			
-			return fillPath;
 		}
 	}
-
-	return path;
+	return nil;
 }
 
 - (JBLineLayer *)lineLayerForLineIndex:(NSUInteger)lineIndex withPath:(UIBezierPath *)path
