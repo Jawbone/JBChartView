@@ -123,8 +123,6 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 
 // Getters
 - (UIBezierPath *)bezierPathForLineIndex:(NSUInteger)lineIndex filled:(BOOL)filled;
-
-// Generators
 - (JBLineLayer *)lineLayerForLineIndex:(NSUInteger)lineIndex withPath:(UIBezierPath *)path;
 - (JBFillLayer *)fillLayerForLineIndex:(NSUInteger)lineIndex withPath:(UIBezierPath *)path;
 
