@@ -11,31 +11,32 @@
 @class JBLineChartView;
 
 /**
- * Current support for two line styles: solid (default) and dashed. 
+ * Indicates how a line's main path will be drawn.
  */
 typedef NS_ENUM(NSInteger, JBLineChartViewLineStyle){
-    /**
-     *  Solid line.
-     */
-    JBLineChartViewLineStyleSolid,
-    /**
-     *  Dashed line with a phase of 3:2 (3 points dashed, 2 points spaced).
-     */
+	/**
+	 *  Solid line.
+	 */
+	JBLineChartViewLineStyleSolid,
+	/**
+	 *  Dashed with a 3:2 phase (3 points dashed, 2 points spaced).
+	 */
 	JBLineChartViewLineStyleDashed
 };
 
 /**
- * Current support for two line color styles: solid (default) and gradient.
+ *  Indicates how a line's main path or fill (including selections)
+ *  will be decorated (via color options).
  */
-typedef NS_ENUM(NSInteger, JBLineChartViewLineColorStyle){
-    /**
-     *  Solid line and fill color.
-     */
-    JBLineChartViewLineColorStyleSolid,
-    /**
-     *  Gradient line and fill color.
-     */
-    JBLineChartViewLineColorStyleGradient
+typedef NS_ENUM(NSInteger, JBLineChartViewColorStyle) {
+	/**
+	 *  A solid color (with alpha support via UIColor).
+	 */
+	JBLineChartViewColorStyleSolid,
+	/**
+	 *  a gradient (via CAGradientLayer).
+	 */
+	JBLineChartViewColorStyleGradient
 };
 
 @protocol JBLineChartViewDataSource <JBChartViewDataSource>
@@ -92,7 +93,7 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineColorStyle){
 /**
  *  Returns the opacity value to be used for dimming the line & fill during selection events.
  *  This value is applied to the line or fill's opacity anytime it's not selected (but another line is).
- *  This applies to both solid and gradient line styles.
+ *  This applies to both solid and gradient color styles.
  *
  *  Default: 0.2.
  *
@@ -186,10 +187,11 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineColorStyle){
  *  @param lineChartView    A line chart object informing the delegate about the new selection.
  *  @param lineIndex        An index number identifying the closest line in the chart to the current touch
  */
-- (BOOL)lineChartView:(JBLineChartView *)lineChartView shouldIgnoreSelectionAtIndex:(NSUInteger)lineIndex;
+- (BOOL)lineChartView:(JBLineChartView *)lineChartView shouldIgnoreSelectionAtLineIndex:(NSUInteger)lineIndex;
 
 /**
- *  Returns the color of particular line at lineIndex within the chart.
+ *  Returns the color of particular line at lineIndex.
+ *  For this to apply, lineChartView:colorStyleForLineAtLineIndex: must return JBLineChartViewColorStyleSolid (default).
  *
  *  Default: black color.
  *
@@ -202,18 +204,20 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineColorStyle){
 
 /**
  *  Returns the gradient layer to be used for a particular line at lineIndex within the chart.
+ *  For this to apply, lineChartView:colorStyleForLineAtLineIndex: must return JBLineChartViewColorStyleGradient.
  *
  *  Default: black to light gray.
  *
  *  @param lineChartView    The line chart object requesting this information.
  *  @param lineIndex        An index number identifying a line in the chart.
  *
- *  @return The gradient layer to be used as a mask for the line in the chart.
+ *  @return The gradient layer to be used to shade a line in the chart.
  */
 - (CAGradientLayer *)lineChartView:(JBLineChartView *)lineChartView gradientForLineAtLineIndex:(NSUInteger)lineIndex;
 
 /**
  *  Returns the fill color of particular line at lineIndex within the chart.
+ *  For this to apply, lineChartView:fillColorStyleForLineAtLineIndex: must return JBLineChartViewColorStyleSolid (default).
  *
  *  Default: clear color.
  *
@@ -226,13 +230,14 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineColorStyle){
 
 /**
  *  Returns the gradient layer to be used for a fill of a particular line at lineIndex within the chart.
+ *  For this to apply, lineChartView:fillColorStyleForLineAtLineIndex: must return JBLineChartViewColorStyleGradient.
  *
  *  Default: black to light gray.
  *
  *  @param lineChartView    The line chart object requesting this information.
  *  @param lineIndex        An index number identifying a line in the chart.
  *
- *  @return The fill color to show under a line in the chart.
+ *  @return The fill gradient to show under a line in the chart.
  */
 - (CAGradientLayer *)lineChartView:(JBLineChartView *)lineChartView fillGradientForLineAtLineIndex:(NSUInteger)lineIndex;
 
@@ -306,8 +311,9 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineColorStyle){
 /**
  *  Returns the selection color to be overlayed on a line within the chart during touch events.
  *  The property showsLineSelection must be YES for the color to apply.
+ *  As well, lineChartView:selectionColorStyleForLineAtLineIndex: must return JBLineChartViewColorStyleSolid (default).
  *
- *  Default: white color.
+ *  Default: matches lineChartView:colorForLineAtLineIndex:.
  *
  *  @param lineChartView    The line chart object requesting this information.
  *  @param lineIndex        An index number identifying a line in the chart.
@@ -318,22 +324,24 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineColorStyle){
 
 /**
  *  Returns the gradient layer to be overlayed on a line during touch events.
- *  Alpha of gradient is controlled by the color returned from lineChartView:selectionColorForLineAtLineIndex:
+ *  The property showsLineSelection must be YES for the color to apply.
+ *  As well, lineChartView:selectionColorStyleForLineAtLineIndex: must return JBLineChartViewColorStyleGradient.
  *
  *  Default: matches lineChartView:gradientForLineAtLineIndex:.
  *
  *  @param lineChartView    The line chart object requesting this information.
  *  @param lineIndex        An index number identifying a line in the chart.
  *
- *  @return The gradient layer to be used as a mask for the line in the chart.
+ *  @return The gradient layer to be used to highlight a line during chart selections.
  */
 - (CAGradientLayer *)lineChartView:(JBLineChartView *)lineChartView selectionGradientForLineAtLineIndex:(NSUInteger)lineIndex;
 
 /**
  *  Returns the selection fill color to be overlayed under a line within the chart during touch events.
  *  The property showsLineSelection must be YES for the color to apply.
+ *  As well, lineChartView:selectionFillColorStyleForLineAtLineIndex: must return JBLineChartViewColorStyleSolid (default).
  *
- *  Default: clear color.
+ *  Default: matches lineChartView:fillColorForLineAtLineIndex:.
  *
  *  @param lineChartView    The line chart object requesting this information.
  *  @param lineIndex        An index number identifying a line in the chart.
@@ -344,14 +352,15 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineColorStyle){
 
 /**
  *  Returns the gradient layer to be used for the selection fill to be overlayed under a line during touch events.
- *  Alpha of gradient is controlled by the color returned from lineChartView:selectionFillColorForLineAtLineIndex:
+ *  The property showsLineSelection must be YES for the color to apply.
+ *  As well, lineChartView:selectionFillColorStyleForLineAtLineIndex: must return JBLineChartViewColorStyleGrdient.
  *
  *  Default: matches lineChartView:fillGradientForLineAtLineIndex.
  *
  *  @param lineChartView    The line chart object requesting this information.
  *  @param lineIndex        An index number identifying a line in the chart.
  *
- *  @return The fill color to show under a line in the chart.
+ *  @return The gradient layer to be used to highlight under a line during chart selections.
  */
 - (CAGradientLayer *)lineChartView:(JBLineChartView *)lineChartView selectionFillGradientForLineAtLineIndex:(NSUInteger)lineIndex;
 
@@ -384,16 +393,55 @@ typedef NS_ENUM(NSInteger, JBLineChartViewLineColorStyle){
 
 /**
  *  Returns the line color style of a particular line at lineIndex within the chart.
- *  See JBLineChartViewLineColorStyle for line color style descriptions.
+ *  See JBLineChartViewColorStyle for color style descriptions.
  *
- *  Default: JBLineChartViewLineColorStyleSolid.
+ *  Default: JBLineChartViewColorStyleSolid.
  *
  *  @param lineChartView    The line chart object requesting this information.
  *  @param lineIndex        An index number identifying a line in the chart.
  *
- *  @return The line style to be used to draw a line in the chart.
+ *  @return The color style to be used to shade a line in the chart.
  */
-- (JBLineChartViewLineColorStyle)lineChartView:(JBLineChartView *)lineChartView lineColorStyleForLineAtLineIndex:(NSUInteger)lineIndex;
+- (JBLineChartViewColorStyle)lineChartView:(JBLineChartView *)lineChartView colorStyleForLineAtLineIndex:(NSUInteger)lineIndex;
+
+/**
+ *  Returns the fill color style of a particular line at lineIndex within the chart.
+ *  See JBLineChartViewColorStyle for color style descriptions.
+ *
+ *  Default: JBLineChartViewColorStyleSolid.
+ *
+ *  @param lineChartView    The line chart object requesting this information.
+ *  @param lineIndex        An index number identifying a line in the chart.
+ *
+ *  @return The fill color style to show under a line in the chart.
+ */
+- (JBLineChartViewColorStyle)lineChartView:(JBLineChartView *)lineChartView fillColorStyleForLineAtLineIndex:(NSUInteger)lineIndex;
+
+/**
+ *  Returns the selection color style of a particular line at lineIndex within the chart.
+ *  See JBLineChartViewColorStyle for color style descriptions.
+ *
+ *  Default: JBLineChartViewColorStyleSolid.
+ *
+ *  @param lineChartView    The line chart object requesting this information.
+ *  @param lineIndex        An index number identifying a line in the chart.
+ *
+ *  @return The color style to be used to highlight a line during chart selections.
+ */
+- (JBLineChartViewColorStyle)lineChartView:(JBLineChartView *)lineChartView selectionColorStyleForLineAtLineIndex:(NSUInteger)lineIndex;
+
+/**
+ *  Returns the fill color style of a particular line at lineIndex within the chart.
+ *  See JBLineChartViewColorStyle for color style descriptions.
+ *
+ *  Default: JBLineChartViewColorStyleSolid.
+ *
+ *  @param lineChartView    The line chart object requesting this information.
+ *  @param lineIndex        An index number identifying a line in the chart.
+ *
+ *  @return The color style to be used to highlight under a line during chart selections.
+ */
+- (JBLineChartViewColorStyle)lineChartView:(JBLineChartView *)lineChartView selectionFillColorStyleForLineAtLineIndex:(NSUInteger)lineIndex;
 
 @end
 

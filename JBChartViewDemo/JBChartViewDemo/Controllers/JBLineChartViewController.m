@@ -312,9 +312,9 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
     return (lineIndex == JBLineChartLineSolid) ? JBLineChartViewLineStyleSolid : JBLineChartViewLineStyleDashed;
 }
 
-- (JBLineChartViewLineColorStyle)lineChartView:(JBLineChartView *)lineChartView lineColorStyleForLineAtLineIndex:(NSUInteger)lineIndex
+- (JBLineChartViewColorStyle)lineChartView:(JBLineChartView *)lineChartView lineColorStyleForLineAtLineIndex:(NSUInteger)lineIndex
 {
-    return (lineIndex == JBLineChartLineSolid) ? JBLineChartViewLineColorStyleSolid : JBLineChartViewLineColorStyleGradient;
+	return (lineIndex == JBLineChartLineSolid) ? JBLineChartViewColorStyleSolid : JBLineChartViewColorStyleGradient;
 }
 
 #pragma mark - Buttons
