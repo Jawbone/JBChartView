@@ -88,10 +88,21 @@ static UIColor *kJBLineChartViewDefaultFillGradientEndColor = nil;
 
 @interface JBShapeLayer : CAShapeLayer
 
-- (instancetype)initWithTag:(NSUInteger)tag filled:(BOOL)filled;
+- (instancetype)initWithTag:(NSUInteger)tag filled:(BOOL)filled currentPath:(UIBezierPath *)currentPath;
 
 @property (nonatomic, readonly) NSUInteger tag;
 @property (nonatomic, readonly) BOOL filled;
+@property (nonatomic, readonly) UIBezierPath *currentPath;
+
+@end
+
+@interface JBGradientLayer : CAGradientLayer
+
+- (instancetype)initWithGradientLayer:(CAGradientLayer *)gradientLayer tag:(NSUInteger)tag filled:(BOOL)filled currentMask:(CAShapeLayer *)currentMask;
+
+@property (nonatomic, readonly) NSUInteger tag;
+@property (nonatomic, readonly) BOOL filled;
+@property (nonatomic, readonly) CAShapeLayer *currentMask;
 
 @end
 
@@ -112,6 +123,8 @@ static UIColor *kJBLineChartViewDefaultFillGradientEndColor = nil;
 
 // Getters
 - (UIBezierPath *)bezierPathForLineChartLine:(JBLineChartLine *)lineChartLine filled:(BOOL)filled;
+- (JBShapeLayer *)shapeLayerForLineIndex:(NSUInteger)lineIndex filled:(BOOL)filled;
+- (JBGradientLayer *)gradientLayerForLineIndex:(NSUInteger)lineIndex filled:(BOOL)filled;
 
 // Callback helpers
 - (void)fireCallback:(void (^)())callback;
@@ -1333,13 +1346,36 @@ static UIColor *kJBLineChartViewDefaultFillGradientEndColor = nil;
 
 @implementation JBShapeLayer
 
-- (instancetype)initWithTag:(NSUInteger)tag filled:(BOOL)filled
+- (instancetype)initWithTag:(NSUInteger)tag filled:(BOOL)filled currentPath:(UIBezierPath *)currentPath
 {
 	self = [super init];
 	if (self)
 	{
 		_tag = tag;
 		_filled = filled;
+		_currentPath = [currentPath copy];
+	}
+	return self;
+}
+
+@end
+
+@implementation JBGradientLayer
+
+- (instancetype)initWithGradientLayer:(CAGradientLayer *)gradientLayer tag:(NSUInteger)tag filled:(BOOL)filled currentMask:(CAShapeLayer *)currentMask
+{
+	self = [super init];
+	if (self)
+	{
+		self.colors = gradientLayer.colors;
+		self.locations = gradientLayer.locations;
+		self.startPoint = gradientLayer.startPoint;
+		self.endPoint = gradientLayer.endPoint;
+		self.type = gradientLayer.type;
+		
+		_tag = tag;
+		_filled = filled;
+		_currentMask = [NSKeyedUnarchiver unarchiveObjectWithData:[NSKeyedArchiver archivedDataWithRootObject:currentMask]]; // copy
 	}
 	return self;
 }
@@ -1384,9 +1420,9 @@ static UIColor *kJBLineChartViewDefaultFillGradientEndColor = nil;
 	// Remove existing layers
 	for (CALayer *layer in [self.layer sublayers])
 	{
-		if ([layer isKindOfClass:[CAShapeLayer class]] || [layer isKindOfClass:[CAGradientLayer class]])
+		if ([layer isKindOfClass:[CAGradientLayer class]])
 		{
-			[layer removeFromSuperlayer];
+			//[layer removeFromSuperlayer];
 		}
 	}
 	
@@ -1405,95 +1441,111 @@ static UIColor *kJBLineChartViewDefaultFillGradientEndColor = nil;
 				continue;
 			}
 			
-			JBShapeLayer *shapeLayer = [[JBShapeLayer alloc] initWithTag:lineIndex filled:NO];
-			JBShapeLayer *fillLayer = [[JBShapeLayer alloc] initWithTag:lineIndex filled:YES];
+			JBShapeLayer *shapeLayer = [self shapeLayerForLineIndex:lineIndex filled:NO];
+			if (shapeLayer == nil)
 			{
-				shapeLayer.zPosition = 0.1f;
-				shapeLayer.fillColor = [UIColor clearColor].CGColor;
-				
-				// Line style
-				if (lineChartLine.lineStyle == JBLineChartViewLineStyleSolid)
+				shapeLayer = [[JBShapeLayer alloc] initWithTag:lineIndex filled:NO currentPath:linePath];
+			}
+			
+			JBShapeLayer *fillLayer = [self shapeLayerForLineIndex:lineIndex filled:YES];
+			if (fillLayer == nil)
+			{
+				fillLayer = [[JBShapeLayer alloc] initWithTag:lineIndex filled:YES currentPath:fillPath];
+			}
+			
+			shapeLayer.zPosition = 0.1f;
+			shapeLayer.fillColor = [UIColor clearColor].CGColor;
+			
+			// Line style
+			if (lineChartLine.lineStyle == JBLineChartViewLineStyleSolid)
+			{
+				shapeLayer.lineDashPhase = 0.0;
+				shapeLayer.lineDashPattern = nil;
+			}
+			else if (lineChartLine.lineStyle == JBLineChartViewLineStyleDashed)
+			{
+				shapeLayer.lineDashPhase = kJBLineChartLinesViewDefaultLinePhase;
+				shapeLayer.lineDashPattern = kJBLineChartLinesViewDefaultDashPattern;
+			}
+			
+			// Smoothing
+			if (lineChartLine.smoothedLine)
+			{
+				if (lineChartLine.lineStyle == JBLineChartViewLineStyleDashed)
 				{
-					shapeLayer.lineDashPhase = 0.0;
-					shapeLayer.lineDashPattern = nil;
-				}
-				else if (lineChartLine.lineStyle == JBLineChartViewLineStyleDashed)
-				{
-					shapeLayer.lineDashPhase = kJBLineChartLinesViewDefaultLinePhase;
-					shapeLayer.lineDashPattern = kJBLineChartLinesViewDefaultDashPattern;
-				}
-				
-				// Smoothing
-				if (lineChartLine.smoothedLine)
-				{
-					if (lineChartLine.lineStyle == JBLineChartViewLineStyleDashed)
-					{
-						shapeLayer.lineCap = kCALineCapButt; // smoothed, dashed lines need butt caps
-					}
-					else
-					{
-						shapeLayer.lineCap = kCALineCapRound;
-					}
-					shapeLayer.lineJoin = kCALineJoinRound;
-					fillLayer.lineCap = kCALineCapRound;
-					fillLayer.lineJoin = kCALineJoinRound;
+					shapeLayer.lineCap = kCALineCapButt; // smoothed, dashed lines need butt caps
 				}
 				else
 				{
-					shapeLayer.lineCap = kCALineCapButt;
-					shapeLayer.lineJoin = kCALineJoinMiter;
-					fillLayer.lineCap = kCALineCapButt;
-					fillLayer.lineJoin = kCALineJoinMiter;
+					shapeLayer.lineCap = kCALineCapRound;
 				}
-				
-				// Width
-				NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:widthForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (CGFloat)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView widthForLineAtLineIndex:(NSUInteger)lineIndex");
-				shapeLayer.lineWidth = [self.delegate lineChartLinesView:self widthForLineAtLineIndex:lineIndex];
-				fillLayer.lineWidth = [self.delegate lineChartLinesView:self widthForLineAtLineIndex:lineIndex];
-
-				// Colors
-				NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:colorForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView colorForLineAtLineIndex:(NSUInteger)lineIndex");
-				shapeLayer.strokeColor = [self.delegate lineChartLinesView:self colorForLineAtLineIndex:lineIndex].CGColor;
-				
-				// Paths
-				shapeLayer.path = linePath.CGPath;
-				shapeLayer.frame = self.bounds;
-				fillLayer.path = fillPath.CGPath;
-				fillLayer.frame = self.bounds;
-
-				// Solid fill
-				if (lineChartLine.fillColorStyle == JBLineChartViewColorStyleSolid)
-				{
-					NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:fillColorForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView fillColorForLineAtLineIndex:(NSUInteger)lineIndex");
-					fillLayer.fillColor = [self.delegate lineChartLinesView:self fillColorForLineAtLineIndex:lineIndex].CGColor;
-					[self.layer addSublayer:fillLayer];
-				}
-				
-				// Gradient fill
-				else if (lineChartLine.fillColorStyle == JBLineChartViewColorStyleGradient)
+				shapeLayer.lineJoin = kCALineJoinRound;
+				fillLayer.lineCap = kCALineCapRound;
+				fillLayer.lineJoin = kCALineJoinRound;
+			}
+			else
+			{
+				shapeLayer.lineCap = kCALineCapButt;
+				shapeLayer.lineJoin = kCALineJoinMiter;
+				fillLayer.lineCap = kCALineCapButt;
+				fillLayer.lineJoin = kCALineJoinMiter;
+			}
+			
+			// Width
+			NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:widthForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (CGFloat)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView widthForLineAtLineIndex:(NSUInteger)lineIndex");
+			shapeLayer.lineWidth = [self.delegate lineChartLinesView:self widthForLineAtLineIndex:lineIndex];
+			fillLayer.lineWidth = [self.delegate lineChartLinesView:self widthForLineAtLineIndex:lineIndex];
+			
+			// Colors
+			NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:colorForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView colorForLineAtLineIndex:(NSUInteger)lineIndex");
+			shapeLayer.strokeColor = [self.delegate lineChartLinesView:self colorForLineAtLineIndex:lineIndex].CGColor;
+			
+			// Paths
+			shapeLayer.path = linePath.CGPath;
+			shapeLayer.frame = self.bounds;
+			fillLayer.path = fillPath.CGPath;
+			fillLayer.frame = self.bounds;
+			
+			// Solid fill
+			if (lineChartLine.fillColorStyle == JBLineChartViewColorStyleSolid)
+			{
+				NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:fillColorForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView fillColorForLineAtLineIndex:(NSUInteger)lineIndex");
+				fillLayer.fillColor = [self.delegate lineChartLinesView:self fillColorForLineAtLineIndex:lineIndex].CGColor;
+				[self.layer addSublayer:fillLayer];
+			}
+			
+			// Gradient fill
+			else if (lineChartLine.fillColorStyle == JBLineChartViewColorStyleGradient)
+			{
+				JBGradientLayer *fillGradientLayer = [self gradientLayerForLineIndex:lineIndex filled:YES];
+				if (fillGradientLayer == nil)
 				{
 					NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:fillGradientForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (CAGradientLayer *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView fillGradientForLineAtLineIndex:(NSUInteger)lineIndex");
-					CAGradientLayer *fillGradientLayer = [self.delegate lineChartLinesView:self fillGradientForLineAtLineIndex:lineIndex];
-					fillGradientLayer.frame = fillLayer.frame;
-					fillGradientLayer.mask = fillLayer;
-					[self.layer addSublayer:fillGradientLayer];
+					fillGradientLayer = [[JBGradientLayer alloc] initWithGradientLayer:[self.delegate lineChartLinesView:self fillGradientForLineAtLineIndex:lineIndex] tag:lineIndex filled:YES currentMask:fillLayer];
 				}
-				
-				// Solid line
-				if (lineChartLine.colorStyle == JBLineChartViewColorStyleSolid)
-				{
-					[self.layer addSublayer:shapeLayer];
-				}
-				
-				// Gradient line
-				else if (lineChartLine.colorStyle == JBLineChartViewColorStyleGradient)
+				fillGradientLayer.frame = fillLayer.frame;
+				fillGradientLayer.mask = fillLayer;
+				[self.layer addSublayer:fillGradientLayer];
+			}
+			
+			// Solid line
+			if (lineChartLine.colorStyle == JBLineChartViewColorStyleSolid)
+			{
+				[self.layer addSublayer:shapeLayer];
+			}
+			
+			// Gradient line
+			else if (lineChartLine.colorStyle == JBLineChartViewColorStyleGradient)
+			{
+				JBGradientLayer *gradientLayer = [self gradientLayerForLineIndex:lineIndex filled:NO];
+				if (gradientLayer == nil)
 				{
 					NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:gradientForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (CAGradientLayer *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView gradientForLineAtLineIndex:(NSUInteger)lineIndex");
-					CAGradientLayer *gradientLayer = [self.delegate lineChartLinesView:self gradientForLineAtLineIndex:lineIndex];
-					gradientLayer.frame = shapeLayer.frame;
-					gradientLayer.mask = shapeLayer;
-					[self.layer addSublayer:gradientLayer];
+					gradientLayer = [[JBGradientLayer alloc] initWithGradientLayer:[self.delegate lineChartLinesView:self gradientForLineAtLineIndex:lineIndex] tag:lineIndex filled:NO currentMask:fillLayer];
 				}
+				gradientLayer.frame = shapeLayer.frame;
+				gradientLayer.mask = shapeLayer;
+				[self.layer addSublayer:gradientLayer];
 			}
 		}
     }
@@ -1505,6 +1557,11 @@ static UIColor *kJBLineChartViewDefaultFillGradientEndColor = nil;
 {
 	// Drawing is all done with CG (no subviews here)
 	[self setNeedsDisplay];
+	
+	if (callback)
+	{
+		callback();
+	}
 }
 
 - (void)reloadDataAnimated:(BOOL)animated
@@ -1757,6 +1814,36 @@ static UIColor *kJBLineChartViewDefaultFillGradientEndColor = nil;
 		else
 		{
 			return bezierPath;
+		}
+	}
+	return nil;
+}
+
+- (JBShapeLayer *)shapeLayerForLineIndex:(NSUInteger)lineIndex filled:(BOOL)filled
+{
+	for (CALayer *layer in [self.layer sublayers])
+	{
+		if ([layer isKindOfClass:[JBShapeLayer class]])
+		{
+			if (((JBShapeLayer *)layer).tag == lineIndex && ((JBShapeLayer *)layer).filled == filled)
+			{
+				return (JBShapeLayer *)layer;
+			}
+		}
+	}
+	return nil;
+}
+
+- (JBGradientLayer *)gradientLayerForLineIndex:(NSUInteger)lineIndex filled:(BOOL)filled
+{
+	for (CALayer *layer in [self.layer sublayers])
+	{
+		if ([layer isKindOfClass:[JBGradientLayer class]])
+		{
+			if (((JBGradientLayer *)layer).tag == lineIndex && ((JBGradientLayer *)layer).filled == filled)
+			{
+				return (JBGradientLayer *)layer;
+			}
 		}
 	}
 	return nil;
