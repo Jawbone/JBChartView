@@ -1417,15 +1417,6 @@ static UIColor *kJBLineChartViewDefaultFillGradientEndColor = nil;
 {
     [super drawRect:rect];
 	
-	// Remove existing layers
-	for (CALayer *layer in [self.layer sublayers])
-	{
-		if ([layer isKindOfClass:[CAGradientLayer class]])
-		{
-			//[layer removeFromSuperlayer];
-		}
-	}
-	
 	NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesForLineChartLinesView:)], @"JBLineChartLinesView // delegate must implement - (NSArray *)lineChartLinesForLineChartLinesView:(JBLineChartLinesView *)lineChartLinesView");
 	NSArray *chartData = [self.delegate lineChartLinesForLineChartLinesView:self];
 
