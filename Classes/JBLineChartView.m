@@ -741,7 +741,7 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 	{
 		return [self.delegate lineChartView:self fillColorForLineAtLineIndex:lineIndex];
 	}
-	return [UIColor redColor];
+	return kJBLineChartViewDefaultLineFillColor;
 }
 
 - (CAGradientLayer *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView fillGradientForLineAtLineIndex:(NSUInteger)lineIndex
@@ -1426,7 +1426,14 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 				// Smoothing
 				if (lineChartLine.smoothedLine)
 				{
-					shapeLayer.lineCap = kCALineCapRound;
+					if (lineChartLine.lineStyle == JBLineChartViewLineStyleDashed)
+					{
+						shapeLayer.lineCap = kCALineCapButt; // smoothed, dashed lines need butt caps
+					}
+					else
+					{
+						shapeLayer.lineCap = kCALineCapRound;
+					}
 					shapeLayer.lineJoin = kCALineJoinRound;
 					fillLayer.lineCap = kCALineCapRound;
 					fillLayer.lineJoin = kCALineJoinRound;
@@ -1444,30 +1451,16 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 				shapeLayer.lineWidth = [self.delegate lineChartLinesView:self widthForLineAtLineIndex:lineIndex];
 				fillLayer.lineWidth = [self.delegate lineChartLinesView:self widthForLineAtLineIndex:lineIndex];
 
+				// Colors
+				NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:colorForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView colorForLineAtLineIndex:(NSUInteger)lineIndex");
+				shapeLayer.strokeColor = [self.delegate lineChartLinesView:self colorForLineAtLineIndex:lineIndex].CGColor;
+				
 				// Paths
 				shapeLayer.path = linePath.CGPath;
 				shapeLayer.frame = self.bounds;
 				fillLayer.path = fillPath.CGPath;
 				fillLayer.frame = self.bounds;
 
-				// Solid line
-				if (lineChartLine.colorStyle == JBLineChartViewColorStyleSolid)
-				{
-					NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:colorForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView colorForLineAtLineIndex:(NSUInteger)lineIndex");
-					shapeLayer.strokeColor = [self.delegate lineChartLinesView:self colorForLineAtLineIndex:lineIndex].CGColor;
-					[self.layer addSublayer:shapeLayer];
-				}
-				
-				// Gradient line
-				else if (lineChartLine.colorStyle == JBLineChartViewColorStyleGradient)
-				{
-					NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:gradientForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (CAGradientLayer *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView gradientForLineAtLineIndex:(NSUInteger)lineIndex");
-					CAGradientLayer *gradientLayer = [self.delegate lineChartLinesView:self gradientForLineAtLineIndex:lineIndex];
-					gradientLayer.frame = shapeLayer.frame;
-					gradientLayer.mask = shapeLayer;
-					[self.layer addSublayer:gradientLayer];
-				}
-				
 				// Solid fill
 				if (lineChartLine.fillColorStyle == JBLineChartViewColorStyleSolid)
 				{
@@ -1484,6 +1477,22 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 					fillGradientLayer.frame = fillLayer.frame;
 					fillGradientLayer.mask = fillLayer;
 					[self.layer addSublayer:fillGradientLayer];
+				}
+				
+				// Solid line
+				if (lineChartLine.colorStyle == JBLineChartViewColorStyleSolid)
+				{
+					[self.layer addSublayer:shapeLayer];
+				}
+				
+				// Gradient line
+				else if (lineChartLine.colorStyle == JBLineChartViewColorStyleGradient)
+				{
+					NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:gradientForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (CAGradientLayer *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView gradientForLineAtLineIndex:(NSUInteger)lineIndex");
+					CAGradientLayer *gradientLayer = [self.delegate lineChartLinesView:self gradientForLineAtLineIndex:lineIndex];
+					gradientLayer.frame = shapeLayer.frame;
+					gradientLayer.mask = shapeLayer;
+					[self.layer addSublayer:gradientLayer];
 				}
 			}
 		}
