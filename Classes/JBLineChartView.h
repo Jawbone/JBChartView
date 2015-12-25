@@ -301,6 +301,8 @@ typedef NS_ENUM(NSInteger, JBLineChartViewColorStyle) {
  *  The color is automically faded to transparent (vertically). The property showsVerticalSelection
  *  must be YES for the color to apply.
  *
+ *  Default: white color.
+ *
  *  @param lineChartView    The line chart object requesting this information.
  *  @param lineIndex        An index number identifying a line in the chart.
  *

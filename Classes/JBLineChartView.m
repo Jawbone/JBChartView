@@ -777,7 +777,7 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 	{
 		return [self.delegate lineChartView:self selectionGradientForLineAtLineIndex:lineIndex];
 	}
-	return [self.delegate lineChartView:self gradientForLineAtLineIndex:lineIndex];
+	return [self lineChartLinesView:lineChartLinesView gradientForLineAtLineIndex:lineIndex];
 }
 
 - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView selectionFillColorForLineAtLineIndex:(NSUInteger)lineIndex
@@ -795,7 +795,7 @@ static UIColor *kJBLineChartViewDefaultGradientSelectionFillEndColor = nil;
 	{
 		return [self.delegate lineChartView:self selectionFillGradientForLineAtLineIndex:lineIndex];
 	}
-	return [self.delegate lineChartView:self fillGradientForLineAtLineIndex:lineIndex];
+	return [self lineChartLinesView:lineChartLinesView fillGradientForLineAtLineIndex:lineIndex];
 }
 
 #pragma mark - JBLineChartDotsViewDelegate
