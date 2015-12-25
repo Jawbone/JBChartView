@@ -219,7 +219,7 @@ typedef NS_ENUM(NSInteger, JBLineChartViewColorStyle) {
  *  Returns the fill color of particular line at lineIndex within the chart.
  *  For this to apply, lineChartView:fillColorStyleForLineAtLineIndex: must return JBLineChartViewColorStyleSolid (default).
  *
- *  Default: clear color.
+ *  Default: clear color (none).
  *
  *  @param lineChartView    The line chart object requesting this information.
  *  @param lineIndex        An index number identifying a line in the chart.
@@ -232,7 +232,7 @@ typedef NS_ENUM(NSInteger, JBLineChartViewColorStyle) {
  *  Returns the gradient layer to be used for a fill of a particular line at lineIndex within the chart.
  *  For this to apply, lineChartView:fillColorStyleForLineAtLineIndex: must return JBLineChartViewColorStyleGradient.
  *
- *  Default: black to light gray.
+ *  Default: clear gradient (none).
  *
  *  @param lineChartView    The line chart object requesting this information.
  *  @param lineIndex        An index number identifying a line in the chart.
@@ -370,7 +370,7 @@ typedef NS_ENUM(NSInteger, JBLineChartViewColorStyle) {
  *  Returns the selection color to be overlayed on a line within the chart during touch events.
  *  The property showsLineSelection must be YES for the color to apply.
  *
- *  Default: white color.
+ *  Default: matches lineChartView:colorForDotAtHorizontalIndex:atLineIndex:(NSUInteger)lineIndex.
  *
  *  @param lineChartView    The line chart object requesting this information.
  *  @param horizontalIndex  The 0-based horizontal index of a selection point (left to right, x-axis).
