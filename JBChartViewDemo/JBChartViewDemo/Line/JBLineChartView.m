@@ -8,11 +8,15 @@
 
 #import "JBLineChartView.h"
 
-// Models
-#import "JBLineChartLine.h"
+// Additions
+#import "NSMutableArray+JBStack.h"
 
 // Drawing
 #import <QuartzCore/QuartzCore.h>
+
+// Models
+#import "JBLineChartLine.h"
+#import "JBLineChartPoint.h"
 
 // Enums
 typedef NS_ENUM(NSUInteger, JBLineChartHorizontalIndexClamp){
@@ -59,24 +63,10 @@ static UIColor *kJBLineChartViewDefaultGradientEndColor = nil;
 static UIColor *kJBLineChartViewDefaultFillGradientStartColor = nil;
 static UIColor *kJBLineChartViewDefaultFillGradientEndColor = nil;
 
-@interface NSMutableArray (Stack)
-
-// Operations
-- (id)pop;
-
-@end
-
 @interface JBChartView (Private)
 
 - (BOOL)hasMaximumValue;
 - (BOOL)hasMinimumValue;
-
-@end
-
-@interface JBLineChartPoint : NSObject
-
-@property (nonatomic, assign) CGPoint position;
-@property (nonatomic, assign) BOOL hidden;
 
 @end
 
@@ -1279,46 +1269,6 @@ static UIColor *kJBLineChartViewDefaultFillGradientEndColor = nil;
 
 @end
 
-@implementation NSMutableArray (Stack)
-
-#pragma mark - Operations
-
-- (id)pop
-{
-	id object = [self firstObject];
-	if (object != nil)
-	{
-		[self removeObjectAtIndex:0];
-		return object;
-	}
-	return nil;
-}
-
-@end
-
-@implementation JBLineChartPoint
-
-#pragma mark - Alloc/Init
-
-- (id)init
-{
-    self = [super init];
-    if (self)
-    {
-        _position = CGPointZero;
-    }
-    return self;
-}
-
-#pragma mark - Compare
-
-- (NSComparisonResult)compare:(JBLineChartPoint *)otherObject
-{
-    return self.position.x > otherObject.position.x;
-}
-
-@end
-
 @implementation JBShapeLayer
 
 - (instancetype)initWithTag:(NSUInteger)tag filled:(BOOL)filled currentPath:(UIBezierPath *)currentPath
@@ -1989,7 +1939,7 @@ static UIColor *kJBLineChartViewDefaultFillGradientEndColor = nil;
 						continue;
 					}
 					
-					__block UIView *dotView = [mutableReusableDotViews pop];
+					__block UIView *dotView = [mutableReusableDotViews jb_pop];
 					if (dotView != nil)
 					{
 						[UIView animateWithDuration:kJBLineChartDotsViewReloadDataAnimationDuration animations:^{
