@@ -12,6 +12,7 @@
 #import "NSMutableArray+JBStack.h"
 
 // Layers
+#import "JBGradientLayer.h"
 #import "JBShapeLayer.h"
 
 // Models
@@ -70,16 +71,6 @@ static UIColor *kJBLineChartViewDefaultFillGradientEndColor = nil;
 
 - (BOOL)hasMaximumValue;
 - (BOOL)hasMinimumValue;
-
-@end
-
-@interface JBGradientLayer : CAGradientLayer
-
-- (instancetype)initWithGradientLayer:(CAGradientLayer *)gradientLayer tag:(NSUInteger)tag filled:(BOOL)filled currentPath:(UIBezierPath *)currentPath;
-
-@property (nonatomic, readonly) NSUInteger tag;
-@property (nonatomic, readonly) BOOL filled;
-@property (nonatomic, strong) UIBezierPath *currentPath;
 
 @end
 
@@ -1258,28 +1249,6 @@ static UIColor *kJBLineChartViewDefaultFillGradientEndColor = nil;
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [self touchesEndedOrCancelledWithTouches:touches];
-}
-
-@end
-
-@implementation JBGradientLayer
-
-- (instancetype)initWithGradientLayer:(CAGradientLayer *)gradientLayer tag:(NSUInteger)tag filled:(BOOL)filled currentPath:(UIBezierPath *)currentPath
-{
-	self = [super init];
-	if (self)
-	{
-		self.colors = gradientLayer.colors;
-		self.locations = gradientLayer.locations;
-		self.startPoint = gradientLayer.startPoint;
-		self.endPoint = gradientLayer.endPoint;
-		self.type = gradientLayer.type;
-		
-		_tag = tag;
-		_filled = filled;
-		_currentPath = [currentPath copy];
-	}
-	return self;
 }
 
 @end
