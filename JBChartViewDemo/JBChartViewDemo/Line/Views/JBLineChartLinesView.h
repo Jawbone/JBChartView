@@ -18,11 +18,11 @@
 // Numerics
 extern NSInteger const kJBLineChartLinesViewUnselectedLineIndex;
 
-@protocol JBLineChartLinesViewDelegate;
+@protocol JBLineChartLinesViewDataSource;
 
 @interface JBLineChartLinesView : UIView
 
-@property (nonatomic, assign) id<JBLineChartLinesViewDelegate> delegate;
+@property (nonatomic, assign) id<JBLineChartLinesViewDataSource> delegate;
 @property (nonatomic, assign) NSInteger selectedLineIndex; // -1 to unselect
 @property (nonatomic, assign) BOOL animated; // for reload
 
@@ -44,7 +44,7 @@ extern NSInteger const kJBLineChartLinesViewUnselectedLineIndex;
 
 @end
 
-@protocol JBLineChartLinesViewDelegate <NSObject>
+@protocol JBLineChartLinesViewDataSource <NSObject>
 
 - (NSArray *)lineChartLinesForLineChartLinesView:(JBLineChartLinesView *)lineChartLinesView;
 - (CGFloat)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView dimmedSelectionOpacityAtLineIndex:(NSUInteger)lineIndex;

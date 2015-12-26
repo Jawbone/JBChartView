@@ -60,7 +60,7 @@ NSInteger const kJBLineChartUnselectedLineIndex = -1;
 
 @end
 
-@interface JBLineChartView () <JBLineChartLinesViewDelegate, JBLineChartDotsViewDataSource>
+@interface JBLineChartView () <JBLineChartLinesViewDataSource, JBLineChartDotsViewDataSource>
 
 @property (nonatomic, strong) NSArray *lineChartLines; // Collection of JBLineChartLines
 @property (nonatomic, strong) JBLineChartLinesView *linesView;
@@ -578,7 +578,7 @@ NSInteger const kJBLineChartUnselectedLineIndex = -1;
     return dataCount;
 }
 
-#pragma mark - JBLineChartLinesViewDelegate
+#pragma mark - JBLineChartLinesViewDataSource
 
 - (NSArray *)lineChartLinesForLineChartLinesView:(JBLineChartLinesView *)lineChartLinesView
 {
