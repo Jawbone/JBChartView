@@ -8,6 +8,9 @@
 
 #import "JBBarChartView.h"
 
+// Views
+#import "JBGradientBarView.h"
+
 // Numerics
 CGFloat static const kJBBarChartViewBarBasePaddingMutliplier = 50.0f;
 CGFloat static const kJBBarChartViewUndefinedCachedHeight = -1.0f;
@@ -26,27 +29,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 @end
 
-@protocol JBGradientBarViewDelegate;
-
-@interface JBGradientBarView: UIView
-
-@property (nonatomic, strong) CAGradientLayer *gradientLayer;
-@property (nonatomic, weak) id<JBGradientBarViewDelegate> delegate;
-
-// Initialization
-- (void)construct;
-
-@end
-
-@protocol JBGradientBarViewDelegate <NSObject>
-
-@optional
-
-- (CGRect)chartViewBoundsForGradientBarView:(JBGradientBarView *)gradientBarView;
-
-@end
-
-@interface JBBarChartView () <JBGradientBarViewDelegate>
+@interface JBBarChartView () <JBGradientBarViewDataSource>
 
 @property (nonatomic, strong) NSArray *chartData; // index = column, value = height
 @property (nonatomic, strong) NSArray *barViews;
@@ -139,8 +122,6 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 {
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
 }
-
-#pragma mark - Data
 
 #pragma mark - Data
 
@@ -923,76 +904,11 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
     [self touchesEndedOrCancelledWithTouches:touches];
 }
 
-#pragma mark - JBGradientBarViewDelegate
+#pragma mark - JBGradientBarViewDataSource
 
 - (CGRect)chartViewBoundsForGradientBarView:(JBGradientBarView *)gradientBarView
 {
 	return self.bounds;
-}
-
-@end
-
-@implementation JBGradientBarView
-
-#pragma mark - Alloc/Init
-
-- (instancetype)init
-{
-	self = [super init];
-	if (self)
-	{
-		[self construct];
-	}
-	return self;
-}
-
-- (instancetype)initWithFrame:(CGRect)frame
-{
-	self = [super initWithFrame:frame];
-	if (self)
-	{
-		[self construct];
-	}
-	return self;
-}
-
-#pragma mark - Setters
-
-- (void)setGradientLayer:(CAGradientLayer *)gradientLayer
-{
-	if (_gradientLayer != nil)
-	{
-		[_gradientLayer removeFromSuperlayer];
-		_gradientLayer = nil;
-	}
-	
-	_gradientLayer = gradientLayer;
-	_gradientLayer.masksToBounds = YES;
-	[self.layer insertSublayer:_gradientLayer atIndex:0];
-}
-
-#pragma mark - Construction
-
-- (void)construct
-{
-	self.clipsToBounds = YES;
-}
-
-#pragma mark - Setters
-
-- (void)setFrame:(CGRect)frame
-{
-	[super setFrame:frame];
-	
-	if ([self.delegate respondsToSelector:@selector(chartViewBoundsForGradientBarView:)])
-	{
-		_gradientLayer.frame = [self.delegate chartViewBoundsForGradientBarView:self]; // gradient is as large as the chart
-		_gradientLayer.frame = CGRectOffset(_gradientLayer.frame, -CGRectGetMinX(frame), 0);
-	}
-	else
-	{
-		_gradientLayer.frame = self.bounds;
-	}
 }
 
 @end
