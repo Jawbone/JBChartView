@@ -11,12 +11,12 @@
 // Numerics
 extern NSInteger const kJBLineChartDotsViewUnselectedLineIndex;
 
-@protocol JBLineChartDotsViewDelegate;
+@protocol JBLineChartDotsViewDataSource;
 
-@interface JBLineChartDotsView : UIView // JBLineChartViewLineStyleDotted
+@interface JBLineChartDotsView : UIView
 
-@property (nonatomic, assign) id<JBLineChartDotsViewDelegate> delegate;
-@property (nonatomic, assign) NSInteger selectedLineIndex; // -1 to unselect
+@property (nonatomic, assign) id<JBLineChartDotsViewDataSource> delegate;
+@property (nonatomic, assign) NSInteger selectedLineIndex;
 @property (nonatomic, strong) NSDictionary *dotViewsDict;
 
 // Data
@@ -32,7 +32,7 @@ extern NSInteger const kJBLineChartDotsViewUnselectedLineIndex;
 
 @end
 
-@protocol JBLineChartDotsViewDelegate <NSObject>
+@protocol JBLineChartDotsViewDataSource <NSObject>
 
 - (NSArray *)lineChartLinesForLineChartDotsView:(JBLineChartDotsView*)lineChartDotsView;
 - (UIColor *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView colorForDotAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
