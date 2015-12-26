@@ -13,7 +13,8 @@
 		5651AD761C2E405400C023CE /* JBGradientBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5651AD751C2E405400C023CE /* JBGradientBarView.m */; };
 		5651AD7D1C2E421700C023CE /* JBLineChartLine.m in Sources */ = {isa = PBXBuildFile; fileRef = 5651AD7C1C2E421700C023CE /* JBLineChartLine.m */; };
 		5651AD801C2E45EA00C023CE /* JBLineChartPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 5651AD7F1C2E45EA00C023CE /* JBLineChartPoint.m */; };
-		5651AD8A1C2E47DC00C023CE /* NSMutableArray+JBStack.m in Sources */ = {isa = PBXBuildFile; fileRef = 5651AD891C2E47DC00C023CE /* NSMutableArray+JBStack.m */; };
+		5651AD911C2E49B100C023CE /* JBShapeLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5651AD901C2E49B100C023CE /* JBShapeLayer.m */; };
+		5651AD951C2E4AA700C023CE /* NSMutableArray+JBStack.m in Sources */ = {isa = PBXBuildFile; fileRef = 5651AD941C2E4AA700C023CE /* NSMutableArray+JBStack.m */; };
 		566C73A61C026858000EC785 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 566C73A51C026858000EC785 /* Default-568h@2x.png */; };
 		94BDFC3419F933B2007492F6 /* JBLineChartMissingPointsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94BDFC3319F933B2007492F6 /* JBLineChartMissingPointsViewController.m */; };
 		9B0725211829822A0052109B /* JBChartListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B0725201829822A0052109B /* JBChartListViewController.m */; };
@@ -63,8 +64,10 @@
 		5651AD7C1C2E421700C023CE /* JBLineChartLine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBLineChartLine.m; sourceTree = "<group>"; };
 		5651AD7E1C2E45EA00C023CE /* JBLineChartPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBLineChartPoint.h; sourceTree = "<group>"; };
 		5651AD7F1C2E45EA00C023CE /* JBLineChartPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBLineChartPoint.m; sourceTree = "<group>"; };
-		5651AD881C2E47DC00C023CE /* NSMutableArray+JBStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableArray+JBStack.h"; sourceTree = "<group>"; };
-		5651AD891C2E47DC00C023CE /* NSMutableArray+JBStack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableArray+JBStack.m"; sourceTree = "<group>"; };
+		5651AD8F1C2E49B100C023CE /* JBShapeLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBShapeLayer.h; sourceTree = "<group>"; };
+		5651AD901C2E49B100C023CE /* JBShapeLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBShapeLayer.m; sourceTree = "<group>"; };
+		5651AD931C2E4AA700C023CE /* NSMutableArray+JBStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableArray+JBStack.h"; sourceTree = "<group>"; };
+		5651AD941C2E4AA700C023CE /* NSMutableArray+JBStack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableArray+JBStack.m"; sourceTree = "<group>"; };
 		566C73A51C026858000EC785 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		94BDFC3219F933B2007492F6 /* JBLineChartMissingPointsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBLineChartMissingPointsViewController.h; sourceTree = "<group>"; };
 		94BDFC3319F933B2007492F6 /* JBLineChartMissingPointsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBLineChartMissingPointsViewController.m; sourceTree = "<group>"; };
@@ -163,6 +166,7 @@
 		5651AD6C1C2E401300C023CE /* Line */ = {
 			isa = PBXGroup;
 			children = (
+				5651AD8E1C2E49B100C023CE /* Layers */,
 				5651AD7A1C2E421700C023CE /* Models */,
 				5651AD6D1C2E401300C023CE /* JBLineChartView.h */,
 				5651AD6E1C2E401300C023CE /* JBLineChartView.m */,
@@ -190,11 +194,20 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
-		5651AD841C2E47B100C023CE /* Additions */ = {
+		5651AD8E1C2E49B100C023CE /* Layers */ = {
 			isa = PBXGroup;
 			children = (
-				5651AD881C2E47DC00C023CE /* NSMutableArray+JBStack.h */,
-				5651AD891C2E47DC00C023CE /* NSMutableArray+JBStack.m */,
+				5651AD8F1C2E49B100C023CE /* JBShapeLayer.h */,
+				5651AD901C2E49B100C023CE /* JBShapeLayer.m */,
+			);
+			path = Layers;
+			sourceTree = "<group>";
+		};
+		5651AD921C2E4AA700C023CE /* Additions */ = {
+			isa = PBXGroup;
+			children = (
+				5651AD931C2E4AA700C023CE /* NSMutableArray+JBStack.h */,
+				5651AD941C2E4AA700C023CE /* NSMutableArray+JBStack.m */,
 			);
 			path = Additions;
 			sourceTree = "<group>";
@@ -332,7 +345,6 @@
 		9B6A68D01829AB85006DB3BF /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				5651AD841C2E47B100C023CE /* Additions */,
 				9B698F0E182D7BCF003C135F /* Cells */,
 				9BE0B0C0182B15DB00232023 /* Charts */,
 				9BE0B0CB182B162E00232023 /* Footers */,
@@ -345,6 +357,7 @@
 		9BE0B0C0182B15DB00232023 /* Charts */ = {
 			isa = PBXGroup;
 			children = (
+				5651AD921C2E4AA700C023CE /* Additions */,
 				5651AD641C2E3FEB00C023CE /* Base */,
 				5651AD681C2E400500C023CE /* Bar */,
 				5651AD6C1C2E401300C023CE /* Line */,
@@ -483,10 +496,11 @@
 				9B603D4E182C7163000A76D0 /* JBBaseTableViewController.m in Sources */,
 				9B6A68DE1829BE63006DB3BF /* JBBarChartViewController.m in Sources */,
 				5651AD671C2E3FEB00C023CE /* JBChartView.m in Sources */,
+				5651AD911C2E49B100C023CE /* JBShapeLayer.m in Sources */,
 				9B4437AD18D7686800682EF0 /* JBChartTooltipTipView.m in Sources */,
 				5651AD761C2E405400C023CE /* JBGradientBarView.m in Sources */,
+				5651AD951C2E4AA700C023CE /* NSMutableArray+JBStack.m in Sources */,
 				5651AD801C2E45EA00C023CE /* JBLineChartPoint.m in Sources */,
-				5651AD8A1C2E47DC00C023CE /* NSMutableArray+JBStack.m in Sources */,
 				94BDFC3419F933B2007492F6 /* JBLineChartMissingPointsViewController.m in Sources */,
 				9BEE694618D2789E005D9BA7 /* JBBaseChartViewController.m in Sources */,
 				9B6A68E11829BED5006DB3BF /* JBLineChartViewController.m in Sources */,

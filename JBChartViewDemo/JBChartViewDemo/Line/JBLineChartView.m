@@ -11,12 +11,15 @@
 // Additions
 #import "NSMutableArray+JBStack.h"
 
-// Drawing
-#import <QuartzCore/QuartzCore.h>
+// Layers
+#import "JBShapeLayer.h"
 
 // Models
 #import "JBLineChartLine.h"
 #import "JBLineChartPoint.h"
+
+// System
+#import <QuartzCore/QuartzCore.h>
 
 // Enums
 typedef NS_ENUM(NSUInteger, JBLineChartHorizontalIndexClamp){
@@ -67,16 +70,6 @@ static UIColor *kJBLineChartViewDefaultFillGradientEndColor = nil;
 
 - (BOOL)hasMaximumValue;
 - (BOOL)hasMinimumValue;
-
-@end
-
-@interface JBShapeLayer : CAShapeLayer
-
-- (instancetype)initWithTag:(NSUInteger)tag filled:(BOOL)filled currentPath:(UIBezierPath *)currentPath;
-
-@property (nonatomic, readonly) NSUInteger tag;
-@property (nonatomic, readonly) BOOL filled;
-@property (nonatomic, strong) UIBezierPath *currentPath;
 
 @end
 
@@ -1265,22 +1258,6 @@ static UIColor *kJBLineChartViewDefaultFillGradientEndColor = nil;
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [self touchesEndedOrCancelledWithTouches:touches];
-}
-
-@end
-
-@implementation JBShapeLayer
-
-- (instancetype)initWithTag:(NSUInteger)tag filled:(BOOL)filled currentPath:(UIBezierPath *)currentPath
-{
-	self = [super init];
-	if (self)
-	{
-		_tag = tag;
-		_filled = filled;
-		_currentPath = [currentPath copy];
-	}
-	return self;
 }
 
 @end
