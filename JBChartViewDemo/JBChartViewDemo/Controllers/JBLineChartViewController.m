@@ -18,7 +18,7 @@
 
 typedef NS_ENUM(NSInteger, JBLineChartLine){
 	JBLineChartLineSolid,
-    JBLineChartLineDashed,
+	JBLineChartLineDashed,
     JBLineChartLineCount
 };
 
@@ -240,43 +240,6 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
     return (lineIndex == JBLineChartLineSolid) ? kJBColorLineChartDefaultSolidLineColor: kJBColorLineChartDefaultDashedLineColor;
 }
 
-- (UIColor *)lineChartView:(JBLineChartView *)lineChartView fillColorForLineAtLineIndex:(NSUInteger)lineIndex
-{
-    return (lineIndex == JBLineChartLineSolid) ? kJBColorLineChartDefaultSolidFillColor : kJBColorLineChartDefaultDashedFillColor;
-}
-
-- (CAGradientLayer *)lineChartView:(JBLineChartView *)lineChartView gradientForLineAtLineIndex:(NSUInteger)lineIndex
-{
-	if (lineIndex == JBLineChartLineSolid)
-	{
-		return nil;
-	}
-	else
-	{
-		CAGradientLayer *gradient = [CAGradientLayer new];
-		gradient.startPoint = CGPointMake(0.0, 0.0);
-		gradient.endPoint = CGPointMake(1.0, 0.0);
-		gradient.colors = @[(id)kJBColorLineChartDefaultGradientStartColor.CGColor, (id)kJBColorLineChartDefaultGradientEndColor.CGColor];
-		return gradient;
-	}
-}
-
-- (CAGradientLayer *)lineChartView:(JBLineChartView *)lineChartView fillGradientForLineAtLineIndex:(NSUInteger)lineIndex
-{
-	if (lineIndex == JBLineChartLineSolid)
-	{
-		return nil;
-	}
-	else
-	{
-		CAGradientLayer *gradient = [CAGradientLayer new];
-		gradient.startPoint = CGPointMake(0.0, 0.0);
-		gradient.endPoint = CGPointMake(1.0, 0.0);
-		gradient.colors = @[(id)kJBColorLineChartDefaultFillGradientStartColor.CGColor, (id)kJBColorLineChartDefaultFillGradientEndColor.CGColor];
-		return gradient;
-	}	
-}
-
 - (UIColor *)lineChartView:(JBLineChartView *)lineChartView colorForDotAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex
 {
     return (lineIndex == JBLineChartLineSolid) ? kJBColorLineChartDefaultSolidLineColor: kJBColorLineChartDefaultDashedLineColor;
@@ -290,11 +253,6 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
 - (CGFloat)lineChartView:(JBLineChartView *)lineChartView dotRadiusForDotAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex
 {
     return (lineIndex == JBLineChartLineSolid) ? 0.0: kJBLineChartViewControllerChartSolidLineDotRadius;
-}
-
-- (UIColor *)lineChartView:(JBLineChartView *)lineChartView verticalSelectionColorForLineAtLineIndex:(NSUInteger)lineIndex
-{
-    return [UIColor whiteColor];
 }
 
 - (UIColor *)lineChartView:(JBLineChartView *)lineChartView selectionColorForLineAtLineIndex:(NSUInteger)lineIndex
@@ -312,9 +270,19 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
     return (lineIndex == JBLineChartLineSolid) ? JBLineChartViewLineStyleSolid : JBLineChartViewLineStyleDashed;
 }
 
-- (JBLineChartViewColorStyle)lineChartView:(JBLineChartView *)lineChartView lineColorStyleForLineAtLineIndex:(NSUInteger)lineIndex
+- (JBLineChartViewColorStyle)lineChartView:(JBLineChartView *)lineChartView colorStyleForLineAtLineIndex:(NSUInteger)lineIndex
+{
+	return (lineIndex != JBLineChartLineSolid) ? JBLineChartViewColorStyleSolid : JBLineChartViewColorStyleGradient;
+}
+
+- (JBLineChartViewColorStyle)lineChartView:(JBLineChartView *)lineChartView fillColorStyleForLineAtLineIndex:(NSUInteger)lineIndex
 {
 	return (lineIndex == JBLineChartLineSolid) ? JBLineChartViewColorStyleSolid : JBLineChartViewColorStyleGradient;
+}
+
+- (UIColor *)lineChartView:(JBLineChartView *)lineChartView fillColorForLineAtLineIndex:(NSUInteger)lineIndex
+{
+	return (lineIndex == JBLineChartLineSolid) ? [UIColor clearColor] : [UIColor clearColor];
 }
 
 #pragma mark - Buttons
@@ -323,7 +291,7 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
 {
 	NSMutableArray *mutableChartData = [NSMutableArray arrayWithArray:self.chartData];
 	[[mutableChartData objectAtIndex:0] addObject:[NSNumber numberWithFloat:((double)arc4random() / ARC4RANDOM_MAX)]];
-	[[mutableChartData objectAtIndex:1] addObject:[NSNumber numberWithFloat:((double)arc4random() / ARC4RANDOM_MAX)]];
+//	[[mutableChartData objectAtIndex:1] addObject:[NSNumber numberWithFloat:((double)arc4random() / ARC4RANDOM_MAX)]];
 	
 	self.chartData = [NSArray arrayWithArray:mutableChartData];
 	
