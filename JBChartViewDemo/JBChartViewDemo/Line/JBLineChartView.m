@@ -8,6 +8,9 @@
 
 #import "JBLineChartView.h"
 
+// Models
+#import "JBLineChartLine.h"
+
 // Drawing
 #import <QuartzCore/QuartzCore.h>
 
@@ -67,16 +70,6 @@ static UIColor *kJBLineChartViewDefaultFillGradientEndColor = nil;
 
 - (BOOL)hasMaximumValue;
 - (BOOL)hasMinimumValue;
-
-@end
-
-@interface JBLineChartLine : NSObject
-
-@property (nonatomic, strong) NSArray *lineChartPoints;
-@property (nonatomic, assign) BOOL smoothedLine;
-@property (nonatomic, assign) JBLineChartViewLineStyle lineStyle;
-@property (nonatomic, assign) JBLineChartViewColorStyle colorStyle;
-@property (nonatomic, assign) JBLineChartViewColorStyle fillColorStyle;
 
 @end
 
@@ -1299,26 +1292,6 @@ static UIColor *kJBLineChartViewDefaultFillGradientEndColor = nil;
 		return object;
 	}
 	return nil;
-}
-
-@end
-
-@implementation JBLineChartLine
-
-#pragma mark - Alloc/Init
-
-- (id)init
-{
-	self = [super init];
-	if (self)
-	{
-		_lineChartPoints = [NSArray array];
-		_smoothedLine = NO;
-		_lineStyle = JBLineChartViewLineStyleSolid;
-		_colorStyle = JBLineChartViewColorStyleSolid;
-		_fillColorStyle = JBLineChartViewColorStyleSolid;
-	}
-	return self;
 }
 
 @end
