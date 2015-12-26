@@ -700,22 +700,20 @@ NSInteger const kJBLineChartUnselectedLineIndex = -1;
     return [self lineChartDotsView:lineChartDotsView colorForDotAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
 }
 
-- (CGFloat)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView widthForLineAtLineIndex:(NSUInteger)lineIndex
-{
-    if ([self.delegate respondsToSelector:@selector(lineChartView:widthForLineAtLineIndex:)])
-    {
-        return [self.delegate lineChartView:self widthForLineAtLineIndex:lineIndex];
-    }
-    return kJBLineChartViewDefaultStrokeWidth;
-}
-
 - (CGFloat)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView dotRadiusForLineAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex
 {
     if ([self.delegate respondsToSelector:@selector(lineChartView:dotRadiusForDotAtHorizontalIndex:atLineIndex:)])
     {
         return [self.delegate lineChartView:self dotRadiusForDotAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
     }
-    return [self lineChartDotsView:lineChartDotsView widthForLineAtLineIndex:lineIndex] * kJBLineChartViewDefaultDotRadiusFactor;
+	
+	CGFloat lineWidth = kJBLineChartViewDefaultStrokeWidth;
+	if ([self.delegate respondsToSelector:@selector(lineChartView:widthForLineAtLineIndex:)])
+	{
+		lineWidth = [self.delegate lineChartView:self widthForLineAtLineIndex:lineIndex];
+	}
+	
+    return lineWidth * kJBLineChartViewDefaultDotRadiusFactor;
 }
 
 - (UIView *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView dotViewAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex
