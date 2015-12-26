@@ -24,6 +24,7 @@ CGFloat static const kJBLineChartLinesViewMiterLimit = -5.0;
 CGFloat static const kJBLineChartLinesViewDefaultLinePhase = 1.0f;
 CGFloat static const kJBLineChartLinesViewDefaultDimmedOpacity = 0.20f;
 CGFloat static const kJBLineChartLinesViewSmoothThresholdSlope = 0.01f;
+CGFloat static const kJBLineChartLinesViewReloadDataAnimationDuration = 0.15f;
 NSInteger static const kJBLineChartLinesViewSmoothThresholdVertical = 1;
 NSInteger static const kJBLineChartLinesViewUnselectedLineIndex = -1;
 static NSArray *kJBLineChartLinesViewDefaultDashPattern = nil;
@@ -92,17 +93,17 @@ static UIColor *kJBLineChartViewDefaultFillGradientEndColor = nil;
 
 @property (nonatomic, readonly) NSUInteger tag;
 @property (nonatomic, readonly) BOOL filled;
-@property (nonatomic, readonly) UIBezierPath *currentPath;
+@property (nonatomic, strong) UIBezierPath *currentPath;
 
 @end
 
 @interface JBGradientLayer : CAGradientLayer
 
-- (instancetype)initWithGradientLayer:(CAGradientLayer *)gradientLayer tag:(NSUInteger)tag filled:(BOOL)filled currentMask:(CAShapeLayer *)currentMask;
+- (instancetype)initWithGradientLayer:(CAGradientLayer *)gradientLayer tag:(NSUInteger)tag filled:(BOOL)filled currentPath:(UIBezierPath *)currentPath;
 
 @property (nonatomic, readonly) NSUInteger tag;
 @property (nonatomic, readonly) BOOL filled;
-@property (nonatomic, readonly) CAShapeLayer *currentMask;
+@property (nonatomic, strong) UIBezierPath *currentPath;
 
 @end
 
@@ -112,6 +113,7 @@ static UIColor *kJBLineChartViewDefaultFillGradientEndColor = nil;
 
 @property (nonatomic, assign) id<JBLineChartLinesViewDelegate> delegate;
 @property (nonatomic, assign) NSInteger selectedLineIndex; // -1 to unselect
+@property (nonatomic, assign) BOOL animated; // for reload
 
 // Data
 - (void)reloadDataAnimated:(BOOL)animated callback:(void (^)())callback;
@@ -1362,7 +1364,7 @@ static UIColor *kJBLineChartViewDefaultFillGradientEndColor = nil;
 
 @implementation JBGradientLayer
 
-- (instancetype)initWithGradientLayer:(CAGradientLayer *)gradientLayer tag:(NSUInteger)tag filled:(BOOL)filled currentMask:(CAShapeLayer *)currentMask
+- (instancetype)initWithGradientLayer:(CAGradientLayer *)gradientLayer tag:(NSUInteger)tag filled:(BOOL)filled currentPath:(UIBezierPath *)currentPath
 {
 	self = [super init];
 	if (self)
@@ -1375,7 +1377,7 @@ static UIColor *kJBLineChartViewDefaultFillGradientEndColor = nil;
 		
 		_tag = tag;
 		_filled = filled;
-		_currentMask = [NSKeyedUnarchiver unarchiveObjectWithData:[NSKeyedArchiver archivedDataWithRootObject:currentMask]]; // copy
+		_currentPath = [currentPath copy];
 	}
 	return self;
 }
@@ -1441,11 +1443,13 @@ static UIColor *kJBLineChartViewDefaultFillGradientEndColor = nil;
 			JBShapeLayer *fillLayer = [self shapeLayerForLineIndex:lineIndex filled:YES];
 			if (fillLayer == nil)
 			{
-				fillLayer = [[JBShapeLayer alloc] initWithTag:lineIndex filled:YES currentPath:fillPath];
+				fillLayer = [[JBShapeLayer alloc] initWithTag:lineIndex filled:YES currentPath:nil]; // don't need currentPath since fill's aren't animatable (yet)
 			}
 			
 			shapeLayer.zPosition = 0.1f;
 			shapeLayer.fillColor = [UIColor clearColor].CGColor;
+			fillLayer.zPosition = 0.1f;
+			fillLayer.fillColor = [UIColor clearColor].CGColor;
 			
 			// Line style
 			if (lineChartLine.lineStyle == JBLineChartViewLineStyleSolid)
@@ -1491,11 +1495,28 @@ static UIColor *kJBLineChartViewDefaultFillGradientEndColor = nil;
 			NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:colorForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView colorForLineAtLineIndex:(NSUInteger)lineIndex");
 			shapeLayer.strokeColor = [self.delegate lineChartLinesView:self colorForLineAtLineIndex:lineIndex].CGColor;
 			
-			// Paths
-			shapeLayer.path = linePath.CGPath;
+			// Line path
 			shapeLayer.frame = self.bounds;
-			fillLayer.path = fillPath.CGPath;
+			if (self.animated)
+			{
+				CABasicAnimation *pathAnimation = [CABasicAnimation animationWithKeyPath:@"path"];
+				pathAnimation.fromValue = (id)shapeLayer.currentPath.CGPath;
+				pathAnimation.toValue = (id)linePath.CGPath;
+				pathAnimation.duration = kJBLineChartLinesViewReloadDataAnimationDuration;
+				pathAnimation.timingFunction = [CAMediaTimingFunction functionWithName:@"easeInEaseOut"];
+				pathAnimation.fillMode = kCAFillModeBoth;
+				pathAnimation.removedOnCompletion = NO;
+				[shapeLayer addAnimation:pathAnimation forKey:@"shapeLayerPathAnimation"];
+			}
+			else
+			{
+				shapeLayer.path = linePath.CGPath;
+			}
+			shapeLayer.currentPath = [linePath copy];
+
+			// Fill path
 			fillLayer.frame = self.bounds;
+			fillLayer.path = fillPath.CGPath;
 			
 			// Solid fill
 			if (lineChartLine.fillColorStyle == JBLineChartViewColorStyleSolid)
@@ -1512,7 +1533,7 @@ static UIColor *kJBLineChartViewDefaultFillGradientEndColor = nil;
 				if (fillGradientLayer == nil)
 				{
 					NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:fillGradientForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (CAGradientLayer *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView fillGradientForLineAtLineIndex:(NSUInteger)lineIndex");
-					fillGradientLayer = [[JBGradientLayer alloc] initWithGradientLayer:[self.delegate lineChartLinesView:self fillGradientForLineAtLineIndex:lineIndex] tag:lineIndex filled:YES currentMask:fillLayer];
+					fillGradientLayer = [[JBGradientLayer alloc] initWithGradientLayer:[self.delegate lineChartLinesView:self fillGradientForLineAtLineIndex:lineIndex] tag:lineIndex filled:YES currentPath:nil];
 				}
 				fillGradientLayer.frame = fillLayer.frame;
 				fillGradientLayer.mask = fillLayer;
@@ -1532,26 +1553,121 @@ static UIColor *kJBLineChartViewDefaultFillGradientEndColor = nil;
 				if (gradientLayer == nil)
 				{
 					NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:gradientForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (CAGradientLayer *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView gradientForLineAtLineIndex:(NSUInteger)lineIndex");
-					gradientLayer = [[JBGradientLayer alloc] initWithGradientLayer:[self.delegate lineChartLinesView:self gradientForLineAtLineIndex:lineIndex] tag:lineIndex filled:NO currentMask:fillLayer];
+					gradientLayer = [[JBGradientLayer alloc] initWithGradientLayer:[self.delegate lineChartLinesView:self gradientForLineAtLineIndex:lineIndex] tag:lineIndex filled:NO currentPath:linePath];
 				}
 				gradientLayer.frame = shapeLayer.frame;
-				gradientLayer.mask = shapeLayer;
+
+				if (self.animated)
+				{
+					CABasicAnimation *pathAnimation = [CABasicAnimation animationWithKeyPath:@"path"];
+					pathAnimation.fromValue = (id)gradientLayer.currentPath.CGPath;
+					pathAnimation.toValue = (id)linePath.CGPath;
+					pathAnimation.duration = kJBLineChartLinesViewReloadDataAnimationDuration;
+					pathAnimation.timingFunction = [CAMediaTimingFunction functionWithName:@"easeInEaseOut"];
+					pathAnimation.fillMode = kCAFillModeBoth;
+					pathAnimation.removedOnCompletion = NO;
+					[gradientLayer.mask addAnimation:pathAnimation forKey:@"gradientLayerMaskAnimation"];
+				}
+				else
+				{
+					gradientLayer.mask = shapeLayer;
+				}
+				gradientLayer.currentPath = [linePath copy];
+
 				[self.layer addSublayer:gradientLayer];
 			}
 		}
     }
+	
+	self.animated = NO;
 }
 
 #pragma mark - Data
 
 - (void)reloadDataAnimated:(BOOL)animated callback:(void (^)())callback
 {
-	// Drawing is all done with CG (no subviews here)
-	[self setNeedsDisplay];
+	NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesForLineChartLinesView:)], @"JBLineChartLinesView // delegate must implement - (NSArray *)lineChartLinesForLineChartLinesView:(JBLineChartLinesView *)lineChartLinesView");
+	NSArray *chartData = [self.delegate lineChartLinesForLineChartLinesView:self];
+
+	NSUInteger lineCount = [chartData count];
 	
-	if (callback)
+	__weak JBLineChartLinesView* weakSelf = self;
+	
+	dispatch_block_t completionBlock = ^{
+		weakSelf.animated = NO;
+		[weakSelf setNeedsDisplay]; // re-draw layers
+		if (callback)
+		{
+			callback();
+		}
+	};
+	
+	// Mark layers for animation or removal
+	NSMutableArray *mutableRemovedLayers = [NSMutableArray array];
+	for (CALayer *layer in [self.layer sublayers])
 	{
-		callback();
+		BOOL removeLayer = NO;
+		
+		if ([layer isKindOfClass:[JBShapeLayer class]])
+		{
+			removeLayer = (((JBShapeLayer *)layer).tag >= lineCount);
+		}
+		else if ([layer isKindOfClass:[JBGradientLayer class]])
+		{
+			removeLayer = (((JBGradientLayer *)layer).tag >= lineCount);
+		}
+
+		if (removeLayer)
+		{
+			[mutableRemovedLayers addObject:layer];
+		}
+	}
+	
+	// Remove legacy layers
+	NSArray *removedLayers = [NSArray arrayWithArray:mutableRemovedLayers];
+	if ([removedLayers count] > 0)
+	{
+		for (int index=0; index<[removedLayers count]; index++)
+		{
+			CALayer *removedLayer = [removedLayers objectAtIndex:index];
+			
+			if (animated)
+			{
+				[CATransaction begin];
+				{
+					CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"opacity"];
+					animation.fromValue = [NSNumber numberWithFloat:1.0f];
+					animation.toValue = [NSNumber numberWithFloat:0.0f];
+					animation.duration = kJBLineChartLinesViewReloadDataAnimationDuration;
+					animation.timingFunction = [CAMediaTimingFunction functionWithName:@"easeInEaseOut"];
+					animation.fillMode = kCAFillModeBoth;
+					animation.removedOnCompletion = NO;
+					
+					[CATransaction setCompletionBlock:^{
+						[removedLayer removeFromSuperlayer];
+						if (index == [removedLayers count]-1)
+						{
+							completionBlock();
+						}
+					}];
+					
+					[removedLayer addAnimation:animation forKey:@"removeShapeLayerAnimation"];
+				}
+				[CATransaction commit];
+			}
+			else
+			{
+				[removedLayer removeFromSuperlayer];
+				if (index == [removedLayers count]-1)
+				{
+					completionBlock();
+				}
+			}
+		}
+	}
+	else
+	{
+		completionBlock();
 	}
 }
 
