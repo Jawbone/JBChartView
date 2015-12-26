@@ -30,10 +30,17 @@ typedef NS_ENUM(NSUInteger, JBLineChartHorizontalIndexClamp){
     JBLineChartHorizontalIndexClampNone
 };
 
-// Numerics (JBLineSelectionView)
-CGFloat const kJBLineSelectionViewWidth = 20.0f;
+// Colors
+static UIColor *kJBLineChartViewDefaultLineColor = nil;
+static UIColor *kJBLineChartViewDefaultLineFillColor = nil;
+static UIColor *kJBLineChartViewDefaultDotColor = nil;
+static UIColor *kJBLineChartViewDefaultGradientStartColor = nil;
+static UIColor *kJBLineChartViewDefaultGradientEndColor = nil;
+static UIColor *kJBLineChartViewDefaultFillGradientStartColor = nil;
+static UIColor *kJBLineChartViewDefaultFillGradientEndColor = nil;
 
-// Numerics (JBLineChartView)
+// Numerics
+CGFloat const kJBLineChartViewDefaultVerticalSelectionViewWidth = 20.0f;
 CGFloat const kJBLineChartViewUndefinedCachedHeight = -1.0f;
 CGFloat const kJBLineChartViewStateAnimationDuration = 0.25f;
 CGFloat const kJBLineChartViewStateAnimationDelay = 0.05f;
@@ -45,15 +52,6 @@ CGFloat const kJBLineChartViewDefaultDimmedSelectionOpacity = 0.20f;
 CGFloat const kJBLineChartViewDefaultStrokeWidth = 5.0f;
 NSInteger const kJBLineChartViewDefaultDotRadiusFactor = 3; // 3x size of line width
 NSInteger const kJBLineChartUnselectedLineIndex = -1;
-
-// Colors (JBLineChartView)
-static UIColor *kJBLineChartViewDefaultLineColor = nil;
-static UIColor *kJBLineChartViewDefaultLineFillColor = nil;
-static UIColor *kJBLineChartViewDefaultDotColor = nil;
-static UIColor *kJBLineChartViewDefaultGradientStartColor = nil;
-static UIColor *kJBLineChartViewDefaultGradientEndColor = nil;
-static UIColor *kJBLineChartViewDefaultFillGradientStartColor = nil;
-static UIColor *kJBLineChartViewDefaultFillGradientEndColor = nil;
 
 @interface JBChartView (Private)
 
@@ -330,7 +328,7 @@ static UIColor *kJBLineChartViewDefaultFillGradientEndColor = nil;
 			self.verticalSelectionView = nil;
 		}
 		
-		CGFloat selectionViewWidth = kJBLineSelectionViewWidth;
+		CGFloat selectionViewWidth = kJBLineChartViewDefaultVerticalSelectionViewWidth;
 		if ([self.delegate respondsToSelector:@selector(verticalSelectionWidthForLineChartView:)])
 		{
 			selectionViewWidth = MIN([self.delegate verticalSelectionWidthForLineChartView:self], self.bounds.size.width);
