@@ -17,14 +17,14 @@ extern CGFloat const kJBChartViewDefaultAnimationDuration;
  * At a minimum, a chart can support two states, along with animations to-and-from.
  */
 typedef NS_ENUM(NSInteger, JBChartViewState){
-    /**
-     *  Expanded state: chart supports touches, interaction, etc.
-     */
-    JBChartViewStateExpanded,
-    /**
-     *  Collapse state: chart is more-or-less disabled at this point.
-     */
-    JBChartViewStateCollapsed
+	/**
+	 *  Expanded state: chart supports touches, interaction, etc.
+	 */
+	JBChartViewStateExpanded,
+	/**
+	 *  Collapse state: chart is more-or-less disabled at this point.
+	 */
+	JBChartViewStateCollapsed
 };
 
 @protocol JBChartViewDataSource <NSObject>
@@ -64,7 +64,7 @@ typedef NS_ENUM(NSInteger, JBChartViewState){
 @interface JBChartView : UIView
 
 /*
- * Base dataSource and delegate protocols. 
+ * Base dataSource and delegate protocols.
  */
 @property (nonatomic, weak) id<JBChartViewDataSource> dataSource;
 @property (nonatomic, weak) id<JBChartViewDelegate> delegate;
@@ -72,7 +72,7 @@ typedef NS_ENUM(NSInteger, JBChartViewState){
 /**
  *  Header and footer views are shown above and below the chart respectively.
  *  Each view will be stretched horizontally to fill width of chart.
- *  Each view's bounds are clipped to support chart state animations. 
+ *  Each view's bounds are clipped to support chart state animations.
  */
 @property (nonatomic, strong) UIView *footerView;
 @property (nonatomic, strong) UIView *headerView;
@@ -92,13 +92,13 @@ typedef NS_ENUM(NSInteger, JBChartViewState){
 @property (nonatomic, assign) CGFloat footerPadding;
 
 /**
- *  The minimum and maxmimum values of the chart. 
+ *  The minimum and maxmimum values of the chart.
  *  If no value(s) are supplied:
- *  
- *  minimumValue = chart's data source min value. 
+ *
+ *  minimumValue = chart's data source min value.
  *  maxmimumValue = chart's data source max value.
  *
- *  If value(s) are supplied, they must be >= 0, otherwise an assertion will be thrown. 
+ *  If value(s) are supplied, they must be >= 0, otherwise an assertion will be thrown.
  *  The min/max values are clamped to the ceiling and floor of the actual min/max values of the chart's data source;
  *  for example, if a maximumValue of 20 is supplied & the chart's actual max is 100, then 100 will be used.
  *
@@ -112,7 +112,7 @@ typedef NS_ENUM(NSInteger, JBChartViewState){
 - (void)resetMaximumValue;
 
 /**
- *  Charts can either be expanded or contracted. 
+ *  Charts can either be expanded or contracted.
  *  By default, a chart should be expanded on initialization.
  */
 @property (nonatomic, assign) JBChartViewState state;

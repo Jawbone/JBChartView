@@ -136,9 +136,13 @@ NSInteger const kJBLineChartLinesViewUnselectedLineIndex = -1;
 				fillGradientLayer.frame = fillLayer.frame;
 				
 				fillLayer.path = fillPath.CGPath;
+				CGColorRef shapeLayerStrokeColor = shapeLayer.strokeColor;
 				shapeLayer.strokeColor = [UIColor colorWithWhite:1 alpha:[fillGradientLayer alpha]].CGColor; // mask uses alpha only
 				fillGradientLayer.mask = fillLayer;
 				[self.layer addSublayer:fillGradientLayer];
+				
+				// Refresh shape layer stroke (used below)
+				shapeLayer.strokeColor = shapeLayerStrokeColor;
 			}
 			
 			/*
