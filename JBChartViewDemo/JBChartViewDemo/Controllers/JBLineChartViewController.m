@@ -282,7 +282,7 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
 
 - (UIColor *)lineChartView:(JBLineChartView *)lineChartView fillColorForLineAtLineIndex:(NSUInteger)lineIndex
 {
-	return (lineIndex == JBLineChartLineSolid) ? [UIColor redColor] : [UIColor clearColor];
+	return (lineIndex == JBLineChartLineSolid) ? [UIColor clearColor] : [UIColor blueColor];
 }
 
 #pragma mark - Buttons
