@@ -1,5 +1,5 @@
 //
-//  JBShapeLayer.h
+//  JBGradientLayer.h
 //  JBChartViewDemo
 //
 //  Created by Terry Worona on 12/25/15.
@@ -8,15 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
-// Views
-#import "JBLineChartView.h"
+@interface JBGradientLayer : CAGradientLayer
 
-@interface JBShapeLayer : CAShapeLayer
-
-- (instancetype)initWithTag:(NSUInteger)tag filled:(BOOL)filled smoothedLine:(BOOL)smoothedLine lineStyle:(JBLineChartViewLineStyle)lineStyle currentPath:(UIBezierPath *)currentPath;
+- (instancetype)initWithGradientLayer:(CAGradientLayer *)gradientLayer tag:(NSUInteger)tag filled:(BOOL)filled currentPath:(UIBezierPath *)currentPath;
 
 @property (nonatomic, readonly) NSUInteger tag;
 @property (nonatomic, readonly) BOOL filled;
 @property (nonatomic, strong) UIBezierPath *currentPath;
+@property (nonatomic, readonly) CGFloat alpha; // alpha of gradient, based on first color
 
 @end
+

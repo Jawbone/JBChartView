@@ -109,7 +109,7 @@ typedef NS_ENUM(NSInteger, JBLineChartViewColorStyle) {
  *  For this value to apply, showsDotsForLineAtLineIndex: must return YES for the line at lineIndex.
  *  This protocol supercedes colorForDotAtHorizontalIndex: and dotRadiusForDotAtHorizontalIndex:.
  *  If nil is returned. the original dot protocols will take precedence. During selection events, a custom
- *  dot view will not be hidden unless lineChartView:shouldHideDotViewOnSelectionAtHorizontalIndex:atLineIndex: 
+ *  dot view will not be hidden unless lineChartView:shouldHideDotViewOnSelectionAtHorizontalIndex:atLineIndex:
  *  is implemented.
  *
  *  Default: nil.
@@ -123,7 +123,7 @@ typedef NS_ENUM(NSInteger, JBLineChartViewColorStyle) {
 - (UIView *)lineChartView:(JBLineChartView *)lineChartView dotViewAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
 
 /**
- *  Returns whether or not a (custom) dot view should be hidden on selection events. 
+ *  Returns whether or not a (custom) dot view should be hidden on selection events.
  *
  *  Default: NO.
  *
@@ -131,7 +131,7 @@ typedef NS_ENUM(NSInteger, JBLineChartViewColorStyle) {
  *  @param horizontalIndex  The 0-based horizontal index of a selection point (left to right, x-axis).
  *  @param lineIndex        An index number identifying a line in the chart.
  *
- *  @return Whether or not a (custom) dot view should be hidden on selection events. 
+ *  @return Whether or not a (custom) dot view should be hidden on selection events.
  */
 - (BOOL)lineChartView:(JBLineChartView *)lineChartView shouldHideDotViewOnSelectionAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
 
@@ -144,7 +144,7 @@ typedef NS_ENUM(NSInteger, JBLineChartViewColorStyle) {
 /**
  *  Vertical value for a line point at a given index (left to right). There is no ceiling on the the height;
  *  the chart will automatically normalize all values between the overal min and max heights.
- *  NAN may able be retuend to indicate missing values. The chart's line will begin at the first non-NAN value and end at the last non-NAN value. 
+ *  NAN may able be retuend to indicate missing values. The chart's line will begin at the first non-NAN value and end at the last non-NAN value.
  *  Furthermore, the line will interopolate any NAN values in between (ie. the line will not be interrupted).
  *
  *  @param lineChartView    The line chart object requesting this information.
@@ -161,7 +161,7 @@ typedef NS_ENUM(NSInteger, JBLineChartViewColorStyle) {
  *  Occurs whenever there is a touch gesture on the chart (chart must be expanded).
  *  The horizontal index is the closest index to the touch point & is clamped to it's max/min value if it moves outside of the view's bounds.
  *  The lineIndex remains constant until the line is deselected and will be highlighted using the (optional) selectionColorForLineAtLineIndex: protocol.
- *  Futhermore, all other lines that aren't selected will be dimmed to 20% opacity (default) throughout the duration of the touch/move. 
+ *  Futhermore, all other lines that aren't selected will be dimmed to 20% opacity (default) throughout the duration of the touch/move.
  *  Any dotted line that isn't the primary selection will have it's dots dimmed to hidden (to avoid transparency issues).
  *
  *  @param lineChartView    A line chart object informing the delegate about the new selection.
@@ -180,7 +180,7 @@ typedef NS_ENUM(NSInteger, JBLineChartViewColorStyle) {
 - (void)didDeselectLineInLineChartView:(JBLineChartView *)lineChartView;
 
 /**
- *  Returns whether or not a line at a particular index responds to selection events. 
+ *  Returns whether or not a line at a particular index responds to selection events.
  *
  *  Default: YES
  *
@@ -205,6 +205,8 @@ typedef NS_ENUM(NSInteger, JBLineChartViewColorStyle) {
 /**
  *  Returns the gradient layer to be used for a particular line at lineIndex within the chart.
  *  For this to apply, lineChartView:colorStyleForLineAtLineIndex: must return JBLineChartViewColorStyleGradient.
+ *
+ *  Note: gradients do not support multiple alphas. The alpha of gradient's first color be used throughout.
  *
  *  Default: black to light gray.
  *
@@ -231,6 +233,8 @@ typedef NS_ENUM(NSInteger, JBLineChartViewColorStyle) {
 /**
  *  Returns the gradient layer to be used for a fill of a particular line at lineIndex within the chart.
  *  For this to apply, lineChartView:fillColorStyleForLineAtLineIndex: must return JBLineChartViewColorStyleGradient.
+ *
+ *  Note: gradients do not support multiple alphas. The alpha of gradient's first color be used throughout.
  *
  *  Default: clear gradient (none).
  *
@@ -329,6 +333,8 @@ typedef NS_ENUM(NSInteger, JBLineChartViewColorStyle) {
  *  The property showsLineSelection must be YES for the color to apply.
  *  As well, lineChartView:selectionColorStyleForLineAtLineIndex: must return JBLineChartViewColorStyleGradient.
  *
+ *  Note: gradients do not support multiple alphas. The alpha of gradient's first color be used throughout.
+ *
  *  Default: matches lineChartView:gradientForLineAtLineIndex:.
  *
  *  @param lineChartView    The line chart object requesting this information.
@@ -356,6 +362,8 @@ typedef NS_ENUM(NSInteger, JBLineChartViewColorStyle) {
  *  Returns the selection fill gradient layer under a line within the chart during touch events.
  *  The property showsLineSelection must be YES for the color to apply.
  *  As well, lineChartView:selectionFillColorStyleForLineAtLineIndex: must return JBLineChartViewColorStyleGrdient.
+ *
+ *  Note: gradients do not support multiple alphas. The alpha of gradient's first color be used throughout.
  *
  *  Default: matches lineChartView:fillGradientForLineAtLineIndex.
  *
@@ -439,7 +447,7 @@ typedef NS_ENUM(NSInteger, JBLineChartViewColorStyle) {
 
 /*
  *  When reloadData or reloadDataAnimated: is called, the reloading bit is turned on.
- *  State changes during a reload will be ignored. As well, subsequent calls to reloadData: 
+ *  State changes during a reload will be ignored. As well, subsequent calls to reloadData:
  *  or reloadDataAnimated: before any previous reloads are complete, will also be ignored.
  *  Lastly, all touch events will be ignored until a reload has compeleted.
  *
@@ -458,7 +466,7 @@ typedef NS_ENUM(NSInteger, JBLineChartViewColorStyle) {
 
 /**
  *  A highlight shown on a line within the graph during touch events. The highlighted line
- *  is the closest line to the touch point and corresponds to the lineIndex delegatd back via 
+ *  is the closest line to the touch point and corresponds to the lineIndex delegatd back via
  *  didSelectChartAtHorizontalIndex:atLineIndex: and didUnSlectChartAtHorizontalIndex:atLineIndex:
  *
  *  Default: YES.
@@ -466,7 +474,7 @@ typedef NS_ENUM(NSInteger, JBLineChartViewColorStyle) {
 @property (nonatomic, assign) BOOL showsLineSelection;
 
 /**
- *  The dot view within a particular line at a horizontalIndex. 
+ *  The dot view within a particular line at a horizontalIndex.
  *
  *  Default: nil.
  *

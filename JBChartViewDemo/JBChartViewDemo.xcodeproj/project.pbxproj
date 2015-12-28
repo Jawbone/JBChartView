@@ -26,6 +26,10 @@
 		9B4546571C31EF1D0086290E /* JBShapeLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B45464C1C31EF1D0086290E /* JBShapeLayer.m */; };
 		9B4546581C31EF1D0086290E /* JBLineChartLine.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B45464F1C31EF1D0086290E /* JBLineChartLine.m */; };
 		9B4546591C31EF1D0086290E /* JBLineChartPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B4546511C31EF1D0086290E /* JBLineChartPoint.m */; };
+		9B45465C1C31F7100086290E /* JBGradientLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B45465B1C31F7100086290E /* JBGradientLayer.m */; };
+		9B4546641C31F7550086290E /* JBLineChartDotsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B45465F1C31F7550086290E /* JBLineChartDotsView.m */; };
+		9B4546651C31F7550086290E /* JBLineChartDotView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B4546611C31F7550086290E /* JBLineChartDotView.m */; };
+		9B4546661C31F7550086290E /* JBLineChartLinesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B4546631C31F7550086290E /* JBLineChartLinesView.m */; };
 		9B603D3E182C6E79000A76D0 /* JBBaseNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B603D3D182C6E79000A76D0 /* JBBaseNavigationController.m */; };
 		9B603D47182C7002000A76D0 /* icon-jawbone-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 9B603D45182C7002000A76D0 /* icon-jawbone-logo.png */; };
 		9B603D48182C7002000A76D0 /* icon-jawbone-logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9B603D46182C7002000A76D0 /* icon-jawbone-logo@2x.png */; };
@@ -89,6 +93,14 @@
 		9B45464F1C31EF1D0086290E /* JBLineChartLine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBLineChartLine.m; sourceTree = "<group>"; };
 		9B4546501C31EF1D0086290E /* JBLineChartPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBLineChartPoint.h; sourceTree = "<group>"; };
 		9B4546511C31EF1D0086290E /* JBLineChartPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBLineChartPoint.m; sourceTree = "<group>"; };
+		9B45465A1C31F7100086290E /* JBGradientLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBGradientLayer.h; sourceTree = "<group>"; };
+		9B45465B1C31F7100086290E /* JBGradientLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBGradientLayer.m; sourceTree = "<group>"; };
+		9B45465E1C31F7550086290E /* JBLineChartDotsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBLineChartDotsView.h; sourceTree = "<group>"; };
+		9B45465F1C31F7550086290E /* JBLineChartDotsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBLineChartDotsView.m; sourceTree = "<group>"; };
+		9B4546601C31F7550086290E /* JBLineChartDotView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBLineChartDotView.h; sourceTree = "<group>"; };
+		9B4546611C31F7550086290E /* JBLineChartDotView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBLineChartDotView.m; sourceTree = "<group>"; };
+		9B4546621C31F7550086290E /* JBLineChartLinesView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBLineChartLinesView.h; sourceTree = "<group>"; };
+		9B4546631C31F7550086290E /* JBLineChartLinesView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBLineChartLinesView.m; sourceTree = "<group>"; };
 		9B603D3C182C6E79000A76D0 /* JBBaseNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBBaseNavigationController.h; sourceTree = "<group>"; };
 		9B603D3D182C6E79000A76D0 /* JBBaseNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBBaseNavigationController.m; sourceTree = "<group>"; };
 		9B603D45182C7002000A76D0 /* icon-jawbone-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-jawbone-logo.png"; sourceTree = "<group>"; };
@@ -291,6 +303,7 @@
 				9B4546491C31EF1D0086290E /* JBLineChartView.m */,
 				9B45464A1C31EF1D0086290E /* Layers */,
 				9B45464D1C31EF1D0086290E /* Models */,
+				9B45465D1C31F7550086290E /* Views */,
 			);
 			name = Line;
 			path = Classes/Line;
@@ -299,6 +312,8 @@
 		9B45464A1C31EF1D0086290E /* Layers */ = {
 			isa = PBXGroup;
 			children = (
+				9B45465A1C31F7100086290E /* JBGradientLayer.h */,
+				9B45465B1C31F7100086290E /* JBGradientLayer.m */,
 				9B45464B1C31EF1D0086290E /* JBShapeLayer.h */,
 				9B45464C1C31EF1D0086290E /* JBShapeLayer.m */,
 			);
@@ -314,6 +329,19 @@
 				9B4546511C31EF1D0086290E /* JBLineChartPoint.m */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		9B45465D1C31F7550086290E /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				9B45465E1C31F7550086290E /* JBLineChartDotsView.h */,
+				9B45465F1C31F7550086290E /* JBLineChartDotsView.m */,
+				9B4546601C31F7550086290E /* JBLineChartDotView.h */,
+				9B4546611C31F7550086290E /* JBLineChartDotView.m */,
+				9B4546621C31F7550086290E /* JBLineChartLinesView.h */,
+				9B4546631C31F7550086290E /* JBLineChartLinesView.m */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		9B603D3B182C6E79000A76D0 /* Base */ = {
@@ -506,11 +534,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				9BE0B0CE182B162E00232023 /* JBBarChartFooterView.m in Sources */,
+				9B4546661C31F7550086290E /* JBLineChartLinesView.m in Sources */,
 				9B4546531C31EF1D0086290E /* JBBarChartView.m in Sources */,
 				9BEBE9D2183167050046E4A8 /* JBChartInformationView.m in Sources */,
 				9B4546571C31EF1D0086290E /* JBShapeLayer.m in Sources */,
+				9B45465C1C31F7100086290E /* JBGradientLayer.m in Sources */,
 				9B603D3E182C6E79000A76D0 /* JBBaseNavigationController.m in Sources */,
 				9B4546581C31EF1D0086290E /* JBLineChartLine.m in Sources */,
+				9B4546641C31F7550086290E /* JBLineChartDotsView.m in Sources */,
 				9B698F11182D7BCF003C135F /* JBChartTableCell.m in Sources */,
 				9B2E531118218CF20079B9D2 /* main.m in Sources */,
 				9B698F01182D5F44003C135F /* JBLineChartFooterView.m in Sources */,
@@ -522,6 +553,7 @@
 				9BEE694618D2789E005D9BA7 /* JBBaseChartViewController.m in Sources */,
 				9B6A68E11829BED5006DB3BF /* JBLineChartViewController.m in Sources */,
 				9B4546541C31EF1D0086290E /* JBGradientBarView.m in Sources */,
+				9B4546651C31F7550086290E /* JBLineChartDotView.m in Sources */,
 				9B4546561C31EF1D0086290E /* JBLineChartView.m in Sources */,
 				9B4546551C31EF1D0086290E /* JBChartView.m in Sources */,
 				9B4546591C31EF1D0086290E /* JBLineChartPoint.m in Sources */,
