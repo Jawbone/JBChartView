@@ -10,4 +10,17 @@
 
 @implementation JBLineChartDotView
 
+#pragma mark - Alloc/Init
+
+- (id)initWithRadius:(CGFloat)radius
+{
+	self = [super initWithFrame:CGRectMake(0, 0, (radius * 2.0f), (radius * 2.0f))];
+	if (self)
+	{
+		self.clipsToBounds = YES;
+		self.layer.cornerRadius = ((radius * 2.0f) * 0.5f);
+	}
+	return self;
+}
+
 @end

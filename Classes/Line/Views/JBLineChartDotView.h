@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-@interface JBLineChartDotView : NSObject
+@interface JBLineChartDotView : UIView
+
+- (id)initWithRadius:(CGFloat)radius;
 
 @end
