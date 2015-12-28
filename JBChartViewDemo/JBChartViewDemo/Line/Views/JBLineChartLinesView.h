@@ -24,7 +24,6 @@ extern NSInteger const kJBLineChartLinesViewUnselectedLineIndex;
 
 @property (nonatomic, assign) id<JBLineChartLinesViewDataSource> delegate;
 @property (nonatomic, assign) NSInteger selectedLineIndex; // -1 to unselect
-@property (nonatomic, assign) BOOL animated; // for reload
 
 // Data
 - (void)reloadDataAnimated:(BOOL)animated callback:(void (^)())callback;
@@ -33,11 +32,6 @@ extern NSInteger const kJBLineChartLinesViewUnselectedLineIndex;
 
 // Setters
 - (void)setSelectedLineIndex:(NSInteger)selectedLineIndex animated:(BOOL)animated;
-
-// Getters
-- (UIBezierPath *)bezierPathForLineChartLine:(JBLineChartLine *)lineChartLine filled:(BOOL)filled;
-- (JBShapeLayer *)shapeLayerForLineIndex:(NSUInteger)lineIndex filled:(BOOL)filled;
-- (JBGradientLayer *)gradientLayerForLineIndex:(NSUInteger)lineIndex filled:(BOOL)filled;
 
 // Callback helpers
 - (void)fireCallback:(void (^)())callback;

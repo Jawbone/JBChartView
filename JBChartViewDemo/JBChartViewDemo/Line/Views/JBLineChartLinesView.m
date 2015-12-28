@@ -18,6 +18,18 @@ CGFloat const kJBLineChartLinesViewReloadDataAnimationDuration = 0.15f;
 NSInteger const kJBLineChartLinesViewSmoothThresholdVertical = 1;
 NSInteger const kJBLineChartLinesViewUnselectedLineIndex = -1;
 
+@interface JBLineChartLinesView ()
+
+@property (nonatomic, assign) BOOL animated; // for reload
+
+// Getters
+- (UIBezierPath *)bezierPathForLineChartLine:(JBLineChartLine *)lineChartLine filled:(BOOL)filled;
+- (JBShapeLayer *)shapeLayerForLineIndex:(NSUInteger)lineIndex filled:(BOOL)filled;
+- (JBGradientLayer *)gradientLayerForLineIndex:(NSUInteger)lineIndex filled:(BOOL)filled;
+- (CABasicAnimation *)basicPathAnimationFromBezierPath:(UIBezierPath *)fromBezierPath toBezierPath:(UIBezierPath *)toBezierPath;
+
+@end
+
 @implementation JBLineChartLinesView
 
 #pragma mark - Alloc/Init
@@ -90,36 +102,20 @@ NSInteger const kJBLineChartLinesViewUnselectedLineIndex = -1;
 			shapeLayer.frame = self.bounds;
 			fillLayer.frame = self.bounds;
 
+			// Note: fills go first because the lines must go on top
 			
-			
-			// Line path
-			if (self.animated && shapeLayer.currentPath != nil)
-			{
-				CABasicAnimation *pathAnimation = [CABasicAnimation animationWithKeyPath:@"path"];
-				pathAnimation.fromValue = (id)shapeLayer.currentPath.CGPath;
-				pathAnimation.toValue = (id)linePath.CGPath;
-				pathAnimation.duration = kJBLineChartLinesViewReloadDataAnimationDuration;
-				pathAnimation.timingFunction = [CAMediaTimingFunction functionWithName:@"easeInEaseOut"];
-				pathAnimation.fillMode = kCAFillModeBoth;
-				pathAnimation.removedOnCompletion = NO;
-				[shapeLayer addAnimation:pathAnimation forKey:@"shapeLayerPathAnimation"];
-			}
-			else
-			{
-				shapeLayer.path = linePath.CGPath;
-			}
-			shapeLayer.currentPath = [linePath copy];
-			
-			// Fill path
-			fillLayer.path = fillPath.CGPath;
-			
-			// Solid fill
+			/*
+			 * Solid fill
+			 */
 			if (lineChartLine.fillColorStyle == JBLineChartViewColorStyleSolid)
 			{
+				fillLayer.path = fillPath.CGPath; // non animated (for now)
 				[self.layer addSublayer:fillLayer];
 			}
 			
-			// Gradient fill
+			/*
+			 * Gradient fill
+			 */
 			else if (lineChartLine.fillColorStyle == JBLineChartViewColorStyleGradient)
 			{
 				JBGradientLayer *fillGradientLayer = [self gradientLayerForLineIndex:lineIndex filled:YES];
@@ -129,17 +125,33 @@ NSInteger const kJBLineChartLinesViewUnselectedLineIndex = -1;
 					fillGradientLayer = [[JBGradientLayer alloc] initWithGradientLayer:[self.delegate lineChartLinesView:self fillGradientForLineAtLineIndex:lineIndex] tag:lineIndex filled:YES currentPath:nil];
 				}
 				fillGradientLayer.frame = fillLayer.frame;
+				
+				fillLayer.path = fillPath.CGPath;
 				fillGradientLayer.mask = fillLayer;
 				[self.layer addSublayer:fillGradientLayer];
 			}
 			
-			// Solid line
+			/*
+			 * Solid line
+			 */
 			if (lineChartLine.colorStyle == JBLineChartViewColorStyleSolid)
 			{
+				if (self.animated)
+				{
+					[shapeLayer addAnimation:[self basicPathAnimationFromBezierPath:shapeLayer.currentPath toBezierPath:linePath] forKey:@"shapeLayerPathAnimation"];
+				}
+				else
+				{
+					shapeLayer.path = linePath.CGPath;
+				}
+				
+				shapeLayer.currentPath = [linePath copy];
 				[self.layer addSublayer:shapeLayer];
 			}
 			
-			// Gradient line
+			/*
+			 * Gradient line
+			 */
 			else if (lineChartLine.colorStyle == JBLineChartViewColorStyleGradient)
 			{
 				JBGradientLayer *gradientLayer = [self gradientLayerForLineIndex:lineIndex filled:NO];
@@ -149,24 +161,18 @@ NSInteger const kJBLineChartLinesViewUnselectedLineIndex = -1;
 					gradientLayer = [[JBGradientLayer alloc] initWithGradientLayer:[self.delegate lineChartLinesView:self gradientForLineAtLineIndex:lineIndex] tag:lineIndex filled:NO currentPath:linePath];
 				}
 				gradientLayer.frame = shapeLayer.frame;
-				
-				if (self.animated && gradientLayer.currentPath != nil)
+
+				if (self.animated)
 				{
-					CABasicAnimation *pathAnimation = [CABasicAnimation animationWithKeyPath:@"path"];
-					pathAnimation.fromValue = (id)gradientLayer.currentPath.CGPath;
-					pathAnimation.toValue = (id)linePath.CGPath;
-					pathAnimation.duration = kJBLineChartLinesViewReloadDataAnimationDuration;
-					pathAnimation.timingFunction = [CAMediaTimingFunction functionWithName:@"easeInEaseOut"];
-					pathAnimation.fillMode = kCAFillModeBoth;
-					pathAnimation.removedOnCompletion = NO;
-					[gradientLayer.mask addAnimation:pathAnimation forKey:@"gradientLayerMaskAnimation"];
+					[gradientLayer.mask addAnimation:[self basicPathAnimationFromBezierPath:gradientLayer.currentPath toBezierPath:linePath] forKey:@"gradientLayerMaskAnimation"];
 				}
 				else
 				{
+					shapeLayer.path = linePath.CGPath;
 					gradientLayer.mask = shapeLayer;
 				}
-				gradientLayer.currentPath = [linePath copy];
 				
+				gradientLayer.currentPath = [linePath copy];
 				[self.layer addSublayer:gradientLayer];
 			}
 		}
@@ -547,6 +553,18 @@ NSInteger const kJBLineChartLinesViewUnselectedLineIndex = -1;
 		}
 	}
 	return nil;
+}
+
+- (CABasicAnimation *)basicPathAnimationFromBezierPath:(UIBezierPath *)fromBezierPath toBezierPath:(UIBezierPath *)toBezierPath
+{
+	CABasicAnimation *basicPathAnimation = [CABasicAnimation animationWithKeyPath:@"path"];
+	basicPathAnimation.fromValue = (id)fromBezierPath.CGPath;
+	basicPathAnimation.toValue = (id)toBezierPath.CGPath;
+	basicPathAnimation.duration = kJBLineChartLinesViewReloadDataAnimationDuration;
+	basicPathAnimation.timingFunction = [CAMediaTimingFunction functionWithName:@"easeInEaseOut"];
+	basicPathAnimation.fillMode = kCAFillModeBoth;
+	basicPathAnimation.removedOnCompletion = NO;
+	return basicPathAnimation;
 }
 
 #pragma mark - Callback Helpers
