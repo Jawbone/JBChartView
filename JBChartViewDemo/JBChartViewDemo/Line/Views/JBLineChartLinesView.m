@@ -135,7 +135,7 @@ static NSArray *kJBLineChartLinesViewDefaultDashPattern = nil;
 			
 			// Line path
 			shapeLayer.frame = self.bounds;
-			if (self.animated)
+			if (self.animated && shapeLayer.currentPath != nil)
 			{
 				CABasicAnimation *pathAnimation = [CABasicAnimation animationWithKeyPath:@"path"];
 				pathAnimation.fromValue = (id)shapeLayer.currentPath.CGPath;
@@ -195,7 +195,7 @@ static NSArray *kJBLineChartLinesViewDefaultDashPattern = nil;
 				}
 				gradientLayer.frame = shapeLayer.frame;
 				
-				if (self.animated)
+				if (self.animated && gradientLayer.currentPath != nil)
 				{
 					CABasicAnimation *pathAnimation = [CABasicAnimation animationWithKeyPath:@"path"];
 					pathAnimation.fromValue = (id)gradientLayer.currentPath.CGPath;
