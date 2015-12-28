@@ -8,9 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
+// Views
+#import "JBLineChartView.h"
+
 @interface JBShapeLayer : CAShapeLayer
 
-- (instancetype)initWithTag:(NSUInteger)tag filled:(BOOL)filled currentPath:(UIBezierPath *)currentPath;
+- (instancetype)initWithTag:(NSUInteger)tag filled:(BOOL)filled smoothedLine:(BOOL)smoothedLine lineStyle:(JBLineChartViewLineStyle)lineStyle currentPath:(UIBezierPath *)currentPath;
 
 @property (nonatomic, readonly) NSUInteger tag;
 @property (nonatomic, readonly) BOOL filled;

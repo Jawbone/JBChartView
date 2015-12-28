@@ -13,26 +13,14 @@
 
 // Numerics
 CGFloat const kJBLineChartLinesViewMiterLimit = -5.0;
-CGFloat const kJBLineChartLinesViewDefaultLinePhase = 1.0f;
 CGFloat const kJBLineChartLinesViewSmoothThresholdSlope = 0.01f;
 CGFloat const kJBLineChartLinesViewReloadDataAnimationDuration = 0.15f;
 NSInteger const kJBLineChartLinesViewSmoothThresholdVertical = 1;
 NSInteger const kJBLineChartLinesViewUnselectedLineIndex = -1;
 
-// Structures
-static NSArray *kJBLineChartLinesViewDefaultDashPattern = nil;
-
 @implementation JBLineChartLinesView
 
 #pragma mark - Alloc/Init
-
-+ (void)initialize
-{
-	if (self == [JBLineChartLinesView class])
-	{
-		kJBLineChartLinesViewDefaultDashPattern = @[@(3), @(2)];
-	}
-}
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -75,53 +63,13 @@ static NSArray *kJBLineChartLinesViewDefaultDashPattern = nil;
 			JBShapeLayer *shapeLayer = [self shapeLayerForLineIndex:lineIndex filled:NO];
 			if (shapeLayer == nil)
 			{
-				shapeLayer = [[JBShapeLayer alloc] initWithTag:lineIndex filled:NO currentPath:linePath];
+				shapeLayer = [[JBShapeLayer alloc] initWithTag:lineIndex filled:NO smoothedLine:lineChartLine.smoothedLine lineStyle:lineChartLine.lineStyle currentPath:linePath];
 			}
 			
 			JBShapeLayer *fillLayer = [self shapeLayerForLineIndex:lineIndex filled:YES];
 			if (fillLayer == nil)
 			{
-				fillLayer = [[JBShapeLayer alloc] initWithTag:lineIndex filled:YES currentPath:nil]; // don't need currentPath since fill's aren't animatable (yet)
-			}
-			
-			shapeLayer.zPosition = 0.1f;
-			shapeLayer.fillColor = [UIColor clearColor].CGColor;
-			fillLayer.zPosition = 0.1f;
-			fillLayer.fillColor = [UIColor clearColor].CGColor;
-			
-			// Line style
-			if (lineChartLine.lineStyle == JBLineChartViewLineStyleSolid)
-			{
-				shapeLayer.lineDashPhase = 0.0;
-				shapeLayer.lineDashPattern = nil;
-			}
-			else if (lineChartLine.lineStyle == JBLineChartViewLineStyleDashed)
-			{
-				shapeLayer.lineDashPhase = kJBLineChartLinesViewDefaultLinePhase;
-				shapeLayer.lineDashPattern = kJBLineChartLinesViewDefaultDashPattern;
-			}
-			
-			// Smoothing
-			if (lineChartLine.smoothedLine)
-			{
-				if (lineChartLine.lineStyle == JBLineChartViewLineStyleDashed)
-				{
-					shapeLayer.lineCap = kCALineCapButt; // smoothed, dashed lines need butt caps
-				}
-				else
-				{
-					shapeLayer.lineCap = kCALineCapRound;
-				}
-				shapeLayer.lineJoin = kCALineJoinRound;
-				fillLayer.lineCap = kCALineCapRound;
-				fillLayer.lineJoin = kCALineJoinRound;
-			}
-			else
-			{
-				shapeLayer.lineCap = kCALineCapButt;
-				shapeLayer.lineJoin = kCALineJoinMiter;
-				fillLayer.lineCap = kCALineCapButt;
-				fillLayer.lineJoin = kCALineJoinMiter;
+				fillLayer = [[JBShapeLayer alloc] initWithTag:lineIndex filled:YES smoothedLine:lineChartLine.smoothedLine lineStyle:lineChartLine.lineStyle currentPath:fillPath];
 			}
 			
 			// Width
@@ -232,7 +180,7 @@ static NSArray *kJBLineChartLinesViewDefaultDashPattern = nil;
 	__weak JBLineChartLinesView* weakSelf = self;
 	
 	dispatch_block_t completionBlock = ^{
-		weakSelf.animated = NO;
+		weakSelf.animated = animated;
 		[weakSelf setNeedsDisplay]; // re-draw layers
 		if (callback)
 		{
