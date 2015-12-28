@@ -15,6 +15,7 @@
 @property (nonatomic, readonly) NSUInteger tag;
 @property (nonatomic, readonly) BOOL filled;
 @property (nonatomic, strong) UIBezierPath *currentPath;
+@property (nonatomic, readonly) CGFloat alpha; // alpha of gradient, based on first color
 
 @end
 

@@ -8,7 +8,12 @@
 
 #import "JBGradientLayer.h"
 
+// Numerics
+CGFloat const kJBGradientLayerDefaultAlpha = 1.0f;
+
 @implementation JBGradientLayer
+
+#pragma mark - Alloc/Init
 
 - (instancetype)initWithGradientLayer:(CAGradientLayer *)gradientLayer tag:(NSUInteger)tag filled:(BOOL)filled currentPath:(UIBezierPath *)currentPath
 {
@@ -26,6 +31,17 @@
 		_currentPath = [currentPath copy];
 	}
 	return self;
+}
+
+#pragma mark - Getters
+
+- (CGFloat)alpha
+{
+	if (self.colors.firstObject != nil)
+	{
+		return CGColorGetAlpha((CGColorRef)self.colors.firstObject);
+	}
+	return kJBGradientLayerDefaultAlpha;
 }
 
 @end
