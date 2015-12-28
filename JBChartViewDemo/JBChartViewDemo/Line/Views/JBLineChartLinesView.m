@@ -75,14 +75,24 @@ NSInteger const kJBLineChartLinesViewUnselectedLineIndex = -1;
 			// Width
 			NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:widthForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (CGFloat)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView widthForLineAtLineIndex:(NSUInteger)lineIndex");
 			shapeLayer.lineWidth = [self.delegate lineChartLinesView:self widthForLineAtLineIndex:lineIndex];
+			
+			NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:widthForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (CGFloat)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView widthForLineAtLineIndex:(NSUInteger)lineIndex");
 			fillLayer.lineWidth = [self.delegate lineChartLinesView:self widthForLineAtLineIndex:lineIndex];
 			
 			// Colors
 			NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:colorForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView colorForLineAtLineIndex:(NSUInteger)lineIndex");
 			shapeLayer.strokeColor = [self.delegate lineChartLinesView:self colorForLineAtLineIndex:lineIndex].CGColor;
 			
-			// Line path
+			NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:fillColorForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView fillColorForLineAtLineIndex:(NSUInteger)lineIndex");
+			fillLayer.fillColor = [self.delegate lineChartLinesView:self fillColorForLineAtLineIndex:lineIndex].CGColor;
+			
+			// Bounds
 			shapeLayer.frame = self.bounds;
+			fillLayer.frame = self.bounds;
+
+			
+			
+			// Line path
 			if (self.animated && shapeLayer.currentPath != nil)
 			{
 				CABasicAnimation *pathAnimation = [CABasicAnimation animationWithKeyPath:@"path"];
@@ -101,14 +111,11 @@ NSInteger const kJBLineChartLinesViewUnselectedLineIndex = -1;
 			shapeLayer.currentPath = [linePath copy];
 			
 			// Fill path
-			fillLayer.frame = self.bounds;
 			fillLayer.path = fillPath.CGPath;
 			
 			// Solid fill
 			if (lineChartLine.fillColorStyle == JBLineChartViewColorStyleSolid)
 			{
-				NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:fillColorForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView fillColorForLineAtLineIndex:(NSUInteger)lineIndex");
-				fillLayer.fillColor = [self.delegate lineChartLinesView:self fillColorForLineAtLineIndex:lineIndex].CGColor;
 				[self.layer addSublayer:fillLayer];
 			}
 			
