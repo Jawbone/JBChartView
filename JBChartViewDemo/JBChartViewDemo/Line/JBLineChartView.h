@@ -206,6 +206,8 @@ typedef NS_ENUM(NSInteger, JBLineChartViewColorStyle) {
  *  Returns the gradient layer to be used for a particular line at lineIndex within the chart.
  *  For this to apply, lineChartView:colorStyleForLineAtLineIndex: must return JBLineChartViewColorStyleGradient.
  *
+ *  Note: gradients do not support multiple alphas. The alpha of gradient's first color be used throughout.
+ *
  *  Default: black to light gray.
  *
  *  @param lineChartView    The line chart object requesting this information.
@@ -231,6 +233,8 @@ typedef NS_ENUM(NSInteger, JBLineChartViewColorStyle) {
 /**
  *  Returns the gradient layer to be used for a fill of a particular line at lineIndex within the chart.
  *  For this to apply, lineChartView:fillColorStyleForLineAtLineIndex: must return JBLineChartViewColorStyleGradient.
+ *
+ *  Note: gradients do not support multiple alphas. The alpha of gradient's first color be used throughout.
  *
  *  Default: clear gradient (none).
  *
@@ -329,6 +333,8 @@ typedef NS_ENUM(NSInteger, JBLineChartViewColorStyle) {
  *  The property showsLineSelection must be YES for the color to apply.
  *  As well, lineChartView:selectionColorStyleForLineAtLineIndex: must return JBLineChartViewColorStyleGradient.
  *
+ *  Note: gradients do not support multiple alphas. The alpha of gradient's first color be used throughout.
+ *
  *  Default: matches lineChartView:gradientForLineAtLineIndex:.
  *
  *  @param lineChartView    The line chart object requesting this information.
@@ -356,6 +362,8 @@ typedef NS_ENUM(NSInteger, JBLineChartViewColorStyle) {
  *  Returns the selection fill gradient layer under a line within the chart during touch events.
  *  The property showsLineSelection must be YES for the color to apply.
  *  As well, lineChartView:selectionFillColorStyleForLineAtLineIndex: must return JBLineChartViewColorStyleGrdient.
+ *
+ *  Note: gradients do not support multiple alphas. The alpha of gradient's first color be used throughout.
  *
  *  Default: matches lineChartView:fillGradientForLineAtLineIndex.
  *
