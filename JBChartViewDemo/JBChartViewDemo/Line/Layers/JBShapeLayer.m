@@ -36,7 +36,7 @@ static NSArray *kJBShapeLayerDefaultDashPattern = nil;
 		_currentPath = [currentPath copy];
 		
 		// Position
-		self.zPosition = 0.1f;
+		self.zPosition = filled ? 0.0f : 0.1f;
 		self.fillColor = [UIColor clearColor].CGColor;
 		
 		// Style

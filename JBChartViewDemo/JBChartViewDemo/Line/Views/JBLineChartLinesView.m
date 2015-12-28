@@ -109,7 +109,16 @@ NSInteger const kJBLineChartLinesViewUnselectedLineIndex = -1;
 			 */
 			if (lineChartLine.fillColorStyle == JBLineChartViewColorStyleSolid)
 			{
-				fillLayer.path = fillPath.CGPath; // non animated (for now)
+				if (self.animated)
+				{
+					[fillLayer addAnimation:[self basicPathAnimationFromBezierPath:fillLayer.currentPath toBezierPath:fillPath] forKey:@"fillLayerPathAnimation"];
+				}
+				else
+				{
+					fillLayer.path = fillPath.CGPath;
+				}
+				
+				fillLayer.currentPath = [fillPath copy];
 				[self.layer addSublayer:fillLayer];
 			}
 			
