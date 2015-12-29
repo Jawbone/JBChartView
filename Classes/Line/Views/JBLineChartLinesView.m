@@ -81,7 +81,7 @@ NSInteger const kJBLineChartLinesViewUnselectedLineIndex = -1;
 			JBShapeLayer *fillLayer = [self shapeLayerForLineIndex:lineIndex filled:YES];
 			if (fillLayer == nil)
 			{
-				fillLayer = [[JBShapeLayer alloc] initWithTag:lineIndex filled:YES smoothedLine:lineChartLine.smoothedLine lineStyle:lineChartLine.lineStyle currentPath:fillPath];
+				fillLayer = [[JBShapeLayer alloc] initWithTag:lineIndex filled:YES smoothedLine:lineChartLine.smoothedLine lineStyle:lineChartLine.lineStyle currentPath:nil]; // path not needed for fills (unsupported)
 			}
 			
 			// Width
@@ -109,16 +109,7 @@ NSInteger const kJBLineChartLinesViewUnselectedLineIndex = -1;
 			 */
 			if (lineChartLine.fillColorStyle == JBLineChartViewColorStyleSolid)
 			{
-				if (self.animated)
-				{
-					[fillLayer addAnimation:[self basicPathAnimationFromBezierPath:fillLayer.currentPath toBezierPath:fillPath] forKey:@"fillLayerPathAnimation"];
-				}
-				else
-				{
-					fillLayer.path = fillPath.CGPath;
-				}
-				
-				fillLayer.currentPath = [fillPath copy];
+				fillLayer.path = fillPath.CGPath;
 				[self.layer addSublayer:fillLayer];
 			}
 			

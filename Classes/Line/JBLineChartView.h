@@ -441,6 +441,8 @@ typedef NS_ENUM(NSInteger, JBLineChartViewColorStyle) {
  *  Adding, removing or modifying existing lines or dot views (via growing/shrinking & fading) if animated = YES;
  *  Reloading (animated) data is thread safe and can be executed any number of times in succession.
  *
+ *  Note: fills will not be animated (technical limitation of Apple's CG API). 
+ *
  *  Default: a non-animated reload (via reloadData).
  */
 - (void)reloadDataAnimated:(BOOL)animated;
