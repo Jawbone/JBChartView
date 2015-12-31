@@ -168,7 +168,6 @@ To the radius of each dot (default is 6x the line width, or 3x the diameter), im
 To customize the color of each dot during selection and non-selection events (default is white and black respectively), implement:
 
 	- (UIColor *)lineChartView:(JBLineChartView *)lineChartView colorForDotAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;	
-
 	- (UIColor *)lineChartView:(JBLineChartView *)lineChartView selectionColorForDotAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
 	
 Alternatively, you can supply your own UIView instead of using the default impelmentation:
