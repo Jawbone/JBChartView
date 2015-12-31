@@ -1,28 +1,28 @@
 //
-//  JBShapeLayer.m
+//  JBShapeLineLayer.m
 //  JBChartViewDemo
 //
 //  Created by Terry Worona on 12/25/15.
 //  Copyright © 2015 Jawbone. All rights reserved.
 //
 
-#import "JBShapeLayer.h"
+#import "JBShapeLineLayer.h"
 
 // Numerics
-CGFloat const kJBShapeLayerDefaultLinePhase = 1.0f;
+CGFloat const kJBShapeLineLayerDefaultLinePhase = 1.0f;
 
 // Structures
-static NSArray *kJBShapeLayerDefaultDashPattern = nil;
+static NSArray *kJBShapeLineLayerDefaultDashPattern = nil;
 
-@implementation JBShapeLayer
+@implementation JBShapeLineLayer
 
 #pragma mark - Alloc/Init
 
 + (void)initialize
 {
-	if (self == [JBShapeLayer class])
+	if (self == [JBShapeLineLayer class])
 	{
-		kJBShapeLayerDefaultDashPattern = @[@(3), @(2)];
+		kJBShapeLineLayerDefaultDashPattern = @[@(3), @(2)];
 	}
 }
 
@@ -47,8 +47,8 @@ static NSArray *kJBShapeLayerDefaultDashPattern = nil;
 		}
 		else if (lineStyle == JBLineChartViewLineStyleDashed)
 		{
-			self.lineDashPhase = kJBShapeLayerDefaultLinePhase;
-			self.lineDashPattern = kJBShapeLayerDefaultDashPattern;
+			self.lineDashPhase = kJBShapeLineLayerDefaultLinePhase;
+			self.lineDashPattern = kJBShapeLineLayerDefaultDashPattern;
 		}
 		
 		// Smoothing

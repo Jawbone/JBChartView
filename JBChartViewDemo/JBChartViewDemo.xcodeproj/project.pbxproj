@@ -16,7 +16,7 @@
 		9B1351921C31FAB3000D4C92 /* JBChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B13517A1C31FAB3000D4C92 /* JBChartView.m */; };
 		9B1351931C31FAB3000D4C92 /* JBLineChartView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B13517D1C31FAB3000D4C92 /* JBLineChartView.m */; };
 		9B1351941C31FAB3000D4C92 /* JBGradientLineLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B1351801C31FAB3000D4C92 /* JBGradientLineLayer.m */; };
-		9B1351951C31FAB3000D4C92 /* JBShapeLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B1351821C31FAB3000D4C92 /* JBShapeLayer.m */; };
+		9B1351951C31FAB3000D4C92 /* JBShapeLineLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B1351821C31FAB3000D4C92 /* JBShapeLineLayer.m */; };
 		9B1351961C31FAB3000D4C92 /* JBLineChartLine.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B1351851C31FAB3000D4C92 /* JBLineChartLine.m */; };
 		9B1351971C31FAB3000D4C92 /* JBLineChartPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B1351871C31FAB3000D4C92 /* JBLineChartPoint.m */; };
 		9B1351981C31FAB3000D4C92 /* JBLineChartDotsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B13518A1C31FAB3000D4C92 /* JBLineChartDotsView.m */; };
@@ -73,8 +73,8 @@
 		9B13517D1C31FAB3000D4C92 /* JBLineChartView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBLineChartView.m; sourceTree = "<group>"; };
 		9B13517F1C31FAB3000D4C92 /* JBGradientLineLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBGradientLineLayer.h; sourceTree = "<group>"; };
 		9B1351801C31FAB3000D4C92 /* JBGradientLineLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBGradientLineLayer.m; sourceTree = "<group>"; };
-		9B1351811C31FAB3000D4C92 /* JBShapeLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBShapeLayer.h; sourceTree = "<group>"; };
-		9B1351821C31FAB3000D4C92 /* JBShapeLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBShapeLayer.m; sourceTree = "<group>"; };
+		9B1351811C31FAB3000D4C92 /* JBShapeLineLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBShapeLineLayer.h; sourceTree = "<group>"; };
+		9B1351821C31FAB3000D4C92 /* JBShapeLineLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBShapeLineLayer.m; sourceTree = "<group>"; };
 		9B1351841C31FAB3000D4C92 /* JBLineChartLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBLineChartLine.h; sourceTree = "<group>"; };
 		9B1351851C31FAB3000D4C92 /* JBLineChartLine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBLineChartLine.m; sourceTree = "<group>"; };
 		9B1351861C31FAB3000D4C92 /* JBLineChartPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBLineChartPoint.h; sourceTree = "<group>"; };
@@ -214,8 +214,8 @@
 			children = (
 				9B13517F1C31FAB3000D4C92 /* JBGradientLineLayer.h */,
 				9B1351801C31FAB3000D4C92 /* JBGradientLineLayer.m */,
-				9B1351811C31FAB3000D4C92 /* JBShapeLayer.h */,
-				9B1351821C31FAB3000D4C92 /* JBShapeLayer.m */,
+				9B1351811C31FAB3000D4C92 /* JBShapeLineLayer.h */,
+				9B1351821C31FAB3000D4C92 /* JBShapeLineLayer.m */,
 			);
 			path = Layers;
 			sourceTree = "<group>";
@@ -560,7 +560,7 @@
 				9B1351941C31FAB3000D4C92 /* JBGradientLineLayer.m in Sources */,
 				9B7967EC198313E30003A2B0 /* JBAreaChartViewController.m in Sources */,
 				9BD57BBC18D13D1A00ACFA52 /* JBChartTooltipView.m in Sources */,
-				9B1351951C31FAB3000D4C92 /* JBShapeLayer.m in Sources */,
+				9B1351951C31FAB3000D4C92 /* JBShapeLineLayer.m in Sources */,
 				9B603D4B182C7117000A76D0 /* JBBaseViewController.m in Sources */,
 				9B0725211829822A0052109B /* JBChartListViewController.m in Sources */,
 			);

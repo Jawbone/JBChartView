@@ -1,5 +1,5 @@
 //
-//  JBShapeLayer.h
+//  JBShapeLineLayer.h
 //  JBChartViewDemo
 //
 //  Created by Terry Worona on 12/25/15.
@@ -11,7 +11,7 @@
 // Views
 #import "JBLineChartView.h"
 
-@interface JBShapeLayer : CAShapeLayer
+@interface JBShapeLineLayer : CAShapeLayer
 
 - (instancetype)initWithTag:(NSUInteger)tag filled:(BOOL)filled smoothedLine:(BOOL)smoothedLine lineStyle:(JBLineChartViewLineStyle)lineStyle currentPath:(UIBezierPath *)currentPath;
 
