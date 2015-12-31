@@ -84,7 +84,7 @@ The color, width and style of each line in the chart can be customized via the <
 		return ...; // style of line in chart (solid or dashed)
 	}
 	
-Additionally, the line and fill color style can be customzized via the <i>optional</i> protocol. Current supported colors styles include solid and gradient line/fills.  The line & fill color style apply to both selected and non-selected scenarios, meaning, if your line has a solid style, it's selected style will also be solid. 
+Additionally, the line and fill color style can be customzized via the <i>optional</i> protocols (below). The line & fill color style apply to both selected and non-selected scenarios, meaning, if your line has a solid style, it's selected style will also be solid. 
 
     - (JBLineChartViewColorStyle)lineChartView:(JBLineChartView *)lineChartView colorStyleForLineAtLineIndex:(NSUInteger)lineIndex
     {
@@ -96,15 +96,15 @@ Additionally, the line and fill color style can be customzized via the <i>option
         return ...; // color style for the area under a line in the chart
     }
 
-If solid color style are used, the following <i>optional</i> protocols can be implemented:
+If a solid color style is used, the following <i>optional</i> protocols can be implemented:
 
 	- (UIColor *)lineChartView:(JBLineChartView *)lineChartView colorForLineAtLineIndex:(NSUInteger)lineIndex;
 	- (UIColor *)lineChartView:(JBLineChartView *)lineChartView fillColorForLineAtLineIndex:(NSUInteger)lineIndex;
  	
 Gradient color styles require a CAGradientLayer to be returned:
 
-	- (CAGradientLayer *)lineChartView:(JBLineChartView *)lineChartView fillGradientForLineAtLineIndex:(NSUInteger)lineIndex;
 	- (CAGradientLayer *)lineChartView:(JBLineChartView *)lineChartView gradientForLineAtLineIndex:(NSUInteger)lineIndex;
+	- (CAGradientLayer *)lineChartView:(JBLineChartView *)lineChartView fillGradientForLineAtLineIndex:(NSUInteger)lineIndex;
 
 **Note**: gradients do not support multiple alphas. The alpha of gradient's first color be used throughout.
 
