@@ -106,7 +106,7 @@ Subsequent changes to the chart's frame will not invoke *reloadData*; it must be
 
 ### Animated Reload
 
-Both line and bar charts support *animated* reloads. The delta between the old data model and new data model is calculated and animated appropriately (ie. bars or lines will shrink, expand or morph in size).
+Both line and bar charts support *animated* reloads. The delta between the old data model and new data model is calculated and animated appropriately (ie. bars or lines will shrink, expand or morph in size). Due to techinical limitations in Apple's <a href="https://developer.apple.com/library/tvos/documentation/GraphicsImaging/Reference/CAShapeLayer_class/index.html#//apple_ref/occ/instp/CAShapeLayer/path">Quartz Core Framework</a>, line *fills* (both solid and gradient) can not be animated - they will simply 'snap' into place while the rest of the chart continues to animate.
 
 	- (void)reloadDataAnimated:(BOOL)animated;
 
