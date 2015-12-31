@@ -8,13 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-// Layers
-#import "JBShapeLayer.h"
-#import "JBGradientLayer.h"
-
-// Models
-#import "JBLineChartLine.h"
-
 // Numerics
 extern NSInteger const kJBLineChartLinesViewUnselectedLineIndex;
 

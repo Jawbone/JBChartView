@@ -8,7 +8,12 @@
 
 #import "JBLineChartLinesView.h"
 
+// Layers
+#import "JBGradientLineLayer.h"
+#import "JBShapeLayer.h"
+
 // Models
+#import "JBLineChartLine.h"
 #import "JBLineChartPoint.h"
 
 // Numerics
@@ -25,7 +30,7 @@ NSInteger const kJBLineChartLinesViewUnselectedLineIndex = -1;
 // Getters
 - (UIBezierPath *)bezierPathForLineChartLine:(JBLineChartLine *)lineChartLine filled:(BOOL)filled;
 - (JBShapeLayer *)shapeLayerForLineIndex:(NSUInteger)lineIndex filled:(BOOL)filled;
-- (JBGradientLayer *)gradientLayerForLineIndex:(NSUInteger)lineIndex filled:(BOOL)filled;
+- (JBGradientLineLayer *)gradientLineLayerForLineIndex:(NSUInteger)lineIndex filled:(BOOL)filled;
 - (CABasicAnimation *)basicPathAnimationFromBezierPath:(UIBezierPath *)fromBezierPath toBezierPath:(UIBezierPath *)toBezierPath;
 
 @end
@@ -118,19 +123,19 @@ NSInteger const kJBLineChartLinesViewUnselectedLineIndex = -1;
 			 */
 			else if (lineChartLine.fillColorStyle == JBLineChartViewColorStyleGradient)
 			{
-				JBGradientLayer *fillGradientLayer = [self gradientLayerForLineIndex:lineIndex filled:YES];
-				if (fillGradientLayer == nil)
+				JBGradientLineLayer *gradientLineFillLayer = [self gradientLineLayerForLineIndex:lineIndex filled:YES];
+				if (gradientLineFillLayer == nil)
 				{
 					NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:fillGradientForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (CAGradientLayer *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView fillGradientForLineAtLineIndex:(NSUInteger)lineIndex");
-					fillGradientLayer = [[JBGradientLayer alloc] initWithGradientLayer:[self.delegate lineChartLinesView:self fillGradientForLineAtLineIndex:lineIndex] tag:lineIndex filled:YES currentPath:nil];
+					gradientLineFillLayer = [[JBGradientLineLayer alloc] initWithGradientLayer:[self.delegate lineChartLinesView:self fillGradientForLineAtLineIndex:lineIndex] tag:lineIndex filled:YES currentPath:nil];
 				}
-				fillGradientLayer.frame = fillLayer.frame;
+				gradientLineFillLayer.frame = fillLayer.frame;
 				
 				fillLayer.path = fillPath.CGPath;
 				CGColorRef shapeLayerStrokeColor = shapeLayer.strokeColor;
-				shapeLayer.strokeColor = [UIColor colorWithWhite:1 alpha:[fillGradientLayer alpha]].CGColor; // mask uses alpha only
-				fillGradientLayer.mask = fillLayer;
-				[self.layer addSublayer:fillGradientLayer];
+				shapeLayer.strokeColor = [UIColor colorWithWhite:1 alpha:[gradientLineFillLayer alpha]].CGColor; // mask uses alpha only
+				gradientLineFillLayer.mask = fillLayer;
+				[self.layer addSublayer:gradientLineFillLayer];
 				
 				// Refresh shape layer stroke (used below)
 				shapeLayer.strokeColor = shapeLayerStrokeColor;
@@ -159,27 +164,27 @@ NSInteger const kJBLineChartLinesViewUnselectedLineIndex = -1;
 			 */
 			else if (lineChartLine.colorStyle == JBLineChartViewColorStyleGradient)
 			{
-				JBGradientLayer *gradientLayer = [self gradientLayerForLineIndex:lineIndex filled:NO];
-				if (gradientLayer == nil)
+				JBGradientLineLayer *gradientLineLayer = [self gradientLineLayerForLineIndex:lineIndex filled:NO];
+				if (gradientLineLayer == nil)
 				{
 					NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:gradientForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (CAGradientLayer *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView gradientForLineAtLineIndex:(NSUInteger)lineIndex");
-					gradientLayer = [[JBGradientLayer alloc] initWithGradientLayer:[self.delegate lineChartLinesView:self gradientForLineAtLineIndex:lineIndex] tag:lineIndex filled:NO currentPath:linePath];
+					gradientLineLayer = [[JBGradientLineLayer alloc] initWithGradientLayer:[self.delegate lineChartLinesView:self gradientForLineAtLineIndex:lineIndex] tag:lineIndex filled:NO currentPath:linePath];
 				}
-				gradientLayer.frame = shapeLayer.frame;
+				gradientLineLayer.frame = shapeLayer.frame;
 
 				if (self.animated)
 				{
-					[gradientLayer.mask addAnimation:[self basicPathAnimationFromBezierPath:gradientLayer.currentPath toBezierPath:linePath] forKey:@"gradientLayerMaskAnimation"];
+					[gradientLineLayer.mask addAnimation:[self basicPathAnimationFromBezierPath:gradientLineLayer.currentPath toBezierPath:linePath] forKey:@"gradientLayerMaskAnimation"];
 				}
 				else
 				{
 					shapeLayer.path = linePath.CGPath;
-					shapeLayer.strokeColor = [UIColor colorWithWhite:1 alpha:[gradientLayer alpha]].CGColor; // mask uses alpha only
-					gradientLayer.mask = shapeLayer;
+					shapeLayer.strokeColor = [UIColor colorWithWhite:1 alpha:[gradientLineLayer alpha]].CGColor; // mask uses alpha only
+					gradientLineLayer.mask = shapeLayer;
 				}
 				
-				gradientLayer.currentPath = [linePath copy];
-				[self.layer addSublayer:gradientLayer];
+				gradientLineLayer.currentPath = [linePath copy];
+				[self.layer addSublayer:gradientLineLayer];
 			}
 		}
 	}
@@ -217,9 +222,9 @@ NSInteger const kJBLineChartLinesViewUnselectedLineIndex = -1;
 		{
 			removeLayer = (((JBShapeLayer *)layer).tag >= lineCount);
 		}
-		else if ([layer isKindOfClass:[JBGradientLayer class]])
+		else if ([layer isKindOfClass:[JBGradientLineLayer class]])
 		{
-			removeLayer = (((JBGradientLayer *)layer).tag >= lineCount);
+			removeLayer = (((JBGradientLineLayer *)layer).tag >= lineCount);
 		}
 		
 		if (removeLayer)
@@ -546,15 +551,15 @@ NSInteger const kJBLineChartLinesViewUnselectedLineIndex = -1;
 	return nil;
 }
 
-- (JBGradientLayer *)gradientLayerForLineIndex:(NSUInteger)lineIndex filled:(BOOL)filled
+- (JBGradientLineLayer *)gradientLineLayerForLineIndex:(NSUInteger)lineIndex filled:(BOOL)filled
 {
 	for (CALayer *layer in [self.layer sublayers])
 	{
-		if ([layer isKindOfClass:[JBGradientLayer class]])
+		if ([layer isKindOfClass:[JBGradientLineLayer class]])
 		{
-			if (((JBGradientLayer *)layer).tag == lineIndex && ((JBGradientLayer *)layer).filled == filled)
+			if (((JBGradientLineLayer *)layer).tag == lineIndex && ((JBGradientLineLayer *)layer).filled == filled)
 			{
-				return (JBGradientLayer *)layer;
+				return (JBGradientLineLayer *)layer;
 			}
 		}
 	}

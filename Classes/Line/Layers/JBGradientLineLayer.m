@@ -1,17 +1,17 @@
 //
-//  JBGradientLayer.m
+//  JBGradientLineLayer.m
 //  JBChartViewDemo
 //
 //  Created by Terry Worona on 12/25/15.
 //  Copyright © 2015 Jawbone. All rights reserved.
 //
 
-#import "JBGradientLayer.h"
+#import "JBGradientLineLayer.h"
 
 // Numerics
-CGFloat const kJBGradientLayerDefaultAlpha = 1.0f;
+CGFloat const kJBGradientLineLayerDefaultAlpha = 1.0f;
 
-@implementation JBGradientLayer
+@implementation JBGradientLineLayer
 
 #pragma mark - Alloc/Init
 
@@ -41,7 +41,7 @@ CGFloat const kJBGradientLayerDefaultAlpha = 1.0f;
 	{
 		return CGColorGetAlpha((CGColorRef)self.colors.firstObject);
 	}
-	return kJBGradientLayerDefaultAlpha;
+	return kJBGradientLineLayerDefaultAlpha;
 }
 
 @end

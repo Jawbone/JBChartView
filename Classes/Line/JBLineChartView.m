@@ -8,16 +8,9 @@
 
 #import "JBLineChartView.h"
 
-// Layers
-#import "JBGradientLayer.h"
-#import "JBShapeLayer.h"
-
 // Models
 #import "JBLineChartLine.h"
 #import "JBLineChartPoint.h"
-
-// System
-#import <QuartzCore/QuartzCore.h>
 
 // Views
 #import "JBLineChartDotsView.h"

@@ -1,5 +1,5 @@
 //
-//  JBGradientLayer.h
+//  JBGradientLineLayer.h
 //  JBChartViewDemo
 //
 //  Created by Terry Worona on 12/25/15.
@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface JBGradientLayer : CAGradientLayer
+@interface JBGradientLineLayer : CAGradientLayer
 
 - (instancetype)initWithGradientLayer:(CAGradientLayer *)gradientLayer tag:(NSUInteger)tag filled:(BOOL)filled currentPath:(UIBezierPath *)currentPath;
 

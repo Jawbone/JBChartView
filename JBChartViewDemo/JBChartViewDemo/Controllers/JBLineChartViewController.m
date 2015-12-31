@@ -18,7 +18,7 @@
 
 typedef NS_ENUM(NSInteger, JBLineChartLine){
 	JBLineChartLineSolid,
-	JBLineChartLineDashed,
+	// JBLineChartLineDashed,
     JBLineChartLineCount
 };
 
@@ -277,12 +277,12 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
 
 - (JBLineChartViewColorStyle)lineChartView:(JBLineChartView *)lineChartView fillColorStyleForLineAtLineIndex:(NSUInteger)lineIndex
 {
-	return (lineIndex == JBLineChartLineSolid) ? JBLineChartViewColorStyleSolid : JBLineChartViewColorStyleGradient;
+	return (lineIndex == JBLineChartLineSolid) ? JBLineChartViewColorStyleSolid: JBLineChartViewColorStyleGradient;
 }
 
 - (UIColor *)lineChartView:(JBLineChartView *)lineChartView fillColorForLineAtLineIndex:(NSUInteger)lineIndex
 {
-	return (lineIndex == JBLineChartLineSolid) ? [UIColor clearColor] : [UIColor blueColor];
+	return (lineIndex == JBLineChartLineSolid) ? [UIColor redColor] : [UIColor blueColor];
 }
 
 #pragma mark - Buttons
