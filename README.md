@@ -100,11 +100,11 @@ Lastly, ensure you have set the *frame* of your barChartView & call *reloadData*
 
 	barChartView.frame = CGRectMake( ... );
 	[barChartView reloadData];
-	
-
-### Reloading
 
 Subsequent changes to the chart's frame will not invoke *reloadData*; it must be called directly afterwards for any changes to take effect. 
+	
+
+### Animated Reload
 
 Both line and bar charts support *animated* reloads. The delta between the old data model and new data model is calculated and animated appropriately (ie. bars or lines will shrink, expand or morph in size).
 
