@@ -134,6 +134,7 @@ NSInteger const kJBLineChartLinesViewUnselectedLineIndex = -1;
 				shapeLineFillLayer.path = fillPath.CGPath;
 				CGColorRef shapeLayerStrokeColor = shapeLineLayer.strokeColor;
 				shapeLineLayer.strokeColor = [UIColor colorWithWhite:1 alpha:[gradientLineFillLayer alpha]].CGColor; // mask uses alpha only
+				shapeLineFillLayer.fillColor = [UIColor colorWithWhite:1 alpha:[gradientLineFillLayer alpha]].CGColor; // mask uses alpha only
 				gradientLineFillLayer.mask = shapeLineFillLayer;
 				[self.layer addSublayer:gradientLineFillLayer];
 				
