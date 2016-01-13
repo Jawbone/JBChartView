@@ -398,19 +398,11 @@
 			isa = PBXGroup;
 			children = (
 				9B698F0E182D7BCF003C135F /* Cells */,
-				9BE0B0C0182B15DB00232023 /* Charts */,
 				9BE0B0CB182B162E00232023 /* Footers */,
 				9BE0B0C4182B161000232023 /* Headers */,
 				9BEBE9CF183167050046E4A8 /* Misc */,
 			);
 			name = Views;
-			sourceTree = "<group>";
-		};
-		9BE0B0C0182B15DB00232023 /* Charts */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Charts;
 			sourceTree = "<group>";
 		};
 		9BE0B0C4182B161000232023 /* Headers */ = {
