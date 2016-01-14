@@ -110,7 +110,7 @@ Both line and bar charts support *animated* reloads. The delta between the old d
 
 	- (void)reloadDataAnimated:(BOOL)animated;
 
-State changes during a reload will be ignored. As well, subsequent calls to reloadData: or reloadDataAnimated: before any previous reloads are complete, will also be ignored. Lastly, all touch events will be ignored until a reload has compeleted. You can always check on the state of the animation via the exposed *read-only* property: 
+State changes during a reload will be ignored. As well, subsequent calls to reloadData: or reloadDataAnimated: before any previous reloads are complete, will also be ignored. Lastly, all touch events will be ignored until a reload has completed. You can always check on the state of the animation via the exposed *read-only* property: 
 
 	@property (nonatomic, readonly) BOOL reloading;
 
