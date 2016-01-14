@@ -100,9 +100,24 @@ Lastly, ensure you have set the *frame* of your barChartView & call *reloadData*
 
 	barChartView.frame = CGRectMake( ... );
 	[barChartView reloadData];
+
+Subsequent changes to the chart's frame will not invoke *reloadData*; it must be called directly afterwards for any changes to take effect. 
 	
-**Note**: subsequent changes to the chart's frame will not invoke *reloadData*; it must be called directly afterwards for any changes to take effect. 
-    
+
+### Animated Reload
+
+Both line and bar charts support *animated* reloads. The delta between the old data model and new data model is calculated and animated appropriately (ie. bars or lines will shrink, expand or morph in size). Due to techinical limitations in Apple's <a href="https://developer.apple.com/library/tvos/documentation/GraphicsImaging/Reference/CAShapeLayer_class/index.html#//apple_ref/occ/instp/CAShapeLayer/path">Quartz Core Framework</a>, line *fills* (both solid and gradient) can not be animated - they will simply 'snap' into place while the rest of the chart continues to animate.
+
+	- (void)reloadDataAnimated:(BOOL)animated;
+
+State changes during a reload will be ignored. As well, subsequent calls to reloadData: or reloadDataAnimated: before any previous reloads are complete, will also be ignored. Lastly, all touch events will be ignored until a reload has compeleted. You can always check on the state of the animation via the exposed *read-only* property: 
+
+	@property (nonatomic, readonly) BOOL reloading;
+
+By default, the animation will complete in approximately 0.25 seconds. The animation duration is independent from the data model size. 
+
+**Note**: the above restrictions apply only to *animated* reloads, as non-animated reloads are synchronous.
+ 
 #### JBLineChartView
 
 Similiarily, to initialize a JBLineChartView, you only need a few lines of code (see below). Line charts can also be initialized via a <b>nib</b> or with a <b>frame</b>.
@@ -140,7 +155,7 @@ Secondly, you need to inform the delegate of the y-position of each point (autom
 		return ...; // y-position (y-axis) of point at horizontalIndex (x-axis)
 	}
 
-**Note**: You can return NAN instead of CGFloat to indicate missing values. The chart's line will begin at the first non-NAN value and end at the last non-NAN value. The line will interopolate any NAN values in between (ie. the line will not be interrupted).
+**Note**: you can return NAN instead of CGFloat to indicate missing values. The chart's line will begin at the first non-NAN value and end at the last non-NAN value. The line will interopolate any NAN values in between (ie. the line will not be interrupted).
 
 	return [[NSNumber numberWithFloat:NAN] floatValue];
 

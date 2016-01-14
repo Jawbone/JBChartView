@@ -160,7 +160,7 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
 
 - (NSUInteger)numberOfBarsInBarChartView:(JBBarChartView *)barChartView
 {
-    return kJBBarChartViewControllerNumBars;
+	return [self.chartData count];
 }
 
 - (void)barChartView:(JBBarChartView *)barChartView didSelectBarAtIndex:(NSUInteger)index touchPoint:(CGPoint)touchPoint
@@ -205,15 +205,18 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
 
 - (void)chartToggleButtonPressed:(id)sender
 {
-    UIView *buttonImageView = [self.navigationItem.rightBarButtonItem valueForKey:kJBBarChartViewControllerNavButtonViewKey];
-    buttonImageView.userInteractionEnabled = NO;
-    
-    CGAffineTransform transform = self.barChartView.state == JBChartViewStateExpanded ? CGAffineTransformMakeRotation(M_PI) : CGAffineTransformMakeRotation(0);
-    buttonImageView.transform = transform;
-    
-    [self.barChartView setState:self.barChartView.state == JBChartViewStateExpanded ? JBChartViewStateCollapsed : JBChartViewStateExpanded animated:YES callback:^{
-        buttonImageView.userInteractionEnabled = YES;
-    }];
+	int randomNumber = (-3) + rand() % (3-(-3));
+	
+	NSMutableArray *mutableChartData = [NSMutableArray array];
+	for (int i=0; i<(kJBBarChartViewControllerNumBars + randomNumber ); i++)
+	{
+		NSInteger delta = ((kJBBarChartViewControllerNumBars + randomNumber) - labs(((kJBBarChartViewControllerNumBars + randomNumber) - i) - i)) + 2;
+		[mutableChartData addObject:[NSNumber numberWithFloat:MAX((delta * kJBBarChartViewControllerMinBarHeight), arc4random() % (delta * kJBBarChartViewControllerMaxBarHeight))]];
+		
+	}
+	self.chartData = [NSArray arrayWithArray:mutableChartData];
+	
+	[self.barChartView reloadDataAnimated:YES];
 }
 
 #pragma mark - Overrides

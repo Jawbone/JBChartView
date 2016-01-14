@@ -81,23 +81,32 @@ The color, width and style of each line in the chart can be customized via the <
 	
 	- (JBLineChartViewLineStyle)lineChartView:(JBLineChartView *)lineChartView lineStyleForLineAtLineIndex:(NSUInteger)lineIndex
 	{
-		return ...; // style of line in chart
+		return ...; // style of line in chart (solid or dashed)
 	}
 	
-Additionally, the line style of a line can be customzized via the <i>optional</i> protocol. If a gradient is used, the color for the line and fill of the line will control the alpha value of the gradient.
+Additionally, the line and fill color style can be customzized via the <i>optional</i> protocols (below). The line & fill color style apply to both selected and non-selected scenarios, meaning, if your line has a solid style, it's selected style will also be solid. 
 
-    - (JBLineChartViewLineColorStyle)lineChartView:(JBLineChartView *)lineChartView lineColorStyleForLineAtLineIndex:(NSUInteger)lineIndex
+    - (JBLineChartViewColorStyle)lineChartView:(JBLineChartView *)lineChartView colorStyleForLineAtLineIndex:(NSUInteger)lineIndex
     {
-        return ...; // line style of line in chart
+        return ...; // color line style of a line in the chart
+    }
+    
+    - (JBLineChartViewColorStyle)lineChartView:(JBLineChartView *)lineChartView fillColorStyleForLineAtLineIndex:(NSUInteger)lineIndex
+    {
+        return ...; // color style for the area under a line in the chart
     }
 
-    - (CAGradientLayer *)lineChartView:(JBLineChartView *)lineChartView gradientForLineAtLineIndex:(NSUInteger)lineIndex {
-        return ...; // gradient for line in chart
-    }
+If a solid color style is used, the following <i>optional</i> protocols can be implemented:
 
-    - (CAGradientLayer *)lineChartView:(JBLineChartView *)lineChartView fillGradientForLineAtLineIndex:(NSUInteger)lineIndex {
-        return ...; // gradient for area under line in chart
-    }
+	- (UIColor *)lineChartView:(JBLineChartView *)lineChartView colorForLineAtLineIndex:(NSUInteger)lineIndex;
+	- (UIColor *)lineChartView:(JBLineChartView *)lineChartView fillColorForLineAtLineIndex:(NSUInteger)lineIndex;
+ 	
+Gradient color styles require a CAGradientLayer to be returned:
+
+	- (CAGradientLayer *)lineChartView:(JBLineChartView *)lineChartView gradientForLineAtLineIndex:(NSUInteger)lineIndex;
+	- (CAGradientLayer *)lineChartView:(JBLineChartView *)lineChartView fillGradientForLineAtLineIndex:(NSUInteger)lineIndex;
+
+**Note**: gradients do not support multiple alphas. The alpha of gradient's first color be used throughout.
 
 Defining a gradient to use is simple and flexible. For example, this would be a horizontal gradient from blue to green:
 
@@ -105,8 +114,16 @@ Defining a gradient to use is simple and flexible. For example, this would be a 
     gradient.startPoint = CGPointMake(0.0, 0.0);
     gradient.endPoint = CGPointMake(1.0, 0.0);
     gradient.colors = @[(id)[UIColor blueColor].CGColor, (id)[UIColor greenColor].CGColor];
-	
-Furthermore, the color and width of the selection view along with the color of the selected line can be customized via the <i>optional</i> protocols:
+    
+As mentioned prior, the same color style is duplicated for selection events:
+
+	- (UIColor *)lineChartView:(JBLineChartView *)lineChartView selectionColorForLineAtLineIndex:(NSUInteger)lineIndex;
+	- (UIColor *)lineChartView:(JBLineChartView *)lineChartView selectionFillColorForLineAtLineIndex:(NSUInteger)lineIndex;
+
+	- (CAGradientLayer *)lineChartView:(JBLineChartView *)lineChartView selectionGradientForLineAtLineIndex:(NSUInteger)lineIndex;
+	- (CAGradientLayer *)lineChartView:(JBLineChartView *)lineChartView selectionFillGradientForLineAtLineIndex:(NSUInteger)lineIndex;
+  
+The color and width of the selection view along with the color of the selected line can be customized via the <i>optional</i> protocols:
 
 	- (UIColor *)lineChartView:(JBLineChartView *)lineChartView verticalSelectionColorForLineAtLineIndex:(NSUInteger)lineIndex
 	{
@@ -151,7 +168,6 @@ To the radius of each dot (default is 6x the line width, or 3x the diameter), im
 To customize the color of each dot during selection and non-selection events (default is white and black respectively), implement:
 
 	- (UIColor *)lineChartView:(JBLineChartView *)lineChartView colorForDotAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;	
-
 	- (UIColor *)lineChartView:(JBLineChartView *)lineChartView selectionColorForDotAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
 	
 Alternatively, you can supply your own UIView instead of using the default impelmentation:

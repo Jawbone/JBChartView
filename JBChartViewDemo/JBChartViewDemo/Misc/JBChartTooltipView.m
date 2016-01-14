@@ -12,7 +12,7 @@
 #import <QuartzCore/QuartzCore.h>
 
 // Numerics
-CGFloat static const kJBChartTooltipViewCornerRadius = 5.0;
+CGFloat const kJBChartTooltipViewCornerRadius = 5.0;
 CGFloat const kJBChartTooltipViewDefaultWidth = 50.0f;
 CGFloat const kJBChartTooltipViewDefaultHeight = 25.0f;
 

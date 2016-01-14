@@ -133,13 +133,6 @@
 @property (nonatomic, weak) id<JBBarChartViewDataSource> dataSource;
 @property (nonatomic, weak) id<JBBarChartViewDelegate> delegate;
 
-/**
- *  Vertical highlight overlayed on bar during touch events.
- *
- *  Default: YES.
- */
-@property (nonatomic, assign) BOOL showsVerticalSelection;
-
 /*
  *  Bars can be (vertically) positoned top to bottom instead of bottom up.
  *  If this property is set to YES, both the bar and the selection view will be inverted.
@@ -148,6 +141,34 @@
  *  Default: NO.
  */
 @property (nonatomic, assign, getter=isInverted) BOOL inverted;
+
+/*
+ *  Reloads the bar chart with a custom animation.
+ *  Adding, removing or modifying existing bars will be animated (collapsing, expanding, etc) if animated = YES.
+ *  Reloading (animated) data is thread safe and can be executed any number of times in succession.
+ *
+ *  Default: a non-animated reload (via reloadData).
+ */
+- (void)reloadDataAnimated:(BOOL)animated;
+
+/*
+ *  When reloadData or reloadDataAnimated: is called, the reloading bit is turned on.
+ *  State changes during a reload will be ignored. As well, subsequent calls to reloadData:
+ *  or reloadDataAnimated: before any previous reloads are complete, will also be ignored.
+ *  Lastly, all touch events will be ignored until a reload has compeleted.
+ *
+ *  Note: the above restrictions apply only to animated reloads, as non-animated reloads are synchronous.
+ *
+ *  Default: NO.
+ */
+@property (nonatomic, readonly) BOOL reloading;
+
+/**
+ *  Vertical highlight overlayed on bar during touch events.
+ *
+ *  Default: YES.
+ */
+@property (nonatomic, assign) BOOL showsVerticalSelection;
 
 /**
  *  The bar view at a particular index.
