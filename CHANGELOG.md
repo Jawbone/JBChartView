@@ -1,5 +1,16 @@
 # Change Log
 
+## [v3.0.0](https://github.com/Jawbone/JBChartView/tree/v3.0.0) (2016-01-14)
+[Full Changelog](https://github.com/Jawbone/JBChartView/compare/v2.9.1...v3.0.0)
+
+**Closed issues:**
+
+- Show data above each column   [\#194](https://github.com/Jawbone/JBChartView/issues/194)
+
+**Merged pull requests:**
+
+- JBChartView 3.0 [\#195](https://github.com/Jawbone/JBChartView/pull/195) ([terryworona](https://github.com/terryworona))
+
 ## [v2.9.1](https://github.com/Jawbone/JBChartView/tree/v2.9.1) (2015-12-17)
 [Full Changelog](https://github.com/Jawbone/JBChartView/compare/v2.9.0...v2.9.1)
 
