@@ -1,5 +1,8 @@
 # Change Log
 
+## [v3.0.1](https://github.com/Jawbone/JBChartView/tree/v3.0.1) (2016-01-16)
+[Full Changelog](https://github.com/Jawbone/JBChartView/compare/v3.0.0...v3.0.1)
+
 ## [v3.0.0](https://github.com/Jawbone/JBChartView/tree/v3.0.0) (2016-01-14)
 [Full Changelog](https://github.com/Jawbone/JBChartView/compare/v2.9.1...v3.0.0)
 
