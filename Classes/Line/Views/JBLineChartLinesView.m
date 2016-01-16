@@ -65,7 +65,7 @@ NSInteger const kJBLineChartLinesViewUnselectedLineIndex = -1;
 	NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesForLineChartLinesView:)], @"JBLineChartLinesView // delegate must implement - (NSArray *)lineChartLinesForLineChartLinesView:(JBLineChartLinesView *)lineChartLinesView");
 	NSArray *chartData = [self.delegate lineChartLinesForLineChartLinesView:self];
 	
-	for (int lineIndex=0; lineIndex<[chartData count]; lineIndex++)
+	for (NSUInteger lineIndex=0; lineIndex<[chartData count]; lineIndex++)
 	{
 		JBLineChartLine *lineChartLine = [chartData objectAtIndex:lineIndex];
 		{
@@ -238,7 +238,7 @@ NSInteger const kJBLineChartLinesViewUnselectedLineIndex = -1;
 	NSArray *removedLayers = [NSArray arrayWithArray:mutableRemovedLayers];
 	if ([removedLayers count] > 0)
 	{
-		for (int index=0; index<[removedLayers count]; index++)
+		for (NSUInteger index=0; index<[removedLayers count]; index++)
 		{
 			CALayer *removedLayer = [removedLayers objectAtIndex:index];
 			
@@ -318,7 +318,7 @@ NSInteger const kJBLineChartLinesViewUnselectedLineIndex = -1;
 				if (shapeLineLayer.filled)
 				{
 					// Selected solid fill
-					if (shapeLineLayer.tag == weakSelf.selectedLineIndex)
+					if (weakSelf.selectedLineIndex >= 0 && ((unsigned)shapeLineLayer.tag == weakSelf.selectedLineIndex))
 					{
 						NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:selectionFillColorForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView selectionFillColorForLineAtLineIndex:(NSUInteger)lineIndex");
 						shapeLineLayer.fillColor = [self.delegate lineChartLinesView:self selectionFillColorForLineAtLineIndex:shapeLineLayer.tag].CGColor;
@@ -337,7 +337,7 @@ NSInteger const kJBLineChartLinesViewUnselectedLineIndex = -1;
 				else
 				{
 					// Selected solid line
-					if (shapeLineLayer.tag == weakSelf.selectedLineIndex)
+					if (weakSelf.selectedLineIndex >= 0 && ((unsigned)shapeLineLayer.tag == weakSelf.selectedLineIndex))
 					{
 						NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:selectionColorForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView selectionColorForLineAtLineIndex:(NSUInteger)lineIndex");
 						shapeLineLayer.strokeColor = [self.delegate lineChartLinesView:self selectionColorForLineAtLineIndex:shapeLineLayer.tag].CGColor;
@@ -369,7 +369,7 @@ NSInteger const kJBLineChartLinesViewUnselectedLineIndex = -1;
 					if (shapeLineLayer.filled)
 					{
 						// Selected gradient fill
-						if (shapeLineLayer.tag == weakSelf.selectedLineIndex)
+						if (weakSelf.selectedLineIndex >= 0 && ((unsigned)shapeLineLayer.tag == weakSelf.selectedLineIndex))
 						{
 							NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:selectionFillGradientForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (CAGradientLayer *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView selectionFillGradientForLineAtLineIndex:(NSUInteger)lineIndex");
 							CAGradientLayer *selectedFillGradient = [self.delegate lineChartLinesView:self selectionFillGradientForLineAtLineIndex:shapeLineLayer.tag];
@@ -393,7 +393,7 @@ NSInteger const kJBLineChartLinesViewUnselectedLineIndex = -1;
 					else
 					{
 						// Selected gradient line
-						if (shapeLineLayer.tag == weakSelf.selectedLineIndex)
+						if (weakSelf.selectedLineIndex >= 0 && ((unsigned)shapeLineLayer.tag == weakSelf.selectedLineIndex))
 						{
 							NSAssert([self.delegate respondsToSelector:@selector(lineChartLinesView:selectionGradientForLineAtLineIndex:)], @"JBLineChartLinesView // delegate must implement - (CAGradientLayer *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView selectionGradientForLineAtLineIndex:(NSUInteger)lineIndex");
 							CAGradientLayer *selectedGradient = [self.delegate lineChartLinesView:self selectionGradientForLineAtLineIndex:shapeLineLayer.tag];
@@ -570,8 +570,11 @@ NSInteger const kJBLineChartLinesViewUnselectedLineIndex = -1;
 - (CABasicAnimation *)basicPathAnimationFromBezierPath:(UIBezierPath *)fromBezierPath toBezierPath:(UIBezierPath *)toBezierPath
 {
 	CABasicAnimation *basicPathAnimation = [CABasicAnimation animationWithKeyPath:@"path"];
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-qual"
 	basicPathAnimation.fromValue = (id)fromBezierPath.CGPath;
 	basicPathAnimation.toValue = (id)toBezierPath.CGPath;
+#pragma GCC diagnostic pop
 	basicPathAnimation.duration = kJBLineChartLinesViewReloadDataAnimationDuration;
 	basicPathAnimation.timingFunction = [CAMediaTimingFunction functionWithName:@"easeInEaseOut"];
 	basicPathAnimation.fillMode = kCAFillModeBoth;
