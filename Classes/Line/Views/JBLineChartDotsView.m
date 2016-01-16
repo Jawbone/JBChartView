@@ -20,7 +20,7 @@
 #import "JBLineChartView.h"
 
 // Numerics
-CGFloat const kJBLineChartDotsViewReloadDataAnimationDuration = 0.15f;
+static CGFloat const kJBLineChartDotsViewReloadDataAnimationDuration = 0.15f;
 NSInteger const kJBLineChartDotsViewUnselectedLineIndex = 0.25f;
 
 @implementation JBLineChartDotsView
@@ -213,7 +213,7 @@ NSInteger const kJBLineChartDotsViewUnselectedLineIndex = 0.25f;
 
 #pragma mark - Getters
 
-- (UIView *)dotViewForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
+- (UIView *)dotViewForHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex
 {
 	NSAssert([self.delegate respondsToSelector:@selector(lineChartDotsView:dotViewAtHorizontalIndex:atLineIndex:)], @"JBLineChartDotsView // delegate must implement - (UIView *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView dotViewAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
 	UIView *dotView = [self.delegate lineChartDotsView:self dotViewAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];

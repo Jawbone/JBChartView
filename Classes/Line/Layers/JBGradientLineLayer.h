@@ -18,4 +18,3 @@
 @property (nonatomic, readonly) CGFloat alpha; // alpha of gradient, based on first color
 
 @end
-

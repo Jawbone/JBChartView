@@ -17,10 +17,10 @@
 #import "JBLineChartPoint.h"
 
 // Numerics
-CGFloat const kJBLineChartLinesViewMiterLimit = -5.0;
-CGFloat const kJBLineChartLinesViewSmoothThresholdSlope = 0.01f;
-CGFloat const kJBLineChartLinesViewReloadDataAnimationDuration = 0.15f;
-NSInteger const kJBLineChartLinesViewSmoothThresholdVertical = 1;
+static CGFloat const kJBLineChartLinesViewMiterLimit = -5.0;
+static CGFloat const kJBLineChartLinesViewSmoothThresholdSlope = 0.01f;
+static CGFloat const kJBLineChartLinesViewReloadDataAnimationDuration = 0.15f;
+static NSInteger const kJBLineChartLinesViewSmoothThresholdVertical = 1;
 NSInteger const kJBLineChartLinesViewUnselectedLineIndex = -1;
 
 @interface JBLineChartLinesView ()

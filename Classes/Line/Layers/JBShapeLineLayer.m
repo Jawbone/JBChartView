@@ -9,7 +9,7 @@
 #import "JBShapeLineLayer.h"
 
 // Numerics
-CGFloat const kJBShapeLineLayerDefaultLinePhase = 1.0f;
+static CGFloat const kJBShapeLineLayerDefaultLinePhase = 1.0f;
 
 // Structures
 static NSArray *kJBShapeLineLayerDefaultDashPattern = nil;

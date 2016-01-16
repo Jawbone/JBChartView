@@ -9,7 +9,7 @@
 #import "JBGradientLineLayer.h"
 
 // Numerics
-CGFloat const kJBGradientLineLayerDefaultAlpha = 1.0f;
+static CGFloat const kJBGradientLineLayerDefaultAlpha = 1.0f;
 
 @implementation JBGradientLineLayer
 
