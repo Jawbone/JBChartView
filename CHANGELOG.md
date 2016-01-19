@@ -1,5 +1,12 @@
 # Change Log
 
+## [v3.0.2](https://github.com/Jawbone/JBChartView/tree/v3.0.2) (2016-01-19)
+[Full Changelog](https://github.com/Jawbone/JBChartView/compare/v3.0.1...v3.0.2)
+
+**Merged pull requests:**
+
+- Make sure to import dependent framework header explicitly [\#196](https://github.com/Jawbone/JBChartView/pull/196) ([yasuoza](https://github.com/yasuoza))
+
 ## [v3.0.1](https://github.com/Jawbone/JBChartView/tree/v3.0.1) (2016-01-16)
 [Full Changelog](https://github.com/Jawbone/JBChartView/compare/v3.0.0...v3.0.1)
 
