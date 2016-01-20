@@ -21,7 +21,7 @@
 
 // Numerics
 static CGFloat const kJBLineChartDotsViewReloadDataAnimationDuration = 0.15f;
-NSInteger const kJBLineChartDotsViewUnselectedLineIndex = 0.25f;
+NSInteger const kJBLineChartDotsViewUnselectedLineIndex = -1;
 
 @implementation JBLineChartDotsView
 
