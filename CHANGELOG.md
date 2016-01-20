@@ -1,5 +1,12 @@
 # Change Log
 
+## [v3.0.3](https://github.com/Jawbone/JBChartView/tree/v3.0.3) (2016-01-20)
+[Full Changelog](https://github.com/Jawbone/JBChartView/compare/v3.0.2...v3.0.3)
+
+**Closed issues:**
+
+- Dot alpha doesn't return after unselection [\#197](https://github.com/Jawbone/JBChartView/issues/197)
+
 ## [v3.0.2](https://github.com/Jawbone/JBChartView/tree/v3.0.2) (2016-01-19)
 [Full Changelog](https://github.com/Jawbone/JBChartView/compare/v3.0.1...v3.0.2)
 
