@@ -33,18 +33,18 @@ static UIColor *kJBLineChartViewDefaultFillGradientStartColor = nil;
 static UIColor *kJBLineChartViewDefaultFillGradientEndColor = nil;
 
 // Numerics
-CGFloat const kJBLineChartViewDefaultVerticalSelectionViewWidth = 20.0f;
-CGFloat const kJBLineChartViewUndefinedCachedHeight = -1.0f;
-CGFloat const kJBLineChartViewStateAnimationDuration = 0.25f;
-CGFloat const kJBLineChartViewStateAnimationDelay = 0.05f;
-CGFloat const kJBLineChartViewStateBounceOffset = 15.0f;
-CGFloat const kJBLineChartViewDefaultStartPoint = 0.0;
-CGFloat const kJBLineChartViewDefaultEndPoint = 1.0;
-CGFloat const kJBLineChartViewReloadAnimationDuration = 0.1;
-CGFloat const kJBLineChartViewDefaultDimmedSelectionOpacity = 0.20f;
-CGFloat const kJBLineChartViewDefaultStrokeWidth = 5.0f;
-NSInteger const kJBLineChartViewDefaultDotRadiusFactor = 3; // 3x size of line width
-NSInteger const kJBLineChartUnselectedLineIndex = -1;
+static CGFloat const kJBLineChartViewDefaultVerticalSelectionViewWidth = 20.0f;
+static CGFloat const kJBLineChartViewUndefinedCachedHeight = -1.0f;
+static CGFloat const kJBLineChartViewStateAnimationDuration = 0.25f;
+static CGFloat const kJBLineChartViewStateAnimationDelay = 0.05f;
+static CGFloat const kJBLineChartViewStateBounceOffset = 15.0f;
+static CGFloat const kJBLineChartViewDefaultStartPoint = 0.0;
+static CGFloat const kJBLineChartViewDefaultEndPoint = 1.0;
+static CGFloat const kJBLineChartViewReloadAnimationDuration = 0.1;
+static CGFloat const kJBLineChartViewDefaultDimmedSelectionOpacity = 0.20f;
+static CGFloat const kJBLineChartViewDefaultStrokeWidth = 5.0f;
+static NSInteger const kJBLineChartViewDefaultDotRadiusFactor = 3; // 3x size of line width
+static NSInteger const kJBLineChartUnselectedLineIndex = -1;
 
 @interface JBChartView (Private)
 

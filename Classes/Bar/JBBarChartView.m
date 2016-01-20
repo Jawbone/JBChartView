@@ -12,12 +12,12 @@
 #import "JBGradientBarView.h"
 
 // Numerics
-CGFloat const kJBBarChartViewBarBasePaddingMutliplier = 50.0f;
-CGFloat const kJBBarChartViewUndefinedCachedHeight = -1.0f;
-CGFloat const kJBBarChartViewStateAnimationDuration = 0.05f;
-CGFloat const kJBBarChartViewReloadDataAnimationDuration = 0.15f;
-CGFloat const kJBBarChartViewStatePopOffset = 10.0f;
-NSInteger const kJBBarChartViewUndefinedBarIndex = -1;
+static CGFloat const kJBBarChartViewBarBasePaddingMutliplier = 50.0f;
+static CGFloat const kJBBarChartViewUndefinedCachedHeight = -1.0f;
+static CGFloat const kJBBarChartViewStateAnimationDuration = 0.05f;
+static CGFloat const kJBBarChartViewReloadDataAnimationDuration = 0.15f;
+static CGFloat const kJBBarChartViewStatePopOffset = 10.0f;
+static NSInteger const kJBBarChartViewUndefinedBarIndex = -1;
 
 // Colors (JBChartView)
 static UIColor *kJBBarChartViewDefaultBarColor = nil;
@@ -383,7 +383,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 					preAddBarViewsBlock();
 					[UIView animateWithDuration:kJBBarChartViewReloadDataAnimationDuration delay:0 options:UIViewAnimationOptionTransitionNone animations:^{
 						postAddBarViewsBlock();
-					} completion:^(BOOL finished) {
+					} completion:^(BOOL finished2) {
 						refreshedCachedBarViewHeightsBlock();
 						completionBlock();
 					}];
@@ -402,7 +402,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 					postRemoveBarViewsBlock();
 					[UIView animateWithDuration:kJBBarChartViewReloadDataAnimationDuration delay:0 options:UIViewAnimationOptionBeginFromCurrentState animations:^{
 						updateExistingBarViewsBlock();
-					} completion:^(BOOL finished) {
+					} completion:^(BOOL finished2) {
 						refreshedCachedBarViewHeightsBlock();
 						completionBlock();
 					}];
