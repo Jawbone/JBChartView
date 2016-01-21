@@ -23,7 +23,7 @@
 
 @interface JBGradientBarView: UIView
 
-@property (nonatomic, weak) id<JBGradientBarViewDataSource> delegate;
+@property (nonatomic, weak) id<JBGradientBarViewDataSource> dataSource;
 @property (nonatomic, strong) CAGradientLayer *gradientLayer;
 
 @end

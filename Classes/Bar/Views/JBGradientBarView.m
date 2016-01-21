@@ -66,9 +66,9 @@
 {
 	[super setFrame:frame];
 	
-	if ([self.delegate respondsToSelector:@selector(chartViewBoundsForGradientBarView:)])
+	if ([self.dataSource respondsToSelector:@selector(chartViewBoundsForGradientBarView:)])
 	{
-		_gradientLayer.frame = [self.delegate chartViewBoundsForGradientBarView:self]; // gradient is as large as the chart
+		_gradientLayer.frame = [self.dataSource chartViewBoundsForGradientBarView:self]; // gradient is as large as the chart
 		_gradientLayer.frame = CGRectOffset(_gradientLayer.frame, -CGRectGetMinX(frame), 0);
 	}
 	else

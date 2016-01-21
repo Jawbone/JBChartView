@@ -753,7 +753,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 			if (gradientLayer != nil)
 			{
 				barView = [[JBGradientBarView alloc] init];
-				((JBGradientBarView *)barView).delegate = self;
+				((JBGradientBarView *)barView).dataSource = self;
 				((JBGradientBarView *)barView).gradientLayer = gradientLayer;
 			}
 		}
