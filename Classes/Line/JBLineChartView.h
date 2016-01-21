@@ -105,6 +105,19 @@ typedef NS_ENUM(NSInteger, JBLineChartViewColorStyle) {
 - (CGFloat)lineChartView:(JBLineChartView *)lineChartView dimmedSelectionOpacityAtLineIndex:(NSUInteger)lineIndex;
 
 /**
+ *  Returns the opacity value to be used for dimming the dots during selection events.
+ *  This value is applied to all dots within a line anytime it's not selected (but another line is).
+ *
+ *  Default: 0.0.
+ *
+ *  @param lineChartView    The line chart object requesting this information.
+ *  @param lineIndex        An index number identifying a line in the chart.
+ *
+ *  @return A value between 0.0 and 1.0 (will be clamped accordingly).
+ */
+- (CGFloat)lineChartView:(JBLineChartView *)lineChartView dimmedSelectionDotOpacityAtLineIndex:(NSUInteger)lineIndex;
+
+/**
  *  Returns a (custom) UIView instance representing a dot (x,y point) within the chart.
  *  For this value to apply, showsDotsForLineAtLineIndex: must return YES for the line at lineIndex.
  *  This protocol supercedes colorForDotAtHorizontalIndex: and dotRadiusForDotAtHorizontalIndex:.

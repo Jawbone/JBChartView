@@ -42,5 +42,6 @@ extern NSInteger const kJBLineChartDotsViewUnselectedLineIndex;
 - (UIView *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView dotViewAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
 - (BOOL)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView shouldHideDotViewOnSelectionAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex;
 - (BOOL)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView showsDotsForLineAtLineIndex:(NSUInteger)lineIndex;
+- (CGFloat)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView dimmedSelectionDotOpacityAtLineIndex:(NSUInteger)lineIndex;
 
 @end

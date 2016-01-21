@@ -41,7 +41,8 @@ static CGFloat const kJBLineChartViewStateBounceOffset = 15.0f;
 static CGFloat const kJBLineChartViewDefaultStartPoint = 0.0;
 static CGFloat const kJBLineChartViewDefaultEndPoint = 1.0;
 static CGFloat const kJBLineChartViewReloadAnimationDuration = 0.1;
-static CGFloat const kJBLineChartViewDefaultDimmedSelectionOpacity = 0.20f;
+static CGFloat const kJBLineChartViewDefaultDimmedLineAndFillSelectionOpacity = 0.20f;
+static CGFloat const kJBLineChartViewDefaultDimmedDotSelectionOpacity = 0.0f;
 static CGFloat const kJBLineChartViewDefaultStrokeWidth = 5.0f;
 static NSInteger const kJBLineChartViewDefaultDotRadiusFactor = 3; // 3x size of line width
 static NSInteger const kJBLineChartUnselectedLineIndex = -1;
@@ -591,7 +592,7 @@ static NSInteger const kJBLineChartUnselectedLineIndex = -1;
 	{
 		return [self.dataSource lineChartView:self dimmedSelectionOpacityAtLineIndex:lineIndex];
 	}
-	return kJBLineChartViewDefaultDimmedSelectionOpacity;
+	return kJBLineChartViewDefaultDimmedLineAndFillSelectionOpacity;
 }
 
 - (UIColor *)lineChartLinesView:(JBLineChartLinesView *)lineChartLinesView colorForLineAtLineIndex:(NSUInteger)lineIndex
@@ -734,6 +735,15 @@ static NSInteger const kJBLineChartUnselectedLineIndex = -1;
 		return [self.dataSource lineChartView:self showsDotsForLineAtLineIndex:lineIndex];
 	}
 	return NO;
+}
+
+- (CGFloat)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView dimmedSelectionDotOpacityAtLineIndex:(NSUInteger)lineIndex
+{
+	if ([self.dataSource respondsToSelector:@selector(lineChartView:dimmedSelectionDotOpacityAtLineIndex:)])
+	{
+		return [self.dataSource lineChartView:self dimmedSelectionDotOpacityAtLineIndex:lineIndex];
+	}
+	return kJBLineChartViewDefaultDimmedDotSelectionOpacity;
 }
 
 #pragma mark - Setters

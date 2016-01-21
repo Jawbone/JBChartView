@@ -171,7 +171,9 @@ NSInteger const kJBLineChartDotsViewUnselectedLineIndex = -1;
 						{
 							NSAssert([self.delegate respondsToSelector:@selector(lineChartDotsView:colorForDotAtHorizontalIndex:atLineIndex:)], @"JBLineChartDotsView // delegate must implement - (UIColor *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView colorForDotAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
 							dotView.backgroundColor = [self.delegate lineChartDotsView:self colorForDotAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
-							dotView.alpha = (weakSelf.selectedLineIndex == kJBLineChartDotsViewUnselectedLineIndex) ? 1.0f : 0.0f; // hide dots on off-selection
+
+							NSAssert([self.delegate respondsToSelector:@selector(lineChartDotsView:dimmedSelectionDotOpacityAtLineIndex:)], @"JBLineChartLinesView // dataSource must implement - (CGFloat)lineChartDotsView:(JBLineChartLinesView *)lineChartLinesView dimmedSelectionDotOpacityAtLineIndex:(NSUInteger)lineIndex");
+							dotView.alpha = (weakSelf.selectedLineIndex == kJBLineChartDotsViewUnselectedLineIndex) ? 1.0f : [self.delegate lineChartDotsView:self dimmedSelectionDotOpacityAtLineIndex:lineIndex];
 						}
 					}
 					// Custom dot
@@ -181,7 +183,8 @@ NSInteger const kJBLineChartDotsViewUnselectedLineIndex = -1;
 						BOOL hideDotView = [self.delegate lineChartDotsView:self shouldHideDotViewOnSelectionAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
 						if (weakSelf.selectedLineIndex == lineIndex)
 						{
-							dotView.alpha = hideDotView ? 0.0f : 1.0f;
+							NSAssert([self.delegate respondsToSelector:@selector(lineChartDotsView:dimmedSelectionDotOpacityAtLineIndex:)], @"JBLineChartLinesView // dataSource must implement - (CGFloat)lineChartDotsView:(JBLineChartLinesView *)lineChartLinesView dimmedSelectionDotOpacityAtLineIndex:(NSUInteger)lineIndex");
+							dotView.alpha = hideDotView ? [self.delegate lineChartDotsView:self dimmedSelectionDotOpacityAtLineIndex:lineIndex] : 1.0f;
 						}
 						else
 						{
