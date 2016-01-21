@@ -16,7 +16,7 @@ extern NSInteger const kJBLineChartLinesViewUnselectedLineIndex;
 
 @interface JBLineChartLinesView : UIView
 
-@property (nonatomic, assign) id<JBLineChartLinesViewDataSource> delegate;
+@property (nonatomic, assign) id<JBLineChartLinesViewDataSource> dataSource;
 @property (nonatomic, assign) NSInteger selectedLineIndex; // -1 to unselect
 
 // Data

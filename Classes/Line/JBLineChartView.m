@@ -266,7 +266,7 @@ static NSInteger const kJBLineChartUnselectedLineIndex = -1;
 		if (self.linesView == nil)
 		{
 			self.linesView = [[JBLineChartLinesView alloc] initWithFrame:linesViewRect];
-			self.linesView.delegate = self;
+			self.linesView.dataSource = self;
 		}
 		else
 		{
