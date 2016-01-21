@@ -198,8 +198,15 @@ Upon selection, all other lines (+ fills) will be dimmed to 20% opacity (default
 
     - (CGFloat)lineChartView:(JBLineChartView *)lineChartView dimmedSelectionOpacityAtLineIndex:(NSUInteger)lineIndex
     {
-        // Return new opacity (0.0 to hide completely, and 1.0 to have no effect)
+        // Return unselected line opacity (0.0 to hide completely, and 1.0 to have no effect)
     }
+
+The dot selection opacity (default 0%) can also be modified via:
+
+	- (CGFloat)lineChartView:(JBLineChartView *)lineChartView dimmedSelectionDotOpacityAtLineIndex:(NSUInteger)lineIndex
+	{
+		// Return unselected dot opacity (0.0 to hide completely and 1.0 to have no effect)
+	}
 	
 If you don't want a line to be selectable:
 
