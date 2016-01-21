@@ -294,7 +294,7 @@ static NSInteger const kJBLineChartUnselectedLineIndex = -1;
 		if (self.dotsView == nil)
 		{
 			self.dotsView = [[JBLineChartDotsView alloc] initWithFrame:dotViewRect];
-			self.dotsView.delegate = self;
+			self.dotsView.dataSource = self;
 		}
 		else
 		{
@@ -397,7 +397,7 @@ static NSInteger const kJBLineChartUnselectedLineIndex = -1;
 			[weakSelf.dotsView reloadDataAnimated:YES callback:^{
 				
 				JBLineChartDotsView *updatedDotsView = [[JBLineChartDotsView alloc] initWithFrame:weakSelf.dotsView.frame];
-				updatedDotsView.delegate = self;
+				updatedDotsView.dataSource = self;
 				updatedDotsView.alpha = 0.0f;
 				
 				// Add updated dots view (hidden)

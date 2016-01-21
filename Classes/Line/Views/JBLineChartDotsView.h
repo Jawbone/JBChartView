@@ -16,7 +16,7 @@ extern NSInteger const kJBLineChartDotsViewUnselectedLineIndex;
 
 @interface JBLineChartDotsView : UIView
 
-@property (nonatomic, assign) id<JBLineChartDotsViewDataSource> delegate;
+@property (nonatomic, assign) id<JBLineChartDotsViewDataSource> dataSource;
 @property (nonatomic, assign) NSInteger selectedLineIndex;
 @property (nonatomic, strong) NSDictionary *dotViewsDict;
 
