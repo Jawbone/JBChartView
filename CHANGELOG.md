@@ -1,5 +1,14 @@
 # Change Log
 
+## [Unreleased](https://github.com/Jawbone/JBChartView/tree/HEAD)
+
+[Full Changelog](https://github.com/Jawbone/JBChartView/compare/v3.0.6...HEAD)
+
+**Closed issues:**
+
+- Directions not set in UIViewController [\#199](https://github.com/Jawbone/JBChartView/issues/199)
+- Many Line Charts in Table View [\#198](https://github.com/Jawbone/JBChartView/issues/198)
+
 ## [v3.0.6](https://github.com/Jawbone/JBChartView/tree/v3.0.6) (2016-01-21)
 [Full Changelog](https://github.com/Jawbone/JBChartView/compare/v3.0.5...v3.0.6)
 
