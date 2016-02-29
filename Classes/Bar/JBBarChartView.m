@@ -250,122 +250,122 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 		
 		__weak JBBarChartView* weakSelf = self;
 		
-		self.cachedBarViewHeights = nil;
-		__block NSUInteger barViewsCount = [self.barViews count];
-		
-		dispatch_block_t updateExistingBarViewsBlock = ^{
-			__block CGFloat xOffset = 0;
-			[weakSelf.chartData enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger index, BOOL * _Nonnull stop) {
-				CGFloat height = [weakSelf normalizedHeightForRawHeight:(NSNumber *)obj];
-				if (index < [weakSelf.barViews count])
-				{
-					// Update bar
-					UIView *barView = [weakSelf.barViews objectAtIndex:index];
-					if (weakSelf.inverted)
+		if (shouldAnimate)
+		{
+			self.cachedBarViewHeights = nil;
+			__block NSUInteger barViewsCount = [self.barViews count];
+			
+			dispatch_block_t updateExistingBarViewsBlock = ^{
+				__block CGFloat xOffset = 0;
+				[weakSelf.chartData enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger index, BOOL * _Nonnull stop) {
+					CGFloat height = [weakSelf normalizedHeightForRawHeight:(NSNumber *)obj];
+					if (index < [weakSelf.barViews count])
 					{
-						barView.frame = CGRectMake(xOffset, weakSelf.headerView.frame.size.height + weakSelf.headerPadding, [weakSelf barWidth], height);
+						// Update bar
+						UIView *barView = [weakSelf.barViews objectAtIndex:index];
+						if (weakSelf.inverted)
+						{
+							barView.frame = CGRectMake(xOffset, weakSelf.headerView.frame.size.height + weakSelf.headerPadding, [weakSelf barWidth], height);
+						}
+						else
+						{
+							barView.frame = CGRectMake(xOffset, weakSelf.bounds.size.height - height - weakSelf.footerView.frame.size.height, [weakSelf barWidth], height);
+						}
+						xOffset += ([weakSelf barWidth] + weakSelf.barPadding);
 					}
-					else
+				}];
+			};
+			
+			dispatch_block_t preAddBarViewsBlock = ^{
+				__block CGFloat xOffset = 0;
+				[self.chartData enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger index, BOOL * _Nonnull stop) {
+					if (index >= barViewsCount)
 					{
-						barView.frame = CGRectMake(xOffset, weakSelf.bounds.size.height - height - weakSelf.footerView.frame.size.height, [weakSelf barWidth], height);
+						// Create bar
+						UIView *barView = [weakSelf createBarViewForIndex:index];
+						if (weakSelf.inverted)
+						{
+							barView.frame = CGRectMake(xOffset, weakSelf.headerView.frame.size.height + weakSelf.headerPadding, [weakSelf barWidth], 0.0f);
+						}
+						else
+						{
+							barView.frame = CGRectMake(xOffset, self.bounds.size.height, [weakSelf barWidth], 0.0f);
+						}
+						
+						// Update stored view
+						weakSelf.barViews = [NSArray arrayWithArray:[weakSelf.barViews arrayByAddingObject:barView]];
+						
+						// Add bar to view
+						[weakSelf insertBarView:barView];
 					}
 					xOffset += ([weakSelf barWidth] + weakSelf.barPadding);
-				}
-			}];
-		};
-		
-		dispatch_block_t preAddBarViewsBlock = ^{
-			__block CGFloat xOffset = 0;
-			[self.chartData enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger index, BOOL * _Nonnull stop) {
-				if (index >= barViewsCount)
-				{
-					// Create bar
-					UIView *barView = [weakSelf createBarViewForIndex:index];
-					if (weakSelf.inverted)
+				}];
+			};
+			
+			dispatch_block_t postAddBarViewsBlock = ^{
+				[self.chartData enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger index, BOOL * _Nonnull stop) {
+					if (index >= barViewsCount)
 					{
-						barView.frame = CGRectMake(xOffset, weakSelf.headerView.frame.size.height + weakSelf.headerPadding, [weakSelf barWidth], 0.0f);
+						CGFloat height = [weakSelf normalizedHeightForRawHeight:(NSNumber *)obj];
+						UIView *barView = [weakSelf.barViews objectAtIndex:index];
+						if (weakSelf.inverted)
+						{
+							barView.frame = CGRectMake(barView.frame.origin.x, weakSelf.headerView.frame.size.height + weakSelf.headerPadding, [weakSelf barWidth], height);
+						}
+						else
+						{
+							barView.frame = CGRectMake(barView.frame.origin.x, self.bounds.size.height - height - weakSelf.footerView.frame.size.height, [weakSelf barWidth], height);
+						}
 					}
-					else
-					{
-						barView.frame = CGRectMake(xOffset, self.bounds.size.height, [weakSelf barWidth], 0.0f);
-					}
-					
-					// Update stored view
-					weakSelf.barViews = [NSArray arrayWithArray:[weakSelf.barViews arrayByAddingObject:barView]];
-					
-					// Add bar to view
-					[weakSelf insertBarView:barView];
-				}
-				xOffset += ([weakSelf barWidth] + weakSelf.barPadding);
-			}];
-		};
-		
-		dispatch_block_t postAddBarViewsBlock = ^{
-			[self.chartData enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger index, BOOL * _Nonnull stop) {
-				if (index >= barViewsCount)
+				}];
+			};
+			
+			dispatch_block_t preRemoveBarViewsBlock = ^{
+				
+				// Move existing (removed) bars down
+				for (NSUInteger index=[weakSelf.chartData count]; index<[weakSelf.barViews count]; index++)
 				{
-					CGFloat height = [weakSelf normalizedHeightForRawHeight:(NSNumber *)obj];
 					UIView *barView = [weakSelf.barViews objectAtIndex:index];
 					if (weakSelf.inverted)
 					{
-						barView.frame = CGRectMake(barView.frame.origin.x, weakSelf.headerView.frame.size.height + weakSelf.headerPadding, [weakSelf barWidth], height);
+						barView.frame = CGRectMake(barView.frame.origin.x, weakSelf.headerView.frame.size.height + weakSelf.headerPadding, barView.frame.size.width, 0.0f);
 					}
 					else
 					{
-						barView.frame = CGRectMake(barView.frame.origin.x, self.bounds.size.height - height - weakSelf.footerView.frame.size.height, [weakSelf barWidth], height);
+						barView.frame = CGRectMake(barView.frame.origin.x, weakSelf.bounds.size.height, barView.frame.size.width, barView.frame.size.height);
 					}
 				}
-			}];
-		};
-		
-		dispatch_block_t preRemoveBarViewsBlock = ^{
+			};
 			
-			// Move existing (removed) bars down
-			for (NSUInteger index=[weakSelf.chartData count]; index<[weakSelf.barViews count]; index++)
-			{
-				UIView *barView = [weakSelf.barViews objectAtIndex:index];
-				if (weakSelf.inverted)
+			dispatch_block_t postRemoveBarViewsBlock = ^{
+				
+				// Remove existing (removed) bars
+				for (NSUInteger index=[weakSelf.chartData count]; index<[weakSelf.barViews count]; index++)
 				{
-					barView.frame = CGRectMake(barView.frame.origin.x, weakSelf.headerView.frame.size.height + weakSelf.headerPadding, barView.frame.size.width, 0.0f);
+					UIView *barView = [weakSelf.barViews objectAtIndex:index];
+					[barView removeFromSuperview];
 				}
-				else
+				
+				// Update bar view collection
+				NSMutableArray *mutableBarViews = [NSMutableArray arrayWithArray:weakSelf.barViews];
+				[mutableBarViews removeObjectsInRange:(NSRange){[weakSelf.chartData count], [weakSelf.barViews count] - [weakSelf.chartData count]}];
+				weakSelf.barViews = [NSArray arrayWithArray:mutableBarViews];
+			};
+			
+			dispatch_block_t refreshedCachedBarViewHeightsBlock = ^{
+				NSMutableArray *mutableCachedBarViewHeights = [NSMutableArray arrayWithArray:weakSelf.cachedBarViewHeights];
+				for (UIView *barView in weakSelf.barViews)
 				{
-					barView.frame = CGRectMake(barView.frame.origin.x, weakSelf.bounds.size.height, barView.frame.size.width, barView.frame.size.height);
+					[mutableCachedBarViewHeights addObject:[NSNumber numberWithFloat:barView.frame.size.height]];
 				}
-			}
-		};
-		
-		dispatch_block_t postRemoveBarViewsBlock = ^{
+				weakSelf.cachedBarViewHeights = [NSArray arrayWithArray:mutableCachedBarViewHeights];
+			};
 			
-			// Remove existing (removed) bars
-			for (NSUInteger index=[weakSelf.chartData count]; index<[weakSelf.barViews count]; index++)
-			{
-				UIView *barView = [weakSelf.barViews objectAtIndex:index];
-				[barView removeFromSuperview];
-			}
-			
-			// Update bar view collection
-			NSMutableArray *mutableBarViews = [NSMutableArray arrayWithArray:weakSelf.barViews];
-			[mutableBarViews removeObjectsInRange:(NSRange){[weakSelf.chartData count], [weakSelf.barViews count] - [weakSelf.chartData count]}];
-			weakSelf.barViews = [NSArray arrayWithArray:mutableBarViews];
-		};
-		
-		dispatch_block_t refreshedCachedBarViewHeightsBlock = ^{
-			NSMutableArray *mutableCachedBarViewHeights = [NSMutableArray arrayWithArray:weakSelf.cachedBarViewHeights];
-			for (UIView *barView in weakSelf.barViews)
-			{
-				[mutableCachedBarViewHeights addObject:[NSNumber numberWithFloat:barView.frame.size.height]];
-			}
-			weakSelf.cachedBarViewHeights = [NSArray arrayWithArray:mutableCachedBarViewHeights];
-		};
-		
-		/*
-		 * New data model equal;
-		 * Update existing bars to accomodate new model.
-		 */
-		if ([self.chartData count] == [self.barViews count])
-		{
-			if (shouldAnimate)
+			/*
+			 * New data model equal;
+			 * Update existing bars to accomodate new model.
+			 */
+			if ([self.chartData count] == [self.barViews count])
 			{
 				[UIView animateWithDuration:kJBBarChartViewReloadDataAnimationDuration animations:^{
 					updateExistingBarViewsBlock();
@@ -374,21 +374,12 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 					completionBlock();
 				}];
 			}
-			else
-			{
-				updateExistingBarViewsBlock();
-				refreshedCachedBarViewHeightsBlock();
-				completionBlock();
-			}
-		}
-		
-		/*
-		 * New data model greater;
-		 * Update existing bars to accomodate new model & add new bars.
-		 */
-		else if ([self.chartData count] > [self.barViews count])
-		{
-			if (shouldAnimate)
+			
+			/*
+			 * New data model greater;
+			 * Update existing bars to accomodate new model & add new bars.
+			 */
+			else if ([self.chartData count] > [self.barViews count])
 			{
 				[UIView animateWithDuration:kJBBarChartViewReloadDataAnimationDuration animations:^{
 					updateExistingBarViewsBlock();
@@ -402,23 +393,12 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 					}];
 				}];
 			}
-			else
-			{
-				updateExistingBarViewsBlock();
-				preAddBarViewsBlock();
-				postAddBarViewsBlock();
-				refreshedCachedBarViewHeightsBlock();
-				completionBlock();
-			}
-		}
-		
-		/*
-		 * New data model less;
-		 * Update existing bars to accomodate new model & remove legacy bars.
-		 */
-		else if ([self.chartData count] < [self.barViews count])
-		{
-			if (shouldAnimate)
+			
+			/*
+			 * New data model less;
+			 * Update existing bars to accomodate new model & remove legacy bars.
+			 */
+			else if ([self.chartData count] < [self.barViews count])
 			{
 				[UIView animateWithDuration:kJBBarChartViewReloadDataAnimationDuration animations:^{
 					preRemoveBarViewsBlock();
@@ -432,14 +412,35 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 					}];
 				}];
 			}
-			else
+		}
+		else
+		{
+			// Remove old bars
+			for (UIView *barView in self.barViews)
 			{
-				preRemoveBarViewsBlock();
-				postRemoveBarViewsBlock();
-				updateExistingBarViewsBlock();
-				refreshedCachedBarViewHeightsBlock();
-				completionBlock();
+				[barView removeFromSuperview];
 			}
+			
+			self.cachedBarViewHeights = nil;
+			
+			__block CGFloat xOffset = 0;
+			__block NSMutableArray *mutableBarViews = [NSMutableArray array];
+			__block NSMutableArray *mutableCachedBarViewHeights = [NSMutableArray array];
+			[self.chartData enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger index, BOOL * _Nonnull stop) {
+				UIView *barView = [weakSelf createBarViewForIndex:index];
+				
+				CGFloat height = [weakSelf normalizedHeightForRawHeight:(NSNumber *)obj];
+				barView.frame = CGRectMake(xOffset, self.bounds.size.height - height - weakSelf.footerView.frame.size.height, [weakSelf barWidth], height);
+				[mutableBarViews addObject:barView];
+				[mutableCachedBarViewHeights addObject:[NSNumber numberWithFloat:height]];
+				
+				[weakSelf insertBarView:barView];
+				
+				xOffset += ([weakSelf barWidth] + weakSelf.barPadding);
+				index++;
+			}];
+			self.barViews = [NSArray arrayWithArray:mutableBarViews];
+			self.cachedBarViewHeights = [NSArray arrayWithArray:mutableCachedBarViewHeights];
 		}
 	};
 	
@@ -464,6 +465,11 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 	createSelectionViewBlock();
 	createBarViewsBlock();
 	layoutHeaderAndFooterBlock();
+	
+	if (!shouldAnimate)
+	{
+		completionBlock(); // animated versions call this internally
+	}
 }
 
 - (void)reloadData

@@ -205,18 +205,15 @@ NSString * const kJBBarChartViewControllerNavButtonViewKey = @"view";
 
 - (void)chartToggleButtonPressed:(id)sender
 {
-	int randomNumber = (-3) + rand() % (3-(-3));
+	UIView *buttonImageView = [self.navigationItem.rightBarButtonItem valueForKey:kJBBarChartViewControllerNavButtonViewKey];
+	buttonImageView.userInteractionEnabled = NO;
 	
-	NSMutableArray *mutableChartData = [NSMutableArray array];
-	for (int i=0; i<(kJBBarChartViewControllerNumBars + randomNumber ); i++)
-	{
-		NSInteger delta = ((kJBBarChartViewControllerNumBars + randomNumber) - labs(((kJBBarChartViewControllerNumBars + randomNumber) - i) - i)) + 2;
-		[mutableChartData addObject:[NSNumber numberWithFloat:MAX((delta * kJBBarChartViewControllerMinBarHeight), arc4random() % (delta * kJBBarChartViewControllerMaxBarHeight))]];
-		
-	}
-	self.chartData = [NSArray arrayWithArray:mutableChartData];
+	CGAffineTransform transform = self.barChartView.state == JBChartViewStateExpanded ? CGAffineTransformMakeRotation(M_PI) : CGAffineTransformMakeRotation(0);
+	buttonImageView.transform = transform;
 	
-	[self.barChartView reloadDataAnimated:YES];
+	[self.barChartView setState:self.barChartView.state == JBChartViewStateExpanded ? JBChartViewStateCollapsed : JBChartViewStateExpanded animated:YES callback:^{
+		buttonImageView.userInteractionEnabled = YES;
+	}];
 }
 
 #pragma mark - Overrides
