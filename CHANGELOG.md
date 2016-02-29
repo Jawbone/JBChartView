@@ -1,8 +1,14 @@
 # Change Log
 
-## [Unreleased](https://github.com/Jawbone/JBChartView/tree/HEAD)
+## [v3.0.8](https://github.com/Jawbone/JBChartView/tree/v3.0.8) (2016-02-29)
+[Full Changelog](https://github.com/Jawbone/JBChartView/compare/v3.0.7...v3.0.8)
 
-[Full Changelog](https://github.com/Jawbone/JBChartView/compare/v3.0.6...HEAD)
+**Fixed bugs:**
+
+- Cannot change bar colors after initial load [\#201](https://github.com/Jawbone/JBChartView/issues/201)
+
+## [v3.0.7](https://github.com/Jawbone/JBChartView/tree/v3.0.7) (2016-02-26)
+[Full Changelog](https://github.com/Jawbone/JBChartView/compare/v3.0.6...v3.0.7)
 
 **Closed issues:**
 
