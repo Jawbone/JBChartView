@@ -11,9 +11,6 @@
 // Numerics
 CGFloat const kJBChartViewDefaultAnimationDuration = 0.25f;
 
-// Color (JBChartSelectionView)
-static UIColor *kJBChartVerticalSelectionViewDefaultBgColor = nil;
-
 @interface JBChartView ()
 
 @property (nonatomic, assign) BOOL hasMaximumValue;
@@ -160,76 +157,6 @@ static UIColor *kJBChartVerticalSelectionViewDefaultBgColor = nil;
 - (void)resetMaximumValue
 {
 	_hasMaximumValue = NO; // clears max
-}
-
-@end
-
-@implementation JBChartVerticalSelectionView
-
-#pragma mark - Alloc/Init
-
-+ (void)initialize
-{
-	if (self == [JBChartVerticalSelectionView class])
-	{
-		kJBChartVerticalSelectionViewDefaultBgColor = [UIColor whiteColor];
-	}
-}
-
-- (id)initWithFrame:(CGRect)frame
-{
-	self = [super initWithFrame:frame];
-	if (self)
-	{
-		self.backgroundColor = [UIColor clearColor];
-	}
-	return self;
-}
-
-#pragma mark - Drawing
-
-- (void)drawRect:(CGRect)rect
-{
-	CGContextRef context = UIGraphicsGetCurrentContext();
-	[[UIColor clearColor] set];
-	CGContextFillRect(context, rect);
-	
-	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-	CGFloat locations[] = { 0.0, 1.0 };
-	
-	NSArray *colors = nil;
-	if (self.bgColor != nil)
-	{
-		colors = @[(__bridge id)self.bgColor.CGColor, (__bridge id)[self.bgColor colorWithAlphaComponent:0.0].CGColor];
-	}
-	else
-	{
-		colors = @[(__bridge id)kJBChartVerticalSelectionViewDefaultBgColor.CGColor, (__bridge id)[kJBChartVerticalSelectionViewDefaultBgColor colorWithAlphaComponent:0.0].CGColor];
-	}
-	
-	CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef) colors, locations);
-	
-	CGPoint startPoint = CGPointMake(CGRectGetMidX(rect), CGRectGetMaxY(rect));
-	CGPoint endPoint = CGPointMake(CGRectGetMidX(rect), CGRectGetMinY(rect));
-	
-	CGContextSaveGState(context);
-	{
-		CGContextAddRect(context, rect);
-		CGContextClip(context);
-		CGContextDrawLinearGradient(context, gradient, startPoint, endPoint, 0);
-	}
-	CGContextRestoreGState(context);
-	
-	CGGradientRelease(gradient);
-	CGColorSpaceRelease(colorSpace);
-}
-
-#pragma mark - Setters
-
-- (void)setBgColor:(UIColor *)bgColor
-{
-	_bgColor = bgColor;
-	[self setNeedsDisplay];
 }
 
 @end

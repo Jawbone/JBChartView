@@ -10,6 +10,7 @@
 
 // Views
 #import "JBGradientBarView.h"
+#import "JBChartVerticalSelectionView.h"
 
 // Numerics
 static CGFloat const kJBBarChartViewBarBasePaddingMutliplier = 50.0f;

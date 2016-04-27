@@ -330,7 +330,6 @@ typedef NS_ENUM(NSInteger, JBLineChartViewColorStyle) {
 /**
  *  Returns the selection color of a line within the chart during touch events.
  *  The property showsLineSelection must be YES for the color to apply.
- *  As well, lineChartView:selectionColorStyleForLineAtLineIndex: must return JBLineChartViewColorStyleSolid (default).
  *
  *  Default: matches lineChartView:colorForLineAtLineIndex:.
  *
@@ -340,6 +339,19 @@ typedef NS_ENUM(NSInteger, JBLineChartViewColorStyle) {
  *  @return The color to be used to highlight a line during chart selections.
  */
 - (UIColor *)lineChartView:(JBLineChartView *)lineChartView selectionColorForLineAtLineIndex:(NSUInteger)lineIndex;
+
+/**
+ *  Returns the selection style of a line within the chart during touch events.
+ *  The property showsLineSelection must be YES for the style to apply.
+ *
+ *  Default: Gradient
+ *
+ *  @param lineChartView    The line chart object requesting this information.
+ *  @param lineIndex        An index number identifying a line in the chart.
+ *
+ *  @return The style to be used to highlight a line during chart selections.
+ */
+- (JBLineChartViewColorStyle)lineChartView:(JBLineChartView *)lineChartView selectionColorStyleForLineAtLineIndex:(NSUInteger)lineIndex;
 
 /**
  *  Returns the selection gradient layer of a line within the chart during touch events.
