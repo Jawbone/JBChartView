@@ -15,6 +15,7 @@
 // Views
 #import "JBLineChartDotsView.h"
 #import "JBLineChartLinesView.h"
+#import "JBChartVerticalSelectionView.h"
 
 // Enums
 typedef NS_ENUM(NSUInteger, JBLineChartHorizontalIndexClamp){
@@ -1089,6 +1090,15 @@ static NSInteger const kJBLineChartUnselectedLineIndex = -1;
 		NSAssert(verticalSelectionColor != nil, @"JBLineChartView // delegate function - (UIColor *)lineChartView:(JBLineChartView *)lineChartView verticalSelectionColorForLineAtLineIndex:(NSUInteger)lineIndex must return a non-nil UIColor");
 		self.verticalSelectionView.bgColor = verticalSelectionColor;
 	}
+
+    if ([self.delegate respondsToSelector:@selector(lineChartView:selectionColorStyleForLineAtLineIndex:)])
+    {
+        JBLineChartViewColorStyle selectionColorStyle = [self.delegate lineChartView:self selectionColorStyleForLineAtLineIndex:lineIndex];
+        self.verticalSelectionView.style = selectionColorStyle;
+    }
+    else {
+        self.verticalSelectionView.style = JBLineChartViewColorStyleGradient;
+    }
 	
 	CGFloat xOffset = fmin(self.bounds.size.width - self.verticalSelectionView.frame.size.width, fmax(0, touchPoint.x - (self.verticalSelectionView.frame.size.width * 0.5)));
 	CGFloat yOffset = self.headerView.frame.size.height + self.headerPadding;
