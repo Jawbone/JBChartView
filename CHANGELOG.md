@@ -1,5 +1,20 @@
 # Change Log
 
+## [v3.0.9](https://github.com/Jawbone/JBChartView/tree/v3.0.9) (2016-04-28)
+[Full Changelog](https://github.com/Jawbone/JBChartView/compare/v3.0.8...v3.0.9)
+
+**Implemented enhancements:**
+
+- ability to set line chart view padding [\#205](https://github.com/Jawbone/JBChartView/issues/205)
+
+**Fixed bugs:**
+
+- old gradient fill shows if chart is scrolled offscreen [\#204](https://github.com/Jawbone/JBChartView/issues/204)
+
+**Closed issues:**
+
+- example of using gradient for fills [\#202](https://github.com/Jawbone/JBChartView/issues/202)
+
 ## [v3.0.8](https://github.com/Jawbone/JBChartView/tree/v3.0.8) (2016-02-29)
 [Full Changelog](https://github.com/Jawbone/JBChartView/compare/v3.0.7...v3.0.8)
 
