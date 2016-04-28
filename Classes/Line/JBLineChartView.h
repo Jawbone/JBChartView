@@ -330,7 +330,7 @@ typedef NS_ENUM(NSInteger, JBLineChartViewColorStyle) {
 /**
  *  Returns the selection color of a line within the chart during touch events.
  *  The property showsLineSelection must be YES for the color to apply.
- *  As well, lineChartView:selectionColorStyleForLineAtLineIndex: must return JBLineChartViewColorStyleSolid (default).
+ *  As well, lineChartView:colorStyleForLineAtLineIndex: must return JBLineChartViewColorStyleSolid (default)
  *
  *  Default: matches lineChartView:colorForLineAtLineIndex:.
  *
@@ -344,7 +344,7 @@ typedef NS_ENUM(NSInteger, JBLineChartViewColorStyle) {
 /**
  *  Returns the selection gradient layer of a line within the chart during touch events.
  *  The property showsLineSelection must be YES for the color to apply.
- *  As well, lineChartView:selectionColorStyleForLineAtLineIndex: must return JBLineChartViewColorStyleGradient.
+ *  As well, lineChartView:colorStyleForLineAtLineIndex: must return JBLineChartViewColorStyleGradient.
  *
  *  Note: gradients do not support multiple alphas. The alpha of gradient's first color be used throughout.
  *
@@ -360,7 +360,7 @@ typedef NS_ENUM(NSInteger, JBLineChartViewColorStyle) {
 /**
  *  Returns the selection fill color under a line within the chart during touch events.
  *  The property showsLineSelection must be YES for the color to apply.
- *  As well, lineChartView:selectionFillColorStyleForLineAtLineIndex: must return JBLineChartViewColorStyleSolid (default).
+ *  As well, lineChartView:fillColorStyleForLineAtLineIndex: must return JBLineChartViewColorStyleSolid (default).
  *
  *  Default: matches lineChartView:fillColorForLineAtLineIndex:.
  *
@@ -374,7 +374,7 @@ typedef NS_ENUM(NSInteger, JBLineChartViewColorStyle) {
 /**
  *  Returns the selection fill gradient layer under a line within the chart during touch events.
  *  The property showsLineSelection must be YES for the color to apply.
- *  As well, lineChartView:selectionFillColorStyleForLineAtLineIndex: must return JBLineChartViewColorStyleGrdient.
+ *  As well, lineChartView:fillColorStyleForLineAtLineIndex: must return JBLineChartViewColorStyleGrdient.
  *
  *  Note: gradients do not support multiple alphas. The alpha of gradient's first color be used throughout.
  *
