@@ -149,6 +149,28 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 	 * Final block to refresh state and turn off reloading bit
 	 */
 	dispatch_block_t completionBlock = ^{
+		
+		if (animated)
+		{
+			[self.chartData enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger index, BOOL * _Nonnull stop) {
+				// Grab old bar
+				UIView *oldBarView = [self.barViews objectAtIndex:index];
+				
+				// Update bar instance
+				UIView *barView = [self createBarViewForIndex:index];
+				barView.frame = oldBarView.frame;
+				
+				// Swap subviews
+				[oldBarView removeFromSuperview];
+				[self insertBarView:barView];
+				
+				// Update bar colection
+				NSMutableArray *mutableBarViews = [NSMutableArray arrayWithArray:self.barViews];
+				[mutableBarViews replaceObjectAtIndex:index withObject:barView];
+				self.barViews = [NSArray arrayWithArray:mutableBarViews];
+			}];
+		}
+		
 		self.reloading = NO;
 		[self setState:self.state animated:NO force:YES callback:nil];
 	};
