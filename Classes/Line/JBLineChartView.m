@@ -1036,7 +1036,7 @@ static NSInteger const kJBLineChartUnselectedLineIndex = -1;
 				CGPoint normalizedTouchPoint = CGPointMake(point.x, self.linesView.bounds.size.height - point.y);
 				
 				// Slope - set to zero if x coordinates are the same and would result in a NaN value
-				CGFloat lineSlope = rightPoint.x == leftPoint.x ? 0 : (CGFloat)(rightPoint.y - leftPoint.y) / (CGFloat)(rightPoint.x - leftPoint.x);
+				CGFloat lineSlope = rightPoint.x != leftPoint.x ? (CGFloat)(rightPoint.y - leftPoint.y) / (CGFloat)(rightPoint.x - leftPoint.x) : 0.0f;
 				
 				// Insersection point
 				CGPoint interesectionPoint = CGPointMake(normalizedTouchPoint.x, (lineSlope * (normalizedTouchPoint.x - leftPoint.x)) + leftPoint.y);
