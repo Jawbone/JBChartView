@@ -606,7 +606,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 	
 	dispatch_block_t callbackCopy = [callback copy];
 	
-	if ([self.barViews count] > 0)
+	if ([self.barViews count] > 0 && [self.cachedBarViewHeights count] == [self.barViews count])
 	{
 		if (animated)
 		{
