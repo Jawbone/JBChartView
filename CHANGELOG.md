@@ -1,5 +1,20 @@
 # Change Log
 
+## [v3.0.11](https://github.com/Jawbone/JBChartView/tree/v3.0.11) (2016-06-22)
+[Full Changelog](https://github.com/Jawbone/JBChartView/compare/v3.0.10...v3.0.11)
+
+**Fixed bugs:**
+
+- barChartView:barViewAtIndex: not called when reloading bar chart animated [\#207](https://github.com/Jawbone/JBChartView/issues/207)
+
+**Closed issues:**
+
+- Not able to change the color of linechart  with custom color [\#208](https://github.com/Jawbone/JBChartView/issues/208)
+
+**Merged pull requests:**
+
+- Handle NaN line slope in line chart selection code. [\#209](https://github.com/Jawbone/JBChartView/pull/209) ([loumoore](https://github.com/loumoore))
+
 ## [v3.0.10](https://github.com/Jawbone/JBChartView/tree/v3.0.10) (2016-05-31)
 [Full Changelog](https://github.com/Jawbone/JBChartView/compare/v3.0.9...v3.0.10)
 
