@@ -16,6 +16,8 @@ static UIColor *kJBChartVerticalSelectionViewDefaultBgColor = nil;
 
 @interface JBChartView ()
 
+@property (nonatomic, strong) UIImageView *loadingImageView;
+
 @property (nonatomic, assign) BOOL hasMaximumValue;
 @property (nonatomic, assign) BOOL hasMinimumValue;
 
@@ -77,7 +79,110 @@ static UIColor *kJBChartVerticalSelectionViewDefaultBgColor = nil;
 	NSAssert((self.headerView.bounds.size.height + self.footerView.bounds.size.height) <= self.bounds.size.height, @"JBChartView // the combined height of the footer and header can not be greater than the total height of the chart.");
 }
 
+#pragma mark - Getters
+
++ (UIImage *)imageWithView:(UIView *)view
+{
+    UIGraphicsBeginImageContextWithOptions(view.bounds.size, view.opaque, 0.0);
+    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return image;
+}
+
 #pragma mark - Setters
+
+- (void)setLoading:(BOOL)loading animated:(BOOL)animated callback:(void (^)())callback
+{
+    if (_loading == loading)
+    {
+        return;
+    }
+    
+    _loading = loading;
+    
+    if (loading) // show
+    {
+        UIImage *snapshotImage = [JBChartView imageWithView:self];
+        self.loadingImageView = [[UIImageView alloc] initWithImage:snapshotImage];
+        self.loadingImageView.frame = self.bounds;
+        
+        UIBlurEffect *blur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+        UIVisualEffectView *effectView = [[UIVisualEffectView alloc] initWithEffect:blur];
+        effectView.frame = self.loadingImageView.frame;
+        [self.loadingImageView addSubview:effectView];
+        
+        UIActivityIndicatorView *activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        [activityIndicatorView startAnimating];
+        activityIndicatorView.frame = CGRectMake(ceil(self.loadingImageView.frame.size.width * 0.5) - ceil(activityIndicatorView.frame.size.width * 0.5), ceil(self.loadingImageView.frame.size.height * 0.5) - ceil(activityIndicatorView.frame.size.height * 0.5), activityIndicatorView.frame.size.width, activityIndicatorView.frame.size.height);
+        [self.loadingImageView addSubview:activityIndicatorView];
+        
+        if (animated)
+        {
+            self.loadingImageView.alpha = 0.0;
+            [self addSubview:self.loadingImageView];
+            [UIView animateWithDuration:0.25 animations:^{
+                self.loadingImageView.alpha = 1.0;
+            } completion:^(BOOL finished) {
+                if (callback)
+                {
+                    callback();
+                }
+            }];
+        }
+        else
+        {
+            [self addSubview:self.loadingImageView];
+            if (callback)
+            {
+                callback();
+            }
+        }
+    }
+    else // hide
+    {
+        if (self.loadingImageView != nil)
+        {
+            if (animated)
+            {
+                [UIView animateWithDuration:0.25 animations:^{
+                    self.loadingImageView.alpha = 0.0;
+                } completion:^(BOOL finished) {
+                    [self.loadingImageView removeFromSuperview];
+                    if (callback)
+                    {
+                        callback();
+                    }
+                }];
+            }
+            else
+            {
+                [self.loadingImageView removeFromSuperview];
+                if (callback)
+                {
+                    callback();
+                }
+            }
+        }
+        else
+        {
+            if (callback)
+            {
+                callback();
+            }
+        }
+    }
+}
+
+- (void)setLoading:(BOOL)loading animated:(BOOL)animated
+{
+    [self setLoading:loading animated:animated callback:nil];
+}
+
+- (void)setLoading:(BOOL)loading
+{
+    [self setLoading:loading animated:NO];
+}
 
 - (void)setHeaderView:(UIView *)headerView
 {

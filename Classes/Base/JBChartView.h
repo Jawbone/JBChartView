@@ -69,6 +69,15 @@ typedef NS_ENUM(NSInteger, JBChartViewState){
 @property (nonatomic, weak) id<JBChartViewDataSource> dataSource;
 @property (nonatomic, weak) id<JBChartViewDelegate> delegate;
 
+/*
+ * Since loading is such a common UIView requirement, 
+ * setting to YES will snapshot the chart, blur it, and display a loading indicator.
+ */
+@property (nonatomic, assign) BOOL loading;
+
+- (void)setLoading:(BOOL)loading animated:(BOOL)animated callback:(void (^)())callback;
+- (void)setLoading:(BOOL)loading animated:(BOOL)animated;
+
 /**
  *  Header and footer views are shown above and below the chart respectively.
  *  Each view will be stretched horizontally to fill width of chart.

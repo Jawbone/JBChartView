@@ -305,15 +305,7 @@ NSString * const kJBLineChartViewControllerNavButtonViewKey = @"view";
 
 - (void)chartToggleButtonPressed:(id)sender
 {
-	UIView *buttonImageView = [self.navigationItem.rightBarButtonItem valueForKey:kJBLineChartViewControllerNavButtonViewKey];
-	buttonImageView.userInteractionEnabled = NO;
-	
-	CGAffineTransform transform = self.lineChartView.state == JBChartViewStateExpanded ? CGAffineTransformMakeRotation(M_PI) : CGAffineTransformMakeRotation(0);
-	buttonImageView.transform = transform;
-	
-	[self.lineChartView setState:self.lineChartView.state == JBChartViewStateExpanded ? JBChartViewStateCollapsed : JBChartViewStateExpanded animated:YES callback:^{
-		buttonImageView.userInteractionEnabled = YES;
-	}];
+    [self.chartView setLoading:!self.chartView.loading animated:YES];
 }
 
 #pragma mark - Overrides
