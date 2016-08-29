@@ -81,10 +81,23 @@ static UIColor *kJBChartVerticalSelectionViewDefaultBgColor = nil;
 {
     if (pinchGestureRecognizer.state == UIGestureRecognizerStateBegan)
     {
+        for (UIView *subview in self.subviews)
+        {
+            //subview.hidden = YES;
+        }
+        
         self.pinchZoomView = [[JAPinchZoomView alloc] init];
         self.pinchZoomView.pinchZoomImageView.image = [JBChartView imageWithView:self];
         self.pinchZoomView.frame = self.bounds;
         [self addSubview:self.pinchZoomView];
+    }
+    else if (pinchGestureRecognizer.state == UIGestureRecognizerStateEnded)
+    {
+        for (UIView *subview in self.subviews)
+        {
+           // subview.hidden = NO;
+        }
+        //[self.pinchZoomView removeFromSuperview];
     }
 }
 
