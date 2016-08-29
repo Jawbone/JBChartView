@@ -14,8 +14,16 @@ CGFloat const kJBChartViewDefaultAnimationDuration = 0.25f;
 // Color (JBChartSelectionView)
 static UIColor *kJBChartVerticalSelectionViewDefaultBgColor = nil;
 
+@interface JAPinchZoomView : UIView <UIScrollViewDelegate>
+
+@property (nonatomic, strong) UIScrollView *scrollView;
+@property (nonatomic, strong) UIImageView *pinchZoomImageView;
+
+@end
+
 @interface JBChartView ()
 
+@property (nonatomic, strong) JAPinchZoomView *pinchZoomView;
 @property (nonatomic, assign) BOOL hasMaximumValue;
 @property (nonatomic, assign) BOOL hasMinimumValue;
 
@@ -61,6 +69,23 @@ static UIColor *kJBChartVerticalSelectionViewDefaultBgColor = nil;
 - (void)constructChartView
 {
 	self.clipsToBounds = YES;
+    
+    UIPinchGestureRecognizer *pinchGestureRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchGestureRecognized:)];
+    pinchGestureRecognizer.cancelsTouchesInView = NO;
+    [self addGestureRecognizer:pinchGestureRecognizer];
+}
+
+#pragma mark - Gestures
+
+- (void)pinchGestureRecognized:(UIPinchGestureRecognizer *)pinchGestureRecognizer
+{
+    if (pinchGestureRecognizer.state == UIGestureRecognizerStateBegan)
+    {
+        self.pinchZoomView = [[JAPinchZoomView alloc] init];
+        self.pinchZoomView.pinchZoomImageView.image = [JBChartView imageWithView:self];
+        self.pinchZoomView.frame = self.bounds;
+        [self addSubview:self.pinchZoomView];
+    }
 }
 
 #pragma mark - Public
@@ -75,6 +100,17 @@ static UIColor *kJBChartVerticalSelectionViewDefaultBgColor = nil;
 - (void)validateHeaderAndFooterHeights
 {
 	NSAssert((self.headerView.bounds.size.height + self.footerView.bounds.size.height) <= self.bounds.size.height, @"JBChartView // the combined height of the footer and header can not be greater than the total height of the chart.");
+}
+
+#pragma mark - Getters
+
++ (UIImage *)imageWithView:(UIView *)view
+{
+    UIGraphicsBeginImageContextWithOptions(view.bounds.size, view.opaque, 0.0);
+    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return image;
 }
 
 #pragma mark - Setters
@@ -230,6 +266,47 @@ static UIColor *kJBChartVerticalSelectionViewDefaultBgColor = nil;
 {
 	_bgColor = bgColor;
 	[self setNeedsDisplay];
+}
+
+@end
+
+
+@implementation JAPinchZoomView
+
+#pragma mark - Alloc/Init
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self)
+    {
+        _scrollView = [[UIScrollView alloc] init];
+        _scrollView.delegate = self;
+        _scrollView.minimumZoomScale = 1.0;
+        _scrollView.maximumZoomScale = 6.0;
+        [self addSubview:_scrollView];
+        
+        _pinchZoomImageView = [[UIImageView alloc] init];
+        [_scrollView addSubview:_pinchZoomImageView];
+    }
+    return self;
+}
+
+#pragma mark - Layout
+
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    
+    self.scrollView.frame = self.bounds;
+    self.pinchZoomImageView.frame = self.scrollView.bounds;
+}
+
+#pragma mark - UIScrollViewDelegate
+
+- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
+{
+    return self.pinchZoomImageView;
 }
 
 @end
