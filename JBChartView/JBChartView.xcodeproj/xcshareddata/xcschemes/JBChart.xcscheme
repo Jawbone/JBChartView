@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "AE49CB481D8075000015154D"
-               BuildableName = "JBChartView.framework"
-               BlueprintName = "JBChartView"
+               BuildableName = "JBChart.framework"
+               BlueprintName = "JBChart"
                ReferencedContainer = "container:JBChartView.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -46,8 +46,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "AE49CB481D8075000015154D"
-            BuildableName = "JBChartView.framework"
-            BlueprintName = "JBChartView"
+            BuildableName = "JBChart.framework"
+            BlueprintName = "JBChart"
             ReferencedContainer = "container:JBChartView.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -64,8 +64,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "AE49CB481D8075000015154D"
-            BuildableName = "JBChartView.framework"
-            BlueprintName = "JBChartView"
+            BuildableName = "JBChart.framework"
+            BlueprintName = "JBChart"
             ReferencedContainer = "container:JBChartView.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
