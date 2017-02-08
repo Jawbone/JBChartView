@@ -1,5 +1,22 @@
 # Change Log
 
+## [v3.0.13](https://github.com/Jawbone/JBChartView/tree/v3.0.13) (2017-02-08)
+[Full Changelog](https://github.com/Jawbone/JBChartView/compare/v3.0.12...v3.0.13)
+
+**Fixed bugs:**
+
+- selectionColorForDotAtHorizontalIndex doesn't change color [\#221](https://github.com/Jawbone/JBChartView/issues/221)
+- 内存泄露（leak！） [\#219](https://github.com/Jawbone/JBChartView/issues/219)
+- wrong dot color with NAN after click graph [\#216](https://github.com/Jawbone/JBChartView/issues/216)
+
+**Closed issues:**
+
+- Amazing issue with width of JBLineChartView [\#220](https://github.com/Jawbone/JBChartView/issues/220)
+- Bar chart doesn't paint inside selected UITableViewCell [\#214](https://github.com/Jawbone/JBChartView/issues/214)
+- Does not conform with protocol [\#212](https://github.com/Jawbone/JBChartView/issues/212)
+- \[question\] Does JBChartView support logarithmic scale? [\#211](https://github.com/Jawbone/JBChartView/issues/211)
+- Fixed tool tip in Bar chart [\#210](https://github.com/Jawbone/JBChartView/issues/210)
+
 ## [v3.0.12](https://github.com/Jawbone/JBChartView/tree/v3.0.12) (2016-06-22)
 [Full Changelog](https://github.com/Jawbone/JBChartView/compare/v3.0.11...v3.0.12)
 
