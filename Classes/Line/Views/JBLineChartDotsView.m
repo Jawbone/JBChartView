@@ -112,12 +112,13 @@ NSInteger const kJBLineChartDotsViewUnselectedLineIndex = -1;
 					JBLineChartPoint *lineChartPoint = [sortedLineChartPoints objectAtIndex:horizontalIndex];
 					if(lineChartPoint.hidden)
 					{
-						continue;
+                        [mutableDotViews addObject:[NSNull null]];
+                        continue;
 					}
 					
 					UIView *dotView = [self dotViewForHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
 					dotView.center = CGPointMake(lineChartPoint.position.x, lineChartPoint.position.y);
-					[mutableDotViews addObject:dotView];
+                    [mutableDotViews addObject:dotView];
 					[self addSubview:dotView];
 				}
 				[mutableDotViewsDict setObject:[NSArray arrayWithArray:mutableDotViews] forKey:[NSNumber numberWithInteger:lineIndex]];
@@ -158,39 +159,42 @@ NSInteger const kJBLineChartDotsViewUnselectedLineIndex = -1;
 				if ([key isKindOfClass:[NSNumber class]])
 				{
 					NSInteger lineIndex = [((NSNumber *)key) intValue];
-					
-					// Internal dot
-					if ([dotView isKindOfClass:[JBLineChartDotView class]])
-					{
-						if (weakSelf.selectedLineIndex == lineIndex)
-						{
-							NSAssert([self.dataSource respondsToSelector:@selector(lineChartDotsView:selectedColorForDotAtHorizontalIndex:atLineIndex:)], @"JBLineChartDotsView // dataSource must implement - (UIColor *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView selectedColorForDotAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
-							dotView.backgroundColor = [self.dataSource lineChartDotsView:self selectedColorForDotAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
-						}
-						else
-						{
-							NSAssert([self.dataSource respondsToSelector:@selector(lineChartDotsView:colorForDotAtHorizontalIndex:atLineIndex:)], @"JBLineChartDotsView // dataSource must implement - (UIColor *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView colorForDotAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
-							dotView.backgroundColor = [self.dataSource lineChartDotsView:self colorForDotAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
-
-							NSAssert([self.dataSource respondsToSelector:@selector(lineChartDotsView:dimmedSelectionDotOpacityAtLineIndex:)], @"JBLineChartLinesView // dataSource must implement - (CGFloat)lineChartDotsView:(JBLineChartLinesView *)lineChartLinesView dimmedSelectionDotOpacityAtLineIndex:(NSUInteger)lineIndex");
-							dotView.alpha = (weakSelf.selectedLineIndex == kJBLineChartDotsViewUnselectedLineIndex) ? 1.0f : [self.dataSource lineChartDotsView:self dimmedSelectionDotOpacityAtLineIndex:lineIndex];
-						}
-					}
-					// Custom dot
-					else
-					{
-						NSAssert([self.dataSource respondsToSelector:@selector(lineChartDotsView:shouldHideDotViewOnSelectionAtHorizontalIndex:atLineIndex:)], @"JBLineChartDotsView // dataSource must implement - (BOOL)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView shouldHideDotViewOnSelectionAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
-						BOOL hideDotView = [self.dataSource lineChartDotsView:self shouldHideDotViewOnSelectionAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
-						if (weakSelf.selectedLineIndex == lineIndex)
-						{
-							NSAssert([self.dataSource respondsToSelector:@selector(lineChartDotsView:dimmedSelectionDotOpacityAtLineIndex:)], @"JBLineChartLinesView // dataSource must implement - (CGFloat)lineChartDotsView:(JBLineChartLinesView *)lineChartLinesView dimmedSelectionDotOpacityAtLineIndex:(NSUInteger)lineIndex");
-							dotView.alpha = hideDotView ? [self.dataSource lineChartDotsView:self dimmedSelectionDotOpacityAtLineIndex:lineIndex] : 1.0f;
-						}
-						else
-						{
-							dotView.alpha = 1.0;
-						}
-					}
+                    
+                    if (![dotView isKindOfClass:[NSNull class]])
+                    {
+                        // Internal dot
+                        if ([dotView isKindOfClass:[JBLineChartDotView class]])
+                        {
+                            if (weakSelf.selectedLineIndex == lineIndex)
+                            {
+                                NSAssert([self.dataSource respondsToSelector:@selector(lineChartDotsView:selectedColorForDotAtHorizontalIndex:atLineIndex:)], @"JBLineChartDotsView // dataSource must implement - (UIColor *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView selectedColorForDotAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
+                                dotView.backgroundColor = [self.dataSource lineChartDotsView:self selectedColorForDotAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
+                            }
+                            else
+                            {
+                                NSAssert([self.dataSource respondsToSelector:@selector(lineChartDotsView:colorForDotAtHorizontalIndex:atLineIndex:)], @"JBLineChartDotsView // dataSource must implement - (UIColor *)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView colorForDotAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
+                                dotView.backgroundColor = [self.dataSource lineChartDotsView:self colorForDotAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
+                                
+                                NSAssert([self.dataSource respondsToSelector:@selector(lineChartDotsView:dimmedSelectionDotOpacityAtLineIndex:)], @"JBLineChartLinesView // dataSource must implement - (CGFloat)lineChartDotsView:(JBLineChartLinesView *)lineChartLinesView dimmedSelectionDotOpacityAtLineIndex:(NSUInteger)lineIndex");
+                                dotView.alpha = (weakSelf.selectedLineIndex == kJBLineChartDotsViewUnselectedLineIndex) ? 1.0f : [self.dataSource lineChartDotsView:self dimmedSelectionDotOpacityAtLineIndex:lineIndex];
+                            }
+                        }
+                        // Custom dot
+                        else
+                        {
+                            NSAssert([self.dataSource respondsToSelector:@selector(lineChartDotsView:shouldHideDotViewOnSelectionAtHorizontalIndex:atLineIndex:)], @"JBLineChartDotsView // dataSource must implement - (BOOL)lineChartDotsView:(JBLineChartDotsView *)lineChartDotsView shouldHideDotViewOnSelectionAtHorizontalIndex:(NSUInteger)horizontalIndex atLineIndex:(NSUInteger)lineIndex");
+                            BOOL hideDotView = [self.dataSource lineChartDotsView:self shouldHideDotViewOnSelectionAtHorizontalIndex:horizontalIndex atLineIndex:lineIndex];
+                            if (weakSelf.selectedLineIndex == lineIndex)
+                            {
+                                NSAssert([self.dataSource respondsToSelector:@selector(lineChartDotsView:dimmedSelectionDotOpacityAtLineIndex:)], @"JBLineChartLinesView // dataSource must implement - (CGFloat)lineChartDotsView:(JBLineChartLinesView *)lineChartLinesView dimmedSelectionDotOpacityAtLineIndex:(NSUInteger)lineIndex");
+                                dotView.alpha = hideDotView ? [self.dataSource lineChartDotsView:self dimmedSelectionDotOpacityAtLineIndex:lineIndex] : 1.0f;
+                            }
+                            else
+                            {
+                                dotView.alpha = 1.0;
+                            }
+                        }   
+                    }
 				}
 				horizontalIndex++;
 			}
