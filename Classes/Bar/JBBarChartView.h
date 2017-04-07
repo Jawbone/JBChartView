@@ -171,6 +171,13 @@
 @property (nonatomic, assign) BOOL showsVerticalSelection;
 
 /**
+ *  The minimum height of bars in points.
+ *  This is useful if you want to display 0 bars with a 1pt height.
+ *  Default is 0.
+ */
+@property (nonatomic, assign) CGFloat minBarHeight;
+
+/**
  *  The bar view at a particular index.
  *
  *  Default: nil.
