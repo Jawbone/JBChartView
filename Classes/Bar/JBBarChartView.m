@@ -120,6 +120,22 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 	_cachedMaxHeight = kJBBarChartViewUndefinedCachedHeight;
 }
 
+- (void)setBounds:(CGRect)bounds {
+    BOOL sizeChanged = !CGSizeEqualToSize(bounds.size, self.bounds.size);
+    [super setBounds:bounds];
+    if (sizeChanged && self.dataSource) {
+        [self reloadDataAnimated:YES];
+    }
+}
+
+- (void)setFrame:(CGRect)frame {
+    BOOL sizeChanged = !CGSizeEqualToSize(frame.size, self.frame.size);
+    [super setFrame:frame];
+    if (sizeChanged && self.dataSource) {
+        [self reloadDataAnimated:YES];
+    }
+}
+
 #pragma mark - Memory Management
 
 - (void)dealloc
