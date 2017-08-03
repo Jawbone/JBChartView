@@ -179,6 +179,9 @@ NSInteger const kJBLineChartLinesViewUnselectedLineIndex = -1;
 				if (self.animated)
 				{
 					[gradientLineLayer.mask addAnimation:[self basicPathAnimationFromBezierPath:gradientLineLayer.currentPath toBezierPath:linePath] forKey:@"gradientLayerMaskAnimation"];
+					dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(kJBLineChartLinesViewReloadDataAnimationDuration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                        			[(JBShapeLineLayer *)gradientLineLayer.mask setPath:linePath.CGPath];
+                    			});
 				}
 				else
 				{
