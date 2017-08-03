@@ -150,6 +150,9 @@ NSInteger const kJBLineChartLinesViewUnselectedLineIndex = -1;
 				if (self.animated)
 				{
 					[shapeLineLayer addAnimation:[self basicPathAnimationFromBezierPath:shapeLineLayer.currentPath toBezierPath:linePath] forKey:@"shapeLayerPathAnimation"];
+					dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(kJBLineChartLinesViewReloadDataAnimationDuration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                        			shapeLineLayer.path = linePath.CGPath;
+                    			});
 				}
 				else
 				{
@@ -176,6 +179,9 @@ NSInteger const kJBLineChartLinesViewUnselectedLineIndex = -1;
 				if (self.animated)
 				{
 					[gradientLineLayer.mask addAnimation:[self basicPathAnimationFromBezierPath:gradientLineLayer.currentPath toBezierPath:linePath] forKey:@"gradientLayerMaskAnimation"];
+					dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(kJBLineChartLinesViewReloadDataAnimationDuration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                        			[(JBShapeLineLayer *)gradientLineLayer.mask setPath:linePath.CGPath];
+                    			});
 				}
 				else
 				{
@@ -577,7 +583,7 @@ NSInteger const kJBLineChartLinesViewUnselectedLineIndex = -1;
 #pragma GCC diagnostic pop
 	basicPathAnimation.duration = kJBLineChartLinesViewReloadDataAnimationDuration;
 	basicPathAnimation.timingFunction = [CAMediaTimingFunction functionWithName:@"easeInEaseOut"];
-	basicPathAnimation.fillMode = kCAFillModeBoth;
+	basicPathAnimation.fillMode = kCAFillModeForwards;
 	basicPathAnimation.removedOnCompletion = NO;
 	return basicPathAnimation;
 }
