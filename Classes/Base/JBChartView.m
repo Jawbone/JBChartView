@@ -111,7 +111,7 @@ static UIColor *kJBChartVerticalSelectionViewDefaultBgColor = nil;
 	[self reloadData];
 }
 
-- (void)setState:(JBChartViewState)state animated:(BOOL)animated force:(BOOL)force callback:(void (^)())callback
+- (void)setState:(JBChartViewState)state animated:(BOOL)animated force:(BOOL)force callback:(void (^)(void))callback
 {
 	if ((_state == state) && !force)
 	{
@@ -123,7 +123,7 @@ static UIColor *kJBChartVerticalSelectionViewDefaultBgColor = nil;
 	// Override
 }
 
-- (void)setState:(JBChartViewState)state animated:(BOOL)animated callback:(void (^)())callback
+- (void)setState:(JBChartViewState)state animated:(BOOL)animated callback:(void (^)(void))callback
 {
 	[self setState:state animated:animated force:NO callback:callback];
 }
