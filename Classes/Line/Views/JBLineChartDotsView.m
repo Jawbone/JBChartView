@@ -39,7 +39,7 @@ NSInteger const kJBLineChartDotsViewUnselectedLineIndex = -1;
 
 #pragma mark - Data
 
-- (void)reloadDataAnimated:(BOOL)animated callback:(void (^)())callback
+- (void)reloadDataAnimated:(BOOL)animated callback:(void (^)(void))callback
 {
 	NSAssert([self.dataSource respondsToSelector:@selector(lineChartLinesForLineChartDotsView:)], @"JBLineChartDotsView // dataSource must implement - (NSArray *)lineChartLinesForLineChartDotsView:(JBLineChartDotsView *)lineChartDotsView");
 	NSArray *lineChartLines = [self.dataSource lineChartLinesForLineChartDotsView:self];

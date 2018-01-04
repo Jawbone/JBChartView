@@ -534,7 +534,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 
 #pragma mark - Setters
 
-- (void)setState:(JBChartViewState)state animated:(BOOL)animated force:(BOOL)force callback:(void (^)())callback
+- (void)setState:(JBChartViewState)state animated:(BOOL)animated force:(BOOL)force callback:(void (^)(void))callback
 {
 	if (self.reloading)
 	{
@@ -664,7 +664,7 @@ static UIColor *kJBBarChartViewDefaultBarColor = nil;
 	}
 }
 
-- (void)setState:(JBChartViewState)state animated:(BOOL)animated callback:(void (^)())callback
+- (void)setState:(JBChartViewState)state animated:(BOOL)animated callback:(void (^)(void))callback
 {
 	[self setState:state animated:animated force:NO callback:callback];
 }

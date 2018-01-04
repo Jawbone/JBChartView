@@ -195,7 +195,7 @@ NSInteger const kJBLineChartLinesViewUnselectedLineIndex = -1;
 
 #pragma mark - Data
 
-- (void)reloadDataAnimated:(BOOL)animated callback:(void (^)())callback
+- (void)reloadDataAnimated:(BOOL)animated callback:(void (^)(void))callback
 {
 	NSAssert([self.dataSource respondsToSelector:@selector(lineChartLinesForLineChartLinesView:)], @"JBLineChartLinesView // dataSource must implement - (NSArray *)lineChartLinesForLineChartLinesView:(JBLineChartLinesView *)lineChartLinesView");
 	NSArray *chartData = [self.dataSource lineChartLinesForLineChartLinesView:self];
@@ -584,7 +584,7 @@ NSInteger const kJBLineChartLinesViewUnselectedLineIndex = -1;
 
 #pragma mark - Callback Helpers
 
-- (void)fireCallback:(void (^)())callback
+- (void)fireCallback:(void (^)(void))callback
 {
 	dispatch_block_t callbackCopy = [callback copy];
 	

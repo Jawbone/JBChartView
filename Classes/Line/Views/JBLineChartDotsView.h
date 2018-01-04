@@ -21,7 +21,7 @@ extern NSInteger const kJBLineChartDotsViewUnselectedLineIndex;
 @property (nonatomic, strong) NSDictionary *dotViewsDict;
 
 // Data
-- (void)reloadDataAnimated:(BOOL)animated callback:(void (^)())callback;
+- (void)reloadDataAnimated:(BOOL)animated callback:(void (^)(void))callback;
 - (void)reloadDataAnimated:(BOOL)animated;
 - (void)reloadData;
 

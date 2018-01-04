@@ -748,7 +748,7 @@ static NSInteger const kJBLineChartUnselectedLineIndex = -1;
 
 #pragma mark - Setters
 
-- (void)setState:(JBChartViewState)state animated:(BOOL)animated force:(BOOL)force callback:(void (^)())callback
+- (void)setState:(JBChartViewState)state animated:(BOOL)animated force:(BOOL)force callback:(void (^)(void))callback
 {
 	if (self.reloading)
 	{
@@ -814,7 +814,7 @@ static NSInteger const kJBLineChartUnselectedLineIndex = -1;
 	}
 }
 
-- (void)setState:(JBChartViewState)state animated:(BOOL)animated callback:(void (^)())callback
+- (void)setState:(JBChartViewState)state animated:(BOOL)animated callback:(void (^)(void))callback
 {
 	[self setState:state animated:animated force:NO callback:callback];
 }

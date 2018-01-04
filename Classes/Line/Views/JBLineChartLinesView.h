@@ -20,7 +20,7 @@ extern NSInteger const kJBLineChartLinesViewUnselectedLineIndex;
 @property (nonatomic, assign) NSInteger selectedLineIndex; // -1 to unselect
 
 // Data
-- (void)reloadDataAnimated:(BOOL)animated callback:(void (^)())callback;
+- (void)reloadDataAnimated:(BOOL)animated callback:(void (^)(void))callback;
 - (void)reloadDataAnimated:(BOOL)animated;
 - (void)reloadData;
 
@@ -28,7 +28,7 @@ extern NSInteger const kJBLineChartLinesViewUnselectedLineIndex;
 - (void)setSelectedLineIndex:(NSInteger)selectedLineIndex animated:(BOOL)animated;
 
 // Callback helpers
-- (void)fireCallback:(void (^)())callback;
+- (void)fireCallback:(void (^)(void))callback;
 
 @end
 
