@@ -140,14 +140,12 @@ static UIColor *kJBChartVerticalSelectionViewDefaultBgColor = nil;
 
 - (void)setMinimumValue:(CGFloat)minimumValue
 {
-	NSAssert(minimumValue >= 0, @"JBChartView // the minimumValue must be >= 0.");
 	_minimumValue = minimumValue;
 	_hasMinimumValue = YES;
 }
 
 - (void)setMaximumValue:(CGFloat)maximumValue
 {
-	NSAssert(maximumValue >= 0, @"JBChartView // the maximumValue must be >= 0.");
 	_maximumValue = maximumValue;
 	_hasMaximumValue = YES;
 }
