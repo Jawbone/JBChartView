@@ -132,7 +132,7 @@ typedef NS_ENUM(NSInteger, JBChartViewState){
  *  @param force        If current state == new state, then setting force to YES will re-configure the chart (default NO).
  *  @param callback     Called once the animation is completed. If animated == NO, then callback is immediate.
  */
-- (void)setState:(JBChartViewState)state animated:(BOOL)animated force:(BOOL)force callback:(void (^)())callback;
+- (void)setState:(JBChartViewState)state animated:(BOOL)animated force:(BOOL)force callback:(void (^)(void))callback;
 
 /**
  *  State setter.
@@ -141,7 +141,7 @@ typedef NS_ENUM(NSInteger, JBChartViewState){
  *  @param animated     Whether or not the state should be animated or not.
  *  @param callback     Called once the animation is completed. If animated == NO, then callback is immediate.
  */
-- (void)setState:(JBChartViewState)state animated:(BOOL)animated callback:(void (^)())callback;
+- (void)setState:(JBChartViewState)state animated:(BOOL)animated callback:(void (^)(void))callback;
 
 /**
  *  State setter.
